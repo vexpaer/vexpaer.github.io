@@ -1,0 +1,214 @@
+#page-header.vexpaer-home-header {
+  min-height: 34rem;
+  height: 100vh;
+  height: 100svh;
+  overflow: hidden;
+  background: #0f0f44 !important;
+}
+
+#page-header.vexpaer-home-header::before {
+  display: none !important;
+}
+
+#vexpaer-home {
+  --vexpaer-title-x: 50%;
+  --vexpaer-title-y: 50%;
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  background: #0f0f44;
+  isolation: isolate;
+}
+
+#vexpaer-home-canvas,
+#vexpaer-home-webgl,
+.vexpaer-home__shade {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+}
+
+#vexpaer-home-canvas {
+  z-index: 0;
+  display: block;
+}
+
+#vexpaer-home-webgl {
+  z-index: 1;
+  display: block;
+  pointer-events: none;
+}
+
+.vexpaer-home__shade {
+  z-index: 2;
+  pointer-events: none;
+  background:
+    radial-gradient(circle at 50% 48%, transparent 0 20%, rgba(15, 15, 68, 0.06) 48%, rgba(15, 15, 68, 0.24) 100%),
+    linear-gradient(180deg, rgba(15, 15, 68, 0.03), rgba(15, 15, 68, 0.3));
+  transition: opacity 220ms ease;
+}
+
+#vexpaer-home-canvas,
+#vexpaer-home-webgl {
+  transform: scale(1);
+  filter: blur(0);
+  opacity: 1;
+  transition:
+    opacity 240ms ease,
+    filter 260ms ease,
+    transform 520ms cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+#vexpaer-home.is-switching #vexpaer-home-canvas,
+#vexpaer-home.is-switching #vexpaer-home-webgl {
+  transform: scale(1.025);
+  filter: blur(3px);
+  opacity: 0.08;
+}
+
+#vexpaer-home.is-switching .vexpaer-home__shade {
+  opacity: 0.92;
+}
+
+#vexpaer-home-title {
+  position: absolute;
+  top: var(--vexpaer-title-y);
+  left: var(--vexpaer-title-x);
+  z-index: 3;
+  margin: 0;
+  color: #f5f2ea;
+  font-family: Consolas, "SFMono-Regular", "Liberation Mono", monospace;
+  font-size: clamp(2.4rem, 7vw, 5rem);
+  font-weight: 400;
+  letter-spacing: -0.045em;
+  line-height: 1;
+  text-align: center;
+  text-shadow: 0 8px 44px rgba(0, 0, 0, 0.28);
+  transform: translate(-50%, -50%);
+  pointer-events: none;
+  transition: top 520ms cubic-bezier(0.22, 1, 0.36, 1), left 520ms cubic-bezier(0.22, 1, 0.36, 1), opacity 220ms ease;
+}
+
+#vexpaer-scene-toggle {
+  position: absolute;
+  right: max(1rem, env(safe-area-inset-right));
+  bottom: max(1rem, env(safe-area-inset-bottom));
+  z-index: 4;
+  width: 2.95rem;
+  min-height: 2.95rem;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+  border: 1px solid rgba(255, 255, 255, 0.16);
+  border-radius: 999px;
+  background: rgba(9, 9, 37, 0.58);
+  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.25);
+  color: rgba(255, 255, 255, 0.9);
+  font: 500 0.82rem/1 system-ui, -apple-system, "Segoe UI", sans-serif;
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+  cursor: pointer;
+  pointer-events: auto;
+  transition: background-color 180ms ease, transform 180ms ease, border-color 180ms ease;
+  animation: vexpaer-toggle-in 350ms ease both;
+}
+
+#vexpaer-scene-toggle:hover {
+  border-color: rgba(255, 255, 255, 0.28);
+  background: rgba(25, 25, 75, 0.72);
+  transform: translateY(-1px);
+}
+
+#vexpaer-scene-toggle:focus-visible {
+  outline: 2px solid #b8b9ff;
+  outline-offset: 4px;
+}
+
+.vexpaer-scene-toggle__icon {
+  width: 1.35rem;
+  height: 1.35rem;
+  display: grid;
+  place-items: center;
+  font-size: 1rem;
+  transition: transform 240ms ease;
+}
+
+#vexpaer-home.is-switching .vexpaer-scene-toggle__icon {
+  transform: rotate(90deg) scale(0.86);
+}
+
+#vexpaer-home[data-scene='life'] {
+  cursor: crosshair;
+  user-select: none;
+}
+
+#vexpaer-home[data-scene='space'] {
+  background: #000002;
+  cursor: grab;
+}
+
+#vexpaer-home[data-scene='space'] .vexpaer-home__shade {
+  background:
+    radial-gradient(circle at var(--vexpaer-title-x) var(--vexpaer-title-y), transparent 0 16%, rgba(0, 0, 2, 0.08) 42%, rgba(0, 0, 2, 0.34) 100%),
+    linear-gradient(180deg, rgba(0, 0, 2, 0.06), rgba(1, 0, 4, 0.26));
+}
+
+#vexpaer-home[data-scene='space'] #vexpaer-home-title {
+  text-shadow: 0 2px 14px rgba(0, 0, 0, 0.96), 0 10px 48px rgba(0, 0, 0, 0.72);
+}
+
+#vexpaer-home[data-scene='space']:active {
+  cursor: grabbing;
+}
+
+#vexpaer-home[data-scene='life'] #vexpaer-scene-toggle {
+  cursor: pointer;
+}
+
+@keyframes vexpaer-toggle-in {
+  from {
+    transform: translateY(10px);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+.vexpaer-home-page.vexpaer-home-hero-visible #rightside {
+  display: none !important;
+}
+
+.vexpaer-home-page #snowfall {
+  opacity: 0;
+  animation: none !important;
+  transition: opacity 100ms linear;
+  will-change: opacity;
+}
+
+@media (max-width: 768px) {
+  #page-header.vexpaer-home-header {
+    min-height: 28rem;
+  }
+
+  #vexpaer-home-title {
+    font-size: clamp(2.2rem, 14vw, 3.6rem);
+  }
+
+  #vexpaer-scene-toggle {
+    width: 2.75rem;
+    min-height: 2.75rem;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  #vexpaer-home-canvas,
+  #vexpaer-home-webgl,
+  #vexpaer-scene-toggle {
+    animation: none !important;
+    transition: none !important;
+  }
+}

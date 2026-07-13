@@ -1,0 +1,1 @@
+pandoc -o 导数.md 导数.docx --extract-media=导数

@@ -1,0 +1,21 @@
+-
+  var quickLinks = [
+    { name: 'Film Wall', path: '/film_wall', href: 'https://vexpaer.github.io/film_wall', note: '收藏、漫游与重温光影片段', accent: '#ff8a65', glow: '#ff4f81' },
+    { name: 'ZhenHuan Tree', path: '/ZhenHuanTree', href: 'https://vexpaer.github.io/ZhenHuanTree', note: '探索人物脉络与关系网络', accent: '#c9a7ff', glow: '#725cff' },
+    { name: 'Vexpaer Go', path: '/vexpaer_go', href: 'https://vexpaer.github.io/vexpaer_go', note: '进入下一段轻量互动旅程', accent: '#65e4d3', glow: '#1488cc' }
+  ]
+
+section#vexpaer-quick-access.vexpaer-quick-access(aria-label='快捷访问')
+  .vexpaer-quick-access__grid
+    each item, index in quickLinks
+      a.vexpaer-quick-card(href=item.href style='--quick-accent:' + item.accent + ';--quick-glow:' + item.glow)
+        span.vexpaer-quick-card__index(aria-hidden='true')= '0' + (index + 1)
+        span.vexpaer-quick-card__visual(aria-hidden='true')
+          i
+          i
+          i
+        span.vexpaer-quick-card__content
+          strong= item.name
+          small= item.note
+          code= item.path
+        span.vexpaer-quick-card__arrow(aria-hidden='true') ↗

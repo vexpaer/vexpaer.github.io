@@ -65,6 +65,18 @@
     root.style.removeProperty('--vexpaer-title-y')
     delete root.dataset.galaxyLayout
     delete root.dataset.galaxyCenter
+    delete root.dataset.duskTitleLayout
+  }
+
+  function applyDuskTitleLayout () {
+    var layouts = width < 720
+      ? [[50, 27], [50, 38]]
+      : [[24, 28], [72, 29], [22, 54]]
+    var layout = layouts[Math.floor(Math.random() * layouts.length)]
+    var jitter = width < 720 ? 3 : 4
+    root.style.setProperty('--vexpaer-title-x', (layout[0] + (Math.random() - 0.5) * jitter).toFixed(2) + '%')
+    root.style.setProperty('--vexpaer-title-y', (layout[1] + (Math.random() - 0.5) * jitter).toFixed(2) + '%')
+    root.dataset.duskTitleLayout = layout[0] + '-' + layout[1]
   }
 
   function nextTheme () {
@@ -85,6 +97,7 @@
     var previousTheme = activeTheme
     activeTheme = theme
     if (theme !== 'space') resetSpaceTitleLayout()
+    if (theme === 'dusk') applyDuskTitleLayout()
     if (theme === 'life' && !life.length) seedLife()
     stopLifePainting()
     try {
@@ -126,8 +139,8 @@
       stars.push({
         x: random(),
         y: random(),
-        radius: 0.45 + random() * 1.5,
-        alpha: 0.25 + random() * 0.7,
+        radius: random() > 0.94 ? 1.8 + random() * 1.8 : 0.35 + random() * 1.25,
+        alpha: 0.08 + Math.pow(random(), 2.25) * 1.08,
         phase: random() * Math.PI * 2,
         speed: 0.25 + random() * 0.8
       })
@@ -207,38 +220,119 @@
   }
 
   function drawDusk (time) {
-    fillBackground('#211433', '#0f0f44')
+    if (threeLayer && threeLayer.hasDuskScene) {
+      fillBackground('#37165d', '#ff7c61')
+      return
+    }
+    // Multi-stop sky gradient: deep indigo top → warm purple mid → amber-pink horizon
+    var skyGradient = context.createLinearGradient(0, 0, 0, height)
+    skyGradient.addColorStop(0, '#0a0a2e')
+    skyGradient.addColorStop(0.18, '#1a1145')
+    skyGradient.addColorStop(0.38, '#2d1b4e')
+    skyGradient.addColorStop(0.55, '#4a2248')
+    skyGradient.addColorStop(0.7, '#7a3b3f')
+    skyGradient.addColorStop(0.82, '#c46a42')
+    skyGradient.addColorStop(0.92, '#e8a04e')
+    skyGradient.addColorStop(1, '#d4783a')
+    context.fillStyle = skyGradient
+    context.fillRect(0, 0, width, height)
 
+    // Sun with multi-layer godray glow
     var sunX = width * 0.3
-    var sunY = height * 0.18
-    var sunRadius = Math.max(38, Math.min(width, height) * 0.058)
-    var glow = context.createRadialGradient(sunX, sunY, 0, sunX, sunY, sunRadius * 3.2)
-    glow.addColorStop(0, 'rgba(245, 164, 101, .42)')
-    glow.addColorStop(1, 'rgba(245, 164, 101, 0)')
-    context.fillStyle = glow
-    context.fillRect(sunX - sunRadius * 3.2, sunY - sunRadius * 3.2, sunRadius * 6.4, sunRadius * 6.4)
+    var sunY = height * 0.22
+    var sunRadius = Math.max(42, Math.min(width, height) * 0.065)
+    var seconds = time * 0.001
+    var sunPulse = 1 + Math.sin(seconds * 0.4) * 0.04
+
+    // Outermost haze
+    var glow4 = context.createRadialGradient(sunX, sunY, 0, sunX, sunY, sunRadius * 7 * sunPulse)
+    glow4.addColorStop(0, 'rgba(255, 190, 100, .08)')
+    glow4.addColorStop(0.4, 'rgba(255, 140, 60, .03)')
+    glow4.addColorStop(1, 'rgba(255, 100, 50, 0)')
+    context.fillStyle = glow4
+    context.fillRect(0, 0, width, height)
+
+    // Warm godray layer
+    var glow3 = context.createRadialGradient(sunX, sunY, 0, sunX, sunY, sunRadius * 4.8 * sunPulse)
+    glow3.addColorStop(0, 'rgba(255, 200, 120, .18)')
+    glow3.addColorStop(0.3, 'rgba(250, 160, 90, .08)')
+    glow3.addColorStop(1, 'rgba(245, 130, 70, 0)')
+    context.fillStyle = glow3
+    context.fillRect(sunX - sunRadius * 5, sunY - sunRadius * 5, sunRadius * 10, sunRadius * 10)
+
+    // Inner corona
+    var glow2 = context.createRadialGradient(sunX, sunY, 0, sunX, sunY, sunRadius * 2.8 * sunPulse)
+    glow2.addColorStop(0, 'rgba(255, 220, 160, .48)')
+    glow2.addColorStop(0.5, 'rgba(245, 180, 110, .14)')
+    glow2.addColorStop(1, 'rgba(245, 164, 101, 0)')
+    context.fillStyle = glow2
+    context.fillRect(sunX - sunRadius * 3, sunY - sunRadius * 3, sunRadius * 6, sunRadius * 6)
+
+    // Sun body with warm gradient
+    var sunBody = context.createRadialGradient(sunX - sunRadius * 0.15, sunY - sunRadius * 0.15, 0, sunX, sunY, sunRadius)
+    sunBody.addColorStop(0, '#f5c882')
+    sunBody.addColorStop(0.6, '#e09a55')
+    sunBody.addColorStop(1, '#c87a3a')
     context.beginPath()
     context.arc(sunX, sunY, sunRadius, 0, Math.PI * 2)
-    context.fillStyle = '#d18a59'
+    context.fillStyle = sunBody
     context.fill()
 
-    drawMountains(height * 0.58, '#31344c', [
-      [0.1, 0.5], [0.18, 0.29], [0.26, 0.51], [0.36, 0.24],
-      [0.45, 0.52], [0.58, 0.21], [0.68, 0.53], [0.79, 0.28], [0.9, 0.5]
+    // Scattered stars in the upper dark sky
+    for (var si = 0; si < stars.length; si++) {
+      var duskStar = stars[si]
+      if (duskStar.y > 0.4) continue
+      var duskStarAlpha = duskStar.alpha * 0.35 * (0.5 + Math.sin(seconds * duskStar.speed + duskStar.phase) * 0.5) * (1 - duskStar.y / 0.4)
+      if (duskStarAlpha < 0.02) continue
+      context.beginPath()
+      context.arc(duskStar.x * width, duskStar.y * height, Math.max(0.3, duskStar.radius * 0.5), 0, Math.PI * 2)
+      context.fillStyle = 'rgba(220, 215, 240, ' + duskStarAlpha + ')'
+      context.fill()
+    }
+
+    // Three mountain layers with richer colors
+    drawMountains(height * 0.52, 'rgba(58, 48, 82, 0.85)', [
+      [0.05, 0.46], [0.12, 0.26], [0.22, 0.44], [0.3, 0.2], [0.38, 0.46],
+      [0.48, 0.18], [0.56, 0.42], [0.65, 0.16], [0.74, 0.44], [0.82, 0.22], [0.92, 0.48]
     ])
-    drawMountains(height * 0.69, '#202b3b', [
-      [0.08, 0.57], [0.2, 0.44], [0.32, 0.63], [0.47, 0.42],
-      [0.61, 0.61], [0.75, 0.45], [0.88, 0.58]
+    drawMountains(height * 0.62, '#312e4a', [
+      [0.08, 0.48], [0.16, 0.32], [0.24, 0.52], [0.34, 0.28],
+      [0.43, 0.54], [0.55, 0.26], [0.64, 0.52], [0.76, 0.3], [0.88, 0.5]
+    ])
+    drawMountains(height * 0.72, '#1e2436', [
+      [0.06, 0.6], [0.18, 0.48], [0.3, 0.65], [0.44, 0.46],
+      [0.58, 0.64], [0.72, 0.48], [0.86, 0.6]
     ])
 
-    var seconds = time * 0.001
+    // Mist layer between mountains and grass
+    var mistGradient = context.createLinearGradient(0, height * 0.55, 0, height * 0.78)
+    mistGradient.addColorStop(0, 'rgba(180, 140, 120, 0)')
+    var mistOpacity = 0.06 + Math.sin(seconds * 0.2) * 0.02
+    mistGradient.addColorStop(0.4, 'rgba(180, 150, 135, ' + mistOpacity + ')')
+    mistGradient.addColorStop(0.7, 'rgba(150, 130, 145, ' + (mistOpacity * 0.7) + ')')
+    mistGradient.addColorStop(1, 'rgba(120, 110, 140, 0)')
+    context.fillStyle = mistGradient
+    context.fillRect(0, height * 0.55, width, height * 0.25)
+
+    // Grass with 4 color palettes
+    var grassPalettes = [
+      'rgba(108, 142, 72, .75)',  // emerald green
+      'rgba(62, 88, 52, .78)',    // dark forest
+      'rgba(145, 158, 68, .7)',   // golden green
+      'rgba(38, 62, 42, .8)'      // deep moss
+    ]
+    var grassHighlights = [
+      'rgba(158, 192, 88, .6)',   // bright highlight
+      'rgba(120, 155, 62, .65)'   // soft highlight
+    ]
     context.lineCap = 'round'
     for (var blade = 0; blade < grass.length; blade++) {
       var item = grass[blade]
       var x = item.x * width
       var base = height * (0.62 + item.depth * 0.42)
-      var length = (18 + item.depth * 90) * item.height
-      var sway = Math.sin(seconds * 0.7 + item.phase) * (1.5 + item.depth * 4)
+      var length = (20 + item.depth * 95) * item.height
+      var sway = Math.sin(seconds * 0.7 + item.phase) * (1.5 + item.depth * 4.5)
+      sway += Math.sin(seconds * 1.4 + item.phase * 2.3) * (0.5 + item.depth * 1.2)
       var tipX = x + sway
       var tipY = base - length
       if (pointerActive) {
@@ -254,16 +348,18 @@
       context.beginPath()
       context.moveTo(x, base)
       context.quadraticCurveTo(x + sway * 0.35, base - length * 0.5, tipX, tipY)
-      context.strokeStyle = item.shade > 0.55 ? 'rgba(108, 137, 75, .72)' : 'rgba(59, 83, 57, .76)'
-      context.lineWidth = 0.55 + item.depth * 1.25
+      var paletteIndex = Math.floor(item.shade * grassPalettes.length) % grassPalettes.length
+      context.strokeStyle = item.shade > 0.88 ? grassHighlights[blade % 2] : grassPalettes[paletteIndex]
+      context.lineWidth = 0.55 + item.depth * 1.35
       context.stroke()
     }
 
+    // Fireflies with warm halo glow
     for (var light = 0; light < fireflies.length; light++) {
       var firefly = fireflies[light]
-      var pulse = 0.3 + Math.sin(seconds * firefly.drift + firefly.phase) * 0.28
-      var fireflyX = firefly.x * width + Math.sin(seconds * 0.18 + firefly.phase) * 8
-      var fireflyY = firefly.y * height + Math.cos(seconds * 0.15 + firefly.phase) * 5
+      var pulse = 0.35 + Math.sin(seconds * firefly.drift + firefly.phase) * 0.32
+      var fireflyX = firefly.x * width + Math.sin(seconds * 0.18 + firefly.phase) * 12
+      var fireflyY = firefly.y * height + Math.cos(seconds * 0.15 + firefly.phase) * 8
       if (pointerActive) {
         var fireflyDx = fireflyX - pointerX
         var fireflyDy = fireflyY - pointerY
@@ -275,32 +371,69 @@
           pulse += fireflyInfluence * 0.55
         }
       }
+      // Outer halo
+      var haloRadius = firefly.radius * 4.5
+      var haloAlpha = Math.max(0.01, pulse * 0.12)
+      var haloGrad = context.createRadialGradient(fireflyX, fireflyY, 0, fireflyX, fireflyY, haloRadius)
+      haloGrad.addColorStop(0, 'rgba(255, 240, 140, ' + haloAlpha + ')')
+      haloGrad.addColorStop(0.5, 'rgba(255, 220, 100, ' + (haloAlpha * 0.4) + ')')
+      haloGrad.addColorStop(1, 'rgba(255, 200, 80, 0)')
+      context.fillStyle = haloGrad
+      context.fillRect(fireflyX - haloRadius, fireflyY - haloRadius, haloRadius * 2, haloRadius * 2)
+      // Core
       context.beginPath()
       context.arc(fireflyX, fireflyY, firefly.radius, 0, Math.PI * 2)
-      context.fillStyle = 'rgba(239, 222, 130, ' + Math.max(0.08, pulse) + ')'
+      var warmShift = Math.sin(seconds * 0.5 + firefly.phase * 3) * 0.5 + 0.5
+      var coreR = Math.round(239 + warmShift * 16)
+      var coreG = Math.round(222 - warmShift * 30)
+      var coreB = Math.round(130 - warmShift * 40)
+      context.fillStyle = 'rgba(' + coreR + ', ' + coreG + ', ' + coreB + ', ' + Math.max(0.1, pulse) + ')'
       context.fill()
     }
   }
 
   function drawSpace (time) {
-    fillBackground('#000002', '#030207')
+    fillBackground('#000002', '#020108')
     var seconds = time * 0.001
-    var nebula = context.createRadialGradient(width * 0.48, height * 0.44, 0, width * 0.48, height * 0.44, Math.max(width, height) * 0.62)
-    nebula.addColorStop(0, 'rgba(72, 55, 91, .11)')
-    nebula.addColorStop(0.38, 'rgba(38, 37, 61, .055)')
+
+    // Primary nebula – warm violet-purple
+    var nebula = context.createRadialGradient(width * 0.45, height * 0.42, 0, width * 0.45, height * 0.42, Math.max(width, height) * 0.68)
+    nebula.addColorStop(0, 'rgba(82, 55, 105, .13)')
+    nebula.addColorStop(0.25, 'rgba(62, 42, 85, .08)')
+    nebula.addColorStop(0.55, 'rgba(38, 32, 65, .04)')
     nebula.addColorStop(1, 'rgba(3, 2, 7, 0)')
     context.fillStyle = nebula
     context.fillRect(0, 0, width, height)
 
-    var distantCloud = context.createRadialGradient(width * 0.78, height * 0.22, 0, width * 0.78, height * 0.22, Math.max(width, height) * 0.42)
-    distantCloud.addColorStop(0, 'rgba(51, 58, 83, .06)')
+    // Secondary nebula – cool blue-teal, offset
+    var nebula2 = context.createRadialGradient(width * 0.72, height * 0.28, 0, width * 0.72, height * 0.28, Math.max(width, height) * 0.52)
+    nebula2.addColorStop(0, 'rgba(45, 65, 100, .08)')
+    nebula2.addColorStop(0.4, 'rgba(30, 50, 78, .04)')
+    nebula2.addColorStop(1, 'rgba(5, 5, 15, 0)')
+    context.fillStyle = nebula2
+    context.fillRect(0, 0, width, height)
+
+    // Tertiary nebula – warm amber-rose
+    var nebula3 = context.createRadialGradient(width * 0.22, height * 0.68, 0, width * 0.22, height * 0.68, Math.max(width, height) * 0.45)
+    nebula3.addColorStop(0, 'rgba(90, 50, 55, .06)')
+    nebula3.addColorStop(0.5, 'rgba(60, 35, 50, .03)')
+    nebula3.addColorStop(1, 'rgba(10, 5, 8, 0)')
+    context.fillStyle = nebula3
+    context.fillRect(0, 0, width, height)
+
+    // Distant blue cloud
+    var distantCloud = context.createRadialGradient(width * 0.82, height * 0.18, 0, width * 0.82, height * 0.18, Math.max(width, height) * 0.48)
+    distantCloud.addColorStop(0, 'rgba(55, 62, 95, .07)')
+    distantCloud.addColorStop(0.5, 'rgba(35, 40, 68, .03)')
     distantCloud.addColorStop(1, 'rgba(0, 0, 2, 0)')
     context.fillStyle = distantCloud
     context.fillRect(0, 0, width, height)
 
+    // Background star field
     for (var index = 0; index < stars.length; index++) {
       var star = stars[index]
-      var alpha = star.alpha * (0.38 + Math.sin(seconds * star.speed + star.phase) * 0.18)
+      var starTwinkle = 0.5 + Math.sin(seconds * star.speed + star.phase) * 0.5
+      var alpha = Math.min(1, star.alpha * (0.12 + Math.pow(starTwinkle, 2.3) * 0.98))
       var starX = star.x * width
       var starY = star.y * height
       var starRadius = Math.max(0.35, star.radius * 0.72)
@@ -310,13 +443,20 @@
         var starDistance = Math.sqrt(starDx * starDx + starDy * starDy)
         if (starDistance < 170) {
           var starLight = 1 - starDistance / 170
-          alpha = Math.min(0.92, alpha + starLight * 0.24)
+          alpha = Math.min(1, alpha + starLight * 0.34)
           starRadius *= 1 + starLight * 0.42
         }
       }
+      // Vary star color temperature
+      var starColorPhase = (star.phase * 2.7) % 1
+      var starR, starG, starB
+      if (starColorPhase < 0.3) { starR = 218; starG = 225; starB = 245; } // cool blue-white
+      else if (starColorPhase < 0.6) { starR = 240; starG = 232; starB = 215; } // warm white
+      else if (starColorPhase < 0.85) { starR = 210; starG = 215; starB = 230; } // neutral
+      else { starR = 255; starG = 210; starB = 180; } // warm amber
       context.beginPath()
       context.arc(starX, starY, starRadius, 0, Math.PI * 2)
-      context.fillStyle = 'rgba(218, 217, 226, ' + Math.max(0.025, alpha) + ')'
+      context.fillStyle = 'rgba(' + starR + ', ' + starG + ', ' + starB + ', ' + Math.max(0.025, alpha) + ')'
       context.fill()
     }
   }
@@ -394,7 +534,7 @@
   }
 
   function drawLife (time) {
-    fillBackground('#08082d', '#0f0f44')
+    fillBackground('#000000', '#000000')
     var lifeStepInterval = lifePainting ? 360 : 180
     if (!reducedMotion.matches && time - lastLifeStep > lifeStepInterval) {
       stepLife()
@@ -417,12 +557,16 @@
     }
     var pulse = 0.74 + Math.sin(time * 0.0014) * 0.16
     context.shadowBlur = 10
-    context.shadowColor = 'rgba(74, 229, 196, .45)'
-    context.fillStyle = 'rgba(91, 231, 200, ' + pulse + ')'
+    context.shadowColor = 'rgba(74, 26, 164, .5)'
     for (var index = 0; index < life.length; index++) {
       if (!life[index]) continue
       var x = (index % lifeColumns) * lifeCell
       var y = Math.floor(index / lifeColumns) * lifeCell
+      var progress = ((index % lifeColumns) / Math.max(1, lifeColumns - 1) + Math.floor(index / lifeColumns) / Math.max(1, lifeRows - 1)) * 0.5
+      var red = Math.round(82 + (12 - 82) * progress)
+      var green = Math.round(20 + (70 - 20) * progress)
+      var blue = Math.round(156 + (165 - 156) * progress)
+      context.fillStyle = 'rgba(' + red + ', ' + green + ', ' + blue + ', ' + pulse + ')'
       context.fillRect(x + 2, y + 2, Math.max(2, lifeCell - 4), Math.max(2, lifeCell - 4))
     }
     context.shadowBlur = 0
@@ -456,6 +600,551 @@
     var spaceCameraBase = new THREE.Vector3()
     var spaceCameraLookAt = new THREE.Vector3()
     var spacePointerNdc = new THREE.Vector2()
+
+    // Endless sunset highway. Road chunks are recycled ahead of the moving car,
+    // so the route keeps changing without allowing the scene graph to grow forever.
+    var duskScene = new THREE.Scene()
+    duskScene.fog = new THREE.FogExp2('#66516a', 0.01)
+    var duskCamera = new THREE.PerspectiveCamera(48, aspect, 0.1, 320)
+    var duskRandom = randomFactory((Date.now() ^ 0x6475736b) >>> 0)
+    var duskTravel = 0
+    var duskLastTime = 0
+    var duskElapsed = 0
+    var duskCameraTarget = new THREE.Vector3()
+    var duskCameraDesired = new THREE.Vector3()
+    var duskLookDesired = new THREE.Vector3()
+
+    var duskSky = new THREE.Mesh(new THREE.SphereGeometry(170, 32, 18), new THREE.ShaderMaterial({
+      side: THREE.BackSide,
+      depthWrite: false,
+      fog: false,
+      uniforms: {
+        uZenith: { value: new THREE.Color('#37165d') },
+        uUpper: { value: new THREE.Color('#8e4085') },
+        uHorizon: { value: new THREE.Color('#ff7c61') },
+        uGlow: { value: new THREE.Color('#ffb06f') }
+      },
+      vertexShader: ['varying vec3 vLocal;', 'void main(){vLocal=position;gl_Position=projectionMatrix*modelViewMatrix*vec4(position,1.0);}'].join('\n'),
+      fragmentShader: [
+        'uniform vec3 uZenith;uniform vec3 uUpper;uniform vec3 uHorizon;uniform vec3 uGlow;varying vec3 vLocal;',
+        'void main(){float h=normalize(vLocal).y;vec3 low=mix(uGlow,uHorizon,smoothstep(-.18,.06,h));',
+        'vec3 color=mix(low,uUpper,smoothstep(-.04,.2,h));color=mix(color,uZenith,smoothstep(.14,.52,h));',
+        'float band=sin(h*49.0+normalize(vLocal).x*4.0)*.5+.5;color+=vec3(.12,.025,.08)*band*smoothstep(.05,.5,h)*.12;',
+        'gl_FragColor=vec4(color,1.0);}'
+      ].join('\n')
+    }))
+    duskScene.add(duskSky)
+
+    var duskSun = new THREE.Mesh(new THREE.SphereGeometry(6.5, 24, 16), new THREE.MeshBasicMaterial({ color: '#ffd29b', fog: false }))
+    duskScene.add(duskSun)
+
+    var duskGroundGeometry = new THREE.PlaneGeometry(240, 340, 42, 56)
+    var duskGroundPosition = duskGroundGeometry.getAttribute('position')
+    var duskGroundColors = new Float32Array(duskGroundPosition.count * 3)
+    var duskSandLow = new THREE.Color('#715747')
+    var duskSandHigh = new THREE.Color('#c18b5f')
+    var duskSandColor = new THREE.Color()
+    for (var groundIndex = 0; groundIndex < duskGroundPosition.count; groundIndex++) {
+      var groundX = duskGroundPosition.getX(groundIndex)
+      var groundZ = duskGroundPosition.getY(groundIndex)
+      var groundHeight = (Math.sin(groundX * 0.055) * 0.65 + Math.cos(groundZ * 0.042) * 0.5 + Math.sin((groundX + groundZ) * 0.025) * 0.75) * 0.3 - 0.55
+      duskGroundPosition.setZ(groundIndex, groundHeight)
+      duskSandColor.copy(duskSandLow).lerp(duskSandHigh, Math.max(0, Math.min(1, (groundHeight + 1.5) / 3)))
+      duskGroundColors[groundIndex * 3] = duskSandColor.r
+      duskGroundColors[groundIndex * 3 + 1] = duskSandColor.g
+      duskGroundColors[groundIndex * 3 + 2] = duskSandColor.b
+    }
+    duskGroundGeometry.setAttribute('color', new THREE.BufferAttribute(duskGroundColors, 3))
+    duskGroundGeometry.computeVertexNormals()
+    var duskGround = new THREE.Mesh(duskGroundGeometry, new THREE.MeshStandardMaterial({ vertexColors: true, roughness: 1 }))
+    duskGround.rotation.x = -Math.PI / 2
+    duskGround.receiveShadow = true
+    duskScene.add(duskGround)
+    duskScene.add(new THREE.HemisphereLight('#9188b5', '#66503b', 1.28))
+    var duskSunLight = new THREE.DirectionalLight('#ffd8b5', 1.9)
+    duskSunLight.position.set(-22, 28, 18)
+    duskScene.add(duskSunLight)
+
+    var duskMountainGroup = new THREE.Group()
+    var duskMountainMaterials = [
+      new THREE.MeshStandardMaterial({ color: '#4b3e57', roughness: 1, flatShading: true }),
+      new THREE.MeshStandardMaterial({ color: '#654958', roughness: 1, flatShading: true }),
+      new THREE.MeshStandardMaterial({ color: '#76554e', roughness: 1, flatShading: true })
+    ]
+    for (var mountainIndex = 0; mountainIndex < 14; mountainIndex++) {
+      var mountain = new THREE.Mesh(new THREE.ConeGeometry(1, 1, 5 + Math.floor(duskRandom() * 3)), duskMountainMaterials[mountainIndex % duskMountainMaterials.length])
+      mountain.position.set(-88 + mountainIndex * 13.5 + (duskRandom() - 0.5) * 8, 4 + duskRandom() * 3, (duskRandom() - 0.5) * 30)
+      mountain.scale.set(8 + duskRandom() * 9, 11 + duskRandom() * 13, 6 + duskRandom() * 8)
+      mountain.rotation.y = duskRandom() * Math.PI
+      duskMountainGroup.add(mountain)
+    }
+    duskScene.add(duskMountainGroup)
+
+    function duskRoadCenter (z) {
+      return Math.sin(z * 0.025) * 6.2 + Math.sin(z * 0.009 + 1.4) * 4.3 + Math.sin(z * 0.061) * 1.1
+    }
+
+    function duskRoadHeading (z) {
+      return Math.atan2(-(duskRoadCenter(z - 1.5) - duskRoadCenter(z + 1.5)), 3)
+    }
+
+    var roadLength = 10
+    var roadCount = width < 720 ? 24 : 31
+    var asphaltGeometry = new THREE.BoxGeometry(7.6, 0.12, roadLength * 1.12)
+    var roadLineGeometry = new THREE.BoxGeometry(0.13, 0.025, roadLength * 1.08)
+    var roadDashGeometry = new THREE.BoxGeometry(0.14, 0.035, 2.2)
+    var asphaltMaterial = new THREE.MeshStandardMaterial({ color: '#24222a', roughness: 0.94 })
+    var roadEdgeMaterial = new THREE.MeshBasicMaterial({ color: '#f4d9b2' })
+    var roadDashMaterial = new THREE.MeshBasicMaterial({ color: '#e9a94c' })
+    var roadSegments = []
+    var rockGeometries = [
+      new THREE.DodecahedronGeometry(0.8, 0),
+      new THREE.IcosahedronGeometry(0.8, 0),
+      new THREE.ConeGeometry(0.75, 1.4, 5)
+    ]
+    var rockMaterials = [
+      new THREE.MeshStandardMaterial({ color: '#763a34', roughness: 1, flatShading: true }),
+      new THREE.MeshStandardMaterial({ color: '#a45240', roughness: 1, flatShading: true }),
+      new THREE.MeshStandardMaterial({ color: '#593036', roughness: 1, flatShading: true })
+    ]
+    var gravelGeometry = new THREE.DodecahedronGeometry(0.12, 0)
+    var cactusMaterial = new THREE.MeshStandardMaterial({ color: '#315e48', roughness: 0.88, flatShading: true })
+    var cactusTrunkGeometry = new THREE.CylinderGeometry(0.2, 0.28, 2.8, 7)
+    var cactusArmGeometry = new THREE.CylinderGeometry(0.13, 0.17, 1.25, 7)
+    var cactusTipGeometry = new THREE.CylinderGeometry(0.12, 0.14, 0.65, 7)
+    var signPostGeometry = new THREE.CylinderGeometry(0.07, 0.09, 2.5, 7)
+    var signBoardGeometry = new THREE.BoxGeometry(2.2, 1.05, 0.12)
+    var campLogGeometry = new THREE.CylinderGeometry(0.1, 0.12, 1.2, 7)
+    var campOuterFlameGeometry = new THREE.ConeGeometry(0.48, 1.25, 6)
+    var campInnerFlameGeometry = new THREE.ConeGeometry(0.25, 0.78, 6)
+    var postMaterial = new THREE.MeshStandardMaterial({ color: '#3b3030', roughness: 0.8 })
+    var pumpRedMaterial = new THREE.MeshStandardMaterial({ color: '#c8493e', roughness: 0.65 })
+    var warmMaterial = new THREE.MeshBasicMaterial({ color: '#ffad46' })
+    var fireMaterial = new THREE.MeshBasicMaterial({ color: '#ff572d' })
+
+    function createRock (random, scale) {
+      var type = Math.floor(random() * rockGeometries.length)
+      var rock = new THREE.Mesh(rockGeometries[type], rockMaterials[type])
+      rock.scale.set(scale * (0.65 + random() * 0.7), scale * (0.55 + random() * 0.9), scale * (0.7 + random() * 0.6))
+      rock.rotation.set(random() * 0.35, random() * Math.PI, random() * 0.22)
+      return rock
+    }
+
+    function createCactus (random) {
+      var cactus = new THREE.Group()
+      var trunk = new THREE.Mesh(cactusTrunkGeometry, cactusMaterial)
+      trunk.position.y = 1.4
+      cactus.add(trunk)
+      for (var side = -1; side <= 1; side += 2) {
+        if (random() < 0.72) {
+          var arm = new THREE.Mesh(cactusArmGeometry, cactusMaterial)
+          arm.position.set(side * 0.42, 1.35 + random() * 0.65, 0)
+          arm.rotation.z = side * (0.72 + random() * 0.18)
+          cactus.add(arm)
+          var tip = new THREE.Mesh(cactusTipGeometry, cactusMaterial)
+          tip.position.set(side * 0.8, arm.position.y + 0.34, 0)
+          cactus.add(tip)
+        }
+      }
+      cactus.rotation.y = random() * Math.PI
+      return cactus
+    }
+
+    function createSignMaterial (textValue, background, foreground) {
+      var signCanvas = document.createElement('canvas')
+      signCanvas.width = 256
+      signCanvas.height = 128
+      var signContext = signCanvas.getContext('2d')
+      signContext.fillStyle = background
+      signContext.fillRect(0, 0, 256, 128)
+      signContext.strokeStyle = foreground
+      signContext.lineWidth = 7
+      signContext.strokeRect(8, 8, 240, 112)
+      signContext.fillStyle = foreground
+      signContext.font = '700 42px Consolas, monospace'
+      signContext.textAlign = 'center'
+      signContext.textBaseline = 'middle'
+      signContext.fillText(textValue, 128, 67)
+      return new THREE.MeshBasicMaterial({ map: new THREE.CanvasTexture(signCanvas) })
+    }
+
+    var signMaterials = [
+      createSignMaterial('GAS', '#e66b42', '#fff1c7'),
+      createSignMaterial('MOTEL', '#5e285b', '#ffd49e'),
+      createSignMaterial('WEST', '#ead09e', '#452c35')
+    ]
+
+    function createRoadSign (random) {
+      var sign = new THREE.Group()
+      var post = new THREE.Mesh(signPostGeometry, postMaterial)
+      post.position.y = 1.25
+      sign.add(post)
+      var board = new THREE.Mesh(signBoardGeometry, signMaterials[Math.floor(random() * signMaterials.length)])
+      board.position.y = 2.55
+      sign.add(board)
+      return sign
+    }
+
+    function createCampfire () {
+      var campfire = new THREE.Group()
+      for (var logIndex = 0; logIndex < 3; logIndex++) {
+        var log = new THREE.Mesh(campLogGeometry, postMaterial)
+        log.rotation.z = Math.PI / 2
+        log.rotation.y = logIndex * Math.PI / 3
+        log.position.y = 0.16
+        campfire.add(log)
+      }
+      var flame = new THREE.Mesh(campOuterFlameGeometry, fireMaterial)
+      flame.position.y = 0.72
+      flame.userData.flame = true
+      campfire.add(flame)
+      var inner = new THREE.Mesh(campInnerFlameGeometry, warmMaterial)
+      inner.position.y = 0.62
+      inner.userData.flame = true
+      campfire.add(inner)
+      var fireLight = new THREE.PointLight('#ff743b', 3.5, 12)
+      fireLight.position.y = 1.3
+      fireLight.userData.fireLight = true
+      campfire.add(fireLight)
+      campfire.userData.campfire = true
+      return campfire
+    }
+
+    function createGasStation (random) {
+      var station = new THREE.Group()
+      var wallMaterial = new THREE.MeshStandardMaterial({ color: '#dca47d', roughness: 0.9 })
+      var roofMaterial = new THREE.MeshStandardMaterial({ color: '#a63e36', roughness: 0.72 })
+      var glassMaterial = new THREE.MeshStandardMaterial({ color: '#25334a', roughness: 0.22, metalness: 0.3 })
+      var building = new THREE.Mesh(new THREE.BoxGeometry(7.5, 3.3, 4.2), wallMaterial)
+      building.position.set(0, 1.65, -2.5)
+      station.add(building)
+      var windowMesh = new THREE.Mesh(new THREE.BoxGeometry(3.4, 1.5, 0.08), glassMaterial)
+      windowMesh.position.set(0, 1.75, -0.36)
+      station.add(windowMesh)
+      var canopy = new THREE.Mesh(new THREE.BoxGeometry(9.5, 0.35, 4.6), roofMaterial)
+      canopy.position.set(0, 4.1, 2.4)
+      station.add(canopy)
+      for (var columnIndex = -1; columnIndex <= 1; columnIndex += 2) {
+        var canopyPost = new THREE.Mesh(new THREE.CylinderGeometry(0.11, 0.15, 4, 8), postMaterial)
+        canopyPost.position.set(columnIndex * 3.5, 2, 2.4)
+        station.add(canopyPost)
+        var pump = new THREE.Mesh(new THREE.BoxGeometry(0.75, 1.55, 0.7), columnIndex < 0 ? pumpRedMaterial : roadDashMaterial)
+        pump.position.set(columnIndex * 1.7, 0.78, 2.25)
+        station.add(pump)
+      }
+      var pole = new THREE.Mesh(new THREE.CylinderGeometry(0.11, 0.15, 6.2, 8), postMaterial)
+      pole.position.set(5.6, 3.1, 0)
+      station.add(pole)
+      var gasSign = new THREE.Mesh(new THREE.BoxGeometry(2.2, 1.2, 0.18), signMaterials[0])
+      gasSign.position.set(5.6, 6.3, 0)
+      station.add(gasSign)
+      station.rotation.y = random() > 0.5 ? 0.08 : -0.08
+      return station
+    }
+
+    function populateRoadside (segment, worldZ) {
+      var propRoot = segment.userData.props
+      while (propRoot.children.length) propRoot.remove(propRoot.children[propRoot.children.length - 1])
+      var segmentNumber = Math.round(-worldZ / roadLength)
+      var random = randomFactory((segmentNumber * 2654435761) >>> 0)
+      if (Math.abs(segmentNumber) % 37 === 11) {
+        var stationSide = random() > 0.5 ? 1 : -1
+        var station = createGasStation(random)
+        station.position.set(stationSide * 11.8, 0.05, 0)
+        station.rotation.y += stationSide < 0 ? Math.PI : 0
+        propRoot.add(station)
+      } else {
+        var propCount = Math.floor(random() * 3)
+        for (var propIndex = 0; propIndex < propCount; propIndex++) {
+          var side = random() > 0.5 ? 1 : -1
+          var roll = random()
+          var prop
+          if (roll < 0.52) prop = createRock(random, 0.55 + random() * 2.6)
+          else if (roll < 0.91) {
+            prop = createCactus(random)
+            prop.scale.setScalar(0.7 + random() * 1.15)
+          } else if (roll < 0.98) prop = createRoadSign(random)
+          else prop = createCampfire()
+          prop.position.set(side * (5.4 + random() * 19), 0.12, (random() - 0.5) * 7.5)
+          propRoot.add(prop)
+        }
+      }
+      if (Math.abs(segmentNumber) % 4 === 0) {
+        var distantSide = random() > 0.5 ? 1 : -1
+        var distantRock = createRock(random, 5 + random() * 6)
+        distantRock.position.set(distantSide * (31 + random() * 24), 1.2, (random() - 0.5) * 8)
+        distantRock.scale.x *= 1.5 + random()
+        propRoot.add(distantRock)
+      }
+      var gravelCount = 1 + Math.floor(random() * 4)
+      for (var gravelIndex = 0; gravelIndex < gravelCount; gravelIndex++) {
+        var gravelSide = random() > 0.5 ? 1 : -1
+        var gravel = new THREE.Mesh(gravelGeometry, rockMaterials[Math.floor(random() * rockMaterials.length)])
+        var gravelScale = 0.45 + random() * 1.2
+        gravel.scale.set(gravelScale, gravelScale * 0.65, gravelScale)
+        gravel.position.set(gravelSide * (4.4 + random() * 7.5), 0.08, (random() - 0.5) * 8.5)
+        gravel.rotation.y = random() * Math.PI
+        propRoot.add(gravel)
+      }
+    }
+
+    function positionRoadSegment (segment, worldZ) {
+      segment.userData.worldZ = worldZ
+      segment.position.set(duskRoadCenter(worldZ), 0.12, worldZ)
+      segment.rotation.y = duskRoadHeading(worldZ)
+      populateRoadside(segment, worldZ)
+    }
+
+    for (var roadIndex = 0; roadIndex < roadCount; roadIndex++) {
+      var roadGroup = new THREE.Group()
+      roadGroup.add(new THREE.Mesh(asphaltGeometry, asphaltMaterial))
+      for (var edgeSide = -1; edgeSide <= 1; edgeSide += 2) {
+        var edgeLine = new THREE.Mesh(roadLineGeometry, roadEdgeMaterial)
+        edgeLine.position.set(edgeSide * 3.42, 0.08, 0)
+        roadGroup.add(edgeLine)
+      }
+      for (var dashIndex = -1; dashIndex <= 1; dashIndex += 2) {
+        var dash = new THREE.Mesh(roadDashGeometry, roadDashMaterial)
+        dash.position.set(0, 0.09, dashIndex * 2.7)
+        roadGroup.add(dash)
+      }
+      var props = new THREE.Group()
+      roadGroup.userData.props = props
+      roadGroup.add(props)
+      positionRoadSegment(roadGroup, 40 - roadIndex * roadLength)
+      roadSegments.push(roadGroup)
+      duskScene.add(roadGroup)
+    }
+    root.dataset.duskRoadSegments = String(roadCount)
+
+    var car = new THREE.Group()
+    var carRedMaterial = new THREE.MeshStandardMaterial({ color: '#c82f34', roughness: 0.4, metalness: 0.4 })
+    var carDarkRedMaterial = new THREE.MeshStandardMaterial({ color: '#771d28', roughness: 0.5, metalness: 0.3 })
+    var carGlassMaterial = new THREE.MeshStandardMaterial({ color: '#171b2b', roughness: 0.14, metalness: 0.55 })
+    var tireMaterial = new THREE.MeshStandardMaterial({ color: '#101014', roughness: 0.9 })
+    var chromeMaterial = new THREE.MeshStandardMaterial({ color: '#c8bdad', roughness: 0.3, metalness: 0.72 })
+    var hubMaterial = new THREE.MeshStandardMaterial({ color: '#e2c8a7', roughness: 0.38, metalness: 0.62 })
+    var carBody = new THREE.Mesh(new THREE.BoxGeometry(2.15, 0.58, 4.1), carRedMaterial)
+    carBody.position.y = 0.78
+    car.add(carBody)
+    var carHood = new THREE.Mesh(new THREE.BoxGeometry(1.95, 0.28, 1.45), carDarkRedMaterial)
+    carHood.position.set(0, 1.1, -1.25)
+    car.add(carHood)
+    var carCabin = new THREE.Mesh(new THREE.BoxGeometry(1.62, 0.72, 1.75), carGlassMaterial)
+    carCabin.position.set(0, 1.35, 0.18)
+    car.add(carCabin)
+    var carRoof = new THREE.Mesh(new THREE.BoxGeometry(1.72, 0.16, 1.45), carRedMaterial)
+    carRoof.position.set(0, 1.76, 0.2)
+    car.add(carRoof)
+    var wheelGeometry = new THREE.CylinderGeometry(0.43, 0.43, 0.34, 12)
+    var hubGeometry = new THREE.CylinderGeometry(0.22, 0.22, 0.37, 10)
+    for (var wheelX = -1; wheelX <= 1; wheelX += 2) {
+      for (var wheelZ = -1; wheelZ <= 1; wheelZ += 2) {
+        var wheel = new THREE.Mesh(wheelGeometry, tireMaterial)
+        wheel.rotation.z = Math.PI / 2
+        wheel.position.set(wheelX * 1.08, 0.5, wheelZ * 1.35)
+        wheel.userData.wheel = true
+        car.add(wheel)
+        var hub = new THREE.Mesh(hubGeometry, hubMaterial)
+        hub.rotation.z = Math.PI / 2
+        hub.position.copy(wheel.position)
+        car.add(hub)
+      }
+    }
+    var tailLightMaterial = new THREE.MeshBasicMaterial({ color: '#ff3d35' })
+    for (var tailSide = -1; tailSide <= 1; tailSide += 2) {
+      var tailLight = new THREE.Mesh(new THREE.BoxGeometry(0.42, 0.2, 0.08), tailLightMaterial)
+      tailLight.position.set(tailSide * 0.68, 0.86, 2.08)
+      car.add(tailLight)
+      var headLight = new THREE.Mesh(new THREE.BoxGeometry(0.42, 0.2, 0.08), new THREE.MeshBasicMaterial({ color: '#fff0b8' }))
+      headLight.position.set(tailSide * 0.68, 0.86, -2.08)
+      car.add(headLight)
+      var mirror = new THREE.Mesh(new THREE.BoxGeometry(0.3, 0.18, 0.36), carRedMaterial)
+      mirror.position.set(tailSide * 1.08, 1.34, -0.05)
+      car.add(mirror)
+    }
+    var rearBumper = new THREE.Mesh(new THREE.BoxGeometry(2.08, 0.16, 0.16), chromeMaterial)
+    rearBumper.position.set(0, 0.54, 2.14)
+    car.add(rearBumper)
+    var frontBumper = rearBumper.clone()
+    frontBumper.position.z = -2.14
+    car.add(frontBumper)
+    var licensePlate = new THREE.Mesh(new THREE.BoxGeometry(0.62, 0.25, 0.05), new THREE.MeshBasicMaterial({ color: '#f7df9b' }))
+    licensePlate.position.set(0, 0.72, 2.24)
+    car.add(licensePlate)
+    var exhaustPipe = new THREE.Mesh(new THREE.CylinderGeometry(0.07, 0.07, 0.5, 8), chromeMaterial)
+    exhaustPipe.rotation.x = Math.PI / 2
+    exhaustPipe.position.set(0.52, 0.46, 2.25)
+    car.add(exhaustPipe)
+    car.scale.setScalar(0.78)
+    duskScene.add(car)
+
+    var nextDuskBump = 3 + duskRandom() * 5
+    var duskBumpAge = 99
+    var duskBumpStrength = 0
+
+    var exhaustGeometry = new THREE.SphereGeometry(0.42, 6, 5)
+    var exhaustMaterial = new THREE.MeshBasicMaterial({ color: '#f4f1e8' })
+    var exhaustPuffs = []
+    var nextExhaust = 1.5 + duskRandom() * 2.2
+
+    function spawnExhaust () {
+      car.updateMatrixWorld()
+      var puff = new THREE.Mesh(exhaustGeometry, exhaustMaterial)
+      puff.position.copy(car.localToWorld(new THREE.Vector3(0.45, 0.58, 2.3)))
+      puff.scale.setScalar(0.32)
+      puff.userData.age = 0
+      puff.userData.drift = (duskRandom() - 0.5) * 0.18
+      duskScene.add(puff)
+      exhaustPuffs.push(puff)
+    }
+
+    var tumbleweedGeometry = new THREE.IcosahedronGeometry(0.75, 1)
+    var tumbleweedMaterial = new THREE.MeshBasicMaterial({ color: '#6f432c', wireframe: true })
+    var tumbleweeds = []
+    var nextTumbleweed = 7 + duskRandom() * 13
+
+    function spawnTumbleweed (carZ) {
+      var side = duskRandom() > 0.5 ? 1 : -1
+      var tumbleweed = new THREE.Mesh(tumbleweedGeometry, tumbleweedMaterial)
+      tumbleweed.position.set(duskRoadCenter(carZ - 35) + side * 23, 0.82, carZ - 28 - duskRandom() * 38)
+      tumbleweed.userData.speed = -side * (4.5 + duskRandom() * 3.5)
+      tumbleweed.userData.baseY = 0.72 + duskRandom() * 0.25
+      tumbleweeds.push(tumbleweed)
+      duskScene.add(tumbleweed)
+    }
+
+    var cloudGeometry = new THREE.IcosahedronGeometry(1.25, 1)
+    var cloudMaterial = new THREE.MeshStandardMaterial({ color: '#f3c4c6', roughness: 1, flatShading: true })
+    var duskClouds = []
+    for (var cloudIndex = 0; cloudIndex < 11; cloudIndex++) {
+      var cloud = new THREE.Group()
+      var lobeCount = 3 + Math.floor(duskRandom() * 4)
+      for (var lobeIndex = 0; lobeIndex < lobeCount; lobeIndex++) {
+        var lobe = new THREE.Mesh(cloudGeometry, cloudMaterial)
+        lobe.position.set((lobeIndex - lobeCount / 2) * 1.45, duskRandom() * 0.65, (duskRandom() - 0.5) * 0.8)
+        lobe.scale.set(1.2 + duskRandom() * 1.25, 0.65 + duskRandom() * 0.55, 0.85 + duskRandom() * 0.75)
+        cloud.add(lobe)
+      }
+      cloud.position.set((duskRandom() - 0.5) * 110, 13 + duskRandom() * 14, -20 - duskRandom() * 220)
+      cloud.userData.speed = 0.08 + duskRandom() * 0.16
+      duskClouds.push(cloud)
+      duskScene.add(cloud)
+    }
+
+    function configureDuskCamera () {
+      duskCamera.aspect = aspect
+      duskCamera.fov = width < 720 ? 58 : 48
+      duskCamera.updateProjectionMatrix()
+      if (!duskLastTime) {
+        duskCamera.position.set(duskRoadCenter(0), 10.3, 15)
+        duskCameraTarget.set(duskRoadCenter(-11), 0.8, -11)
+        duskCamera.lookAt(duskCameraTarget)
+      }
+    }
+
+    function updateDusk (time) {
+      var delta = duskLastTime ? Math.min(0.05, (time - duskLastTime) / 1000) : 0.016
+      duskLastTime = time
+      duskElapsed += delta
+      duskTravel += delta * (width < 720 ? 5.2 : 6.6)
+      root.dataset.duskDistance = Math.floor(duskTravel).toString()
+      var carZ = -duskTravel
+      var carX = duskRoadCenter(carZ)
+      var heading = duskRoadHeading(carZ)
+      if (duskElapsed >= nextDuskBump) {
+        duskBumpAge = 0
+        duskBumpStrength = 0.2 + duskRandom() * 0.25
+        nextDuskBump = duskElapsed + 3.5 + duskRandom() * 6.5
+      }
+      duskBumpAge += delta
+      var regularBounce = Math.sin(duskTravel * 2.8) * 0.035 + Math.sin(duskTravel * 5.1) * 0.012
+      var largeBounce = duskBumpStrength * Math.exp(-duskBumpAge * 2.8) * Math.abs(Math.sin(duskBumpAge * 11.5))
+      car.position.set(carX, 0.18 + regularBounce + largeBounce, carZ)
+      car.rotation.set(-largeBounce * 0.13 + Math.sin(duskTravel * 2.8) * 0.008, heading, Math.sin(duskTravel * 1.9) * 0.012)
+      for (var childIndex = 0; childIndex < car.children.length; childIndex++) {
+        if (car.children[childIndex].userData.wheel) car.children[childIndex].rotation.x -= delta * 9
+      }
+
+      var minimumRoadZ = Infinity
+      for (var roadIndex = 0; roadIndex < roadSegments.length; roadIndex++) minimumRoadZ = Math.min(minimumRoadZ, roadSegments[roadIndex].userData.worldZ)
+      for (var recycleIndex = 0; recycleIndex < roadSegments.length; recycleIndex++) {
+        var roadSegment = roadSegments[recycleIndex]
+        if (roadSegment.userData.worldZ > carZ + 45) {
+          minimumRoadZ -= roadLength
+          positionRoadSegment(roadSegment, minimumRoadZ)
+        }
+        var propChildren = roadSegment.userData.props.children
+        for (var propIndex = 0; propIndex < propChildren.length; propIndex++) {
+          var prop = propChildren[propIndex]
+          if (prop.userData.campfire) {
+            for (var fireIndex = 0; fireIndex < prop.children.length; fireIndex++) {
+              var fireChild = prop.children[fireIndex]
+              if (fireChild.userData.flame) fireChild.scale.y = 0.84 + Math.sin(time * 0.009 + fireIndex) * 0.2
+              if (fireChild.userData.fireLight) fireChild.intensity = 3.1 + Math.sin(time * 0.012) * 0.7
+            }
+          }
+        }
+      }
+
+      if (duskElapsed >= nextExhaust) {
+        spawnExhaust()
+        nextExhaust = duskElapsed + 2.2 + duskRandom() * 2.7
+      }
+      for (var puffIndex = exhaustPuffs.length - 1; puffIndex >= 0; puffIndex--) {
+        var puff = exhaustPuffs[puffIndex]
+        puff.userData.age += delta
+        puff.position.y += delta * 0.24
+        puff.position.x += puff.userData.drift * delta
+        puff.scale.setScalar(0.32 + puff.userData.age * 0.18)
+        if (puff.userData.age > 4.2 || puff.position.z > carZ + 18) {
+          duskScene.remove(puff)
+          exhaustPuffs.splice(puffIndex, 1)
+        }
+      }
+      root.dataset.duskExhaustCount = String(exhaustPuffs.length)
+
+      if (duskElapsed >= nextTumbleweed) {
+        if (duskRandom() < 0.28) spawnTumbleweed(carZ)
+        nextTumbleweed = duskElapsed + 8 + duskRandom() * 16
+      }
+      for (var tumbleIndex = tumbleweeds.length - 1; tumbleIndex >= 0; tumbleIndex--) {
+        var tumbleweed = tumbleweeds[tumbleIndex]
+        tumbleweed.position.x += tumbleweed.userData.speed * delta
+        tumbleweed.position.y = tumbleweed.userData.baseY + Math.abs(Math.sin(time * 0.004 + tumbleIndex)) * 0.42
+        tumbleweed.rotation.x += delta * 4.2
+        tumbleweed.rotation.z += delta * 2.7
+        if (Math.abs(tumbleweed.position.x - duskRoadCenter(tumbleweed.position.z)) > 30 || tumbleweed.position.z > carZ + 24) {
+          duskScene.remove(tumbleweed)
+          tumbleweeds.splice(tumbleIndex, 1)
+        }
+      }
+      root.dataset.duskTumbleweedCount = String(tumbleweeds.length)
+
+      for (var cloudIndex = 0; cloudIndex < duskClouds.length; cloudIndex++) {
+        var cloud = duskClouds[cloudIndex]
+        cloud.position.x += cloud.userData.speed * delta
+        if (cloud.position.z > carZ + 30) {
+          cloud.position.z -= 230
+          cloud.position.x = (duskRandom() - 0.5) * 110
+        }
+      }
+
+      duskGround.position.z = carZ - 125
+      duskSky.position.set(carX, 0, carZ)
+      duskSun.position.set(carX - 42, 21, carZ - 145)
+      duskMountainGroup.position.set(carX, 0, carZ - 175)
+      var pointerShiftX = pointerActive ? (pointerX / Math.max(1, width) - 0.5) * 1.1 : 0
+      var pointerShiftY = pointerActive ? (pointerY / Math.max(1, height) - 0.5) * 0.45 : 0
+      var cameraX = carX + Math.sin(heading) * 14 + pointerShiftX
+      var cameraZ = carZ + Math.cos(heading) * 15
+      var cameraDamping = 1 - Math.exp(-7.5 * delta)
+      duskCameraDesired.set(cameraX, 10.3 - pointerShiftY, cameraZ)
+      duskLookDesired.set(carX - Math.sin(heading) * 10, 0.8, carZ - Math.cos(heading) * 11)
+      duskCamera.position.lerp(duskCameraDesired, cameraDamping)
+      duskCameraTarget.lerp(duskLookDesired, cameraDamping)
+      duskCamera.lookAt(duskCameraTarget)
+    }
 
     var particleCount = width < 720 ? 360 : ((navigator.hardwareConcurrency || 8) <= 4 ? 480 : 760)
     var random = randomFactory(1989)
@@ -579,7 +1268,8 @@
       '  float viewDepth = max(0.8, -viewPosition.z);',
       '  float perspectiveScale = 28.0 / viewDepth;',
       '  float depthFade = 1.0 - smoothstep(19.0, 34.0, viewDepth);',
-      '  float twinkle = 0.78 + 0.22 * sin(uTime * 0.72 + aPhase * 41.0);',
+      '  float twinkleWave = 0.5 + 0.5 * sin(uTime * (0.45 + fract(aPhase * 9.0) * 1.9) + aPhase * 67.0);',
+      '  float twinkle = mix(0.28, 1.18, pow(twinkleWave, 1.7));',
       '  vec4 clipPosition = projectionMatrix * viewPosition;',
       '  gl_Position = clipPosition;',
       '  gl_PointSize = clamp(aSize * uPointScale * perspectiveScale * uPixelRatio, 0.55 * uPixelRatio, uMaxPointSize * uPixelRatio);',
@@ -593,28 +1283,32 @@
 
     var galaxyFragmentShader = [
       'uniform float uOpacity;',
+      'uniform float uBrightness;',
+      'uniform float uInnerEdge;',
       'uniform float uSoftEdge;',
       'varying vec3 vColor;',
       'varying float vAlpha;',
       'varying float vPointerLight;',
       'void main() {',
       '  float distanceToCenter = distance(gl_PointCoord, vec2(0.5));',
-      '  float glow = 1.0 - smoothstep(0.04, uSoftEdge, distanceToCenter);',
+      '  float glow = 1.0 - smoothstep(uInnerEdge, uSoftEdge, distanceToCenter);',
       '  float alpha = glow * vAlpha * uOpacity * (1.0 + vPointerLight * 0.28);',
       '  if (alpha < 0.002) discard;',
       '  vec3 litColor = mix(vColor, vec3(1.0, 0.97, 0.92), vPointerLight * 0.16);',
-      '  gl_FragColor = vec4(litColor, alpha);',
+      '  gl_FragColor = vec4(litColor * uBrightness, alpha);',
       '}'
     ].join('\n')
 
-    function createGalaxyMaterial (opacity, pointScale, maxPointSize, softEdge, blending, pointerResponse) {
+    function createGalaxyMaterial (opacity, brightness, pointScale, maxPointSize, innerEdge, softEdge, blending, pointerResponse) {
       return new THREE.ShaderMaterial({
         uniforms: {
           uTime: { value: 0 },
           uPixelRatio: { value: pixelRatio },
           uOpacity: { value: opacity },
+          uBrightness: { value: brightness },
           uPointScale: { value: pointScale },
           uMaxPointSize: { value: maxPointSize },
+          uInnerEdge: { value: innerEdge },
           uSoftEdge: { value: softEdge },
           uPointer: { value: new THREE.Vector2(50, 50) },
           uPointerStrength: { value: 0 },
@@ -631,9 +1325,74 @@
       })
     }
 
-    var galaxyStarMaterial = createGalaxyMaterial(1, 1.16, 5.8, 0.5, THREE.AdditiveBlending, 1)
-    var galaxyHazeMaterial = createGalaxyMaterial(0.82, 1.72, 32, 0.5, THREE.AdditiveBlending, 0.65)
-    var galaxyDustMaterial = createGalaxyMaterial(0.2, 0.75, 8, 0.5, THREE.NormalBlending, 0)
+    var galaxyStarMaterial = createGalaxyMaterial(1.35, 1.72, 1.32, 9.5, 0.31, 0.39, THREE.AdditiveBlending, 1)
+    var galaxyHazeMaterial = createGalaxyMaterial(0.72, 0.86, 1.72, 32, 0.04, 0.5, THREE.AdditiveBlending, 0.65)
+    var galaxyDustMaterial = createGalaxyMaterial(0.2, 0.48, 0.75, 8, 0.18, 0.5, THREE.NormalBlending, 0)
+
+    // A separate screen-space Milky Way: a random curved stellar band behind the
+    // spiral galaxy. Screen space keeps its composition stable on every viewport.
+    var milkyWayRandom = randomFactory(galaxySeed ^ 0x4d696c6b)
+    var milkyWayCount = width < 720 ? 3200 : 6800
+    var milkyWayPositions = new Float32Array(milkyWayCount * 3)
+    var milkyWayColors = new Float32Array(milkyWayCount * 3)
+    var milkyWaySizes = new Float32Array(milkyWayCount)
+    var milkyWayAlphas = new Float32Array(milkyWayCount)
+    var milkyWaySoftness = new Float32Array(milkyWayCount)
+    var bandSlope = (milkyWayRandom() - 0.5) * 0.7
+    var bandBend = (milkyWayRandom() - 0.5) * 0.34
+    var bandOffset = (milkyWayRandom() - 0.5) * 0.32
+    var bandWave = 0.07 + milkyWayRandom() * 0.12
+    var bandFrequency = 1.3 + milkyWayRandom() * 1.8
+    var bandPhase = milkyWayRandom() * Math.PI * 2
+    var bandCool = new THREE.Color('#9faed0')
+    var bandWarm = new THREE.Color('#d8b8aa')
+    var bandColor = new THREE.Color()
+    for (var bandIndex = 0; bandIndex < milkyWayCount; bandIndex++) {
+      var bandX = milkyWayRandom() * 2.8 - 1.4
+      var normalizedBandX = bandX / 1.4
+      var bandCenter = bandOffset + bandSlope * normalizedBandX + bandBend * (normalizedBandX * normalizedBandX - 0.45) + Math.sin(normalizedBandX * bandFrequency + bandPhase) * bandWave
+      var bandNoise = (milkyWayRandom() + milkyWayRandom() + milkyWayRandom() + milkyWayRandom() - 2) * (0.065 + 0.12 * (1 - Math.abs(normalizedBandX) * 0.3))
+      var bandOffsetIndex = bandIndex * 3
+      milkyWayPositions[bandOffsetIndex] = bandX
+      milkyWayPositions[bandOffsetIndex + 1] = bandCenter + bandNoise
+      milkyWayPositions[bandOffsetIndex + 2] = 0
+      var bandHighlight = milkyWayRandom()
+      milkyWaySizes[bandIndex] = bandHighlight > 0.975 ? 1.8 + milkyWayRandom() * 2.8 : 0.45 + milkyWayRandom() * 1.35
+      milkyWayAlphas[bandIndex] = (0.08 + Math.pow(milkyWayRandom(), 1.8) * 0.72) * (1 - Math.min(0.75, Math.abs(bandNoise) * 2.4))
+      milkyWaySoftness[bandIndex] = bandHighlight > 0.975 ? 0.9 : milkyWayRandom()
+      bandColor.copy(bandCool).lerp(bandWarm, milkyWayRandom())
+      milkyWayColors[bandOffsetIndex] = bandColor.r
+      milkyWayColors[bandOffsetIndex + 1] = bandColor.g
+      milkyWayColors[bandOffsetIndex + 2] = bandColor.b
+    }
+    var milkyWayGeometry = new THREE.BufferGeometry()
+    milkyWayGeometry.setAttribute('position', new THREE.BufferAttribute(milkyWayPositions, 3))
+    milkyWayGeometry.setAttribute('aColor', new THREE.BufferAttribute(milkyWayColors, 3))
+    milkyWayGeometry.setAttribute('aSize', new THREE.BufferAttribute(milkyWaySizes, 1))
+    milkyWayGeometry.setAttribute('aAlpha', new THREE.BufferAttribute(milkyWayAlphas, 1))
+    milkyWayGeometry.setAttribute('aSoftness', new THREE.BufferAttribute(milkyWaySoftness, 1))
+    var milkyWayMaterial = new THREE.ShaderMaterial({
+      uniforms: { uPixelRatio: { value: pixelRatio }, uTime: { value: 0 } },
+      vertexShader: [
+        'uniform float uPixelRatio;', 'uniform float uTime;', 'attribute vec3 aColor;', 'attribute float aSize;', 'attribute float aAlpha;', 'attribute float aSoftness;',
+        'varying vec3 vColor;', 'varying float vAlpha;', 'varying float vSoftness;',
+        'void main(){ gl_Position=vec4(position.xy,0.92,1.0); gl_PointSize=aSize*uPixelRatio; vColor=aColor; vAlpha=aAlpha*(.72+.28*sin(uTime*.55+position.x*37.0)); vSoftness=aSoftness; }'
+      ].join('\n'),
+      fragmentShader: [
+        'varying vec3 vColor;', 'varying float vAlpha;', 'varying float vSoftness;',
+        'void main(){ float d=distance(gl_PointCoord,vec2(.5)); float inner=mix(.22,.05,vSoftness); float edge=mix(.38,.48,vSoftness); float a=(1.0-smoothstep(inner,edge,d))*vAlpha; if(a<.004)discard; gl_FragColor=vec4(vColor*mix(1.25,.72,vSoftness),a); }'
+      ].join('\n'),
+      transparent: true,
+      depthTest: false,
+      depthWrite: false,
+      blending: THREE.AdditiveBlending,
+      toneMapped: false
+    })
+    var milkyWayBand = new THREE.Points(milkyWayGeometry, milkyWayMaterial)
+    milkyWayBand.frustumCulled = false
+    milkyWayBand.renderOrder = -2
+    milkyWayBand.visible = false
+    spaceScene.add(milkyWayBand)
     var warmWhite = new THREE.Color('#fff8e8')
     var warmGold = new THREE.Color('#e0c0a5')
     var steelBlue = new THREE.Color('#95a2b3')
@@ -801,38 +1560,60 @@
       positionGalaxyForLayout(layout)
     }
 
+    // Simple FBM-like noise for irregular arm perturbation
+    function armNoiseFBM (random, radial, seed) {
+      var v = 0
+      var amp = 1
+      var freq = 1
+      for (var octave = 0; octave < 4; octave++) {
+        v += Math.sin(radial * freq * 2.8 + seed * 7.13 + octave * 3.71) * amp
+        v += Math.cos(radial * freq * 1.9 + seed * 11.37 + octave * 5.93) * amp * 0.6
+        amp *= 0.48
+        freq *= 2.15
+      }
+      return v
+    }
+
     function createGalaxyConfig () {
       galaxySeed = (galaxySeed + 0x9e3779b9) >>> 0
       var random = randomFactory(galaxySeed)
-      var armTotal = 3 + Math.floor(random() * 5)
+      var armTotal = 2 + Math.floor(random() * 4)
       var armProfiles = []
       for (var index = 0; index < armTotal; index++) {
         armProfiles.push({
-          phase: (random() - 0.5) * 0.64,
-          twist: 0.75 + random() * 0.6,
-          width: 0.65 + random() * 0.9,
-          length: 0.78 + random() * 0.38,
-          density: 0.72 + random() * 0.4,
-          drift: 0.18 + random() * 0.34,
-          branch: 0.6 + random() * 0.8
+          phase: (random() - 0.5) * 0.9,
+          twist: 0.4 + random() * 0.8,
+          width: 0.7 + random() * 1.1,
+          length: 0.82 + random() * 0.35,
+          density: 0.7 + random() * 0.42,
+          drift: 0.22 + random() * 0.48,
+          branch: 0.5 + random() * 1.0,
+          // New: per-arm irregularity parameters
+          curveSeed: random() * 100,
+          curveAmplitude: 0.15 + random() * 0.35,
+          kinkCount: 1 + Math.floor(random() * 3),
+          kinkStrength: 0.08 + random() * 0.22,
+          twistVariation: (random() - 0.5) * 0.4,
+          widthVariation: 0.6 + random() * 0.8
         })
       }
       return {
         seed: galaxySeed,
         arms: armTotal,
         armProfiles: armProfiles,
-        radius: 5.45 + random() * 1.05,
-        twist: 0.34 + random() * 0.54,
-        xScale: 0.88 + random() * 0.25,
-        zScale: 0.82 + random() * 0.3,
-        coreScale: 0.86 + random() * 0.36,
-        branchChance: 0.1 + random() * 0.24,
-        armNoise: 0.11 + random() * 0.17,
+        radius: 8.5 + random() * 2.5,
+        twist: 0.25 + random() * 0.45,
+        xScale: 0.82 + random() * 0.35,
+        zScale: 0.78 + random() * 0.38,
+        coreScale: 0.9 + random() * 0.4,
+        branchChance: 0.14 + random() * 0.28,
+        armNoise: 0.18 + random() * 0.28,
         rotation: random() * Math.PI * 2,
-        spin: 0.004 + random() * 0.01,
-        tiltX: (random() - 0.5) * 0.14,
-        tiltZ: (random() - 0.5) * 0.44,
+        spin: 0.003 + random() * 0.008,
+        tiltX: (random() - 0.5) * 0.18,
+        tiltZ: (random() - 0.5) * 0.52,
         warp: random() * Math.PI * 2,
+        asymmetry: 0.85 + random() * 0.3,
         layout: createSpaceLayout(random)
       }
     }
@@ -859,18 +1640,34 @@
       for (var armIndex = 0; armIndex < armCount; armIndex++) {
         var arm = Math.floor(random() * config.arms)
         var profile = config.armProfiles[arm]
-        var armLimit = Math.max(3.8, config.radius * profile.length)
-        var radial = 0.48 + Math.pow(random(), 0.68) * (armLimit - 0.48)
-        var armAngle = arm / config.arms * twoPi + profile.phase + radial * config.twist * profile.twist
-        armAngle += Math.sin(radial * profile.drift + config.warp + arm) * (0.08 + radial * 0.015)
-        if (random() < config.branchChance * profile.branch) armAngle += (random() > 0.5 ? 1 : -1) * (0.1 + radial * (0.018 + random() * 0.02))
-        var interArm = random() < 0.16
-        if (interArm) armAngle += centeredNoise(random) * 0.68
-        armAngle += centeredNoise(random) * (config.armNoise + radial * 0.042) * profile.width
-        var armWidth = centeredNoise(random) * (0.1 + radial * 0.06) * profile.width
+        var armLimit = Math.max(4.2, config.radius * profile.length)
+        var radial = 0.48 + Math.pow(random(), 0.62) * (armLimit - 0.48)
+        // Variable twist rate: twist changes along the arm for non-uniform curvature
+        var localTwist = config.twist * profile.twist + profile.twistVariation * Math.sin(radial * 1.8 + profile.curveSeed)
+        var armAngle = arm / config.arms * twoPi + profile.phase + radial * localTwist
+        // FBM noise perturbation for irregular Milky-Way-like curves
+        armAngle += armNoiseFBM(random, radial, profile.curveSeed) * profile.curveAmplitude
+        // Kinks: sudden angle shifts at specific radii
+        for (var kink = 0; kink < profile.kinkCount; kink++) {
+          var kinkRadius = (kink + 1) / (profile.kinkCount + 1) * armLimit
+          var kinkDist = Math.abs(radial - kinkRadius)
+          if (kinkDist < 0.8) {
+            armAngle += Math.sin(profile.curveSeed * (kink + 1) * 7.3) * profile.kinkStrength * (1 - kinkDist / 0.8)
+          }
+        }
+        // Per-arm asymmetry
+        var armAsym = arm % 2 === 0 ? config.asymmetry : (2 - config.asymmetry)
+        armAngle += Math.sin(radial * profile.drift + config.warp + arm) * (0.1 + radial * 0.025) * armAsym
+        if (random() < config.branchChance * profile.branch) armAngle += (random() > 0.5 ? 1 : -1) * (0.12 + radial * (0.022 + random() * 0.03))
+        var interArm = random() < 0.18
+        if (interArm) armAngle += centeredNoise(random) * 0.75
+        armAngle += centeredNoise(random) * (config.armNoise + radial * 0.055) * profile.width
+        // Variable width along arm
+        var localWidth = profile.width * (0.7 + 0.3 * Math.sin(radial * profile.widthVariation + profile.curveSeed * 3.1))
+        var armWidth = centeredNoise(random) * (0.12 + radial * 0.07) * localWidth
         var armX = (Math.cos(armAngle) * radial + Math.cos(armAngle + Math.PI / 2) * armWidth) * config.xScale
         var armZ = (Math.sin(armAngle) * radial + Math.sin(armAngle + Math.PI / 2) * armWidth) * config.zScale
-        var armY = centeredNoise(random) * (0.07 + radial * 0.035) * profile.width + Math.sin(armAngle * 2 + config.warp) * radial * 0.018
+        var armY = centeredNoise(random) * (0.08 + radial * 0.04) * localWidth + Math.sin(armAngle * 2 + config.warp) * radial * 0.022
         var highlight = random()
         var armSize = highlight > 0.985 ? 1.45 + random() * 1.35 : (0.5 + random() * 1.25) * (0.88 + profile.width * 0.12)
         var armAlpha = Math.min(1, (highlight > 0.985 ? 0.94 : 0.4 + random() * 0.56) * profile.density * (interArm ? 0.48 : 1))
@@ -901,14 +1698,22 @@
         } else if (hazeIndex < hazeArmEnd) {
           var hazeArm = Math.floor(random() * config.arms)
           var hazeProfile = config.armProfiles[hazeArm]
-          var hazeLimit = Math.max(4, config.radius * hazeProfile.length)
-          var hazeRadial = 0.65 + Math.pow(random(), 0.68) * (hazeLimit - 0.65)
-          var hazeArmAngle = hazeArm / config.arms * twoPi + hazeProfile.phase + hazeRadial * config.twist * hazeProfile.twist
-          hazeArmAngle += Math.sin(hazeRadial * hazeProfile.drift + config.warp + hazeArm) * (0.09 + hazeRadial * 0.018)
+          var hazeLimit = Math.max(4.5, config.radius * hazeProfile.length)
+          var hazeRadial = 0.65 + Math.pow(random(), 0.62) * (hazeLimit - 0.65)
+          var hazeLocalTwist = config.twist * hazeProfile.twist + hazeProfile.twistVariation * Math.sin(hazeRadial * 1.8 + hazeProfile.curveSeed)
+          var hazeArmAngle = hazeArm / config.arms * twoPi + hazeProfile.phase + hazeRadial * hazeLocalTwist
+          hazeArmAngle += armNoiseFBM(random, hazeRadial, hazeProfile.curveSeed) * hazeProfile.curveAmplitude * 1.2
+          for (var hazeKink = 0; hazeKink < hazeProfile.kinkCount; hazeKink++) {
+            var hazeKinkR = (hazeKink + 1) / (hazeProfile.kinkCount + 1) * hazeLimit
+            var hazeKinkDist = Math.abs(hazeRadial - hazeKinkR)
+            if (hazeKinkDist < 1.0) hazeArmAngle += Math.sin(hazeProfile.curveSeed * (hazeKink + 1) * 7.3) * hazeProfile.kinkStrength * (1 - hazeKinkDist / 1.0)
+          }
+          hazeArmAngle += Math.sin(hazeRadial * hazeProfile.drift + config.warp + hazeArm) * (0.09 + hazeRadial * 0.022)
           if (random() < config.branchChance * hazeProfile.branch) hazeArmAngle += (random() > 0.5 ? 1 : -1) * (0.12 + hazeRadial * 0.025)
-          hazeArmAngle += centeredNoise(random) * (config.armNoise * 1.45 + hazeRadial * 0.06) * hazeProfile.width
-          var hazeWidth = centeredNoise(random) * (0.2 + hazeRadial * 0.1) * hazeProfile.width
-          writeParticle(haze, hazeIndex, (Math.cos(hazeArmAngle) * hazeRadial + Math.cos(hazeArmAngle + Math.PI / 2) * hazeWidth) * config.xScale, centeredNoise(random) * (0.1 + hazeRadial * 0.06) * hazeProfile.width, (Math.sin(hazeArmAngle) * hazeRadial + Math.sin(hazeArmAngle + Math.PI / 2) * hazeWidth) * config.zScale, 2.8 + random() * 4.7, random(), (0.035 + random() * 0.065) * hazeProfile.density, hazeCool, mutedViolet, random())
+          hazeArmAngle += centeredNoise(random) * (config.armNoise * 1.45 + hazeRadial * 0.07) * hazeProfile.width
+          var hazeLocalWidth = hazeProfile.width * (0.7 + 0.3 * Math.sin(hazeRadial * hazeProfile.widthVariation + hazeProfile.curveSeed * 3.1))
+          var hazeWidth = centeredNoise(random) * (0.22 + hazeRadial * 0.12) * hazeLocalWidth
+          writeParticle(haze, hazeIndex, (Math.cos(hazeArmAngle) * hazeRadial + Math.cos(hazeArmAngle + Math.PI / 2) * hazeWidth) * config.xScale, centeredNoise(random) * (0.12 + hazeRadial * 0.07) * hazeLocalWidth, (Math.sin(hazeArmAngle) * hazeRadial + Math.sin(hazeArmAngle + Math.PI / 2) * hazeWidth) * config.zScale, 2.8 + random() * 4.7, random(), (0.035 + random() * 0.065) * hazeProfile.density, hazeCool, mutedViolet, random())
         } else {
           var outerHazeRadius = 4.5 + Math.pow(random(), 0.42) * 7.4
           var outerHazeAngle = random() * twoPi
@@ -919,13 +1724,21 @@
       for (var dustIndex = 0; dustIndex < dustCount; dustIndex++) {
         var dustArm = Math.floor(random() * config.arms)
         var dustProfile = config.armProfiles[dustArm]
-        var dustLimit = Math.max(3.7, config.radius * dustProfile.length)
-        var dustRadius = 0.7 + Math.pow(random(), 0.72) * (dustLimit - 0.7)
-        var dustAngle = dustArm / config.arms * twoPi + dustProfile.phase + dustRadius * config.twist * dustProfile.twist - 0.1
-        dustAngle += Math.sin(dustRadius * dustProfile.drift + config.warp + dustArm) * (0.06 + dustRadius * 0.012)
-        dustAngle += centeredNoise(random) * (0.09 + dustRadius * 0.028) * dustProfile.width
-        var dustWidth = centeredNoise(random) * (0.08 + dustRadius * 0.045) * dustProfile.width
-        writeParticle(dust, dustIndex, (Math.cos(dustAngle) * dustRadius + Math.cos(dustAngle + Math.PI / 2) * dustWidth) * config.xScale, centeredNoise(random) * (0.035 + dustRadius * 0.017) * dustProfile.width, (Math.sin(dustAngle) * dustRadius + Math.sin(dustAngle + Math.PI / 2) * dustWidth) * config.zScale, 1.2 + random() * 2.4, random(), 0.03 + random() * 0.07, darkDust, liftedDust, random())
+        var dustLimit = Math.max(4.2, config.radius * dustProfile.length)
+        var dustRadius = 0.7 + Math.pow(random(), 0.68) * (dustLimit - 0.7)
+        var dustLocalTwist = config.twist * dustProfile.twist + dustProfile.twistVariation * Math.sin(dustRadius * 1.8 + dustProfile.curveSeed)
+        var dustAngle = dustArm / config.arms * twoPi + dustProfile.phase + dustRadius * dustLocalTwist - 0.1
+        dustAngle += armNoiseFBM(random, dustRadius, dustProfile.curveSeed) * dustProfile.curveAmplitude * 0.8
+        for (var dustKink = 0; dustKink < dustProfile.kinkCount; dustKink++) {
+          var dustKinkR = (dustKink + 1) / (dustProfile.kinkCount + 1) * dustLimit
+          var dustKinkDist = Math.abs(dustRadius - dustKinkR)
+          if (dustKinkDist < 0.9) dustAngle += Math.sin(dustProfile.curveSeed * (dustKink + 1) * 7.3) * dustProfile.kinkStrength * 0.7 * (1 - dustKinkDist / 0.9)
+        }
+        dustAngle += Math.sin(dustRadius * dustProfile.drift + config.warp + dustArm) * (0.07 + dustRadius * 0.015)
+        dustAngle += centeredNoise(random) * (0.1 + dustRadius * 0.035) * dustProfile.width
+        var dustLocalWidth = dustProfile.width * (0.7 + 0.3 * Math.sin(dustRadius * dustProfile.widthVariation + dustProfile.curveSeed * 3.1))
+        var dustWidth = centeredNoise(random) * (0.09 + dustRadius * 0.05) * dustLocalWidth
+        writeParticle(dust, dustIndex, (Math.cos(dustAngle) * dustRadius + Math.cos(dustAngle + Math.PI / 2) * dustWidth) * config.xScale, centeredNoise(random) * (0.04 + dustRadius * 0.02) * dustLocalWidth, (Math.sin(dustAngle) * dustRadius + Math.sin(dustAngle + Math.PI / 2) * dustWidth) * config.zScale, 1.2 + random() * 2.4, random(), 0.03 + random() * 0.07, darkDust, liftedDust, random())
       }
 
       return { stars: finishParticleBuffer(luminous), haze: finishParticleBuffer(haze), dust: finishParticleBuffer(dust) }
@@ -1098,17 +1911,42 @@
       galaxyStarMaterial.uniforms.uTime.value = seconds
       galaxyHazeMaterial.uniforms.uTime.value = seconds
       galaxyDustMaterial.uniforms.uTime.value = seconds
+      milkyWayMaterial.uniforms.uTime.value = seconds
       root.dataset.galaxyRotation = galaxyGroup.rotation.y.toFixed(3)
     }
 
     var lifeCapacity = Math.max(20000, life.length)
     var lifeGeometry = new THREE.BoxGeometry(1, 1, 1)
+
+    // Add per-face vertex colors for 3D depth: top bright, sides medium, bottom dark
+    // BoxGeometry has 6 faces × 2 triangles × 3 vertices = 36 vertices
+    // Face order: +x, -x, +y (top), -y (bottom), +z, -z
+    var lifeFaceColors = new Float32Array(36 * 3)
+    var lifeFaceBrightness = [
+      0.72, 0.72,  // +x side (right)  – 2 triangles
+      0.62, 0.62,  // -x side (left)   – 2 triangles
+      1.0, 1.0,    // +y top           – 2 triangles (brightest)
+      0.38, 0.38,  // -y bottom        – 2 triangles (darkest)
+      0.78, 0.78,  // +z front         – 2 triangles
+      0.55, 0.55   // -z back          – 2 triangles
+    ]
+    for (var faceIdx = 0; faceIdx < 12; faceIdx++) {
+      var brightness = lifeFaceBrightness[faceIdx]
+      for (var vertIdx = 0; vertIdx < 3; vertIdx++) {
+        var colorOffset = (faceIdx * 3 + vertIdx) * 3
+        lifeFaceColors[colorOffset] = brightness
+        lifeFaceColors[colorOffset + 1] = brightness
+        lifeFaceColors[colorOffset + 2] = brightness
+      }
+    }
+    lifeGeometry.setAttribute('color', new THREE.BufferAttribute(lifeFaceColors, 3))
+
     var lifeMaterial = new THREE.MeshStandardMaterial({
-      color: '#45ffd1',
-      emissive: '#0e765f',
-      emissiveIntensity: 1.8,
-      roughness: 0.48,
-      metalness: 0.18,
+      color: '#ffffff',
+      emissive: '#13062d',
+      emissiveIntensity: 1.05,
+      roughness: 0.35,
+      metalness: 0.22,
       flatShading: true,
       vertexColors: true
     })
@@ -1122,20 +1960,27 @@
     lifeGroup.add(lifeMesh)
     scene.add(lifeGroup)
 
-    var lifeAmbient = new THREE.AmbientLight('#4fffe0', 0.72)
-    var lifeKeyLight = new THREE.DirectionalLight('#c4fff5', 2.35)
-    lifeKeyLight.position.set(-1.4, 2.2, 3.5)
-    var lifeRimLight = new THREE.PointLight('#6278ff', 4.6, 6)
-    lifeRimLight.position.set(-2.3, -1.1, 2.8)
+    // Enhanced lighting for better 3D depth
+    var lifeAmbient = new THREE.AmbientLight('#392071', 0.95)
+    var lifeKeyLight = new THREE.DirectionalLight('#9b86e2', 2.15)
+    lifeKeyLight.position.set(-1.2, 2.8, 3.2)
+    var lifeRimLight = new THREE.PointLight('#1946c2', 4.6, 7)
+    lifeRimLight.position.set(-2.5, -1.4, 2.5)
+    var lifeFillLight = new THREE.DirectionalLight('#54238f', 1.05)
+    lifeFillLight.position.set(2.0, -0.5, 1.8)
     lifeAmbient.visible = false
     lifeKeyLight.visible = false
     lifeRimLight.visible = false
+    lifeFillLight.visible = false
     scene.add(lifeAmbient)
     scene.add(lifeKeyLight)
     scene.add(lifeRimLight)
+    scene.add(lifeFillLight)
 
     var lifeDummy = new THREE.Object3D()
     var lifeCubeColor = new THREE.Color()
+    var lifePurple = new THREE.Color('#52139a')
+    var lifeBlue = new THREE.Color('#0c46a5')
     var lifeOffsetsX = new Float32Array(0)
     var lifeOffsetsY = new Float32Array(0)
     var lifeCellWidth = 0
@@ -1164,6 +2009,9 @@
       lifeAmbient.visible = active
       lifeKeyLight.visible = active
       lifeRimLight.visible = active
+      lifeFillLight.visible = active
+      // Pulsing emissive for living feel
+      if (active) lifeMaterial.emissiveIntensity = 0.98 + Math.sin(time * 0.0018) * 0.16
       if (!active) return
 
       var count = Math.min(life.length, lifeCapacity)
@@ -1186,8 +2034,8 @@
         lifeDummy.scale.set(scale, scale, scale)
         lifeDummy.updateMatrix()
         lifeMesh.setMatrixAt(index, lifeDummy.matrix)
-        var ageMix = alive ? Math.min(18, life[index] + 1) / 18 : 0
-        lifeCubeColor.setHSL(0.47 + ageMix * 0.12 + (column % 2) * 0.008, 0.78, alive ? 0.57 + ageMix * 0.1 : 0.08)
+        var gradientProgress = (column / Math.max(1, lifeColumns - 1) + row / Math.max(1, lifeRows - 1)) * 0.5
+        lifeCubeColor.copy(lifePurple).lerp(lifeBlue, gradientProgress)
         lifeMesh.setColorAt(index, lifeCubeColor)
       }
       lifeMesh.instanceMatrix.needsUpdate = true
@@ -1199,12 +2047,13 @@
 
     var pointerTarget = new THREE.Vector2(50, 50)
     var themeSettings = {
-      dusk: { index: 0, colorA: '#ffe7a3', colorB: '#a8d878', size: 3.1, opacity: 0.95 },
+      dusk: { index: 0, colorA: '#ffe7a3', colorB: '#a8d878', size: 3.1, opacity: 0 },
       space: { index: 1, colorA: '#ffffff', colorB: '#70cfff', size: 2.65, opacity: 0.94 },
-      life: { index: 2, colorA: '#45ffd1', colorB: '#6575ff', size: 2.4, opacity: 0.24 }
+      life: { index: 2, colorA: '#858585', colorB: '#3d3d3d', size: 2.15, opacity: 0.3 }
     }
 
     threeLayer = {
+      hasDuskScene: true,
       hasLifeMesh: true,
       resize: function (nextWidth, nextHeight, nextPixelRatio) {
         aspect = nextWidth / Math.max(1, nextHeight)
@@ -1223,6 +2072,8 @@
         galaxyStarMaterial.uniforms.uViewportAspect.value = aspect
         galaxyHazeMaterial.uniforms.uViewportAspect.value = aspect
         galaxyDustMaterial.uniforms.uViewportAspect.value = aspect
+        milkyWayMaterial.uniforms.uPixelRatio.value = Math.min(nextPixelRatio || 1, 1.65)
+        configureDuskCamera()
         configureSpaceCamera()
         if (galaxyConfig) rebuildGalaxy(false)
         rebuildLifeLayout()
@@ -1238,16 +2089,18 @@
         material.uniforms.uOpacity.value = settings.opacity
         material.uniforms.uColorA.value.set(settings.colorA)
         material.uniforms.uColorB.value.set(settings.colorB)
-        points.visible = theme !== 'space'
+        points.visible = theme === 'life'
         if (theme === 'space') {
           configureSpaceCamera()
           rebuildGalaxy(previousTheme !== 'space' || !galaxyConfig)
           galaxyGroup.visible = true
           meteorGroup.visible = true
+          milkyWayBand.visible = true
           root.dataset.spaceCamera = 'perspective'
         } else {
           galaxyGroup.visible = false
           meteorGroup.visible = false
+          milkyWayBand.visible = false
           clearMeteors()
           delete root.dataset.spaceCamera
         }
@@ -1282,7 +2135,10 @@
         var targetStrength = pointerActive && activeTheme === 'dusk' ? 1 : 0
         material.uniforms.uPointerStrength.value += (targetStrength - material.uniforms.uPointerStrength.value) * 0.12
         updateLifeCubes(time)
-        if (activeTheme === 'space') {
+        if (activeTheme === 'dusk') {
+          updateDusk(time)
+          renderer.render(duskScene, duskCamera)
+        } else if (activeTheme === 'space') {
           updateGalaxy(time)
           updateMeteors(time)
           renderer.render(spaceScene, spaceCamera)
@@ -1308,8 +2164,9 @@
 
   function loadThreeLayer () {
     if (!webglCanvas) return
-    import('./vendor/three.module.min.js').then(initThreeLayer).catch(function () {
+    import('./vendor/three.module.min.js').then(initThreeLayer).catch(function (error) {
       root.dataset.renderer = 'canvas'
+      root.dataset.rendererError = error && error.message ? error.message : 'three-init-failed'
       webglCanvas.style.display = 'none'
       if (activeTheme === 'space') resetSpaceTitleLayout()
     })
@@ -1408,6 +2265,13 @@
       visible = Boolean(entries[0] && entries[0].isIntersecting)
       document.body.classList.toggle('vexpaer-home-hero-visible', visible)
     }, { threshold: 0.01 }).observe(root)
+
+    var quickAccess = document.getElementById('vexpaer-quick-access')
+    if (quickAccess) {
+      new IntersectionObserver(function (entries) {
+        document.body.classList.toggle('vexpaer-quick-access-visible', Boolean(entries[0] && entries[0].isIntersecting))
+      }, { threshold: 0.05 }).observe(quickAccess)
+    }
   }
 
   reducedMotion.addEventListener && reducedMotion.addEventListener('change', function () {
@@ -1416,6 +2280,7 @@
 
   updateButton()
   resize()
+  if (activeTheme === 'dusk') applyDuskTitleLayout()
   loadThreeLayer()
   window.requestAnimationFrame(frame)
 })()

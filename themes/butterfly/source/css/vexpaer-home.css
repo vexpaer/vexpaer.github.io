@@ -3,7 +3,7 @@
   height: 100vh;
   height: 100svh;
   overflow: hidden;
-  background: #0f0f44 !important;
+  background: #0a0a2e !important;
 }
 
 #page-header.vexpaer-home-header::before {
@@ -16,7 +16,7 @@
   position: absolute;
   inset: 0;
   overflow: hidden;
-  background: #0f0f44;
+  background: #0a0a2e;
   isolation: isolate;
 }
 
@@ -90,6 +90,24 @@
   transition: top 520ms cubic-bezier(0.22, 1, 0.36, 1), left 520ms cubic-bezier(0.22, 1, 0.36, 1), opacity 220ms ease;
 }
 
+#vexpaer-home[data-scene='dusk'] #vexpaer-home-title {
+  color: #fff0dc;
+  font-family: "Segoe Script", "Snell Roundhand", "Brush Script MT", cursive;
+  font-size: clamp(3rem, 8vw, 6.25rem);
+  font-weight: 400;
+  letter-spacing: -0.075em;
+  text-shadow:
+    0 1px 0 rgba(255, 229, 199, 0.3),
+    0 12px 36px rgba(24, 7, 31, 0.5),
+    0 0 72px rgba(224, 132, 112, 0.14);
+}
+
+#vexpaer-home[data-scene='dusk'] .vexpaer-home__shade {
+  background:
+    radial-gradient(circle at 30% 24%, transparent 0 18%, rgba(18, 10, 29, 0.08) 48%, rgba(8, 7, 18, 0.38) 100%),
+    linear-gradient(180deg, rgba(8, 7, 22, 0.03), rgba(8, 8, 18, 0.24));
+}
+
 #vexpaer-scene-toggle {
   position: absolute;
   right: max(1rem, env(safe-area-inset-right));
@@ -140,8 +158,19 @@
 }
 
 #vexpaer-home[data-scene='life'] {
+  background: #000;
   cursor: crosshair;
   user-select: none;
+}
+
+#vexpaer-home[data-scene='life'] .vexpaer-home__shade {
+  background: radial-gradient(circle at 50% 50%, transparent 0 36%, rgba(0, 0, 0, 0.42) 100%);
+}
+
+#vexpaer-home[data-scene='life'] #vexpaer-home-title {
+  font-family: Consolas, "SFMono-Regular", "Liberation Mono", monospace !important;
+  font-weight: 400;
+  letter-spacing: -0.045em;
 }
 
 #vexpaer-home[data-scene='space'] {
@@ -156,7 +185,11 @@
 }
 
 #vexpaer-home[data-scene='space'] #vexpaer-home-title {
-  text-shadow: 0 2px 14px rgba(0, 0, 0, 0.96), 0 10px 48px rgba(0, 0, 0, 0.72);
+  font-family: Bahnschrift, "Avenir Next", "Segoe UI", sans-serif !important;
+  font-stretch: condensed;
+  font-weight: 300;
+  letter-spacing: 0.16em;
+  text-shadow: 0 0 18px rgba(158, 183, 255, 0.22), 0 2px 14px rgba(0, 0, 0, 0.96), 0 10px 48px rgba(0, 0, 0, 0.72);
 }
 
 #vexpaer-home[data-scene='space']:active {
@@ -182,6 +215,200 @@
   display: none !important;
 }
 
+.vexpaer-home-page.vexpaer-quick-access-visible #rightside {
+  display: none !important;
+}
+
+.vexpaer-quick-access {
+  position: relative;
+  min-height: 100vh;
+  min-height: 100svh;
+  display: grid;
+  place-items: center;
+  overflow: hidden;
+  padding: clamp(5rem, 9vw, 8rem) clamp(1rem, 5vw, 5rem);
+  background:
+    radial-gradient(circle at 12% 18%, rgba(255, 91, 121, 0.13), transparent 30%),
+    radial-gradient(circle at 82% 26%, rgba(102, 83, 255, 0.16), transparent 31%),
+    radial-gradient(circle at 55% 88%, rgba(38, 210, 190, 0.1), transparent 34%),
+    #070811;
+  isolation: isolate;
+}
+
+.vexpaer-quick-access::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  opacity: 0.38;
+  background-image:
+    linear-gradient(rgba(255, 255, 255, 0.025) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255, 255, 255, 0.025) 1px, transparent 1px);
+  background-size: 72px 72px;
+  -webkit-mask-image: radial-gradient(circle at center, black, transparent 82%);
+  mask-image: radial-gradient(circle at center, black, transparent 82%);
+}
+
+.vexpaer-quick-access__grid {
+  width: min(100%, 76rem);
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: clamp(1rem, 2.2vw, 2rem);
+}
+
+.vexpaer-quick-card {
+  --quick-accent: #fff;
+  --quick-glow: #777;
+  position: relative;
+  min-height: clamp(24rem, 52vh, 32rem);
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  overflow: hidden;
+  padding: clamp(1.4rem, 2.5vw, 2rem);
+  border: 1px solid rgba(255, 255, 255, 0.11);
+  border-radius: 1.75rem;
+  background: linear-gradient(145deg, rgba(255, 255, 255, 0.075), rgba(255, 255, 255, 0.018));
+  box-shadow: 0 2rem 6rem rgba(0, 0, 0, 0.3), inset 0 1px rgba(255, 255, 255, 0.08);
+  color: #fff;
+  text-decoration: none;
+  backdrop-filter: blur(18px);
+  -webkit-backdrop-filter: blur(18px);
+  transform: translateY(0);
+  transition: transform 420ms cubic-bezier(0.22, 1, 0.36, 1), border-color 300ms ease, box-shadow 420ms ease;
+}
+
+.vexpaer-quick-card::before {
+  content: '';
+  position: absolute;
+  inset: auto -30% -26% -30%;
+  height: 55%;
+  background: radial-gradient(ellipse at center, var(--quick-glow), transparent 68%);
+  opacity: 0.2;
+  filter: blur(20px);
+  transition: opacity 300ms ease, transform 500ms ease;
+}
+
+.vexpaer-quick-card:hover,
+.vexpaer-quick-card:focus-visible {
+  border-color: color-mix(in srgb, var(--quick-accent) 52%, transparent);
+  box-shadow: 0 2.5rem 7rem rgba(0, 0, 0, 0.42), 0 0 3rem color-mix(in srgb, var(--quick-glow) 16%, transparent), inset 0 1px rgba(255, 255, 255, 0.12);
+  color: #fff;
+  text-decoration: none;
+  transform: translateY(-0.65rem);
+}
+
+.vexpaer-quick-card:hover::before,
+.vexpaer-quick-card:focus-visible::before {
+  opacity: 0.38;
+  transform: scale(1.15);
+}
+
+.vexpaer-quick-card:focus-visible {
+  outline: 2px solid var(--quick-accent);
+  outline-offset: 5px;
+}
+
+.vexpaer-quick-card__index {
+  position: absolute;
+  top: 1.5rem;
+  left: 1.65rem;
+  color: color-mix(in srgb, var(--quick-accent) 76%, white);
+  font: 500 0.72rem/1 Bahnschrift, "Segoe UI", sans-serif;
+  letter-spacing: 0.18em;
+}
+
+.vexpaer-quick-card__visual {
+  position: absolute;
+  inset: 12% 7% 36%;
+  display: grid;
+  place-items: center;
+  pointer-events: none;
+}
+
+.vexpaer-quick-card__visual::before,
+.vexpaer-quick-card__visual::after,
+.vexpaer-quick-card__visual i {
+  content: '';
+  position: absolute;
+  display: block;
+  border-radius: 50%;
+}
+
+.vexpaer-quick-card__visual::before {
+  width: min(17rem, 76%);
+  aspect-ratio: 1;
+  border: 1px solid color-mix(in srgb, var(--quick-accent) 44%, transparent);
+  box-shadow: inset 0 0 4rem color-mix(in srgb, var(--quick-glow) 12%, transparent), 0 0 3rem color-mix(in srgb, var(--quick-glow) 14%, transparent);
+}
+
+.vexpaer-quick-card__visual::after {
+  width: min(10rem, 45%);
+  aspect-ratio: 1;
+  background: radial-gradient(circle at 32% 28%, color-mix(in srgb, var(--quick-accent) 82%, white), var(--quick-glow) 62%, transparent 65%);
+  filter: drop-shadow(0 0 1.6rem color-mix(in srgb, var(--quick-glow) 35%, transparent));
+}
+
+.vexpaer-quick-card__visual i {
+  width: 0.42rem;
+  aspect-ratio: 1;
+  background: var(--quick-accent);
+  box-shadow: 0 0 1rem var(--quick-accent);
+}
+
+.vexpaer-quick-card__visual i:nth-child(1) { transform: translate(-6.8rem, -3.8rem); }
+.vexpaer-quick-card__visual i:nth-child(2) { transform: translate(6.2rem, -4.8rem) scale(0.65); }
+.vexpaer-quick-card__visual i:nth-child(3) { transform: translate(7rem, 4.6rem) scale(0.42); }
+
+.vexpaer-quick-card__content {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+.vexpaer-quick-card__content strong {
+  color: #f9f8ff;
+  font: 500 clamp(1.55rem, 2.5vw, 2.15rem)/1.08 Bahnschrift, "Avenir Next", "Segoe UI", sans-serif;
+  letter-spacing: -0.035em;
+}
+
+.vexpaer-quick-card__content small {
+  min-height: 2.8em;
+  margin-top: 0.8rem;
+  color: rgba(235, 235, 247, 0.58);
+  font: 400 0.88rem/1.6 system-ui, -apple-system, "Segoe UI", sans-serif;
+}
+
+.vexpaer-quick-card__content code {
+  margin-top: 1rem;
+  color: color-mix(in srgb, var(--quick-accent) 78%, white);
+  font: 400 0.7rem/1.2 Consolas, monospace;
+  letter-spacing: 0.03em;
+}
+
+.vexpaer-quick-card__arrow {
+  position: absolute;
+  right: 1.6rem;
+  top: 1.35rem;
+  display: grid;
+  width: 2.2rem;
+  aspect-ratio: 1;
+  place-items: center;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 50%;
+  color: rgba(255, 255, 255, 0.72);
+  font-size: 0.95rem;
+  transition: color 250ms ease, border-color 250ms ease, transform 350ms ease;
+}
+
+.vexpaer-quick-card:hover .vexpaer-quick-card__arrow,
+.vexpaer-quick-card:focus-visible .vexpaer-quick-card__arrow {
+  border-color: var(--quick-accent);
+  color: var(--quick-accent);
+  transform: rotate(45deg);
+}
+
 .vexpaer-home-page #snowfall {
   opacity: 0;
   animation: none !important;
@@ -201,6 +428,20 @@
   #vexpaer-scene-toggle {
     width: 2.75rem;
     min-height: 2.75rem;
+  }
+
+  .vexpaer-quick-access {
+    min-height: auto;
+    padding-block: 5rem;
+  }
+
+  .vexpaer-quick-access__grid {
+    grid-template-columns: 1fr;
+    width: min(100%, 32rem);
+  }
+
+  .vexpaer-quick-card {
+    min-height: 24rem;
   }
 }
 

@@ -13,12 +13,15 @@
     if theme.darkmode.enable && theme.darkmode.button
       button#darkmode(type="button" title=_p('rightside.night_mode_title'))
         i.fas.fa-adjust
+    if is_post() && theme.snow3
+      button#snow-toggle(type="button" title=_p('rightside.snow_off') data-title-on=_p('rightside.snow_on') data-title-off=_p('rightside.snow_off') aria-pressed="true")
+        i.fas.fa-snowflake
     if theme.aside.enable && theme.aside.button && page.aside !== false
       button#hide-aside-btn(type="button" title=_p('rightside.aside'))
         i.fas.fa-arrows-alt-h
   #rightside-config-show
     if is_post()
-      if (theme.readmode || theme.translate.enable || (theme.darkmode.enable && theme.darkmode.button) || theme.change_font_size)
+      if (theme.readmode || theme.translate.enable || (theme.darkmode.enable && theme.darkmode.button) || theme.change_font_size || theme.snow3)
         button#rightside_config(type="button" title=_p("rightside.setting"))
           i.fas.fa-cog.fa-spin
       if showToc

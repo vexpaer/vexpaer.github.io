@@ -24,12 +24,27 @@ cancelAnimationFrame = window.cancelAnimationFrame ||
     window.oCancelAnimationFrame;
 /* 开始下雪 */
 snowFall.prototype.start = function () {
-    /* 创建画布 */
-    snowCanvas.apply(this);
-    /* 创建雪花形状 */
-    createFlakes.apply(this);
+    if (!this.canvas) {
+        /* 创建画布 */
+        snowCanvas.apply(this);
+        /* 创建雪花形状 */
+        createFlakes.apply(this);
+    }
+    this.enabled = true;
+    this.canvas.style.display = "";
+    this.lastFrameTime = performance.now();
     /* 画雪 */
-    drawSnow.apply(this)
+    if (!this.loop) drawSnow.apply(this)
+}
+/* 停止下雪 */
+snowFall.prototype.stop = function () {
+    this.enabled = false;
+    if (this.loop) cancelAnimationFrame(this.loop);
+    this.loop = null;
+    if (this.canvas) {
+        this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
+        this.canvas.style.display = "none";
+    }
 }
 /* 创建画布 */
 function snowCanvas() {
@@ -113,6 +128,10 @@ function createFlakes() {
 }
 /* 画雪 */
 function drawSnow() {
+    if (!this.enabled) {
+        this.loop = null;
+        return;
+    }
     var maxFlake = this.maxFlake,
         flakes = this.flakes;
     ctx = this.ctx, canvas = this.canvas, that = this;
@@ -135,12 +154,32 @@ function drawSnow() {
 var snow = new snowFall({
     maxFlake: 60
 });
-snow.start();
+var snowEnabled = localStorage.getItem('snowfall-enabled') !== 'false';
+if (snowEnabled) snow.start();
+
+function updateSnowButton() {
+    var button = document.getElementById('snow-toggle');
+    if (!button) return;
+    var enabled = !!snow.enabled;
+    button.setAttribute('aria-pressed', String(enabled));
+    button.title = enabled ? button.dataset.titleOff : button.dataset.titleOn;
+    button.querySelector('i').className = enabled ? 'fas fa-snowflake' : 'fas fa-ban';
+}
+
+window.toggleSnowfall = function () {
+    snow.enabled ? snow.stop() : snow.start();
+    localStorage.setItem('snowfall-enabled', String(!!snow.enabled));
+    if (snow.enabled && typeof syncHomepageSnow === 'function') syncHomepageSnow();
+    updateSnowButton();
+};
+
+updateSnowButton();
 
 if (document.body.classList.contains('vexpaer-home-page')) {
     var snowScrollFrame = 0;
     var syncHomepageSnow = function () {
         snowScrollFrame = 0;
+        if (!snow.enabled || !snow.canvas) return;
         var hero = document.getElementById('page-header');
         var heroHeight = hero ? hero.offsetHeight : window.innerHeight;
         var progress = window.scrollY / Math.max(1, heroHeight);

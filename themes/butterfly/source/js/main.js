@@ -593,6 +593,9 @@ document.addEventListener('DOMContentLoaded', function () {
       case 'darkmode':
         rightSideFn.switchDarkMode()
         break
+      case 'snow-toggle':
+        typeof window.toggleSnowfall === 'function' && window.toggleSnowfall()
+        break
       case 'hide-aside-btn':
         rightSideFn.hideAsideBtn()
         break

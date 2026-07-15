@@ -1,5 +1,5 @@
 ---
-title: readApaper#2
+title: readApaper#2 Driver sleepiness detection with deep neural networks using electrophysiological data
 date: 2026-07-14 12:30:03
 tags:
 - EEG

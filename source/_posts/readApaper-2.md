@@ -4,6 +4,7 @@ date: 2026-07-14 12:30:03
 tags:
 - EEG
 - readApaper
+cover: /img/readapaper-cover.png
 mathjax: true
 ---
 # information

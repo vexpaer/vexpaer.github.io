@@ -1,0 +1,25 @@
+extends includes/layout.pug
+
+block content
+  #post.mindmap-page
+    if top_img === false
+      include includes/header/post-info.pug
+
+    include includes/post/mindmap-switch.pug
+
+    section.mindmap-reader(data-mindmap-reader aria-label=page.title + '思维导图')
+      .mindmap-toolbar
+        p.mindmap-toolbar__hint 拖动画布 · 滚轮缩放 · 点击节点圆点展开或收起
+        .mindmap-toolbar__actions(role='group' aria-label='思维导图工具')
+          button.mindmap-tool(type='button' data-mindmap-action='zoom-out' title='缩小' aria-label='缩小') −
+          button.mindmap-tool(type='button' data-mindmap-action='zoom-in' title='放大' aria-label='放大') +
+          button.mindmap-tool(type='button' data-mindmap-action='fit' title='适应窗口') 适应窗口
+          button.mindmap-tool(type='button' data-mindmap-action='fullscreen' title='全屏显示' aria-pressed='false') 全屏
+
+      .mindmap-canvas
+        svg#mindmap-svg.markmap(data-mindmap-svg role='img' aria-label=page.title + '思维导图画布')
+        p.mindmap-status(data-mindmap-status role='status') 正在生成思维导图…
+
+      script#mindmap-data(type='application/json' data-mindmap-data)!=page.mindmap_data
+      noscript
+        p.mindmap-noscript 浏览器需要启用 JavaScript 才能显示思维导图，请使用“大纲模式”阅读正文。

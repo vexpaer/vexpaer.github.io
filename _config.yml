@@ -112,6 +112,7 @@ electric_clock:
   priority: 5
   enable: true
   enable_page: all
+  exclude: /mindmap/
   layout:
     type: class
     name: sticky_layout

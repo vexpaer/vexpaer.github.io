@@ -3,8 +3,6 @@ title: "readApaper#4 A Novel Grasping Robot Control Method Using Motion Executio
 date: 2026-07-16 11:09:23
 tags:
 - EEG
-- BCI
-- Robotics
 - readApaper
 cover: /img/readapaper-cover.png
 mathjax: true

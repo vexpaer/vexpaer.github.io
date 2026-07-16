@@ -22,7 +22,7 @@ html(lang=config.language data-theme=theme.display_mode class=htmlClassHideAside
         if is_home()
           include ./header/quick-access.pug
 
-        main#content-inner.layout(class=hideAside)
+        main#content-inner.layout(class=[hideAside, page.mindmap_page === true ? 'mindmap-layout' : ''])
           if body
             div!= body
           else
@@ -45,7 +45,7 @@ html(lang=config.language data-theme=theme.display_mode class=htmlClassHideAside
     else
       include ./404.pug
 
-    if is_post() && theme.poker_pet && theme.poker_pet.enable
+    if is_post() && !page.mindmap_page && theme.poker_pet && theme.poker_pet.enable
       include ./poker-pet.pug
 
     include ./rightside.pug

@@ -6,3 +6,4 @@ node_modules/
 public/
 .deploy*/
 .pages/
+themes/butterfly/source/vendor/mindmap/

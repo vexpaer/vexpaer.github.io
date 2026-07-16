@@ -1,6 +1,6 @@
 #rightside
   #rightside-config-hide
-    if is_post() && theme.readmode
+    if is_post() && !page.mindmap_page && theme.readmode
       button#readmode(type="button" title=_p('rightside.readmode_title'))
         i.fas.fa-book-open
     if theme.change_font_size
@@ -13,7 +13,7 @@
     if theme.darkmode.enable && theme.darkmode.button
       button#darkmode(type="button" title=_p('rightside.night_mode_title'))
         i.fas.fa-adjust
-    if is_post() && theme.poker_pet && theme.poker_pet.enable
+    if is_post() && !page.mindmap_page && theme.poker_pet && theme.poker_pet.enable
       button#poker-pet-toggle(
         type='button'
         title=_p('rightside.pet_off')

@@ -5,6 +5,9 @@ block content
     if top_img === false
       include includes/header/post-info.pug
 
+    if page.mindmap === true
+      include includes/post/mindmap-switch.pug
+
     article#article-container.post-content!=page.content
     include includes/post/post-copyright.pug
     .tag_share
@@ -29,4 +32,3 @@ block content
     if page.comments !== false && theme.comments && theme.comments.use
       - var commentsJsLoad = true
       !=partial('includes/third-party/comments/index', {}, {cache: true})
-      

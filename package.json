@@ -3,11 +3,13 @@
   "version": "0.0.0",
   "private": true,
   "scripts": {
-    "build": "hexo generate",
-    "build:ci": "npm run clean && npm run build && npm run verify",
+    "build": "npm run build:mindmap && hexo generate",
+    "build:ci": "npm run clean && npm test && npm run build && npm run verify",
+    "build:mindmap": "node tools/build-mindmap.mjs",
     "clean": "hexo clean",
     "deploy": "hexo deploy",
-    "server": "hexo server",
+    "server": "npm run build:mindmap && hexo server",
+    "test": "node --test test/mindmap.test.js",
     "verify": "node tools/verify-site.mjs public"
   },
   "hexo": {
@@ -35,6 +37,12 @@
     "hexo-server": "^2.0.0",
     "hexo-tag-aplayer": "^3.0.4",
     "hexo-theme-landscape": "^0.0.3",
-    "hexo-util": "^3.3.0"
+    "hexo-util": "^3.3.0",
+    "markmap-lib": "^0.18.12",
+    "markmap-view": "^0.18.12",
+    "sanitize-html": "^2.17.6"
+  },
+  "devDependencies": {
+    "esbuild": "^0.28.1"
   }
 }

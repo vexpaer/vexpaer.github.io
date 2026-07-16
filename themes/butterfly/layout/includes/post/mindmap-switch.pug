@@ -1,0 +1,11 @@
+nav.mindmap-mode-switch(aria-label='阅读模式切换')
+  a.mindmap-mode-switch__item(
+    class=!page.mindmap_page ? 'is-active' : ''
+    href=mindmap_outline_url(page)
+    aria-current=!page.mindmap_page ? 'page' : false
+  ) 大纲模式
+  a.mindmap-mode-switch__item(
+    class=page.mindmap_page ? 'is-active' : ''
+    href=mindmap_page_url(page)
+    aria-current=page.mindmap_page ? 'page' : false
+  ) 思维导图

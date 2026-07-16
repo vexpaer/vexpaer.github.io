@@ -5,8 +5,11 @@ div
   if is_home()
     script(src=url_for('/js/vexpaer-home.js'))
 
-  if is_post() && theme.poker_pet && theme.poker_pet.enable
+  if is_post() && !page.mindmap_page && theme.poker_pet && theme.poker_pet.enable
     script(src=url_for('/js/poker-pet.js'))
+
+  if page.mindmap_page === true
+    script(src=url_for('/vendor/mindmap/mindmap.min.js') defer)
 
   if theme.translate.enable
     script(src=url_for(theme.CDN.translate))

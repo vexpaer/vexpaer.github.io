@@ -1,0 +1,10 @@
+- var pokerPetDefaultEnabled = theme.poker_pet.default_enabled === false ? 'false' : 'true'
+#poker-pet(
+  role='button'
+  tabindex='0'
+  aria-label=_p('rightside.pet_label')
+  data-spritesheet=url_for(theme.poker_pet.spritesheet)
+  data-default-enabled=pokerPetDefaultEnabled
+  hidden
+)
+  canvas#poker-pet-canvas(width='192' height='208' aria-hidden='true')

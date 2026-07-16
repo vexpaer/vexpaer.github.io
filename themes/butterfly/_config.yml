@@ -859,6 +859,12 @@ inject:
 
 snow3: true
 
+# Interactive pokerFace pet shown only on post pages
+poker_pet:
+  enable: true
+  default_enabled: true
+  spritesheet: /img/poker-pet/pokerface.webp
+
 # CDN
 # Don't modify the following settings unless you know how they work
 # 非必要請不要修改

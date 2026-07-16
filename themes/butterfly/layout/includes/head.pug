@@ -57,6 +57,8 @@ if (theme.pwa && theme.pwa.enable)
 link(rel='stylesheet', href=url_for(theme.CDN.main_css))
 if is_home()
   link(rel='stylesheet', href=url_for('/css/vexpaer-home.css'))
+if is_post() && theme.poker_pet && theme.poker_pet.enable
+  link(rel='stylesheet', href=url_for('/css/poker-pet.css'))
 link(rel='stylesheet', href=url_for(theme.CDN.fontawesome) media="print" onload="this.media='all'")
 
 if (theme.snackbar && theme.snackbar.enable)

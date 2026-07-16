@@ -1,0 +1,87 @@
+#poker-pet {
+  position: fixed;
+  right: 52px;
+  bottom: 10px;
+  z-index: 89;
+  width: 144px;
+  margin: 0;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  line-height: 0;
+  cursor: grab;
+  opacity: 0;
+  user-select: none;
+  touch-action: none;
+  -webkit-tap-highlight-color: transparent;
+  transition: opacity 180ms ease;
+  contain: layout paint style;
+}
+
+#poker-pet[hidden] {
+  display: none !important;
+}
+
+#poker-pet.is-ready {
+  opacity: 1;
+}
+
+#poker-pet.is-error {
+  pointer-events: none;
+}
+
+#poker-pet.is-grabbing {
+  cursor: grabbing;
+}
+
+body.read-mode #poker-pet {
+  visibility: hidden;
+  opacity: 0;
+  pointer-events: none;
+}
+
+#poker-pet:focus-visible {
+  border-radius: 14px;
+  outline: 2px solid var(--theme-color, #49b1f5);
+  outline-offset: 3px;
+}
+
+#poker-pet-canvas {
+  display: block;
+  width: 100%;
+  height: auto;
+  pointer-events: none;
+}
+
+#poker-pet-toggle.is-off {
+  opacity: 0.58;
+}
+
+@media (max-width: 768px) {
+  #poker-pet {
+    right: 42px;
+    bottom: 8px;
+    width: 108px;
+  }
+}
+
+@media (max-width: 420px) {
+  #poker-pet {
+    right: 38px;
+    bottom: 6px;
+    width: 92px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  #poker-pet {
+    transition: none;
+  }
+}
+
+@media print {
+  #poker-pet,
+  #poker-pet-toggle {
+    display: none !important;
+  }
+}

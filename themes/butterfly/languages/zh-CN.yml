@@ -106,6 +106,9 @@ rightside:
   aside: 单栏和双栏切换
   snow_on: 开启下雪特效
   snow_off: 关闭下雪特效
+  pet_on: 开启桌宠
+  pet_off: 关闭桌宠
+  pet_label: 'pokerFace 桌宠：点击互动，拖动可移动位置'
 
 copy_copyright:
   author: 作者

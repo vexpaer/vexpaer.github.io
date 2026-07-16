@@ -45,6 +45,9 @@ html(lang=config.language data-theme=theme.display_mode class=htmlClassHideAside
     else
       include ./404.pug
 
+    if is_post() && theme.poker_pet && theme.poker_pet.enable
+      include ./poker-pet.pug
+
     include ./rightside.pug
     !=partial('includes/third-party/search/index', {}, {cache: true})
     include ./additional-js.pug

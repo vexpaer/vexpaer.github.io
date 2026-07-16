@@ -105,6 +105,9 @@ rightside:
   aside: Toggle between single-column and double-column
   snow_on: Enable snowfall effect
   snow_off: Disable snowfall effect
+  pet_on: Show pokerFace pet
+  pet_off: Hide pokerFace pet
+  pet_label: 'pokerFace pet: click to interact, drag to move'
 
 copy_copyright:
   author: Author

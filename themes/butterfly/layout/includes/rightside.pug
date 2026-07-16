@@ -13,6 +13,16 @@
     if theme.darkmode.enable && theme.darkmode.button
       button#darkmode(type="button" title=_p('rightside.night_mode_title'))
         i.fas.fa-adjust
+    if is_post() && theme.poker_pet && theme.poker_pet.enable
+      button#poker-pet-toggle(
+        type='button'
+        title=_p('rightside.pet_off')
+        data-title-on=_p('rightside.pet_on')
+        data-title-off=_p('rightside.pet_off')
+        aria-label=_p('rightside.pet_off')
+        aria-pressed='true'
+      )
+        i.fas.fa-paw
     if is_post() && theme.snow3
       button#snow-toggle(type="button" title=_p('rightside.snow_off') data-title-on=_p('rightside.snow_on') data-title-off=_p('rightside.snow_off') aria-pressed="true")
         i.fas.fa-snowflake
@@ -21,7 +31,7 @@
         i.fas.fa-arrows-alt-h
   #rightside-config-show
     if is_post()
-      if (theme.readmode || theme.translate.enable || (theme.darkmode.enable && theme.darkmode.button) || theme.change_font_size || theme.snow3)
+      if (theme.readmode || theme.translate.enable || (theme.darkmode.enable && theme.darkmode.button) || theme.change_font_size || theme.snow3 || (theme.poker_pet && theme.poker_pet.enable))
         button#rightside_config(type="button" title=_p("rightside.setting"))
           i.fas.fa-cog.fa-spin
       if showToc

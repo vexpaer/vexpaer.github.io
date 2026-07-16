@@ -11,6 +11,16 @@ block content
       .mindmap-toolbar
         p.mindmap-toolbar__hint 拖动画布 · 滚轮缩放 · 点击节点圆点展开或收起
         .mindmap-toolbar__actions(role='group' aria-label='思维导图工具')
+          .mindmap-depth-control(role='group' aria-label='按层级展开或收缩')
+            span 展开/收缩到
+            select.mindmap-depth-select(data-mindmap-depth aria-label='目标层级')
+              option(value='1') 1
+            span 层
+            button.mindmap-depth-apply(
+              type='button'
+              data-mindmap-action='set-depth'
+              title='应用所选层级'
+            ) 应用
           button.mindmap-tool(type='button' data-mindmap-action='zoom-out' title='缩小' aria-label='缩小') −
           button.mindmap-tool(type='button' data-mindmap-action='zoom-in' title='放大' aria-label='放大') +
           button.mindmap-tool(type='button' data-mindmap-action='fit' title='适应窗口') 适应窗口

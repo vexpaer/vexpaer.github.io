@@ -1,4 +1,5 @@
 import { Markmap } from 'markmap-view';
+import { getTreeDepth, withMaxVisibleDepth } from './tree.mjs';
 
 let activeReader;
 
@@ -33,6 +34,19 @@ function debounce(callback, delay) {
   };
 }
 
+function configureDepthSelect(select, maximumDepth, currentDepth) {
+  if (!select) return;
+  select.replaceChildren();
+
+  for (let depth = 1; depth <= maximumDepth; depth++) {
+    const option = document.createElement('option');
+    option.value = String(depth);
+    option.textContent = depth === maximumDepth ? `${depth}（全部）` : String(depth);
+    select.append(option);
+  }
+  select.value = String(currentDepth);
+}
+
 async function initializeMindmap() {
   const reader = document.querySelector('[data-mindmap-reader]');
   const svg = reader?.querySelector('[data-mindmap-svg]');
@@ -49,14 +63,18 @@ async function initializeMindmap() {
   const fallback = reader.querySelector('[data-mindmap-status]');
 
   try {
-    const data = JSON.parse(dataElement.textContent);
+    const sourceData = JSON.parse(dataElement.textContent);
+    const maximumDepth = getTreeDepth(sourceData);
+    const initialDepth = Math.min(3, maximumDepth);
+    const depthSelect = reader.querySelector('[data-mindmap-depth]');
+    const depthButton = reader.querySelector('[data-mindmap-action="set-depth"]');
     const abortController = new AbortController();
     const signal = abortController.signal;
     const markmap = Markmap.create(svg, {
       autoFit: false,
       duration: 0,
       fitRatio: 0.9,
-      initialExpandLevel: 3,
+      initialExpandLevel: -1,
       maxInitialScale: 1.5,
       maxWidth: window.matchMedia('(max-width: 768px)').matches ? 260 : 320,
       // D3 zoom still provides mouse/touch dragging; disabling Markmap's
@@ -69,7 +87,8 @@ async function initializeMindmap() {
     });
 
     activeReader = { element: reader, markmap, abortController };
-    await markmap.setData(data);
+    configureDepthSelect(depthSelect, maximumDepth, initialDepth);
+    await markmap.setData(withMaxVisibleDepth(sourceData, initialDepth));
     markmap.setOptions({ duration: 300 });
     await waitForLayout(svg);
     fallback?.setAttribute('hidden', '');
@@ -80,6 +99,24 @@ async function initializeMindmap() {
       if (action === 'fit') await markmap.fit();
       if (action === 'zoom-in') await markmap.rescale(1.2);
       if (action === 'zoom-out') await markmap.rescale(0.8);
+      if (action === 'set-depth') {
+        const selectedDepth = Number(depthSelect?.value);
+        if (!Number.isInteger(selectedDepth) || selectedDepth < 1 || selectedDepth > maximumDepth) return;
+
+        depthSelect.disabled = true;
+        depthButton.disabled = true;
+        reader.setAttribute('aria-busy', 'true');
+        try {
+          await markmap.setData(withMaxVisibleDepth(sourceData, selectedDepth), { initialExpandLevel: -1 });
+          await waitForLayout(svg);
+          await markmap.renderData();
+          await markmap.fit();
+        } finally {
+          depthSelect.disabled = false;
+          depthButton.disabled = false;
+          reader.removeAttribute('aria-busy');
+        }
+      }
       if (action === 'fullscreen') {
         if (document.fullscreenElement === reader) await document.exitFullscreen();
         else if (reader.requestFullscreen) await reader.requestFullscreen();

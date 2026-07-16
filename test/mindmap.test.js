@@ -87,3 +87,39 @@ test('KaTeX markup survives the sanitizer without executable attributes', () => 
   assert.match(cleaned, /<math\b/);
   assert.doesNotMatch(cleaned, /<script|\son[a-z]+\s*=/i);
 });
+
+test('mindmap trees can be expanded or collapsed to a precise depth', async () => {
+  const { getTreeDepth, withMaxVisibleDepth } = await import('../assets/mindmap/tree.mjs');
+  const tree = {
+    content: 'root',
+    payload: { tag: 'h1' },
+    children: [
+      {
+        content: 'level 2',
+        children: [{
+          content: 'level 3',
+          children: [{ content: 'level 4', children: [] }]
+        }]
+      },
+      { content: 'short branch', children: [] }
+    ]
+  };
+
+  assert.equal(getTreeDepth(tree), 4);
+
+  const rootOnly = withMaxVisibleDepth(tree, 1);
+  assert.equal(rootOnly.payload.fold, 1);
+  assert.equal(rootOnly.payload.tag, 'h1');
+
+  const depthTwo = withMaxVisibleDepth(tree, 2);
+  assert.equal(depthTwo.payload.fold, 0);
+  assert.equal(depthTwo.children[0].payload.fold, 1);
+  assert.equal(depthTwo.children[0].children[0].payload.fold, 1);
+
+  const fullyExpanded = withMaxVisibleDepth(tree, getTreeDepth(tree));
+  assert.equal(fullyExpanded.payload.fold, 0);
+  assert.equal(fullyExpanded.children[0].payload.fold, 0);
+  assert.equal(fullyExpanded.children[0].children[0].payload.fold, 0);
+  assert.equal(withMaxVisibleDepth(tree, 0).payload.fold, 1, 'invalid low values clamp to level 1');
+  assert.equal(tree.payload.fold, undefined, 'the embedded source tree must not be mutated');
+});

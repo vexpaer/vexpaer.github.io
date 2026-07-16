@@ -1,5 +1,5 @@
 import { access, readFile, readdir, stat } from 'node:fs/promises';
-import { resolve } from 'node:path';
+import { relative, resolve } from 'node:path';
 
 const root = resolve(process.argv[2] ?? 'public');
 const warningBytes = 1_000_000_000;
@@ -24,7 +24,6 @@ for (const path of required) {
 const exampleDirectory = resolve(root, '2026/01/18/组织工程_7.Artificial organ');
 const outlineHtml = await readFile(resolve(exampleDirectory, 'index.html'), 'utf8');
 const mindmapHtml = await readFile(resolve(exampleDirectory, 'mindmap/index.html'), 'utf8');
-const ordinaryHtml = await readFile(resolve(root, '2026/01/18/组织工程_1.Introduction/index.html'), 'utf8');
 
 function assertIncludes(content, expected, label) {
   if (!content.includes(expected)) throw new Error(`${label} is missing ${expected}.`);
@@ -39,6 +38,8 @@ if (outlineHtml.includes('/vendor/mindmap/mindmap.min.js')) {
 
 assertIncludes(mindmapHtml, 'mindmap-mode-switch', 'Mindmap page');
 assertIncludes(mindmapHtml, 'data-mindmap-reader', 'Mindmap page');
+assertIncludes(mindmapHtml, 'data-mindmap-depth', 'Mindmap page');
+assertIncludes(mindmapHtml, 'data-mindmap-action="set-depth"', 'Mindmap page');
 assertIncludes(mindmapHtml, '/vendor/mindmap/mindmap.min.js', 'Mindmap page');
 assertIncludes(mindmapHtml, '/vendor/mindmap/katex.min.css', 'Mindmap page');
 if (mindmapHtml.includes('id="readmode"')) {
@@ -70,19 +71,12 @@ if (/<script\b|\son[a-z]+\s*=|javascript:/i.test(JSON.stringify(mindmap))) {
   throw new Error('Unsafe executable HTML or URL found in mindmap data.');
 }
 
-if (ordinaryHtml.includes('mindmap-mode-switch') || ordinaryHtml.includes('/css/mindmap.css') || ordinaryHtml.includes('/vendor/mindmap/')) {
-  throw new Error('A post without mindmap: true received mindmap UI or resources.');
-}
-try {
-  await access(resolve(root, '2026/01/18/组织工程_1.Introduction/mindmap/index.html'));
-  throw new Error('A post without mindmap: true received a mindmap route.');
-} catch (error) {
-  if (error.code !== 'ENOENT') throw error;
-}
-
 let files = 0;
 let bytes = 0;
 let html = 0;
+let mindmapOutlines = 0;
+let mindmapReaders = 0;
+let ordinaryPosts = 0;
 const brokenAssetPaths = [];
 
 async function walk(directory) {
@@ -94,7 +88,37 @@ async function walk(directory) {
       bytes += (await stat(path)).size;
       if (entry.name.endsWith('.html')) {
         html++;
-        if ((await readFile(path, 'utf8')).includes('/.io//')) brokenAssetPaths.push(path);
+        const content = await readFile(path, 'utf8');
+        const route = relative(root, path).replace(/\\/g, '/');
+        const isArticle = /<article\b[^>]*\bid=["']article-container["']/i.test(content);
+        const hasSwitch = content.includes('mindmap-mode-switch');
+        const hasReader = content.includes('data-mindmap-reader');
+        const hasMindmapCss = /href=["'][^"']*\/css\/mindmap\.css(?:[?"'])/i.test(content);
+        const hasMindmapVendor = /(?:href|src)=["'][^"']*\/vendor\/mindmap\//i.test(content);
+        const isMindmapRoute = route.endsWith('/mindmap/index.html');
+
+        if (content.includes('/.io//')) brokenAssetPaths.push(path);
+
+        if (isArticle && hasSwitch) {
+          mindmapOutlines++;
+          if (!hasMindmapCss || hasMindmapVendor || hasReader) {
+            throw new Error(`Mindmap-enabled outline has incorrect resources: ${route}`);
+          }
+        } else if (isArticle) {
+          ordinaryPosts++;
+          if (hasMindmapCss || hasMindmapVendor || hasReader) {
+            throw new Error(`A regular post received mindmap UI or resources: ${route}`);
+          }
+        }
+
+        if (hasReader) {
+          mindmapReaders++;
+          if (!isMindmapRoute || !hasSwitch || !hasMindmapCss || !hasMindmapVendor) {
+            throw new Error(`Mindmap reader has an invalid route or resource set: ${route}`);
+          }
+        } else if (isMindmapRoute) {
+          throw new Error(`Mindmap route is missing its reader: ${route}`);
+        }
       }
     }
   }
@@ -114,8 +138,15 @@ if (html < 40) {
   throw new Error(`Expected at least 40 HTML files, found ${html}.`);
 }
 
+if (!mindmapOutlines || mindmapOutlines !== mindmapReaders) {
+  throw new Error(`Mindmap page mismatch: ${mindmapOutlines} outlines and ${mindmapReaders} readers.`);
+}
+
 if (brokenAssetPaths.length) {
   throw new Error(`Broken /.io// asset paths found in ${brokenAssetPaths.length} HTML files.`);
 }
 
-console.log(`Verified ${files} files (${html} HTML), ${(bytes / 1_000_000_000).toFixed(3)} GB; photos are unchanged.`);
+console.log(
+  `Verified ${files} files (${html} HTML), ${mindmapReaders} mindmaps and ${ordinaryPosts} regular posts, `
+  + `${(bytes / 1_000_000_000).toFixed(3)} GB; photos are unchanged.`
+);

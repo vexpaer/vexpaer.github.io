@@ -12,9 +12,8 @@ menu:
   标签: /tags/ || fas fa-tags
 #  分类: /categories/ || fas fa-folder-open
   something||fas fa-list:
-    音乐: /music/ || fas fa-music
-    电影: /movies/ || fas fa-video
-    游戏: /game/ || fas fa-rocket
+    电影: https://vexpaer.github.io/film_wall || fas fa-video
+    游戏: https://vexpaer.github.io/game_wall || fas fa-rocket
     书籍: /book/ || fas fa-book
 #  友链: /link/ || fas fa-link
   关于: /about/ || fas fa-user-circle

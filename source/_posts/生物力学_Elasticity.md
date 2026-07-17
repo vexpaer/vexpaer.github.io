@@ -1,0 +1,138 @@
+---
+title: "生物力学_Elasticity"
+date: 2026-07-01 12:00:00
+tags:
+- 生物力学
+- undergraduate
+cover: /img/tag-physics-cover.png
+mindmap: true
+---
+Elasticity
+- pic1
+    - ![](https://vexpaer-blog-media.vexpaer.workers.dev/media/%E7%94%9F%E7%89%A9%E5%8A%9B%E5%AD%A6/images/790450_6bde649d-61ef-44f5-e93c-def2ed3b5ee4.png)
+- pic2
+    - ![](https://vexpaer-blog-media.vexpaer.workers.dev/media/%E7%94%9F%E7%89%A9%E5%8A%9B%E5%AD%A6/images/790450_678ec77e-582a-4ebf-dfb0-006fb89da614.png)
+- pic3
+    - ![](https://vexpaer-blog-media.vexpaer.workers.dev/media/%E7%94%9F%E7%89%A9%E5%8A%9B%E5%AD%A6/images/790450_79e5044b-d801-4341-aa76-5bf51e0a8099.png)
+- pic4
+    - ![](https://vexpaer-blog-media.vexpaer.workers.dev/media/%E7%94%9F%E7%89%A9%E5%8A%9B%E5%AD%A6/images/790450_357747c2-10df-48c5-d710-17ed0f141b99.png)
+- take home message
+    - 1. What are stress and strain? / 什么是应力和应变？
+        - English
+            - Stress is the intensity of internal force over a section, or force per unit area.
+            - Normal stress is produced by a force perpendicular to the section and is denoted by σ. The average normal stress is σ = F / A.
+            - Tensile loading produces tensile stress, while compressive loading produces compressive stress. Tension is usually positive and compression is negative.
+            - Shear stress is produced by a force parallel to the section and is denoted by τ. The average shear stress is τ = Fs / A.
+            - Strain describes deformation normalized by the original dimension, so it is dimensionless.
+            - Normal or axial strain is ε = Δl / l0, where Δl is the change in length and l0 is the original gauge length.
+            - In tension, Δl and ε are positive; in compression, Δl and ε are negative. Shear strain is denoted by γ and describes angular distortion.
+        - 中文
+            - 应力是截面内部力的强度，也就是单位面积上的内力
+            - 垂直于截面的力产生正应力 normal stress，常用 σ 表示；平均正应力为 σ = F / A
+            - 拉伸载荷产生拉应力，压缩载荷产生压应力通常拉伸取正，压缩取负
+            - 平行于截面的力产生剪应力 shear stress，常用 τ 表示；平均剪应力为 τ = Fs / A
+            - 应变表示相对于原始尺寸的变形程度，因此没有单位
+            - 正应变或轴向应变为 ε = Δl / l0，其中 Δl 是长度变化量，l0 是原始标距
+            - 拉伸时 Δl 和 ε 为正，压缩时 Δl 和 ε 为负剪应变常用 γ 表示，用来描述角度形变
+    - 2. What do the points in the stress-strain diagram mean? / 应力-应变图中的各点表示什么？
+        - English
+            - Point O is the origin and represents the initial state with no load and no deformation.
+            - Point P is the proportionality limit. Between O and P, stress and strain are linearly proportional.
+            - Point E is the elastic limit. Below this point, deformation is fully recoverable after unloading; above it, permanent set begins.
+            - Point Y is the yield point, and its stress is the yield strength σy. After yielding, large deformation can occur with little or no increase in load.
+            - If the yield point is not obvious, the 0.2% offset method can be used to define an apparent yield strength.
+            - Point U is the ultimate strength point, the highest point on the engineering stress-strain curve.
+            - Point R is the rupture or failure point. Because of necking, the rupture strength σR may be lower than the ultimate strength σU.
+            - The curve also shows material properties: a steeper elastic slope means a larger modulus and a stiffer material, a larger area under the curve means higher toughness, and resilience is the ability to store energy without permanent deformation.
+        - 中文
+            - O 点是原点，表示无载荷、无变形的初始状态
+            - P 点是比例极限O 到 P 区间内，应力和应变线性成正比
+            - E 点是弹性极限低于该点卸载后可完全恢复；超过该点会开始出现永久变形
+            - Y 点是屈服点，对应屈服强度 σy屈服后材料可发生明显变形，但载荷不一定明显增加
+            - 如果屈服点不明显，可用 0.2% 偏移法确定表观屈服强度
+            - U 点是极限强度点，是工程应力-应变曲线上的最高应力点
+            - R 点是断裂或失效点由于颈缩，断裂强度 σR 可能低于极限强度 σU
+            - 曲线还可反映材料性质：弹性段斜率越大，弹性模量越大，材料越硬；曲线下面积越大，韧性 toughness 越高；在不产生永久变形的情况下储存能量的能力称为 resilience
+    - 3. How to measure the Young's modulus of a material? / 如何测量材料的杨氏模量？
+        - English
+            - Young's modulus is measured from the linear elastic region of a stress-strain curve.
+            - Perform a uniaxial tension or compression test and record the applied load F and the gauge-length change Δl.
+            - Calculate engineering stress with the original area: σ = F / A0.
+            - Calculate engineering strain with the original gauge length: ε = Δl / l0.
+            - Plot σ against ε. The slope of the linear elastic region gives E = Δσ / Δε.
+            - For a linearly elastic material, Hooke's law is σ = Eε. E represents material stiffness: a larger E means smaller strain under the same stress.
+            - If E is known, the linear elastic load-deformation relation can also be written as Δl = FL / AE.
+        - 中文
+            - 杨氏模量从应力-应变曲线的线性弹性段测得
+            - 进行单轴拉伸或压缩实验，记录载荷 F 和标距段长度变化 Δl
+            - 用原始截面积 A0 计算工程应力：σ = F / A0
+            - 用原始标距 l0 计算工程应变：ε = Δl / l0
+            - 绘制 σ-ε 曲线后，线性弹性段斜率就是 E = Δσ / Δε
+            - 对线弹性材料，胡克定律为 σ = EεE 表示材料刚度；E 越大，同样应力下应变越小
+            - 若已知 E，在线弹性范围内也可用载荷-变形关系 Δl = FL / AE
+    - 4. What is elastic deformation? What is plastic deformation? / 什么是弹性变形和塑性变形？
+        - English
+            - Elastic deformation is deformation that can be fully recovered after the load is removed.
+            - When stress stays below the elastic limit, the material returns to its original size and shape after unloading.
+            - A linearly elastic material has a straight stress-strain curve in the elastic region, with slope E.
+            - A nonlinear elastic material can still recover, but its slope is not constant, so it does not have a single elastic modulus.
+            - Plastic deformation is permanent deformation that remains after unloading and occurs after the material is loaded beyond its elastic limit or yield point.
+            - Total strain can be viewed as εtotal = εe + εp, where εe is recoverable elastic strain and εp is permanent plastic strain.
+            - A loading-unloading cycle may form a hysteresis loop, whose area represents energy dissipated as heat.
+        - 中文
+            - 弹性变形是卸载后能够完全恢复的变形
+            - 当应力低于弹性极限时，材料在卸载后能恢复原始尺寸和形状
+            - 线弹性材料在弹性区的应力-应变曲线为直线，斜率为 E
+            - 非线性弹性材料也可恢复，但曲线斜率不恒定，因此没有单一弹性模量
+            - 塑性变形是卸载后仍然保留的永久变形，通常发生在材料加载超过弹性极限或屈服点之后
+            - 总应变可理解为 εtotal = εe + εp，其中 εe 是可恢复弹性应变，εp 是永久塑性应变
+            - 加载-卸载循环可能形成滞回环，回线面积表示以热等形式耗散的能量
+    - 5. What is necking? / 什么是颈缩？
+        - English
+            - Necking is the localized reduction of cross-sectional area after a tensile specimen reaches its ultimate strength.
+            - Once necking begins, deformation concentrates in the narrowed region and the specimen may continue to elongate even while the total load decreases.
+            - Engineering stress is usually calculated using the original cross-sectional area.
+            - After necking, the engineering stress may decrease even though the true local stress, calculated using the actual reduced area, may continue to increase.
+            - This is why the rupture strength σR can be lower than the ultimate strength σU on an engineering stress-strain curve.
+        - 中文
+            - 颈缩是拉伸试样达到极限强度后，局部横截面积迅速变小的现象
+            - 颈缩开始后，变形集中在变窄区域，即使总载荷下降，试样也可能继续伸长
+            - 工程应力通常用原始截面积计算
+            - 颈缩后工程应力可能下降；但如果用变形后的实际面积计算真实局部应力，真实应力仍可能继续上升
+            - 这就是为什么在工程应力-应变曲线上，断裂强度 σR 可能低于极限强度 σU
+    - 6. What is Poisson's ratio? / 什么是泊松比？
+        - English
+            - Poisson's ratio ν is the negative ratio of lateral strain to axial strain under uniaxial loading: ν = -εlateral / εaxial.
+            - In tension, the specimen elongates axially and contracts laterally; in compression, it shortens axially and expands laterally.
+            - The negative sign indicates that lateral and axial strains have opposite signs.
+            - For uniaxial stress in the x direction, εx = σx / E and εy = εz = -νσx / E.
+            - For an isotropic linearly elastic material, Young's modulus E, shear modulus G, and Poisson's ratio ν are related by E = 2G(1 + ν).
+            - Most materials have ν between 0 and 0.5. A perfectly incompressible isotropic material has ν = 0.5 at small elastic strains.
+            - Examples: cork is close to 0, steel is about 0.3, and rubber is close to 0.5.
+        - 中文
+            - 泊松比 ν 是单轴加载时横向应变与轴向应变之比的负值，即 ν = -εlateral / εaxial
+            - 拉伸时试样轴向伸长、横向收缩；压缩时轴向缩短、横向膨胀
+            - 负号表示横向应变和轴向应变方向相反
+            - 若 x 方向单轴受力，则 εx = σx / E，εy = εz = -νσx / E
+            - 对各向同性线弹性材料，杨氏模量 E、剪切模量 G 和泊松比 ν 满足 E = 2G(1 + ν)
+            - 多数材料的 ν 在 0 到 0.5 之间完全不可压缩的各向同性材料在小应变弹性变形下 ν = 0.5
+            - 例子：软木接近 0，钢约 0.3，橡胶接近 0.5
+    - 7. How to solve stress-strain relationships for biaxial and triaxial loading? / 如何求解双轴和三轴加载下的应力-应变关系？
+        - English
+            - Use these relations for isotropic, linearly elastic materials under small deformation and within the proportionality limit.
+            - The method is superposition: each normal stress produces axial strain in its own direction and Poisson strain in the other directions.
+            - First calculate stresses from loads and corresponding areas: σx = Fx / Ax, σy = Fy / Ay, and σz = Fz / Az. Take tension as positive and compression as negative.
+            - For triaxial normal stresses: εx = [σx - ν(σy + σz)] / E.
+            - εy = [σy - ν(σx + σz)] / E.
+            - εz = [σz - ν(σx + σy)] / E.
+            - For biaxial loading in the xy-plane, set σz = 0. Then εx = (σx - νσy) / E, εy = (σy - νσx) / E, and εz = -ν(σx + σy) / E.
+            - Treat shear separately using γxy = τxy / G. Dimension changes are ΔLx = εxLx0, ΔLy = εyLy0, and ΔLz = εzLz0.
+        - 中文
+            - 这些关系适用于各向同性、线弹性、小变形且处于比例极限以内的材料
+            - 方法是叠加原理：每个正应力在本方向产生轴向应变，并通过泊松效应影响另外两个方向
+            - 先由载荷和对应面积求应力：σx = Fx / Ax，σy = Fy / Ay，σz = Fz / Az拉伸取正，压缩取负
+            - 三轴正应力下：εx = [σx - ν(σy + σz)] / E
+            - εy = [σy - ν(σx + σz)] / E
+            - εz = [σz - ν(σx + σy)] / E
+            - 对 xy 平面双轴加载，令 σz = 0，可得 εx = (σx - νσy) / E，εy = (σy - νσx) / E，εz = -ν(σx + σy) / E
+            - 剪切部分单独处理，使用 γxy = τxy / G；尺寸变化由 ΔLx = εxLx0，ΔLy = εyLy0，ΔLz = εzLz0 计算

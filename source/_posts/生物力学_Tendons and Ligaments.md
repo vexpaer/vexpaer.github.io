@@ -1,0 +1,294 @@
+---
+title: "生物力学_Tendons and Ligaments"
+date: 2026-07-01 12:00:00
+tags:
+- 生物力学
+- undergraduate
+cover: /img/tag-physics-cover.png
+mindmap: true
+---
+Tendons and Ligaments
+- Function of T&L
+    - Although tendons and ligaments are mechanically passive (i.e., they do not contract and produce motion as do the muscles), each plays an essential role in joint motion and stability.
+    - tendons 肌腱
+        - **attach muscle and transmit the tensile load** generated through muscular contraction or passive elongation **to bone**
+            - ![](https://vexpaer-blog-media.vexpaer.workers.dev/media/%E7%94%9F%E7%89%A9%E5%8A%9B%E5%AD%A6/images/790450_4a4fcbe0-e84d-469b-a3fc-8b2ac036ce74.png)
+        - produce joint motion or promote joint stability
+        - contribute to maintaining body posture.
+        - tendons and muscles compose the muscle tendon unit
+            - acts as a dynamic restraint 动态约束
+            - allow muscles to be pre-positioned at an optimal distance from joints without need for increased muscular length.
+    - ligaments 韧带
+        - **connect bone to bone**
+        - augment增强 the mechanical stability of the joints
+        - guide joint motion, prevent excessive过度 motion
+        - Ligaments act as static restraints 静态约束
+- Tendons
+    - Structure
+        - The parallel arrays of collagen fibers interspersed with darker staining tenocytes/fibroblasts, The wavy or "crimp" pattern is characteristic of **unloaded** tendon and ligament.
+            - ![](https://vexpaer-blog-media.vexpaer.workers.dev/media/%E7%94%9F%E7%89%A9%E5%8A%9B%E5%AD%A6/images/790450_239bade1-a2ef-4d61-bec0-95753bb03481.png)
+    - Composition
+        - basic
+            - Tendons are composed of dense connective tissue
+            - contains an ECM dominated by
+                - parallel-fibered collagenous network 平行纤维胶原网络
+                - tenocytes腱细胞(metabolically active fibroblastic cells代谢活跃的成纤维细胞)
+            - In general, the cellular material occupies approximately 20% of the total tissue volume, while the ECM accounts for the remaining 80%.
+        - Tenocytes 腱细胞
+            - Cells within the tendon substance are specialized **fibroblasts** called **tenocytes**.
+            - function
+                - control tendon metabolism (production and degradation of the ECM)
+                - mechanotransduction
+                    - respond to the mechanical stimuli applied to the tendon
+                    - particularly tensile loads that serve as signals for collagen production
+            - shape
+                - These cells lie in longitudinal rows along the collagen fibrils, following the tensile load at which they are stressed.
+                - These cells have multiple extensions that stretch extensively within the extracellular matrix, allowing for three-dimensional intercellular communication via gap junctions.
+                - Blocking these gap junctions in vitro体外 resulted in the cessation停止 of collagen production in response to tensile loads.
+                - Tenocytes from all five species shared common characteristics with a fusiform 梭状 appearance, adherence to the flask and similar dimensions
+                    - ![](https://vexpaer-blog-media.vexpaer.workers.dev/media/%E7%94%9F%E7%89%A9%E5%8A%9B%E5%AD%A6/images/790450_d0762a32-7bc3-4037-d4ff-b70a29363ed6.png)
+        - ECM
+            - composition
+                - largely composed of a network of collagen fibers
+                    - Collagen
+                        - the collagen network is dominated by type I fibers (~60%), but other types (e. g., III, IV, V, VI) are also present .
+                        - Collagen type I fibers are characterized by their capacity to sustain large tensile loads while allowing for some level of compliance柔顺性 or mechanical deformation.
+                        - Collagen is synthesized by tenocytes in an complex process that ultimately contributes to the quality and stability of the collagen molecule
+                            - ![](https://vexpaer-blog-media.vexpaer.workers.dev/media/%E7%94%9F%E7%89%A9%E5%8A%9B%E5%AD%A6/images/790450_67f379c8-f7a5-4720-d032-1d51ae19332b.png)
+                        - Cross-links are formed between collagen molecules and are essential to aggregation at the fibril level.
+                            - ![](https://vexpaer-blog-media.vexpaer.workers.dev/media/%E7%94%9F%E7%89%A9%E5%8A%9B%E5%AD%A6/images/790450_cb86fe76-8c1c-4fde-a959-58276c97c0dc.png)
+                        - It is the cross-linked character of the collagen fibrils that gives strength to the tissues they compose and that allows these tissues to function under mechanical stress.
+                - a smaller percentage of proteoglycans, elastin, and other proteins
+                - 图
+                    - ![](https://vexpaer-blog-media.vexpaer.workers.dev/media/%E7%94%9F%E7%89%A9%E5%8A%9B%E5%AD%A6/images/790450_bdf39c1e-dd60-4b1a-9c24-221e7c180c02.png)
+            - function
+                - maintain the tendon’s structure
+                - facilitate the biomechanical response to mechanical loading
+        - Ground Substance
+            - The ground substance in tendons and ligaments is composed mainly of proteoglycans (PGs 蛋白聚糖) and other proteins, accounting for &lt;0.2% and approximately 4.5% of the weight, respectively.
+            - PGs
+                - PGs are macromolecules composed of various sulfated polysaccharide chains (glycosaminoglycans)
+                - bonded to a core protein linked to a long hyaluronic acid (HA) chain that forms an extremely high molecular weight PG aggregate
+                - PGs, such as decorin蛋白核心聚糖 and cartilage oligomatrix protein软骨寡聚基质蛋白, contribute to biomechanical and viscoelastic properties of ground substance.
+                - PG与水结合
+                    - The PG aggregates bind most of the extracellular water of the tendon, making the matrix a highly structured gel-like material rather than an amorphous无规则 solution.
+                    - function
+                        - allows for spacing and lubrication between the collagen microfibrils
+                        - acts as a cement-like substance that help stabilize the collagenous skeleton of tendons肌腱的胶原骨架
+                        - contributes to the overall strength of these composite structures
+- Ligaments
+    - Structure
+        - The ECM of ligaments is also composed mainly of type I collagen
+        - **in contrast to tendons, the fibers are not parallel and are multidirectional**
+            - ![](https://vexpaer-blog-media.vexpaer.workers.dev/media/%E7%94%9F%E7%89%A9%E5%8A%9B%E5%AD%A6/images/790450_4a0f037e-4d7e-476f-afab-f308fbd1187f.png)
+        - Most fibers- in line with the axis of the ligament
+        - Some fibers- with specific orientation among the ligaments
+        - Depending on the function of the ligament
+    - Composition
+        - elastin
+            - The protein elastin is rarely present in tendons and extremity四肢 ligaments composing approximately 2-3% of the dry weight
+            - but in elastic ligaments such as the ligamentum flavum黄韧带, the proportion of elastic fibers is large
+            - flavum ligament黄韧带
+                - elastic / collagen fibers = 2 / 1
+                - connects the laminae of adjacent vertebrae
+                - protect the spinal nerve roots from mechanical impingement撞击
+                - pre-stress (preload) the motion segment (the functional unit of the spine)
+                - provide some intrinsic stability to the spine.
+        - Ligamentous Fibroblasts
+            - 图
+                - ![](https://vexpaer-blog-media.vexpaer.workers.dev/media/%E7%94%9F%E7%89%A9%E5%8A%9B%E5%AD%A6/images/790450_4626dc66-45a0-4fe8-a1c4-1f62acc471e4.png)
+        - Ground Substance
+            - The ground substance in tendons and ligaments is composed mainly of proteoglycans (PGs 蛋白聚糖) and other proteins, accounting for &lt;0.2% and approximately 4.5% of the weight, respectively.
+            - PGs
+                - PGs are macromolecules composed of various sulfated polysaccharide chains (glycosaminoglycans)
+                - bonded to a core protein linked to a long hyaluronic acid (HA) chain that forms an extremely high molecular weight PG aggregate
+                - PGs, such as decorin蛋白核心聚糖 and cartilage oligomatrix protein软骨寡聚基质蛋白, contribute to biomechanical and viscoelastic properties of ground substance.
+                - PG与水结合
+                    - The PG aggregates bind most of the extracellular water of the tendon, making the matrix a highly structured gel-like material rather than an amorphous无规则 solution.
+                    - function
+                        - allows for spacing and lubrication between the collagen microfibrils
+                        - acts as a cement-like substance that help stabilize the collagenous skeleton of tendons肌腱的胶原骨架
+                        - contributes to the overall strength of these composite structures
+    - Outer Structure and Insertion into Bone
+        - 图
+            - ![](https://vexpaer-blog-media.vexpaer.workers.dev/media/%E7%94%9F%E7%89%A9%E5%8A%9B%E5%AD%A6/images/790450_cb795568-6466-4fa8-dfd7-9a798928da2e.png)
+- Biomechanical Properties of T&L
+    - 既能承受拉伸又有柔韧性
+        - Tendons and ligaments are **viscoelastic** structures with unique mechanical properties
+        - Tendons
+            - strong enough to sustain the high tensile forces that result from muscle contraction during joint motion
+            - yet they are sufficiently flexible to angulate around bone surfaces and to deflect beneath retinacula to change the final direction of muscle pull
+        - Ligaments
+            - pliant柔软 and flexible, allowing natural movement of the bones to which they attach
+            - but are strong and inextensible不易伸长 so as to offer suitable resistance to applied forces.
+    - 主要承受拉伸
+        - Both structures sustain mainly **tensile** loads during normal and excessive loading.
+        - Strong in tension
+        - Little resistance to compression
+            - ![](https://vexpaer-blog-media.vexpaer.workers.dev/media/%E7%94%9F%E7%89%A9%E5%8A%9B%E5%AD%A6/images/790450_e9ac4c9c-183f-483d-f29d-db27ac04117a.png)
+        - The large slenderness ratio长细比 makes it easy for them to buckle弯曲 under compressive loads
+            - ![](https://vexpaer-blog-media.vexpaer.workers.dev/media/%E7%94%9F%E7%89%A9%E5%8A%9B%E5%AD%A6/images/790450_f029c211-451e-4388-f508-1c0058cfe338.png)
+    - viscoelastic
+        - 加载力的速度快时候弹性模量更大
+            - ![](https://vexpaer-blog-media.vexpaer.workers.dev/media/%E7%94%9F%E7%89%A9%E5%8A%9B%E5%AD%A6/images/790450_2264d768-2d8a-4a49-b6b5-7fb0f13fd20f.png)
+        - With higher strain rates, tendons and ligaments require more force to rupture, and undergo greater elongation
+            - ![](https://vexpaer-blog-media.vexpaer.workers.dev/media/%E7%94%9F%E7%89%A9%E5%8A%9B%E5%AD%A6/images/790450_9e4251b1-cd00-4cc9-9b5e-a18e63a7a251.png)
+        - When injury happens, the degree of damage is related to the **rate of loading** as well as the **amount of load**
+    - tensile testing
+        - 图
+            - ![](https://vexpaer-blog-media.vexpaer.workers.dev/media/%E7%94%9F%E7%89%A9%E5%8A%9B%E5%AD%A6/images/790450_bc69327c-8fc7-488f-fc07-b610e74ed7e2.png)
+        - In tensile testing of a human ligamentum flavum黄韧带, elongation of the specimen reached 50% before the stiffness increased appreciably.
+        - At 70% elongation the ligament exhibited a great increase in stiffness with additional loading and failed abruptly without further deformation.
+        - The greater proportion of elastic proteins and the resultant elastic capacity of the ligament results then in a larger capacity to elongate before failure (large strain to failure).
+    - 能量消耗
+        - The proportion of elastic proteins in ligaments and capsules关节囊 is extremely important for
+            - 1.the small elastic deformation that they endure under tensile strain
+            - 2.the storage and loss of energy.
+        - During the loading and unloading of a ligament between two limits of elongation, the elastic fibers allow the material to return to its original shape and size after being deformed.
+        - Part of the energy spent is stored.
+        - What remains represents the energy loss during the cycle and is called hysteresis.
+        - The area enclosed by the loop represents the energy loss.
+            - ![](https://vexpaer-blog-media.vexpaer.workers.dev/media/%E7%94%9F%E7%89%A9%E5%8A%9B%E5%AD%A6/images/790450_6a5984f2-9f4d-40d9-c528-981a59b541f2.png)
+- Injury of T&L
+    - two general categories or combination
+        - high levels of stress or load
+        - high rates of strain
+        - high levels of both stress and strain
+    - 2种损伤
+        - When a ligament in vivo is subjected to loading that exceeds the physiologic range (injury due to high levels of stress)
+        - microfailure takes place even before the yield point is reached (i.e., partial rupture of a ligament) yield point
+        - if the yield point is exceeded, the ligament will undergo gross failure (complete rupture)
+    - 运动过度→塑性形变→微损伤→炎症
+        - ![](https://vexpaer-blog-media.vexpaer.workers.dev/media/%E7%94%9F%E7%89%A9%E5%8A%9B%E5%AD%A6/images/790450_75185415-9eee-41ca-a949-059bf43c5d92.png)
+    - 从下到上对应1234阶段,1常规测试时候所受力不会造成损伤,后续运动造成微损伤最终撕裂
+        - ![](https://vexpaer-blog-media.vexpaer.workers.dev/media/%E7%94%9F%E7%89%A9%E5%8A%9B%E5%AD%A6/images/790450_831a6dcb-5eb1-4a50-b7b2-e63b8cd486ad.png)
+    - 韧带损伤的三级损伤标准
+        - ![](https://vexpaer-blog-media.vexpaer.workers.dev/media/%E7%94%9F%E7%89%A9%E5%8A%9B%E5%AD%A6/images/790450_43c4d740-21db-4657-ee7d-2785b9a80d96.png)
+    - healing
+        - The healing process of ligaments is quite slow due to the limited vascularity
+        - 治愈过程,最终治愈也只有10%-20%性能
+            - ![](https://vexpaer-blog-media.vexpaer.workers.dev/media/%E7%94%9F%E7%89%A9%E5%8A%9B%E5%AD%A6/images/790450_e6de3a15-8f65-4e07-a29b-e637c818f3d1.png)
+- Factors that Affect the Biomechanical Properties of T&L
+    - Maturation and aging
+        - During maturation成熟, cross-links strengthen tendons and ligaments, enhancing tensile strength
+        - With aging, collagen's mechanical properties declines
+    - Mobilization and Immobilization
+        - Ligaments adapt to stress, strengthening with increased loads and weakening with reduced stress or immobilization
+    - Pharmacologic agents 药物影响
+        - Steroids inhibit collagen synthesis, affecting healing and reducing peak tissue load
+        - NSAIDs, like indomethacin and diclofenac, help treat ligament inflammation
+    - Dietary
+        - The uptake of vitamins (C, D, E), protein, and zinc is crucial for maintaining the biomechanical function of ligaments
+- Case Studies
+    - Case Study 1
+        - The regulation of tendon stem cell differentiation by the alignment of nanofibers
+        - Biomaterials, 2010
+        - Main idea
+            - Nanofiber alignment provides topographical cues that regulate tendon stem cell differentiation.
+            - aligned nanofibers vs random nanofibers
+            - 纤维方向本身就是细胞命运信号, 细胞会沿着材料结构改变形态和表达
+        - Electrospinning setup
+            - syringe with polymer solution
+            - needle and liquid jet
+            - high voltage power supply
+            - Taylor cone
+            - collector
+        - Cell morphology
+            - On aligned fibers, cells become elongated and oriented along the fiber direction.
+            - On random fibers, cells spread with less directional organization.
+            - 图 - SEM shows aligned vs random nanofiber networks; fluorescence images show different cell shapes
+        - Gene expression trends
+            - SCX scleraxis, a tenogenic marker, is higher on aligned nanofibers at 3d and 7d.
+            - RUNX2 and ALP are higher on random nanofibers, suggesting more non-tenogenic or osteogenic tendency.
+            - Integrin α1, integrin β1, integrin α5, and myosin II respond to nanofiber alignment.
+            - 图 - aligned/random comparison shows material architecture changes tendon stem cell marker expression
+    - Case Study 2
+        - Cyclic tensile strain upregulates collagen synthesis in isolated tendon fascicles
+        - Biochemical and Biophysical Research Communications, 2005
+        - Experimental setup
+            - isolated fascicle mounted in a chamber
+            - medium surrounding the fascicle
+            - Perspex grips and 15 mm gauge length
+            - load cell
+            - loading arm connected to actuator
+        - Mechanical stimulus
+            - cyclic tensile strain applied to tendon fascicles
+            - compared with unstrained controls
+        - Matrix synthesis readouts
+            - sulfate incorporation increased with strain by 7.9%
+            - proline incorporation increased with strain by 25.1%
+            - proline incorporation is a collagen synthesis-related signal
+            - 机械拉伸会让 tendon fascicle 更积极合成基质, 尤其是 collagen 相关合成
+    - Case Study 3
+        - Multifunctional tendon-mimetic hydrogels
+        - Science Advances, 2023
+        - Design logic
+            - anisotropic assembly of aramid nanofiber composites
+            - stiff aramid nanofibers mimic aligned collagen fibers
+            - soft polyvinyl alcohol (PVA) mimics proteoglycan-rich soft matrix
+            - 硬纤维 + 软基质, 模仿肌腱里 collagen fibers 和 PG matrix 的组合
+        - Fabrication route
+            - random network
+            - stretching
+            - confined drying
+            - reswelling
+            - isotropic network becomes oriented structure
+        - Reported properties
+            - modulus about 1.1 GPa
+            - strength about 72 MPa
+            - fracture toughness 7333 J/m^2
+            - properties approach natural tendon more closely than previous synthetic hydrogels
+        - Added functions
+            - printed bioelectronic connections
+            - biofunctionalization for cell interface
+            - cell alignment on ACH-80 surface
+            - 图 - oriented hydrogel structure and aligned cells show tendon-mimetic anisotropy
+- Take-Home Message
+    - What is the major composition of tendons and ligaments?
+        - Answer EN
+            - Tendons and ligaments are dense connective tissues composed mainly of extracellular matrix and fibroblastic cells.
+            - The ECM is dominated by collagen, mostly type I collagen.
+            - Tendons contain about 75-85% collagen, &lt; 3% elastin, and 1-2% proteoglycans.
+            - Ligaments contain about 70-80% collagen, elastin, proteoglycans, and resident ligamentous fibroblasts.
+            - Ground substance contains PG aggregates that bind water, lubricate collagen microfibrils, and stabilize the collagen skeleton.
+        - 回答 中文
+            - 肌腱和韧带主要是胶原为主的 ECM 加少量细胞
+            - 肌腱细胞叫 tenocytes, 韧带里有 ligamentous fibroblasts
+            - 胶原主要负责抗拉, PG 和水形成凝胶样基质, 帮助润滑和稳定纤维骨架
+    - What are the structural properties of tendons and ligaments?
+        - Answer EN
+            - Tendons have parallel-fibered collagen networks aligned with the main tensile loading direction.
+            - Unloaded tendons and ligaments show a wavy crimp pattern that straightens during loading.
+            - Tenocytes lie in longitudinal rows along collagen fibrils and communicate through gap junctions.
+            - Ligaments contain mainly type I collagen but their fibers are more multidirectional than tendon fibers.
+            - Insertion into bone is graded through parallel collagen fibers, unmineralized fibrocartilage, mineralized fibrocartilage, and cortical bone.
+        - 回答 中文
+            - 肌腱胶原纤维更平行, 适合单向传递肌肉拉力
+            - 韧带胶原方向更多样, 适合按关节运动方向限制过度运动
+            - unloaded 状态的 crimp 波纹先被拉直, 这是早期变形的重要来源
+            - 肌腱/韧带插入骨的位置有纤维软骨过渡层, 用来减少软硬交界处应力集中
+    - What is the relationship between the structure and respective function of tendons and ligaments?
+        - Answer EN
+            - Tendons connect muscle to bone and transmit tensile load, so their collagen fibers are highly aligned and strong in tension.
+            - Tendons are also flexible enough to wrap or deflect around anatomical structures and redirect muscle pull.
+            - Ligaments connect bone to bone, guide joint motion, and prevent excessive motion.
+            - Ligament fiber orientation is more multidirectional and function-dependent, allowing joint restraint in specific directions.
+            - Elastic components in ligaments, especially ligamentum flavum, allow large elongation and energy storage before failure.
+        - 回答 中文
+            - 肌腱是传力绳, 所以结构强调平行胶原和抗拉强度
+            - 韧带是限位带, 所以结构强调按关节运动方向布置纤维
+            - 黄韧带 elastin 多, 所以能大幅伸长并帮助脊柱保持稳定
+    - Which factors may affect the biomechanical properties of tendons and ligaments?
+        - Answer EN
+            - Maturation strengthens tendons and ligaments by increasing cross-links and tensile strength.
+            - Aging reduces collagen mechanical properties.
+            - Mobilization and increased loads strengthen ligaments, while reduced stress or immobilization weakens them.
+            - Steroids inhibit collagen synthesis, affect healing, and reduce peak tissue load.
+            - NSAIDs such as indomethacin and diclofenac help treat ligament inflammation.
+            - Vitamins C, D, E, protein, and zinc are important for maintaining biomechanical function.
+            - Loading rate also matters: higher strain rate increases force required for rupture and increases stress-strain slope.
+        - 回答 中文
+            - 成熟、交联、合理加载会让肌腱韧带更强
+            - 衰老、固定不用、激素抑制胶原合成会让组织变弱或愈合变差
+            - 营养和抗炎药物会影响修复环境
+            - 加载速度也重要, 拉得越快组织表现得越硬, 损伤风险和破裂模式也会变

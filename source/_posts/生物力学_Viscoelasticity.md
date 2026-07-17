@@ -1,0 +1,232 @@
+---
+title: "生物力学_Viscoelasticity"
+date: 2026-07-01 12:00:00
+tags:
+- 生物力学
+- undergraduate
+cover: /img/tag-physics-cover.png
+mindmap: true
+---
+Viscoelasticity
+- basic
+    - The **time-dependent material behavior** is called viscoelasticity
+    - Viscoelasticity = Viscosity + Elasticity
+        - Viscosity is a fluid property and is a measure of resistance to flow
+        - Elasticity is a solid material property
+    - relationship between stress and strain
+        - Stress is a function of strain and strain rate
+            - ![](https://vexpaer-blog-media.vexpaer.workers.dev/media/%E7%94%9F%E7%89%A9%E5%8A%9B%E5%AD%A6/images/790450_2a5da258-7cd6-4c9c-c95c-8310b3fdf1a3.png)
+    - Time-dependent material properties
+        - 图
+            - ![](https://vexpaer-blog-media.vexpaer.workers.dev/media/%E7%94%9F%E7%89%A9%E5%8A%9B%E5%AD%A6/images/790450_5765689e-a7f1-416f-ecf7-e2ad8b4af86a.png)
+        - The short-term behavior is relatively unchanged over a wide time scale, and this is termed the **glassy plateau**
+        - Similarly, if the material behaves like a solid, the long-term properties are also constant over a wide time scale, and this is the **rubbery plateau**
+        - However, between these two extremes of behavior lies a transition region, in which the material is strongly affected by changes to temperature, the loading duration, or frequency, and thus the material behavior is highly time-dependent. This region of behavior is termed the **viscoelastic transition**
+    - Deborah number 德博拉数
+        - The mean time of the viscoelastic transition is often defined as the **relaxation time**, which is a rough delineation between the glassy and rubbery plateaus
+        - A valuable quantity in determining the overall behavior of a viscoelastic solid in a particular application is the **Deborah number, De**
+        - De is defined as the normalized value of relaxation time (t) relative to the time duration of a given experiment (τ) or loading event
+        - 𝐷𝑒 = 𝑡 / *τ*
+        - For De ≫1, the behavior of the material is solid-like, and for De ≪1, the behavior is fluid-like
+    - Tissues as Viscoelastic Solids
+        - Most tissues at their essential microstructural size scale are composed of an entangled polymer network containing collagen and other long-chain molecules
+            - ![](https://vexpaer-blog-media.vexpaer.workers.dev/media/%E7%94%9F%E7%89%A9%E5%8A%9B%E5%AD%A6/images/790450_502c845c-9540-41bd-9500-3118c41c752d.png)
+        - The extent of entanglement, interpenetration of multiple networks, and the crosslinking between these molecules affects their character, especially when considering viscous effects 粘滞效应
+    - Viscoelasticity and poroelasticity
+        - A gel evolves by two molecular processes
+            - the conformational change of the polymer network
+            - the migration of the solvent molecules.
+        - The two processes result in the macroscopic behavior of viscoelasticity and poroelasticity
+            - In viscoelasticity, solvent molecules move relative to the polymer network over a short range.
+            - In poroelasticity, solvent molecules move relative to the polymer network over a long range.
+        - 图
+            - ![](https://vexpaer-blog-media.vexpaer.workers.dev/media/%E7%94%9F%E7%89%A9%E5%8A%9B%E5%AD%A6/images/790450_34e88d4e-128d-4f7f-99e6-0a829817a3b4.png)
+- Viscosity
+    - When subjected to external loads, fluids deform continuously, or **flow**
+    - For fluids, stresses are not dependent upon the strains but on the strain rates.
+    - If the stresses and strain rates in a fluid are linearly proportional, then the fluid is called a **linearly viscous fluid** or a **Newtonian fluid**
+    - For a linearly viscous fluid
+        - The higher the coefficient of viscosity, the “thicker” the fluid and the more difficult it is to deform
+            - ![](https://vexpaer-blog-media.vexpaer.workers.dev/media/%E7%94%9F%E7%89%A9%E5%8A%9B%E5%AD%A6/images/790450_8458bf26-d03a-4a83-ffc8-a24a1742e803.png)
+    - Dashpot Model 阻尼器模型
+        - The speed of the piston is dependent upon the magnitude of the applied force and the friction occurring between the contact surfaces of the piston and cylinder
+        - For a linear dashpot, the applied force and speed (rate of displacement) are linearly proportional, the **coefficient of friction μ** being the constant of proportionality
+        - 公式
+            - ![](https://vexpaer-blog-media.vexpaer.workers.dev/media/%E7%94%9F%E7%89%A9%E5%8A%9B%E5%AD%A6/images/790450_da00011f-2cfb-4730-f12a-faf657016c98.png)
+        - 图
+            - ![](https://vexpaer-blog-media.vexpaer.workers.dev/media/%E7%94%9F%E7%89%A9%E5%8A%9B%E5%AD%A6/images/790450_c72d4bde-c020-4cf0-f7c8-75b135364f1e.png)
+- Models of Viscoelasticity
+    - Empirical Models
+        - Linear viscoelastic models are composed of a network of linear elastic and linear viscous elements
+            - ![](https://vexpaer-blog-media.vexpaer.workers.dev/media/%E7%94%9F%E7%89%A9%E5%8A%9B%E5%AD%A6/images/790450_2c310141-f6ba-4552-bb01-4cbe9d0eccc0.png)
+    - Kelvin-Voight Model
+        - Kelvin-Voight model is a system consisting of a spring and a dashpot connected in a parallel arrangement
+        - 图
+            - ![](https://vexpaer-blog-media.vexpaer.workers.dev/media/%E7%94%9F%E7%89%A9%E5%8A%9B%E5%AD%A6/images/790450_67e8a80f-4ef6-4544-8604-b26fe241421d.png)
+        - 公式
+            - ![](https://vexpaer-blog-media.vexpaer.workers.dev/media/%E7%94%9F%E7%89%A9%E5%8A%9B%E5%AD%A6/images/790450_7129a839-15a8-44cb-ddb9-e6f431901aae.png)
+        - The deformation of a dashpot connected in parallel to a spring, as in the Kelvin-Voight model, is restricted by the response of the spring to the applied loads. The dashpot in the Kelvin-Voight model cannot undergo continuous deformations. Therefore, the Kelvin Voight model represents a **viscoelastic solid behavior**
+    - Maxwell Model
+        - Maxwell model is constructed by connecting a spring and a dashpot in a series
+        - 图
+            - ![](https://vexpaer-blog-media.vexpaer.workers.dev/media/%E7%94%9F%E7%89%A9%E5%8A%9B%E5%AD%A6/images/790450_4a8bd468-f98e-4174-ded5-9206a77e5669.png)
+        - 公式
+            - ![](https://vexpaer-blog-media.vexpaer.workers.dev/media/%E7%94%9F%E7%89%A9%E5%8A%9B%E5%AD%A6/images/790450_8f780617-7eb4-4107-bcec-d4909a9e6a50.png)
+        - In the case of a Maxwell model, a force applied will cause both the spring and the dashpot to deform. The deformation of the spring will be finite. The dashpot will keep deforming as long as the force is maintained. Therefore, the overall behavior of the Maxwell model is more like a fluid than a solid, and it is known to be a **viscoelastic fluid model**
+    - Standard Solid Model
+        - The standard solid model is composed of a spring and a Kelvin-Voight solid connected in a series.
+        - The standard solid model is a three parameter (E1, E2, and η) model
+        - 图
+            - ![](https://vexpaer-blog-media.vexpaer.workers.dev/media/%E7%94%9F%E7%89%A9%E5%8A%9B%E5%AD%A6/images/790450_4677299d-6893-4c03-8cbf-a8083e40f910.png)
+        - σA and εA represent stress and strain in unit A, and σB and εB are stress and strain in unit B
+            - ![](https://vexpaer-blog-media.vexpaer.workers.dev/media/%E7%94%9F%E7%89%A9%E5%8A%9B%E5%AD%A6/images/790450_844ff247-68a6-482d-ad2e-5cf2681c5529.png)
+- Time-Dependent Material Response
+    - Creep
+        - Creep is the continuous accumulation of strain under a sustained applied load, and is a concern for loaded structures that are required to maintain their geometry without extensive deformation, such as a suture
+        - 可以根据Maxwell model计算
+            - 图
+                - ![](https://vexpaer-blog-media.vexpaer.workers.dev/media/%E7%94%9F%E7%89%A9%E5%8A%9B%E5%AD%A6/images/790450_500a5ba8-0886-4a92-af72-197255fcafeb.png)
+            - 公式
+                - ![](https://vexpaer-blog-media.vexpaer.workers.dev/media/%E7%94%9F%E7%89%A9%E5%8A%9B%E5%AD%A6/images/790450_2c02f3f7-dde1-4c6d-b9cc-52d2a19203d6.png)
+    - Stress relaxation
+        - Stress relaxation occurs when a structure has a fixed configuration resulting in an initial imposed stress (such as a press-fit component), where the initial stress relaxes over time and may result in the assembly coming apart
+        - 图
+            - ![](https://vexpaer-blog-media.vexpaer.workers.dev/media/%E7%94%9F%E7%89%A9%E5%8A%9B%E5%AD%A6/images/790450_aa10eebe-e26c-4b82-afd3-072281e5319f.png)
+        - 推导
+            - ![](https://vexpaer-blog-media.vexpaer.workers.dev/media/%E7%94%9F%E7%89%A9%E5%8A%9B%E5%AD%A6/images/790450_ca0825af-29f5-49db-948a-570e0e71ed8e.png)
+        - 模型整体模量 = 整体σ/整体ε
+            - ![](https://vexpaer-blog-media.vexpaer.workers.dev/media/%E7%94%9F%E7%89%A9%E5%8A%9B%E5%AD%A6/images/790450_62d2b870-94ce-45c2-baad-e8683440d2d9.png)
+        - 应力公式
+            - ![](https://vexpaer-blog-media.vexpaer.workers.dev/media/%E7%94%9F%E7%89%A9%E5%8A%9B%E5%AD%A6/images/790450_a2f9940f-35c6-4644-8f3a-d296def6069c.png)
+        - t
+            - a time constant
+            - the relaxation time referred to earlier, and represents the time for a 63% drop in effective modulus
+            - t = η/E
+        - The behavior of the Maxwell model fits with the fluid-like description of viscoelasticity from the discussion of the Deborah number, where the Maxwell model is a fluid for t ≪ τ(or De ≪ 1) but an elastic solid for t ≫ τ (De ≫ 1).
+        - Take care - We use “t” for a relaxation time constant and “τ” for the time duration of a given experiment in this course
+        - example
+            - ![](https://vexpaer-blog-media.vexpaer.workers.dev/media/%E7%94%9F%E7%89%A9%E5%8A%9B%E5%AD%A6/images/790450_031ffb88-532c-413b-b96f-e08bd63c14ae.png)
+    - test
+        - Creep and recovery test
+            - applying a load (stress σ0) on the material at time t0, maintaining the load at a constant level until time t1, suddenly removing the load at t1, and observing the material response
+                - ![](https://vexpaer-blog-media.vexpaer.workers.dev/media/%E7%94%9F%E7%89%A9%E5%8A%9B%E5%AD%A6/images/790450_12752aca-4347-423e-be62-7bae7b583eb5.png)
+        - Stress relaxation experiment
+            - straining the material to a level ε0 and maintaining the constant strain while observing the stress response of the material
+                - ![](https://vexpaer-blog-media.vexpaer.workers.dev/media/%E7%94%9F%E7%89%A9%E5%8A%9B%E5%AD%A6/images/790450_afa10eaf-a6c3-47d3-a0e5-d5cb117e62d5.png)
+        - Oscillatory response test
+            - a harmonic stress is applied, and the strain response of the material is measured
+                - ![](https://vexpaer-blog-media.vexpaer.workers.dev/media/%E7%94%9F%E7%89%A9%E5%8A%9B%E5%AD%A6/images/790450_9bf2529d-4e7e-45a9-f514-1f0684a0f993.png)
+- Time-Temperature Equivalence
+    - Relaxation transitions in polymers are often associated mechanistically with a particular molecular dynamic motion.
+    - 聚合物的松弛转变通常在机理上与特定的分子动态运动相关
+    - Each of these motions has a characteristic time scale associated with it, which is in turn related to the likelihood of such an event occurring within a given time frame through the random thermal motions of the molecules.
+    - 每种运动都有其特征时间尺度，而该时间尺度又与在给定时间内通过分子的随机热运动发生此类事件的可能性相关
+    - As the temperature of the material rises, the rate at which the thermal processes occur increases, effectively reducing the characteristic transition times or increasing the transition frequencies for the material.
+    - 随着材料温度的升高，热过程发生的速率增加，从而有效缩短了特征转变时间，或提高了材料的转变频率
+    - A given observed viscoelastic phenomenon is the product of both the loading frequency and temperature of the material.
+    - 所观察到的特定粘弹性现象是材料加载频率和温度共同作用的结果
+    - It is commonly exploited experimentally to probe the relaxation spectrum by varying temperature and frequency together.
+    - 在实验中，通常通过同时改变温度和频率来探测松弛谱，这一方法被广泛利用
+- Comparison of Elasticity and Viscoelasticity
+    - stress & strain relationship
+        - ![](https://vexpaer-blog-media.vexpaer.workers.dev/media/%E7%94%9F%E7%89%A9%E5%8A%9B%E5%AD%A6/images/790450_bf64784a-b2b5-470e-e37d-81987fe5ac98.png)
+    - load & unload
+        - ![](https://vexpaer-blog-media.vexpaer.workers.dev/media/%E7%94%9F%E7%89%A9%E5%8A%9B%E5%AD%A6/images/790450_fe940a06-eb78-4e47-fcc9-dcdaf6951015.png)
+    - energy
+        - Most of the elastic materials exhibit plastic behavior at stress levels beyond the yield point
+            - ![](https://vexpaer-blog-media.vexpaer.workers.dev/media/%E7%94%9F%E7%89%A9%E5%8A%9B%E5%AD%A6/images/790450_c91cc722-ba0e-47cb-e83d-7f0817ab3ed4.png)
+        - For elastic–plastic materials, some of the strain energy is dissipated as heat during plastic deformations. This is indicated with the presence of a hysteresis loop in their loading and unloading diagrams. Forsuch materials, energy is dissipated as heat only if the plasticregion is entered. Viscoelastic materials dissipate energyregardless of whether the strains or stresses are smallor large
+            - ![](https://vexpaer-blog-media.vexpaer.workers.dev/media/%E7%94%9F%E7%89%A9%E5%8A%9B%E5%AD%A6/images/790450_84b482aa-a5d3-4d89-f077-06a875dbf0fa.png)
+    - test performance
+        - ![](https://vexpaer-blog-media.vexpaer.workers.dev/media/%E7%94%9F%E7%89%A9%E5%8A%9B%E5%AD%A6/images/790450_304b8fd6-c3c0-4d54-8b6b-3ae7ccc0d08d.png)
+- case study
+- takehome message
+    - 1. What is viscoelasticity? / 什么是黏弹性？
+        - English
+            - Viscoelasticity is time-dependent material behavior that combines viscosity and elasticity.
+            - Viscosity is a fluid-like resistance to flow, while elasticity is a solid-like ability to recover deformation.
+            - In an elastic material, stress mainly depends on strain. In a viscoelastic material, stress depends on both strain and strain rate, which can be written as σ = f(ε, dε/dt).
+            - Therefore, viscoelastic materials do not have a unique stress-strain relationship.
+            - The measured properties depend on loading rate, loading duration, frequency, temperature, and testing method.
+            - Viscoelastic materials store part of the mechanical energy and dissipate part of it as heat, so they often show hysteresis and partial recovery.
+            - The Deborah number De = tr / τ compares relaxation time tr with the duration τ of the experiment or loading event. When De is large the material behaves more like a solid, and when De is small it behaves more like a fluid.
+        - 中文
+            - 黏弹性是指材料具有时间依赖性的力学行为，它结合了黏性 viscosity 和弹性 elasticity
+            - 黏性表示类似流体的抗流动能力，弹性表示类似固体的可恢复变形能力
+            - 弹性材料中应力主要取决于应变，而黏弹性材料中应力同时取决于应变和应变率，可写为 σ = f(ε, dε/dt)
+            - 因此黏弹性材料没有唯一的应力-应变关系
+            - 测得的性质会受到加载速率、加载持续时间、频率、温度和测试方法影响
+            - 黏弹性材料一部分机械能被储存，一部分以热等形式耗散，因此常出现滞后和不完全恢复
+            - Deborah 数 De = tr / τ 用来比较松弛时间 tr 与实验或加载持续时间 τDe 较大时材料更像固体，De 较小时材料更像流体
+    - 2. Describe the empirical models of viscoelasticity. / 描述黏弹性的经验模型
+        - English
+            - The basic empirical elements are a spring and a dashpot.
+            - A spring represents an ideal linearly elastic solid with σ = Eε, and its deformation is fully recoverable after unloading.
+            - A dashpot represents an ideal viscous fluid with σ = η dε/dt. As long as stress is applied, it can keep deforming, and its deformation is not fully recoverable.
+            - The Kelvin-Voigt model places a spring and dashpot in parallel, so the strain is the same in both elements and the stresses add: σ = Eε + η dε/dt.
+            - The Kelvin-Voigt model represents a viscoelastic solid and is useful for creep and delayed recovery.
+            - The Maxwell model places a spring and dashpot in series, so the stress is the same and the strains add. Its constitutive relation is dε/dt = (1/E)dσ/dt + σ/η.
+            - The Maxwell model represents a viscoelastic fluid and predicts exponential stress relaxation under constant strain.
+            - The standard solid model combines a spring with a Kelvin-Voigt solid in series and uses three parameters, usually E1, E2, and η, to better describe biological materials such as cartilage and white blood cell membranes.
+            - Memory rule: in parallel, strain is the same and stress adds; in series, stress is the same and strain adds.
+        - 中文
+            - 黏弹性经验模型的基本元件是弹簧和阻尼器
+            - 弹簧表示理想线弹性固体，满足 σ = Eε，卸载后变形可完全恢复
+            - 阻尼器表示理想黏性流体，满足 σ = η dε/dt；只要应力持续存在就可持续变形，且变形不能完全恢复
+            - Kelvin-Voigt 模型由弹簧和阻尼器并联组成，因此两个元件应变相同、总应力相加：σ = Eε + η dε/dt
+            - Kelvin-Voigt 模型表示黏弹性固体，常用于描述蠕变和延迟恢复
+            - Maxwell 模型由弹簧和阻尼器串联组成，因此两个元件应力相同、总应变相加；其本构关系为 dε/dt = (1/E)dσ/dt + σ/η
+            - Maxwell 模型表示黏弹性流体，并且在恒定应变下会出现指数型应力松弛
+            - 标准固体模型由一个弹簧和一个 Kelvin-Voigt 固体串联组成，通常使用 E1、E2 和 η 三个参数，可更好描述软骨、白细胞膜等生物材料
+            - 记忆规则：并联时应变相同、应力相加；串联时应力相同、应变相加
+    - 3. What is creep? / 什么是蠕变？
+        - English
+            - Creep is the continuous accumulation of strain under a sustained constant load or constant stress.
+            - In a creep and recovery test, a constant stress σ0 is applied at time t0, held until time t1, and then suddenly removed.
+            - The strain response during loading and recovery is then observed.
+            - Creep is important for structures that must maintain their geometry under long-term loading, such as sutures, polymer implants, and load-bearing implants.
+            - Excessive creep can cause loss of shape, loosening, or functional failure.
+            - For the Maxwell model under constant stress σ, the creep strain is εcreep = εs + εd = σ / E + σt / η = σ(1/E + t/η).
+            - Here, σ / E is the instantaneous elastic strain from the spring, and σt / η is the time-dependent viscous strain from the dashpot.
+        - 中文
+            - 蠕变是在持续恒定载荷或恒定应力作用下，应变随时间不断累积的现象
+            - 在蠕变-恢复实验中，t0 时施加恒定应力 σ0，保持到 t1，然后突然卸载
+            - 随后观察加载和恢复过程中的应变响应
+            - 蠕变对需要长期承载并保持几何形状的结构很重要，例如缝线、聚合物植入物和承载植入物
+            - 过大的蠕变可能导致形状丧失、松动或功能失效
+            - 对 Maxwell 模型，在恒定应力 σ 下，蠕变应变为 εcreep = εs + εd = σ / E + σt / η = σ(1/E + t/η)
+            - 其中 σ / E 是弹簧产生的瞬时弹性应变，σt / η 是阻尼器产生的随时间增长的黏性应变
+    - 4. What is stress relaxation? / 什么是应力松弛？
+        - English
+            - Stress relaxation occurs when a fixed strain is imposed and maintained while the stress decreases over time.
+            - In a stress relaxation test, the material is quickly strained to ε0 and then held at that constant strain while σ(t) is measured.
+            - It is the complementary time-dependent response to creep.
+            - Creep means strain increases under constant stress, whereas stress relaxation means stress decreases under constant strain.
+            - Stress relaxation is important for press-fit components, suture anchors, and preloaded assemblies.
+            - If stress relaxes too quickly, the initial fixation force or contact pressure may decrease and the assembly may loosen.
+        - 中文
+            - 应力松弛是指施加并保持固定应变时，材料内部应力随时间下降的现象
+            - 在应力松弛实验中，材料被快速拉伸或压缩到 ε0，然后保持该应变不变并测量 σ(t)
+            - 它和蠕变是互补的时间依赖响应
+            - 蠕变是恒定应力下应变增加，应力松弛是恒定应变下应力下降
+            - 应力松弛对压配合部件、缝合锚和预紧装配结构很重要
+            - 如果应力松弛过快，初始固定力或接触压力会降低，结构可能松动
+    - 5. How to calculate stress relaxation over time? / 如何计算应力随时间的松弛？
+        - English
+            - For the Maxwell model, the relaxation time is tr = η / E.
+            - If a step strain ε0 is applied at τ = 0 and then held constant, the initial stress is σ0 = Eε0.
+            - The stress decays exponentially as σ(τ) = σ0 exp(-τ/tr) = Eε0 exp(-τ/tr).
+            - The relaxation modulus is Erelaxation(τ) = E exp(-τ/tr).
+            - At τ = tr, the stress falls to exp(-1), about 37% of its initial value, meaning about 63% has relaxed.
+            - For multiple strain steps in a linear Maxwell model, use superposition: σ(τ) = Σ E Δεi exp[-(τ - τi)/tr], including only strain steps that have already occurred.
+            - Example: if E = 4 GPa and η = 10 GPa·s, then tr = 2.5 s.
+            - With 0.5% strain at 0 s and an additional 3% strain at 30 s, the stress at 50 s is σ = E[0.005 exp(-50/2.5) + 0.03 exp(-20/2.5)], about 4.0e4 Pa or 40 kPa.
+        - 中文
+            - 对 Maxwell 模型，松弛时间为 tr = η / E
+            - 若在 τ = 0 施加阶跃应变 ε0 并保持恒定，则初始应力为 σ0 = Eε0
+            - 应力按指数规律衰减：σ(τ) = σ0 exp(-τ/tr) = Eε0 exp(-τ/tr)
+            - 松弛模量为 Erelaxation(τ) = E exp(-τ/tr)
+            - 当 τ = tr 时，应力降为初始值的 exp(-1)，约 37%，也就是约 63% 已经松弛
+            - 对线性 Maxwell 模型中的多次阶跃应变，使用叠加原理：σ(τ) = Σ E Δεi exp[-(τ - τi)/tr]，只累加已经发生的阶跃应变
+            - 例题：若 E = 4 GPa、η = 10 GPa·s，则 tr = 2.5 s
+            - 若 0 s 施加 0.5% 应变，30 s 再增加 3% 应变，则 50 s 时 σ = E[0.005 exp(-50/2.5) + 0.03 exp(-20/2.5)]，约为 4.0e4 Pa，即 40 kPa

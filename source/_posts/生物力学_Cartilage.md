@@ -1,0 +1,244 @@
+---
+title: "生物力学_Cartilage"
+date: 2026-07-01 12:00:00
+tags:
+- 生物力学
+- undergraduate
+cover: /img/tag-physics-cover.png
+mindmap: true
+---
+Cartilage
+- basic
+    - Learning Objectives
+        - Understand the composition and structure of cartilage.
+        - Understand the biomechanical behavior of cartilage.
+        - Know the lubrication and wear of cartilage.
+        - Know the hypotheses on the biomechanics of cartilage degeneration.
+    - Types of Cartilage
+        - The three main types of cartilage in the body are hyaline cartilage, elastic cartilage, and fibrocartilage.
+        - These cartilages differ in their proportions of collagen, elastin, and proteoglycans.
+        - hyaline cartilage透明软骨
+            - Hyaline cartilage is the glass-like and translucent cartilage found on many joint surfaces.
+            - It is also most commonly found in the ribs, nose, larynx, and trachea.
+            - Hyaline cartilage is pearl-grey in color, with a firm consistency and has a considerable amount of collagen.
+            - It contains **no nerves or blood vessels**, and its structure is relatively simple.
+            - articular cartilage关节软骨
+                - location
+                    - Most commonly, however, hyaline cartilage is found in joints where there is a lot of motion between opposing bones (such as the ankle, knee, hip, shoulder, or elbow joints).
+                    - They are called synovial joints滑膜关节 or diarthrodial joints动关节, hyaline cartilage in those is called **articular cartilage关节软骨**.
+                - Articular cartilage forms a thin layer on the ends of long bones, such as the femur or tibia, and on sesamoid bones, such as the patella.
+                    - ![](https://vexpaer-blog-media.vexpaer.workers.dev/media/%E7%94%9F%E7%89%A9%E5%8A%9B%E5%AD%A6/images/790450_263110a5-9a83-46ac-e476-a2c84109bfb1.png)
+                - function in diarthrodial joints
+                    - to distribute joint loads over a wide area, thus decreasing the stresses sustained by the contacting joint surfaces
+                    - to allow relative movement of the opposing joint surfaces with minimal friction and wear
+        - elastic cartilage弹性软骨
+            - Elastic cartilage is present in the pinnae耳廓 of the ear, external auditory meatus外耳道, Eustachian tube咽鼓管, laryngeal cartilages喉软骨, and epiglottis会厌中
+                - ![](https://vexpaer-blog-media.vexpaer.workers.dev/media/%E7%94%9F%E7%89%A9%E5%8A%9B%E5%AD%A6/images/790450_326a64c2-1d66-4011-c4c4-1c62d6aab864.png)
+            - contains
+                - elastic fiber networks
+                - collagen type II fibers
+            - The principal protein is elastin弹性蛋白
+        - fibrocartilage纤维软骨
+            - Fibrocartilage consists of
+                - white fibrous tissue
+                    - provide inflexibility and toughness
+                - cartilaginous tissue
+                    - provide elasticity
+            - It is the **only** type of cartilage that **contains type I collagen in addition to the normal type II**
+            - Fibrocartilage can be found at medial and lateral menisci of the knee joint and where tendons and ligaments attach to bone.
+                - ![](https://vexpaer-blog-media.vexpaer.workers.dev/media/%E7%94%9F%E7%89%A9%E5%8A%9B%E5%AD%A6/images/790450_22ba1600-3d7d-40e5-e947-0f3276718e34.png)
+- Articular Cartilage
+    - Composition and Structure
+        - Chondrocytes and ECM
+            - Chondrocytes软骨细胞, the sparsely distributed cells in articular cartilage, account for less than 10% of the tissue's volume.
+                - ![](https://vexpaer-blog-media.vexpaer.workers.dev/media/%E7%94%9F%E7%89%A9%E5%8A%9B%E5%AD%A6/images/790450_fb60470f-b045-436d-9d61-f3cbb9ede8fb.png)
+            - Chondrocytes manufacture, secrete, organize, and maintain the organic component of the ECM.
+            - The organic matrix is composed of a dense network of fine collagen fibrils enmeshed in a concentrated solution of proteoglycans(PGs).
+            - Collagen fibrils are mostly type II collagen, with minor amounts of types I, V, VI, IX, and XI.
+        - Wet-Weight Composition
+            - In normal articular cartilage, collagen content ranges from 15% to 22% by wet weight.
+            - PG content ranges from 4% to 7% by wet weight.
+            - The remaining 60% to 85% is water, inorganic salts, and small amounts of other matrix proteins, glycoproteins, and lipids.
+            - Collagen fibrils and PGs form structural networks of significant strength.
+            - These structural components support the internal mechanical stresses that result from loads applied to articular cartilage.
+            - Collagen fibrils, PGs, and water together determine the biomechanical behavior of this tissue.
+        - Collagen
+            - Layered Character
+                - The collagen in articular cartilage is inhomogeneously distributed, giving the tissue a layered character.
+                - collagen architecture changes from parallel surface fibers to radial deep bundles
+                    - ![](https://vexpaer-blog-media.vexpaer.workers.dev/media/%E7%94%9F%E7%89%A9%E5%8A%9B%E5%AD%A6/images/790450_834a09f9-0116-4dbf-a06a-2a2e4e805d71.png)
+                - superficial tangential zone (STZ)表浅切向层
+                    - 10% to 20% of the total thickness
+                    - Sheets of **densely packed fibers are randomly woven in planes parallel to the articular surface**.
+                    - This collagen-rich superficial zone works like a tough wear-resistant protective skin.
+                - middle zone中间层
+                    - 40% to 60% of the total thickness
+                    - There are greater distances between **randomly oriented and homogeneously dispersed** fibers.
+                - deep zone深层
+                    - 30% of the total thickness
+                    - The fibers come together, forming larger, **radially oriented fiber bundles**.
+            - Anisotropy
+                - Like bone, articular cartilage is anisotropic, its material properties differ with the direction of loading.
+                - 原因
+                    - varying collagen fiber arrangements within planes parallel to the articular surface.
+                    - Variations in collagen fiber crosslink density and collagen-PG interactions also contribute to tensile anisotropy.
+                - split line 分裂线
+                    - In tension, anisotropy is usually described with respect to the direction of the articular surface split lines.
+                    - Split lines are elongated fissures produced by piercing the articular surface with a small round awl.
+                    - The split-line pattern is related to directional variation of tensile stiffness and strength.
+                    - human femoral condyles split lines
+                        - ![](https://vexpaer-blog-media.vexpaer.workers.dev/media/%E7%94%9F%E7%89%A9%E5%8A%9B%E5%AD%A6/images/790450_f10e8986-c8a7-4d5e-df30-8003169ec6fa.png)
+        - Water
+            - 总结来说,大部分水在ECM的collagen fibrils间隙中,受到压力可以被压出去,像海绵一样
+            - Water is the most abundant component of articular cartilage.
+            - **Water is most concentrated near the articular surface (~80%) and decreases nearly linearly with depth to approximately 65% in the deep zone.**
+            - A small percentage of the water resides intracellularly.
+            - Approximately 30% is strongly associated with the collagen fibrils.
+            - The interaction between collagen, PG, and water regulates ECM organization and swelling properties **via osmotic pressure**
+            - Most water occupies the interfibrillar space of the ECM and is free to move when load, pressure gradient, or electrochemical motive forces are applied.
+            - When loaded by a compressive force, approximately 70% of the water may be moved.
+            - Interstitial fluid movement is important in controlling cartilage mechanical behavior and joint lubrication.
+    - Biomechanical Behavior
+        - Biphasic Material
+            - Articular cartilage is treated as biphasic material双相材料
+            - Two phases are intrinsically incompressible, immiscible, and distinct
+            - Two phases
+                - interstitial fluid phase间质液相
+                - porous-permeable solid phase多孔可渗透固相, i.e. the ECM
+            - During joint articulation关节活动中
+                - forces at the joint surface may vary from almost zero to more than ten times body weight.
+                - contact areas vary in a complex manner and are typically only several square centimeters.
+                - Thus, articular cartilage under physiologic loading conditions is a highly stressed material.
+        - Viscoelasticity
+            - In compression
+                - viscoelastic behavior is primarily caused by the flow of interstitial fluid and the frictional drag associated with this flow.
+                - **poroelasticity**多孔弹性
+                    - Interstitial fluid pressurization supports more than 90% of the applied load immediately following loading.
+                    - This effect can persist for more than one thousand seconds.
+                    - Poroelasticity shields the ECM and chondrocytes from crushing deformation under high stresses (20 MPa) from joint loading.
+                - Confined Compression Explant Loading Configuration
+                    - 用一个盖子压软骨,上面的盖子可以漏水,水压出去后软骨样本会creep
+                        - ![](https://vexpaer-blog-media.vexpaer.workers.dev/media/%E7%94%9F%E7%89%A9%E5%8A%9B%E5%AD%A6/images/790450_dba98e92-f2ff-49db-dc2c-0cd6545c46a4.png)
+                    - Under axial loading via a rigid porous-permeable loading platen, fluid flows from the tissue into the porous-permeable platen.
+                    - As fluid leaves, the cartilage sample compresses in creep.
+                    - At any time, the amount of compression equals the volume of fluid loss, because both water and ECM are intrinsically incompressible.
+                - Creep Response
+                    - 早期水流最多，后期固相承担载荷
+                        - ![](https://vexpaer-blog-media.vexpaer.workers.dev/media/%E7%94%9F%E7%89%A9%E5%8A%9B%E5%AD%A6/images/790450_793e3a0b-590e-4fbe-d07a-cc8ac1a14e15.png)
+                    - For articular cartilage, creep is caused by the exudation of the interstitial fluid.
+                    - Exudation is most rapid initially, and it diminishes减少 gradually until flow cessation occurs.
+                    - During creep, the load applied at the surface is balanced by two components
+                        - compressive stress developed within the collagen-PG solid matrix
+                        - frictional drag generated by the flow of interstitial fluid during exudation
+                    - Creep ceases when the compressive stress developed within the solid matrix is sufficient to balance the applied stress alone.
+                - Stress Relaxation
+                    - creep结束后,表面水exudation多,这会在没有exudation情况下发生redistribution,导致relaxation
+                        - ![](https://vexpaer-blog-media.vexpaer.workers.dev/media/%E7%94%9F%E7%89%A9%E5%8A%9B%E5%AD%A6/images/790450_2228b7b3-0420-4a48-f083-8af55a99b0c5.png)
+                    - During the compressive phase, high stress is generated by forced exudation渗出 of interstitial fluid and compaction of the solid matrix near the surface.
+                    - Stress relaxation is associated with fluid redistribution再分配 within the porous solid matrix.
+                    - **During relaxation, fluid redistribution occurs with no exudation.**
+                    - Under physiologic loading conditions, excessive stress levels are difficult to maintain because stress relaxation rapidly attenuates tissue stress. This must lead to rapid spreading of the contact area in the joint during articulation.
+            - In uniaxial tension
+                - In tension, the tissue is strongly anisotropic各向异性 and strongly inhomogeneous不均匀性
+                - This is believed to be caused by varying collagen and PG structural organization at the joint surface and layered arrangements within the tissue.
+                - The collagen-rich superficial zone provides joint cartilage with a tough wear-resistant protective skin.
+                - Articular cartilage also exhibits viscoelastic behavior in tension,because of internal friction associated with polymeric motion and the flow of interstitial fluid.
+                - If collagen molecular structure, fiber organization, or cross-linking is altered, the tensile properties of the network will change.
+                - 拉伸导致纤维排布方向都向受力方向变化
+                    - ![](https://vexpaer-blog-media.vexpaer.workers.dev/media/%E7%94%9F%E7%89%A9%E5%8A%9B%E5%AD%A6/images/790450_273d767a-2915-46f1-9ea1-644b8584f1e6.png)
+            - In shear
+                - 主要靠固体,和液体没关系
+                    - ![](https://vexpaer-blog-media.vexpaer.workers.dev/media/%E7%94%9F%E7%89%A9%E5%8A%9B%E5%AD%A6/images/790450_4f21aadd-e4c3-48e6-b375-d166b9fb8f7a.png)
+                - viscoelastic behavior is primarily caused by the motion of long polymer chains such as collagen and PGs.
+                - When cartilage is tested in pure shear under infinitesimal strain conditions, no volumetric changes or pressure gradients are produced. Hence, no interstitial fluid flow occurs.
+                - The shear stiffness of articular cartilage mainly derives from collagen content or collagen-PG interaction.
+    - Lubrication
+        - mechanism
+            - The minimal wear suggests the existence of sophisticated lubrication processes.
+            - These processes operate within the joint and on the cartilage surface.
+        - Types of lubrication
+            - fluid-film lubrication流体膜润滑
+                - Thin fluid-film provides surface-to-surface separation.
+                - Hydrodynamic lubrication - relative motion drags synovial fluid into the gap and develops pressure P.
+                    - ![](https://vexpaer-blog-media.vexpaer.workers.dev/media/%E7%94%9F%E7%89%A9%E5%8A%9B%E5%AD%A6/images/790450_789f9e68-7957-4f56-892d-31fd33cdc85b.png)
+                - Squeeze-film lubrication - load and normal motion pressurize fluid between opposing cartilage surfaces.
+                    - ![](https://vexpaer-blog-media.vexpaer.workers.dev/media/%E7%94%9F%E7%89%A9%E5%8A%9B%E5%AD%A6/images/790450_2a66a754-14fc-4662-c578-ce1078629309.png)
+            - boundary lubrication边界润滑
+                - Relies on a single monolayer of lubricant molecules adsorbed on each bearing surface.
+                - lubricating glycoprotein layer, approximately 1-100 nm thick.
+                    - ![](https://vexpaer-blog-media.vexpaer.workers.dev/media/%E7%94%9F%E7%89%A9%E5%8A%9B%E5%AD%A6/images/790450_d11d0381-f605-40b8-9d14-b5f76d7c1ac7.png)
+            - mixed lubrication混合润滑
+                - Pressurized fluid and boundary-lubricated contact coexist.
+                - boundary lubricant + pressurized fluid, local gap about 0.3 μm.
+                    - ![](https://vexpaer-blog-media.vexpaer.workers.dev/media/%E7%94%9F%E7%89%A9%E5%8A%9B%E5%AD%A6/images/790450_7ca7161a-50c3-464e-88af-89ca02e6dfeb.png)
+    - Wear
+        - interfacial wear界面磨损
+            - Interfacial wear occurs when bearing surfaces come into direct contact with no lubricant film separating them.
+            - No boundary or fluid lubricant film protects the surfaces.
+            - This type of wear can take place in two ways
+                - adhesion 粘着磨损
+                - abrasion 磨粒磨损
+        - fatigue wear疲劳磨损
+            - Fatigue wear results not from surface-to-surface contact but from accumulation of microscopic damage within the bearing material.
+            - This damage occurs under repetitive stressing rather than direct surface-to-surface contact.
+- Biomechanics of Cartilage Degeneration
+    - Mechanical Loading Factors
+        - Magnitude of the imposed stresses.
+        - Number of sustained stress peaks.
+        - Stress magnitude and repeated peaks drive spatial and temporal stress-strain, pressure, and fluid fields.
+    - Structure-Property Feedback
+        - Changes in microscopic structure.
+        - Changes in mechanical properties.
+        - Cartilage structure influences mechanical properties.
+        - Joint loading changes local stress-strain, pressure, and fluid fields.
+        - Mechanical fields become cell stimuli for chondrocytes.
+        - Chondrocyte synthetic activities alter collagen-PG ECM and biochemical composition.
+        - Biochemical composition feeds back to cartilage structure and cartilage function.
+        - 图 - physical activities, joint loading, cells, ECM, structure, mechanical properties form a feedback loop
+            - ![](https://vexpaer-blog-media.vexpaer.workers.dev/media/%E7%94%9F%E7%89%A9%E5%8A%9B%E5%AD%A6/images/790450_944ac032-d956-444b-ca7d-8dbad3a194d0.png)
+    - Degeneration Mechanism / OA Progression
+        - Loosening of the collagen network.
+        - Abnormal expansion of PG.
+        - Vulnerable cartilage ultrastructure.
+        - Inferior biomechanical properties.
+        - OA progression: normal cartilage develops PG loss and collagen damage.
+        - PG loss and collagen damage decrease fixed charge density.
+        - Decreased fixed charge density decreases swelling pressure.
+        - Frictional drag decreases and hydraulic permeability increases.
+        - Increased hydraulic permeability leads to increased matrix deformation and increased fluid flow.
+        - These changes diminish cartilage load-bearing properties.
+        - 图 - OA cartilage under load shows more deformation and more fluid exudation
+            - ![](https://vexpaer-blog-media.vexpaer.workers.dev/media/%E7%94%9F%E7%89%A9%E5%8A%9B%E5%AD%A6/images/790450_71865cbe-fdd1-47e0-9f53-5d5f7132fc27.png)
+- Case Study 1
+    - Human Cartilage Repair with a Photoreactive Adhesive-Hydrogel Composite
+        - Research article in tissue engineering.
+        - The case study links cartilage repair material design with mechanical and clinical outcomes.
+    - Repair Strategy
+        - Cartilage defect is surgically prepared, then microfracture-type holes are made in the defect bed.
+        - Photoreactive adhesive-hydrogel composite is used with microfracture (Implant + Mfx).
+        - Microfracture alone (Mfx) is used as comparison.
+        - 图 - defect preparation, perforation/microfracture holes, hydrogel/implant filling, blood-filled repair region
+            - ![](https://vexpaer-blog-media.vexpaer.workers.dev/media/%E7%94%9F%E7%89%A9%E5%8A%9B%E5%AD%A6/images/790450_6f17674b-25a2-40bc-d965-936f4a7bcf29.png)
+    - Mechanical Outcome
+        - Reduced modulus Er (MPa) is compared among bone, cartilage, Implant + Mfx, and Mfx.
+        - From the graph: bone and native cartilage have higher Er than repaired groups.
+        - Approximate graph reading: bone ~2.3 MPa, cartilage ~1.9 MPa, Implant + Mfx ~0.7 MPa, Mfx ~0.5 MPa.
+        - Implant + Mfx appears mechanically higher than Mfx alone, but still below native tissue.
+    - Clinical Outcome
+        - Pain frequency and pain severity are measured at baseline, 3 months, and 6 months.
+        - The plotted outcomes suggest pain measures decrease after treatment, especially in the follow-up groups.
+        - Clinical improvement and tissue mechanics must be interpreted together.
+- Take-Home Message
+    - What is the major composition of cartilage?
+        - Chondrocytes + ECM; ECM contains collagen fibrils, proteoglycans, water, salts, and minor matrix molecules.
+        - Normal articular cartilage: collagen 15% to 22%, PG 4% to 7%, water-rich remaining 60% to 85% by wet weight.
+    - What are the structural properties of cartilage?
+        - Layered structure: STZ 10% to 20%, middle zone 40% to 60%, deep zone about 30%, plus calcified zone and subchondral bone.
+        - Collagen distribution creates anisotropy and depth-dependent mechanical behavior.
+    - Describe the creep response and stress relaxation of articular cartilage.
+        - Creep: constant load causes time-dependent deformation through interstitial fluid exudation.
+        - Stress relaxation: constant deformation causes stress decay through fluid redistribution in the porous solid matrix.
+    - Which lubrication approaches are involved in articular cartilage?
+        - Fluid-film lubrication, including hydrodynamic lubrication and squeeze-film lubrication.
+        - Boundary lubrication by adsorbed lubricant molecules.
+        - Mixed lubrication combining fluid pressure and boundary-lubricated asperity contact.

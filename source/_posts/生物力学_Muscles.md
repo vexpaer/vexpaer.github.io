@@ -1,0 +1,373 @@
+---
+title: "生物力学_Muscles"
+date: 2026-07-01 12:00:00
+tags:
+- 生物力学
+- undergraduate
+cover: /img/tag-physics-cover.png
+mindmap: true
+---
+Muscles
+- basic
+    - Learning Objectives
+        - Understand the composition and structure of skeletal muscles.
+        - Know the molecular basis of muscle contraction.
+        - Understand the mechanics of muscle contraction and force production in muscle.
+        - Know muscle fiber differentiation and muscle remodeling.
+    - Muscle Types
+        - skeletal muscle骨骼肌
+            - Skeletal muscles comprise 40 to 45% of total body weight.
+            - attached to bones via tendons肌腱.
+            - responsible for locomotion and body motion.
+            - under voluntary control.
+        - smooth muscle平滑肌
+            - Smooth muscle is typically found surrounding the lumen of tubes within the body.
+            - Examples include blood vessels, the urinary tract, and the gastrointestinal tract.
+            - Smooth muscle controls the caliber of the lumen and generates peristaltic waves.
+            - under involuntary control
+        - cardiac muscle心肌
+            - Cardiac muscle makes up the major bulk of the heart mass.
+            - It is sufficiently unique to be considered a different muscle type.
+            - under involuntary control
+- Skeletal Muscle
+    - Structure and Organization
+        - Gross Organization
+            - sarcomere→myofibril→muscle fiber+blood vessel+connective tissue→muscle
+                - ![](https://vexpaer-blog-media.vexpaer.workers.dev/media/%E7%94%9F%E7%89%A9%E5%8A%9B%E5%AD%A6/images/790450_b8f5e229-eac5-443b-a59d-677705c1ed2b.png)
+            - Skeletal muscle is a remarkably efficient and adaptable tissue.
+            - Skeletal muscles are typically relatively long and thin, often described as **spindle shaped**
+            - In cross-section, skeletal muscle consists of
+                - blood vessels
+                - connective tissues
+                - muscle fibers肌纤维
+                    - Individual muscle fibers are long rod-shaped muscle cells
+                        - 10 to 100 μm in diameter
+                        - up to 30 cm in length
+                    - Muscle fibers are typically multinucleated and contain many mitochondria.
+                    - The most prominent constituent of the muscle fiber is the myofibril肌原纤维.
+                    - The myofibril is made up of several sarcomeres肌节.
+        - Sarcomere Filaments
+            - 黑的粗的myosin连着M, 白的细的actin连着Z
+                - ![](https://vexpaer-blog-media.vexpaer.workers.dev/media/%E7%94%9F%E7%89%A9%E5%8A%9B%E5%AD%A6/images/790450_642b1e6d-4170-40a1-deba-2b377a6d790d.png)
+            - thick filaments粗肌丝
+                - about 15 nm in diameter
+                - composed of myosin肌球蛋白
+                - located in the central region of the sarcomere
+                - their orderly, parallel arrangement gives rise to dark bands
+            - thin filaments细肌丝
+                - approximately 5 nm in diameter
+                - composed of actin肌动蛋白
+                - attached at either end of the sarcomere to the Z line
+                - The Z line links thin filaments of adjacent sarcomeres and defines the limits of each sarcomere.
+                - Thin filaments extend from the Z line toward the center of the sarcomere, where they overlap with thick filaments.
+        - Band Nomenclature
+            - 收缩时A不变,I变短H变短
+                - ![](https://vexpaer-blog-media.vexpaer.workers.dev/media/%E7%94%9F%E7%89%A9%E5%8A%9B%E5%AD%A6/images/790450_14e4489c-7d91-48cc-b404-68c4353c52e8.png)
+            - A band
+                - A bands are the thick filaments which are strongly anisotropic.
+                - The width of the A band remains constant during sarcomere shortening.
+            - I band
+                - The I band is bisected by the Z lines.
+                - It contains the portion of the thin filaments that **does not overlap** with the thick filaments.
+                - It also contains the elastic part of titin.
+                - The I band decreases as the Z lines move closer together during shortening.
+            - H zone
+                - In the center of the A band, in the gap between the ends of the thin filaments, is the H zone.
+                - It is a light band containing only thick filaments and the part of titin integrated in the thick filaments.
+            - M line
+                - A narrow dark area in the center of the H zone is the M line.
+                - It is produced by transversely and longitudinally-oriented proteins that link adjacent thick filaments.
+                - It maintains the parallel arrangement of thick filaments.
+            - Z line
+                - Z lines define the boundaries of each sarcomere.
+                - Adjacent sarcomeres share the Z-line linkage of thin filaments.
+    - Molecular Basis of Muscle Contraction
+        - Sliding Filament Mechanism
+            - 本质是myosin head一直扒拉actin
+            - Active shortening of the sarcomere, and hence of the muscle, results from **relative movement** of actin and myosin filaments past one another.
+            - Each filament retains its original length during sliding.
+            - The force of contraction is developed by the myosin heads, or cross-bridges横桥.
+                - ![](https://vexpaer-blog-media.vexpaer.workers.dev/media/%E7%94%9F%E7%89%A9%E5%8A%9B%E5%AD%A6/images/790450_16e44a3d-78c8-4228-9355-4e817398c475.png)
+            - Cross-bridges act in the region of overlap between actin and myosin.
+            - A single movement of a cross-bridge produces only a small displacement of the actin filament relative to the myosin filament.
+            - Each individual cross-bridge detaches from one receptor site on actin and reattaches to another site farther along.
+            - The process repeats five or six times.
+            - At any given moment only about half of the cross-bridges actively generate force and displacement.
+            - When active cross-bridges detach, others take up the task so that shortening is maintained.
+            - Sarcomere shortening is reflected as a decrease in the I band, the A band remains constant.
+        - Calcium and Excitation-Contraction Coupling
+            - 电信号 → 化学信号Ca2+ → 电信号
+                - ![](https://vexpaer-blog-media.vexpaer.workers.dev/media/%E7%94%9F%E7%89%A9%E5%8A%9B%E5%AD%A6/images/790450_b8cf7cc4-5134-4934-f9b9-ac47cfe66c54.png)
+            - calcium ion Ca2+钙离子
+                - 原肌球蛋白会挡住thin filament上与myosin的结合位点,当有Ca2+时,肌钙蛋白会拉着原肌球蛋白移动,露出与myosin的结合位点,肌肉收缩
+                    - ![](https://vexpaer-blog-media.vexpaer.workers.dev/media/%E7%94%9F%E7%89%A9%E5%8A%9B%E5%AD%A6/images/790450_d280cf78-2372-4e0d-b1c9-ff4e458cc193.png)
+                - A key to the sliding mechanism is Ca2+, which turns contractile activity on and off.
+                - Muscle contraction is initiated when calcium is made available to the contractile elements.
+                - Contraction ceases when calcium is removed.
+            - sarcolemma肌膜
+                - 肌膜的内质网存着Ca2+
+                    - ![](https://vexpaer-blog-media.vexpaer.workers.dev/media/%E7%94%9F%E7%89%A9%E5%8A%9B%E5%AD%A6/images/790450_11face1d-7ee3-452d-813b-f4a289e2105e.png)
+                - Mechanisms that regulate calcium availability are coupled to electric events in the muscle membrane.
+                - An action potential in the sarcolemma provides the electric signal for initiating contractile activity.
+            - excitation-contraction coupling兴奋-收缩耦联
+                - The electric signal triggers the chemical events of contraction.
+                - When the motor neuron stimulates the muscle at the neuromuscular junction, the propagated action potential depolarizes the sarcolemma.
+                    - ![](https://vexpaer-blog-media.vexpaer.workers.dev/media/%E7%94%9F%E7%89%A9%E5%8A%9B%E5%AD%A6/images/790450_ed976140-f559-4464-9e62-ebdace06e808.png)
+                - There is an inward spread of the action potential along the system.
+        - The Motor Unit
+            - 一个神经加上所有控制的muscle fiber算一个单位,一个单位要么最大收缩要么不收缩,一个单位的muscle fiber与其他单位的muscle fiber分散在整个肌肉中,而不是一坨
+            - The functional unit of skeletal muscle is the motor unit运动单位.
+            - A motor unit includes
+                - a single motor neuron
+                - all of the muscle fibers innervated by it
+            - This unit is the smallest part of the muscle that can be made to contract independently.
+            - When stimulated, all muscle fibers in the motor unit respond as one.
+            - The fibers of a motor unit show an **all-or-none** response全或无反应.
+            - The number of muscle fibers forming a motor unit is closely related to the degree of control required of the muscle.
+            - Fibers of each motor unit are not contiguous but dispersed throughout the muscle with fibers of other units.
+            - If a single motor unit is stimulated, a large portion of the muscle appears to contract.
+            - If additional motor units are stimulated, the muscle contracts with greater force.
+    - The Musculotendinous Unit肌腱单位 and Hill's Model
+        - 总结
+            - ![](https://vexpaer-blog-media.vexpaer.workers.dev/media/%E7%94%9F%E7%89%A9%E5%8A%9B%E5%AD%A6/images/790450_a28f01d1-a426-4077-ddc1-823d62be197b.png)
+        - Viscoelastic Structures
+            - Tendons and connective tissues in and around the muscle belly are viscoelastic structures.
+            - They help determine the mechanical characteristics of entire muscle during contraction and passive extension.
+            - 分为收缩成分和弹性成分
+                - contractile component
+                    - the contractile proteins of the myofibril, actin, and myosin
+                - elastic component
+                    - tendons
+                        - represent a spring-like elastic component located in a series with the contractile component
+                    - connective tissues
+                        - epimysium肌外膜
+                        - perimysium肌束膜
+                        - endomysium肌内膜
+                        - sarcolemma肌膜
+                        - represent an elastic component located parallel to the contractile component
+        - Hill-Type Muscle Model
+            - Hill-type muscle model (Hill's model) is one of the most used models to describe the mechanism of force production.
+            - It describes the behavior of the muscle and tendon using different elements.
+            - Hill model tree separates CC, SEC, and PEC
+                - ![](https://vexpaer-blog-media.vexpaer.workers.dev/media/%E7%94%9F%E7%89%A9%E5%8A%9B%E5%AD%A6/images/790450_67b6b113-484f-4264-efe5-7970c42e141b.png)
+            - contractile component CC收缩元件
+                - represents the fundamental mechanical behavior of the sarcomere
+                - governed by activation kinetics, force-length properties, and force-velocity properties
+                - corresponds to overlap of actin and myosin
+                - produces active tension主动张力
+            - series elastic component SEC串联弹性元件
+                - influence force, length, and speed of the entire unit
+                - connective tissues within the tendon
+                - smoothen out the rapid changes in muscle tension
+                - contributes to passive tension被动张力
+            - parallel elastic component PEC并联弹性元件
+                - influence force, length, and speed of the entire unit
+                - parallel connective tissues
+                - mainly produces passive tension
+        - Elastic Component Function
+            - 弹性成分可以储存然后释放能量
+            - When parallel and series elastic components stretch during active contraction or passive extension, tension is produced and energy is stored.
+            - When they recoil with muscle relaxation, this energy is released.
+            - Their distensibility and elasticity are valuable in several ways
+                - keep the muscle **in readiness** for contraction
+                - ensure that muscle tension is produced and transmitted smoothly during contraction
+                - ensure that contractile elements **return to their original (resting) positions** when contraction is terminated
+                - help **prevent passive overstretch** of relaxed contractile elements
+                - absorb energy proportional to the rate of force application, dissipate energy in a time-dependent manner
+    - Types and Performance of Muscle Contraction
+        - Types of Muscle Contraction
+            - dynamic work动态做功
+                - Mechanical work is performed and joint motion is produced.
+                    - ![](https://vexpaer-blog-media.vexpaer.workers.dev/media/%E7%94%9F%E7%89%A9%E5%8A%9B%E5%AD%A6/images/790450_6cefd953-744b-4e83-d567-7a3235ebe9fd.png)
+                - concentric contraction向心收缩
+                    - Muscles develop sufficient tension to overcome the resistance of the body segment.
+                    - The muscles shorten and cause joint movement.
+                    - The net moment generated by the muscle is in the same direction as the change in joint angle.
+                - eccentric contraction离心收缩
+                    - A muscle cannot develop sufficient tension and is overcome by the external load.
+                    - The muscle progressively lengthens instead of shortening.
+                    - The net muscle moment is in the opposite direction from the change in joint angle.
+                    - One purpose of eccentric contraction is to decelerate the motion of a joint.
+            - static work静态维持
+                - No mechanical work is performed.
+                - Posture or joint position is maintained.
+                - isometric contraction等长收缩
+                    - The muscle attempts to shorten, but it does not overcome the load and cause movement.
+                    - Myofibrils shorten and stretch the series elastic component, thereby producing tension.
+                    - No change takes place in the distance between the muscle's points of attachment.
+                    - The muscle produces a moment that supports the load in a fixed position, for example maintains posture.
+                - Although no motion and no mechanical work occur during isometric contraction, physiologic work is performed.
+                - Energy is expended and mostly dissipated as heat, called isometric heat production.
+        - Length-Tension Relationship
+            - The force, or tension, that a muscle exerts varies with the length at which it is held when stimulated.
+            - Maximal tension
+                - produced when the muscle fiber is approximately at its slack, or resting, length.
+                    - ![](https://vexpaer-blog-media.vexpaer.workers.dev/media/%E7%94%9F%E7%89%A9%E5%8A%9B%E5%AD%A6/images/790450_08263ce5-d557-4fc0-fb11-c8397644c241.png)
+                - 2.0-2.25 μm sarcomere length
+                - If the fiber is held at shorter lengths, tension falls off slowly at first and then rapidly.
+                - If the fiber is lengthened beyond resting length, tension progressively decreases.
+            - Whole muscle isometric length-tension
+                - Tension produced by both active components and passive components must be taken into account.
+                    - ![](https://vexpaer-blog-media.vexpaer.workers.dev/media/%E7%94%9F%E7%89%A9%E5%8A%9B%E5%AD%A6/images/790450_327aaca0-1495-4958-9af6-06afd23a86bd.png)
+                - active tension主动张力
+                    - developed by the contractile elements of the muscle
+                    - resembles the curve for the individual fiber
+                - passive tension被动张力
+                    - developed when the muscle surpasses its resting length
+                    - the noncontractile muscle belly is stretched
+                    - mainly developed in the parallel and series elastic components
+                - total tension总张力
+                    - combined effect of active tension and passive tension
+                    - At longer whole-muscle lengths, passive tension can raise total tension even while active tension declines.
+        - Load-Velocity Relationship
+            - 东西从0变重速度减小,到0之后再变重肌肉就离心收缩了
+                - ![](https://vexpaer-blog-media.vexpaer.workers.dev/media/%E7%94%9F%E7%89%A9%E5%8A%9B%E5%AD%A6/images/790450_58944612-e920-4e86-dbae-515d157bbcec.png)
+            - The velocity of shortening of a muscle contracting concentrically is inversely related to the external load applied.
+            - When the external load equals the maximal force that the muscle can exert, the velocity of shortening becomes zero.
+            - At zero shortening velocity, the muscle contracts isometrically.
+            - When the load is increased still further, the muscle contracts eccentrically, the muscle elongates during contraction.
+            - The load-velocity relationship is reversed from that of the concentrically contracting muscle.
+            - The muscle eccentrically lengthens more quickly with increasing load.
+        - Force-Time Relationship
+            - 收缩很快,传递需要时间
+                - ![](https://vexpaer-blog-media.vexpaer.workers.dev/media/%E7%94%9F%E7%89%A9%E5%8A%9B%E5%AD%A6/images/790450_bdb72d8f-5210-459c-ab52-9cd4e387283f.png)
+            - The force, or tension, generated by a muscle is proportional to the contraction time.
+            - The longer the contraction time, the greater the force developed, up to maximum tension.
+            - Time is allowed for tension produced by contractile elements to be transmitted through elastic components to the tendon.
+            - Tension production in the contractile component can reach a maximum in as little as 10 msec.
+            - Up to 300 msec may be needed for that tension to be transferred to the elastic components.
+            - The tendon reaches maximum tension only if the active contraction process is of sufficient duration.
+    - Factors
+        - Effect of Skeletal Muscle Architecture
+            - The more sarcomeres lie in series, the longer the myofibril.
+            - The more sarcomeres lie parallel, the larger the cross-sectional area of the myofibril.
+            - Two architectural patterns affect contractile properties
+                - long myofibrils
+                    - velocity and excursion, or working range, are proportional to myofibril length
+                    - designed for excursion and velocity
+                - thick myofibrils
+                    - force is proportional to cross-sectional area
+                    - shorter fibers and larger cross-sectional area are designed to produce force
+            - 图 - short fibers with large PCSA show higher force, long fibers with small PCSA show larger range and velocity
+                - ![](https://vexpaer-blog-media.vexpaer.workers.dev/media/%E7%94%9F%E7%89%A9%E5%8A%9B%E5%AD%A6/images/790450_0c62390a-09e9-4ceb-a468-b209bcd16e55.png)
+        - Effect of Temperature
+            - Changes in temperature affect the contractile properties of skeletal muscles.
+            - Extreme environmental conditions change the rate of enzymatic activity within the muscle.
+            - 升温
+                - A rise in muscle temperature causes an increase in conduction velocity across the sarcolemma.
+                - Increased conduction velocity increases the frequency of stimulation and hence production of muscle force.
+            - 降温
+                - With a decrease in temperature, there is a decrease in production or utilization of ATP.
+                - Cooling can deplete intracellular glycogen and affect muscle performance power.
+        - Effect of Fatigue
+            - ATP availability
+                - 肌肉收缩和放松依赖ATP，低频刺激下，若氧气和营养充足，肌肉可长时间工作，前提是ATP合成速率能跟上分解速率
+                - The ability of a muscle to contract and relax depends on the availability of ATP.
+                - If oxygen and nutrients are adequate, muscle can sustain low-frequency twitch抽搐 responses for a long time.
+                - The frequency must be low enough for ATP synthesis to keep up with ATP breakdown during contraction.
+            - oxidative phosphorylation氧化磷酸化
+                - 中强度活动时主要靠此途径供能，但剧烈运动时ATP分解太快，即使氧气充足，氧化磷酸化速度也可能不足
+                - At moderate rates of muscle activity, most required ATP can be formed by oxidative phosphorylation.
+                - During very intense exercise, ATP is broken down very rapidly.
+                - The ability to replace ATP by oxidative phosphorylation may be limited by inadequate oxygen delivery.
+                - Even when oxygen delivery is adequate, oxidative phosphorylation may be too slow to sustain very intense exercise.
+            - anaerobic glycolysis无氧糖酵解
+                - 剧烈运动时该途径贡献增加，其优点是反应快、无需氧气，缺点是每分子葡萄糖产生的ATP很少，且产生乳酸，会快速消耗糖原，当肌球蛋白ATP酶分解ATP的速度超过糖酵解合成速度时，ATP浓度下降，疲劳迅速发生
+                - Anaerobic glycolysis contributes an increasing portion of ATP during intense exercise.
+                - It produces much smaller amounts of ATP from glucose breakdown.
+                - It operates at a much faster rate.
+                - It can proceed in the absence of oxygen, with lactic acid as its end product.
+                - It requires large amounts of glucose for small amounts of ATP.
+                - Existing glycogen supplies may be depleted quickly when activity is intense.
+                - Myosin ATPase may break down ATP faster than glycolysis can replace it, and fatigue occurs rapidly as ATP concentrations drop.
+            - Recovery and efficiency
+                - 运动后需要重新合成磷酸肌酸和糖原，期间耗氧量仍较高，化学能转化为机械能的效率通常只有20%-25%，大部分能量变成热量，最高状态下也仅约45%的能量用于收缩
+                - After intense exercise, creatine phosphate磷酸计算 levels drop.
+                - Much of the muscle glycogen may have been converted to lactic acid乳酸.
+                - Creatine phosphate must be resynthesized and glycogen stores must be replaced.
+                - Both processes require energy, so the muscle continues to consume oxygen rapidly even after contraction stops.
+                - Chemical energy to movement efficiency is usually no more than 20% to 25%.
+                - Most energy is dissipated as heat.
+                - Even in its most efficient state, a maximum of only about 45% of energy is used for contraction.
+        - Muscle Damage
+            - mechanical model力学模型
+                - 强调离心收缩产生更大的力，使每个横桥承受的张力增加，导致收缩蛋白更容易发生结构破坏，该模型主要适用于由离心收缩引起的运动损伤（如冲刺、跳跃、下坡跑等）
+                - Eccentric contraction produces a greater amount of force.
+                - This increases force per cross-bridge and predisposes contractile proteins to fail.
+                - It is primarily true with exercise-induced injuries involving eccentric muscle contraction.
+            - metabolic model代谢模型
+                - 关注肌肉在受力状态下的代谢紊乱——钙离子（Ca²⁺）水平升高，引发肌纤维退化，该模型主要解释以**向心收缩**为主的活动（如长距离自行车、马拉松）所导致的肌肉损伤，认为损伤更多源于代谢产物堆积和钙稳态失衡，而非直接的机械撕裂
+                - Deficiencies occur within the stressed muscle.
+                - The presence of Ca2+ increases and may result in muscle fiber degeneration.
+                - This may explain muscle damage from activities primarily involving concentric contraction.
+                - Examples include long cycling events or marathons.
+        - Effect of Disuse and Immobilization
+            - Disuse and immobilization have detrimental effects on muscle fibers.
+            - Main effects include
+                - loss of endurance and force production
+                - muscle atrophy萎缩 at microstructural and macrostructural levels
+            - These effects depend on
+                - fiber type
+                - muscle length during immobilization
+                - cause of immobilization
+            - immobilization cause
+                - Loss of muscle force production due to reduced physical activity and biologic aging.
+                - loss of strength is greater in the lower limbs than in the upper limbs.
+                - Reduced postural demand leads to atrophy减少 of slow twitch fibers慢肌纤维. Slow twitch fiber atrophy results in difficulties in postural maintenance. Their cross-sectional area decreases. Their potential for oxidative enzyme activity is reduced.
+            - Prevention and Recovery
+                - Physical training increases the cross-sectional area of all muscle fibers.
+                - The affected fiber type depends on the chosen sport.
+                    - In endurance athletes, slow twitch fibers are mainly affected.
+                    - In explosive activities such as sprinting短跑, intermediate twitch fibers中间型肌纤维 are affected.
+                - Early motion may prevent this atrophy
+                - Electric stimulation may also prevent
+                    - the decrease in slow twitch fiber size
+                    - the decline in oxidative enzyme activity caused by immobilization
+        - Effects of Physical Training
+            - Physical activity influences muscle architecture and force production.
+            - Fascicle length肌束长度 differs in highly trained athletes, lesser trained athletes, and untrained controls.
+            - Unique muscle geometry can be found in athletes from different sports.
+                - sprinter 短跑运动员
+                - endurance runner 耐力跑运动员
+                - weightlifter 举重运动员
+            - There was no relative or absolute difference of fascicle length between gender.
+            - Athlete comparison table
+                - 图
+                    - ![](https://vexpaer-blog-media.vexpaer.workers.dev/media/%E7%94%9F%E7%89%A9%E5%8A%9B%E5%AD%A6/images/790450_d3476bc2-69c1-4d86-e51d-53dadc62449b.png)
+                - Muscles compared include rectus femoris, vastus medialis, vastus lateralis, tibialis anterior, medial head of gastrocnemius, and lateral head of gastrocnemius.
+                - Sports compared include boxing, judo, taekwondo, soccer, and wrestling.
+                - Variables include MT (mm), FA (°), maximum anaerobic power, and mean anaerobic power.
+            - Training type and fiber type
+                - Different exercises have different effects on different types of muscle fiber.
+                - Intermediate twitch fibers and fast twitch fibers show greater enlargement after eccentric training than after concentric training. This is in line with increased isometric force production.
+                - Physical activity influences differentiation into slow-twitch and fast-twitch fiber, which may change the biomechanical properties of force production.
+                - The cross-sectional area of the fibers is affected by one's principal activity.
+                - In endurance athletes, the area taken up by slow twitch fibers and intermediate twitch fibers increases. This increase occurs at the expense of the total area of fast twitch fibers.
+- Take-Home Message
+    - What are the thick filaments and thin filaments, respectively?
+        - Thick filaments are about 15 nm in diameter and composed of myosin.
+        - Thin filaments are approximately 5 nm in diameter and composed of actin.
+        - Thin filaments are attached to Z lines and overlap with thick filaments toward the center of the sarcomere.
+    - What are Z line, A band, I band, H zone, and M line?
+        - Z line defines the limits of each sarcomere and links thin filaments of adjacent sarcomeres.
+        - A band corresponds to thick filaments and remains constant during shortening.
+        - I band contains non-overlapping thin filaments and elastic titin; it decreases during shortening.
+        - H zone is the central light region of the A band containing only thick filaments.
+        - M line is the central dark line that links adjacent thick filaments and maintains parallel arrangement.
+    - What is the Hill's model?
+        - A muscle force-production model composed of CC, SEC, PEC, and tendon-related behavior.
+        - CC represents sarcomere contractile behavior and active tension.
+        - SEC represents series elasticity, mainly tendon connective tissues.
+        - PEC represents parallel connective tissues and passive tension.
+        - The model links activation kinetics, force-length properties, and force-velocity properties.
+    - What is the length-tension relationship in muscle fiber?
+        - Muscle tension varies with the length at which the fiber is held when stimulated.
+        - Maximal active tension occurs near resting sarcomere length, about 2.0-2.25 μm.
+        - Shorter or longer sarcomere lengths reduce active tension because actin-myosin overlap becomes less optimal.
+        - In whole muscle, total tension includes active tension plus passive tension from elastic components.
+    - How does disuse and immobilization affect muscle force and muscle composition?
+        - They reduce endurance and force production.
+        - They cause muscle atrophy at microstructural and macrostructural levels.
+        - Loss of strength is greater in lower limbs than upper limbs.
+        - Prolonged bed rest especially causes slow twitch fiber atrophy and reduced oxidative enzyme activity.
+        - Early motion and electric stimulation may help prevent atrophy.

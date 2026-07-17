@@ -1,0 +1,377 @@
+---
+title: "生物力学_Friction, Lubrication, and Wear"
+date: 2026-07-01 12:00:00
+tags:
+- 生物力学
+- undergraduate
+cover: /img/tag-physics-cover.png
+mindmap: true
+---
+Friction, Lubrication, and Wear
+- basic
+    - Learning Objectives
+        - Understand surface properties that affect friction and wear behavior.
+        - Review basic concepts of static and kinetic friction.
+        - Understand the different types of lubrication and wear, and where they are commonly found.
+        - Identify areas of concern for friction, lubrication, and wear in vivo.
+        - Know important design factors from the perspective of friction and wear concerns.
+    - Design Inquiry - Total Knee Replacement
+        - You are designing a total knee replacement, a high-load device for which wear is a major concern.
+        - Contact stresses of 40 MPa.
+        - 1 million fatigue cycles per year.
+        - Selecting a material that meets these demands and still maintains low wear is a team challenge.
+        - Key material-selection concerns
+            - low coefficient of friction
+            - low wear debris generation
+            - fatigue resistance under repeated joint loading
+            - biocompatibility of both bulk material and debris
+            - surface finish and lubricant compatibility
+    - Clinical Motivation
+        - Wear and Tear Arthritis
+            - Osteoarthritis (OA)骨关节炎 is the most common form of arthritis.
+            - It occurs most frequently in the hands, hips, and knees.
+            - With OA, the cartilage within a joint begins to break down and the underlying bone begins to change.
+            - 图 - OA links cartilage wear, bone change, and joint pain
+                - ![](https://vexpaer-blog-media.vexpaer.workers.dev/media/%E7%94%9F%E7%89%A9%E5%8A%9B%E5%AD%A6/images/790450_6fa3d0fd-8312-48b8-fd63-1d2da46619b3.png)
+        - Wear Debris Cause Severe Outcome
+            - A patient with metal-on-metal hip replacement presented tremor, fatigue, forgetfulness, hip swelling, and stiffness.
+            - Cobalt levels
+                - 23.5 ppb in urine
+                - 5.1 ppb in blood
+                - 440 ppb in joint fluid
+            - Where does the Cobalt come from?
+            - 图 - pelvis radiograph with metal-on-metal hip replacement and cobalturia article
+                - ![](https://vexpaer-blog-media.vexpaer.workers.dev/media/%E7%94%9F%E7%89%A9%E5%8A%9B%E5%AD%A6/images/790450_391eea3e-2472-4687-f0cb-cfb24e5af0f1.png)
+    - Tribology摩擦学
+        - Tribology is the field of friction, lubrication, and wear.
+        - When designing devices that contact other materials, it is necessary to consider friction, lubrication, and wear.
+        - Orthodontic implants正畸植入物
+            - 比如牙套braces
+            - A smooth surface to arch wires is very important.
+            - Frictional forces can reduce the amount of force applied to teeth by 50% or more.
+        - Interface characterization determines friction and wear behavior
+            - composition of the articulating materials
+            - surface finishes
+            - lubricant, if any
+- Bulk and Surface Properties
+    - basic
+        - Surface texture is the repetitive and/or random deviations from the nominal surface of an object.
+            - ![](https://vexpaer-blog-media.vexpaer.workers.dev/media/%E7%94%9F%E7%89%A9%E5%8A%9B%E5%AD%A6/images/790450_6ebcb6bf-a97d-4f92-ac1f-945171914a0d.png)
+        - surface profile = error of form + waviness + roughness
+            - ![](https://vexpaer-blog-media.vexpaer.workers.dev/media/%E7%94%9F%E7%89%A9%E5%8A%9B%E5%AD%A6/images/790450_fef7d5c4-bfbc-4af0-c754-22cda03e4bf3.png)
+            - roughness粗糙度
+                - S &lt; 1 mm
+                - small, finely-spaced deviations from nominal surface
+                - determined by material characteristics and processes that formed the surface
+            - waviness波纹度
+                - 1 ≤ S ≤ 10 mm
+                - deviations with much larger spacing
+                - caused by work deflection, vibration, tooling, etc.
+            - Roughness is superimposed on waviness.
+            - spacing S and height Z describe local topography.
+                - ![](https://vexpaer-blog-media.vexpaer.workers.dev/media/%E7%94%9F%E7%89%A9%E5%8A%9B%E5%AD%A6/images/790450_eddb6469-c326-4795-f755-c0dc41f0d651.png)
+    - Asperities微凸体 and Real Area of Contact
+        - As two surfaces come into contact, the actual contact comes at asperities, small peaks on each imperfect surface.
+            - ![](https://vexpaer-blog-media.vexpaer.workers.dev/media/%E7%94%9F%E7%89%A9%E5%8A%9B%E5%AD%A6/images/790450_c863560c-c7bc-40d5-8299-f8d802bd0930.png)
+        - Asperities are commonly modeled as **hemispherical elastic contacts**
+        - real area of contact, **Ar** 真实接触面积
+            - Ar differentiates asperity contacts from the apparent contact area.
+            - A surface with high roughness can have a smaller Ar than a smoother surface.
+            - Ar can change during sliding contact as asperities undergo deformation and/or wear.
+            - For hard rough surfaces under moderate load, Ar may be only 15-20% of the apparent contact area.
+    - Roughness Metrics
+        - A curve from a single roughness measurement
+            - ![](https://vexpaer-blog-media.vexpaer.workers.dev/media/%E7%94%9F%E7%89%A9%E5%8A%9B%E5%AD%A6/images/790450_d8cb05c0-fc12-48ea-eec2-61c96d4768a5.png)
+        - average roughness Ra平均粗糙度
+            - formula
+                - ![](https://vexpaer-blog-media.vexpaer.workers.dev/media/%E7%94%9F%E7%89%A9%E5%8A%9B%E5%AD%A6/images/790450_4929da4b-e423-4a05-b114-3bde93da6869.png)
+            - yi is the distance from the profile to the mean line.
+            - The mean line is defined so that the area between the profile and the line is equal above and below.
+        - RMS roughness RRMS均方根粗糙度
+            - formula
+                - ![](https://vexpaer-blog-media.vexpaer.workers.dev/media/%E7%94%9F%E7%89%A9%E5%8A%9B%E5%AD%A6/images/790450_681305c1-3604-4133-87d3-da1bdd57c3ab.png)
+            - RRMS is weighted by the square of the peak heights.
+            - RRMS can be more useful because Ra can have the same value for different topographies due to averaging.
+                - ![](https://vexpaer-blog-media.vexpaer.workers.dev/media/%E7%94%9F%E7%89%A9%E5%8A%9B%E5%AD%A6/images/790450_9b46865f-e6d5-44c1-9ec4-80fe77911875.png)
+        - Surface topography should use roughness values together with waviness measurements.
+        - RRMS ≥ Ra
+- Friction
+    - Definition
+        - Friction is the resistance to relative motion between two surfaces.
+        - It is normally expressed as the coefficient of friction, μ
+        - μ expresses the ratio between lateral and normal force in a simple friction test.
+        - For general cases
+            - μ = FS / FN
+            - FS is shear force.
+            - FN is normal force.
+    - Static and Kinetic Friction
+        - static friction静摩擦
+            - μs
+            - friction between non-moving surfaces
+        - kinetic friction动摩擦
+            - μk
+            - friction between moving surfaces
+        - The static coefficient of friction is higher than the kinetic coefficient of friction.
+            - ![](https://vexpaer-blog-media.vexpaer.workers.dev/media/%E7%94%9F%E7%89%A9%E5%8A%9B%E5%AD%A6/images/790450_1940dc78-e6a0-4fb4-8ea8-f9de93351a0f.png)
+    - Friction Mechanisms
+        - Friction can be thought of as a combination of adhesion and deformation.
+        - adhesion粘着
+            - asperities have become attached
+        - deformation变形
+            - asperities from one surface must slide past asperities of the opposing surface
+        - Coefficient of friction is proportional to the normal force applied on the object.
+        - It is generally independent of apparent contact area and velocity in the simplified model.
+- Lubrication
+    - Definition and Benefit
+        - Lubrication is the use of a film or layer to separate opposing surfaces during relative motion.
+        - The primary benefit is to reduce the opportunity for damage by preventing direct contact between surfaces.
+        - Lubricants can be
+            - solid lubricants, such as graphite
+                - ![](https://vexpaer-blog-media.vexpaer.workers.dev/media/%E7%94%9F%E7%89%A9%E5%8A%9B%E5%AD%A6/images/790450_538cf66d-efb5-4c96-8bc8-86eb63028c89.png)
+            - liquid lubricants, such as synovial fluid or lubricating oil
+                - ![](https://vexpaer-blog-media.vexpaer.workers.dev/media/%E7%94%9F%E7%89%A9%E5%8A%9B%E5%AD%A6/images/790450_f3b571cc-7ec9-41d4-e8e0-0646cabe7a4e.png)
+            - gas lubricants, such as air bearings
+                - ![](https://vexpaer-blog-media.vexpaer.workers.dev/media/%E7%94%9F%E7%89%A9%E5%8A%9B%E5%AD%A6/images/790450_39d91b6c-8651-466d-a803-c6b723edb863.png)
+    - Hydrodynamic Lubrication流体动压润滑
+        - most common type of lubrication
+        - Relative motion between the two surfaces draws the lubricant into the contact area.
+        - The surface separation is usually 10^-3 - 10^-4 cm.
+        - The surfaces are **completely separated** with no asperity contact.
+        - This lubrication scheme is considered ideal because the potential for surface damage is minimal.
+        - 图 - moving surface pulls lubricant into a wedge-shaped contact gap
+            - ![](https://vexpaer-blog-media.vexpaer.workers.dev/media/%E7%94%9F%E7%89%A9%E5%8A%9B%E5%AD%A6/images/790450_a2fa3a54-b113-425b-e40b-0fdcd4615656.png)
+    - Elastohydrodynamic Lubrication弹流润滑
+        - characterized by 10^-4 - 10^-5 cm separation.
+        - The normal load is transmitted through the lubricant.
+        - **At least one surface undergoes elastic deformation.**
+        - This process may result in localized fatigue over long-term use.
+        - Because film thickness is small, it may be on the same order of magnitude as surface roughness.
+        - 图 - loaded contact deforms elastically while a thin lubricant film carries load
+            - ![](https://vexpaer-blog-media.vexpaer.workers.dev/media/%E7%94%9F%E7%89%A9%E5%8A%9B%E5%AD%A6/images/790450_e93c1d4a-9a1c-4eef-d04a-eb2407e92fa0.png)
+        - lambda parameter λ 膜厚比
+            - 由于弹流润滑中的膜厚非常小,有必要质疑它是否与表面粗糙度处于同一数量级,这个参数就是λ
+            - formula
+                - ![](https://vexpaer-blog-media.vexpaer.workers.dev/media/%E7%94%9F%E7%89%A9%E5%8A%9B%E5%AD%A6/images/790450_fb342634-1c8d-46d2-d077-065df52fbb66.png)
+            - h0 is the film thickness in meters.
+            - RRMS is the RMS roughness for materials A and B.
+            - λ compares lubricant film thickness with combined surface roughness.
+    - Squeeze Film Lubrication挤压膜润滑
+        - In squeeze film lubrication, a highly viscous **lubricant has its own elastic response** to loading.
+            - ![](https://vexpaer-blog-media.vexpaer.workers.dev/media/%E7%94%9F%E7%89%A9%E5%8A%9B%E5%AD%A6/images/790450_0a42e9e4-23fb-4118-963f-e2ec75e07b8a.png)
+        - It appears during transient overloads.
+        - Example - sudden increase in load in the human knee.
+        - 突然一压，液体来不及完全流走，就短时间帮忙承载
+    - Boundary Lubrication边界润滑
+        - Boundary lubrication is demonstrated when the lubricant is a solid or gel coating on one or both surfaces.
+            - ![](https://vexpaer-blog-media.vexpaer.workers.dev/media/%E7%94%9F%E7%89%A9%E5%8A%9B%E5%AD%A6/images/790450_afc17046-c670-4dfd-9b86-a95a22e68634.png)
+        - It differs from simply having a low-shear fluid interface. Boundary lubrication is found in high-pressure, low-velocity situations.
+        - Surface separation is usually less than 10^-5 cm.
+        - Boundary coating protects asperities when fluid film is too thin.
+    - Mixed Lubrication混合润滑
+        - Mixed lubrication occurs when multiple lubrication models are present simultaneously.
+        - A primary lubrication mode such as hydrodynamic lubrication is supplemented by additional protection from coating or other factors.
+        - Example - articular cartilage = boundary lubrication + elastohydrodynamic lubrication + squeeze film + coating
+            - ![](https://vexpaer-blog-media.vexpaer.workers.dev/media/%E7%94%9F%E7%89%A9%E5%8A%9B%E5%AD%A6/images/790450_39536c69-57df-44b4-b9a1-68ffe2a41f88.png)
+        - 现实关节通常不是单一机制，而是 fluid pressure + surface coating 一起工作
+    - Synovial Fluid滑液
+        - Synovial fluid, also known as joint fluid, is a thick liquid located between joints.
+        - The fluid cushions the ends of bones and reduces friction when joints move.
+        - It is rheopectic, meaning that it becomes less viscous during shear motion.
+        - The viscosity of synovial fluid decreases as a result of disease or trauma.
+            - ![](https://vexpaer-blog-media.vexpaer.workers.dev/media/%E7%94%9F%E7%89%A9%E5%8A%9B%E5%AD%A6/images/790450_171257b5-46eb-4bbd-8717-1f877037e067.png)
+        - Lower viscosity synovial fluid leads to higher rates of cartilage-on-cartilage contact and joint damage.
+        - Molecular Lubricants
+            - Hyaluronic Acid (HA)透明质酸
+                - A naturally occurring glycosaminoglycan in synovial fluid.
+                    - ![](https://vexpaer-blog-media.vexpaer.workers.dev/media/%E7%94%9F%E7%89%A9%E5%8A%9B%E5%AD%A6/images/790450_aa1afccc-9622-444e-a220-c0d47c5fbc8d.png)
+                - Acts as a lubricant and shock absorber for joints.
+                - Contributes to the viscoelasticity of synovial fluid.
+                - Protects cartilage from friction-induced damage.
+            - Lubricin润滑素
+                - A glycoprotein that works alongside HA to reduce friction between cartilage surfaces.
+            - Phospholipid磷脂
+                - Provides boundary lubrication by forming a thin film on cartilage surfaces.
+- Wear
+    - basic
+        - Wear is the unwanted removal of material from solid surfaces by mechanical action.
+        - Three stages of wear
+            - 图
+                - ![](https://vexpaer-blog-media.vexpaer.workers.dev/media/%E7%94%9F%E7%89%A9%E5%8A%9B%E5%AD%A6/images/790450_fd242198-9015-4cc9-d40f-6490b5d0c8da.png)
+            - running in跑合期
+                - initial period where surfaces adapt to each other
+                - wear rates may be higher
+            - steady-state wear稳定磨损期
+                - period of stable wear rates
+                - device functions within expected parameters
+            - catastrophic wear灾难性磨损
+                - sudden, significant wear or failure
+                - often leads to device malfunction or breakdown
+    - Adhesive Wear 粘着磨损
+        - accounts for nearly **half** of all wear.
+        - Fragments from one surface are pulled off and adhered to the second surface.
+            - ![](https://vexpaer-blog-media.vexpaer.workers.dev/media/%E7%94%9F%E7%89%A9%E5%8A%9B%E5%AD%A6/images/790450_f0e525bc-bd1a-4778-8673-0e4a0b62ff27.png)
+        - Particles tend to be 10-100 μm in diameter.
+        - Adhesive wear volume, V
+            - formula
+                - ![](https://vexpaer-blog-media.vexpaer.workers.dev/media/%E7%94%9F%E7%89%A9%E5%8A%9B%E5%AD%A6/images/790450_345eb290-a09e-4ad4-aac2-4eb4ba863dbe.png)
+            - V is adhesive wear volume.
+            - k is Archard's coefficient.
+                - ![](https://vexpaer-blog-media.vexpaer.workers.dev/media/%E7%94%9F%E7%89%A9%E5%8A%9B%E5%AD%A6/images/790450_17b0a995-2c3b-4161-971e-88ead6f8845c.png)
+            - psoft is the Vickers hardness of the softer material, the softer material is more likely to lose volume to wear debris
+            - x is total sliding distance.
+    - Abrasive Wear 磨粒磨损
+        - the **second** most common type of wear
+        - It occurs when hard asperities remove material from a softer surface.
+            - ![](https://vexpaer-blog-media.vexpaer.workers.dev/media/%E7%94%9F%E7%89%A9%E5%8A%9B%E5%AD%A6/images/790450_60818eed-1a97-46f5-e352-ed22f71f0307.png)
+        - Main processes
+            - plowing犁削
+            - cutting切削
+            - cracking开裂
+        - Abrasive wear particles are typically 2-3 orders of magnitude larger than adhesive wear particles.
+        - Abrasive wear can be beneficial in polishing.
+        - two-body abrasion二体磨损
+            - only the two counterfaces are involved
+            - 仅涉及两个接触面
+        - three-body abrasion三体磨损
+            - two counterfaces plus unconstrained grains of material
+            - loose wear debris can become abrasive particles
+            - 两个接触面加上不受约束的材料颗粒
+    - Corrosive Wear 腐蚀磨损
+        - 图
+            - ![](https://vexpaer-blog-media.vexpaer.workers.dev/media/%E7%94%9F%E7%89%A9%E5%8A%9B%E5%AD%A6/images/790450_eac78c35-1b65-412f-d918-a35a83813195.png)
+        - 2 types
+            - A brittle oxide corrosion layer is removed from its corresponding surface, resulting in pitting点蚀
+            - Gradual removal of a coherent corrosion layer, this leads to general topography change.
+        - Corrosive wear can be controlled by careful attention to lubricant and environment.
+    - (Rolling)Contact Fatigue (滚动)接触疲劳
+        - Contact fatigue, or rolling contact fatigue, is material removal due to near-surface alternating stresses induced through rolling.
+            - ![](https://vexpaer-blog-media.vexpaer.workers.dev/media/%E7%94%9F%E7%89%A9%E5%8A%9B%E5%AD%A6/images/790450_342e8f1e-4b97-4336-8247-866d1d4ffbb1.png)
+        - This type of wear is common in bearings and gears.
+        - The contact can be conforming or non-conforming.
+        - Near-surface stress field in elastic materials is often approximated using Hertzian contact theory.
+        - Contact fatigue can take place in addition to other wear mechanisms.
+    - Erosive Wear 冲蚀磨损
+        - Erosive wear involves removal of material from a surface bombarded轰击 by liquid or solid particles.
+            - ![](https://vexpaer-blog-media.vexpaer.workers.dev/media/%E7%94%9F%E7%89%A9%E5%8A%9B%E5%AD%A6/images/790450_0f7b7f72-8f4d-44e6-e790-6e16d7c6b22d.png)
+        - Removed volume depends on
+            - particle velocity
+            - particle shape
+            - particle mass
+            - impingement angle冲击角
+        - Erosive wear is maximized at 30-90° to the surface, depending on the material.
+        - It is commonly seen in high-velocity flow situations such as valves.
+        - It is not generally an issue in vivo.
+    - Fretting Wear 微动磨损
+        - Fretting wear is material removal when two contacts under load also experience minute reciprocating or vibrating motion.
+            - ![](https://vexpaer-blog-media.vexpaer.workers.dev/media/%E7%94%9F%E7%89%A9%E5%8A%9B%E5%AD%A6/images/790450_bc2639fa-13cd-4619-899c-141216a8452d.png)
+        - Sliding motion can range from 20-200 μm.
+        - Wear debris from fretting can contribute to further material degradation as abrasive wear particles.
+        - Fretting is usually a combination of corrosive and abrasive wear.
+    - Delamination Wear 分层磨损
+        - Delamination wear occurs under conditions somewhat similar to contact wear
+        - During loaded rolling or sliding, subsurface stresses develop in a material.
+        - A void or imperfection grows into a crack parallel to the surface.
+            - ![](https://vexpaer-blog-media.vexpaer.workers.dev/media/%E7%94%9F%E7%89%A9%E5%8A%9B%E5%AD%A6/images/790450_8cca80d2-8513-4ee5-9866-a16998014ef9.png)
+        - Ultimately, this piece of material delaminates分层剥离
+        - Delamination wear is characterized by large, thin wear particles.
+        - It is more common in layered materials, but can also occur in homogeneous objects.
+- Case Study
+    - Biomimetic Cartilage-Lubricating Polymers
+        - Nature Biomedical Engineering article.
+        - Biomimetic cartilage-lubricating polymers regenerate cartilage in rats with early osteoarthritis.
+        - DOI: 10.1038/s41551-021-00785-y
+        - The case links lubrication polymer design with cartilage repair and friction reduction.
+    - Natural Cartilage Lubrication Layer
+        - Normal joint has synovial fluid and a lubrication layer on cartilage.
+        - Layer components shown in the figure
+            - lubricin
+            - phospholipid
+            - HA
+            - fibronectin
+            - Coll II
+        - Brush-like lubrication complex
+            - polymer brushes project from HA backbone
+            - hydrated brush layer reduces friction between cartilage surfaces
+        - 图 - natural joint lubrication layer uses HA, lubricin, phospholipid, and collagen-associated matrix
+    - Synthetic Strategy
+        - HA/PA and HA/PM polymers are designed to form brush-like lubrication complexes.
+        - Solution of HA/PA, HA/PM, or both is injected into a knee joint in a rat model of early OA.
+        - The polymers assemble into a lubrication layer on cartilage surface.
+        - Treated knee joint aims to recover a low-friction interface.
+        - 图 - injection into rat knee, assembled lubrication layer, treated knee joint
+    - Friction Test Setup
+        - Cartilage samples are immersed in lubrication solution in a Petri dish.
+        - A parallel plate applies load and rotational sliding.
+        - Stainless baseplate supports the sample.
+        - The setup measures friction coefficient of treated and normal cartilage.
+        - pre-sliding time
+            - 1.2 s
+            - 12 s
+            - 120 s
+            - 1,200 s
+        - Groups compared
+            - PBS
+            - HA
+            - HA/PA
+            - HA/PM
+            - HA/PA+HA/PM
+    - Graph Reading
+        - Treated cartilage kinetic friction
+            - PBS is highest, around 0.02-0.025.
+            - HA is lower, around 0.013-0.015.
+            - HA/PA, HA/PM, and HA/PA+HA/PM are lower, roughly around 0.005-0.009.
+            - HA/PA+HA/PM gives one of the lowest kinetic friction levels.
+        - Treated cartilage static friction
+            - PBS and HA are higher than polymer-brush groups.
+            - HA/PA, HA/PM, and HA/PA+HA/PM keep static friction lower across pre-sliding times.
+            - Longer pre-sliding time tends to increase static friction in several groups.
+        - Normal cartilage friction
+            - Normal cartilage kinetic friction is lower overall than treated cartilage PBS.
+            - Polymer groups approach the low-friction range of normal cartilage.
+            - For normal cartilage static friction, HA/PA+HA/PM is generally among the lowest groups.
+        - Main conclusion
+            - Biomimetic brush-like polymers reduce both kinetic and static friction compared with PBS and HA alone.
+            - Combined HA/PA+HA/PM treatment provides strong lubrication performance.
+- Design Factors for Low-Wear Implants
+    - Material pair selection
+        - avoid high wear coefficient material pairs under high load
+        - consider softer material hardness psoft because adhesive wear volume scales inversely with psoft
+        - wear debris biocompatibility matters as much as bulk material biocompatibility
+    - Surface engineering
+        - control roughness and waviness together
+        - avoid high asperity contact and small real contact area concentration
+        - surface coatings can provide boundary lubrication under high-pressure, low-velocity conditions
+    - Lubrication design
+        - maintain enough fluid film thickness relative to RMS roughness
+        - use λ to compare film thickness and combined surface roughness
+        - in vivo joints often need mixed lubrication instead of a single ideal lubrication mode
+    - Wear-risk control
+        - reduce adhesive and abrasive wear through lubrication and surface finish
+        - consider fatigue and delamination under repeated cycles
+        - prevent fretting at modular interfaces where small vibration under load can occur
+- Take-Home Message
+    - What are roughness and waviness?
+        - Roughness: S &lt; 1 mm, small, finely-spaced deviations from nominal surface.
+        - Waviness: 1 ≤ S ≤ 10 mm, larger-spacing deviations caused by work deflection, vibration, tooling, etc.
+        - Roughness is superimposed on waviness.
+    - How to calculate Ra and RRMS?
+        - Ra = 1/n Σ|yi|
+        - RRMS = sqrt(1/n Σ yi^2)
+        - Ra averages absolute profile deviations; RRMS weights high peaks more strongly.
+    - Describe different types of lubrication.
+        - Hydrodynamic lubrication: relative motion draws lubricant into contact; 10^-3 - 10^-4 cm separation; no asperity contact.
+        - Elastohydrodynamic lubrication: 10^-4 - 10^-5 cm separation; load transmitted through lubricant; elastic surface deformation.
+        - Squeeze film lubrication: viscous lubricant responds during transient overloads.
+        - Boundary lubrication: solid or gel coating; high pressure and low velocity; separation less than 10^-5 cm.
+        - Mixed lubrication: multiple modes coexist, as in articular cartilage.
+    - Describe different types of wear.
+        - Adhesive wear: fragments pulled from one surface and adhered to another; particles 10-100 μm.
+        - Abrasive wear: hard asperities remove softer material by plowing, cutting, or cracking.
+        - Corrosive wear: corrosion layer removal causes pitting or topography change.
+        - Contact fatigue: rolling-induced alternating near-surface stresses remove material.
+        - Erosive wear: liquid or solid particle bombardment removes material.
+        - Fretting wear: small reciprocating or vibrating motion under load; sliding 20-200 μm.
+        - Delamination wear: subsurface crack grows parallel to surface and a thin sheet peels off.
+    - Why does tribology摩擦学 matter in vivo?
+        - OA and implant wear show that surface damage can create tissue degeneration, debris, inflammation, and systemic metal ion exposure.
+        - Low-wear design must combine material properties, surface topography, lubricant behavior, and biological response.

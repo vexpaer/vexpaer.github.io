@@ -1,0 +1,376 @@
+---
+title: "生物力学_Bone"
+date: 2026-07-01 12:00:00
+tags:
+- 生物力学
+- undergraduate
+cover: /img/tag-physics-cover.png
+mindmap: true
+---
+Bone
+- Composition
+    - Bone tissue consists of cells embedded in an extracellular matrix (ECM).
+    - Bone is a living, dynamic tissue that is constantly being renewed. 10–15% of the bone in the whole body is replaced with new bone every year.
+    - Bone matrix contains not only an organic, collagen-based phase but also a mineral phase that provides bone with its characteristic rigidity and strength. This mineral phase is composed primarily of crystalline hydroxyapatite ([Ca3(PO4)2]3·Ca(OH)2), with small amounts of other mineral substances
+    - component
+        - ![](https://vexpaer-blog-media.vexpaer.workers.dev/media/%E7%94%9F%E7%89%A9%E5%8A%9B%E5%AD%A6/images/790450_c70929e2-da0f-4ead-be71-b204747376f2.png)
+- Bone Remodeling
+    - The process of bone remodeling is accomplished by specialized cells within bone tissue
+    - 3 type of specialized cells
+        - osteoblasts, which are recruited to synthesize bone
+        - osteoclasts, which are recruited to dissolve bone
+        - osteocytes and lining cells, which reside permanently in bone tissue
+            - Osteocytes are osteoblasts that became embedded in the bone matrix as it was being secreted, while lining cells reside on the surface of bone tissue.
+            - The lining cells and embedded osteocytes are connected by small canals and so are able to communicate with one another.
+- Bone Structure
+    - The fundamental structural unit of bone is the **osteon**骨单位, or **haversian system**.
+    - At the center of each osteon is a small channel—a **haversian canal**—that contains blood vessels and nerve fibers.
+        - ![](https://vexpaer-blog-media.vexpaer.workers.dev/media/%E7%94%9F%E7%89%A9%E5%8A%9B%E5%AD%A6/images/790450_b08354ac-ba97-4ac7-d011-1bd886b983da.png)
+    - The osteon itself consists of a concentric series of layers (**lamellae**) of mineralized matrix surrounding the central canal, a configuration similar to growth rings in a tree trunk.
+    - Along the boundaries of each layer are small cavities known as **lacuna**骨陷窝, each containing a bone cell—an osteocyte—that has entombed封闭 itself within the bony matrix
+- 2 types
+    - 图
+        - ![](https://vexpaer-blog-media.vexpaer.workers.dev/media/%E7%94%9F%E7%89%A9%E5%8A%9B%E5%AD%A6/images/790450_691f854c-55c6-4846-f348-206ff383c859.png)
+    - cortical bone / compact bone
+        - Cortical bone lines the outer surface of most bones and is found in the shafts of the long bones.
+        - Owing to its **low porosity** (typically &lt; 10%), cortical bone is the stronger and heavier of the two types of bone.
+        - Cortical bone tissue is laid down in lamellae about 5 μm thick. Within a layer, the collagen fibers run parallel to one another; however, the orientation of fibers is different in neighboring layers.
+    - trabecular bone / cancellous bone / spongy bone
+        - Trabecular bone is found in the vertebrae and the ends of the long bones, such as the femur, tibia, and radius.
+        - The matrix of trabecular bone is organized as a three dimensional porous network of interconnected struts called **trabeculae**骨小梁. The pores between trabeculae are filled with bone marrow.
+            - ![](https://vexpaer-blog-media.vexpaer.workers.dev/media/%E7%94%9F%E7%89%A9%E5%8A%9B%E5%AD%A6/images/790450_8b853856-b7f9-42b6-e31b-c62318f4d8da.png)
+        - Trabecular bone is somewhat weaker than “solid” cortical bone, but it is also much lighter
+        - The porosity of the trabecular network varies with anatomical location, biomechanical function, and age.
+            - 图
+                - ![](https://vexpaer-blog-media.vexpaer.workers.dev/media/%E7%94%9F%E7%89%A9%E5%8A%9B%E5%AD%A6/images/790450_a5b68c88-b21a-4ff4-944f-572df91d31a4.png)
+            - In healthy bone, trabeculae are on average about 200 μm thick
+            - in **osteoporosis**骨质疏松 – a condition characterized by loss of bone mass and increased fracture risk – there are fewer trabeculae and they become thinner
+        - 鸟全是海绵骨
+    - compare
+        - 图
+            - ![](https://vexpaer-blog-media.vexpaer.workers.dev/media/%E7%94%9F%E7%89%A9%E5%8A%9B%E5%AD%A6/images/790450_62a49f3f-f955-4924-c2ae-d526e77e3f70.png)
+            - trabecular thickness 骨小梁厚度 与 osteon diameter 骨单位直径
+            - Cement Lines 粘合线在松质骨更多
+            - Lamellar thickness 骨板厚度松质骨更大
+            - Lacunae 骨陷窝
+        - Generally, cancellous bone is more active in remodeling and freshly remodeled bone isless highly mineralized
+            - ![](https://vexpaer-blog-media.vexpaer.workers.dev/media/%E7%94%9F%E7%89%A9%E5%8A%9B%E5%AD%A6/images/790450_d69992d6-ebb7-438b-d006-9ee572d3aca9.png)
+- Biomechanical Properties
+    - Bone
+        - two phase
+            - On a length scale of the order of micrometers, bone tissue behaves like a **fiber-reinforced** composite
+            - Two-phase (biphasic) composite material
+                - mineral phase
+                - organic phase (collagen and ground substance)
+                    - Type I collagen is most important in conferring赋予 the fundamental toughness韧性 and post-yield properties屈服后性能 to bone tissue.
+                    - Denaturing变性 collagen decreases bone’s toughness and overall strength by up to 60%
+                    - 用酶溶解或加热时候性质会变差
+                        - ![](https://vexpaer-blog-media.vexpaer.workers.dev/media/%E7%94%9F%E7%89%A9%E5%8A%9B%E5%AD%A6/images/790450_030fdcae-cde3-4c3f-8361-daeced0485ba.png)
+        - anisotropic
+            - Bone has a grain like wood in the form of its lamellae and therefore behaves anisotropically
+            - exhibits distinct mechanical properties when loaded along various axes because its structure differs in the transverse and longitudinal directions
+                - ![](https://vexpaer-blog-media.vexpaer.workers.dev/media/%E7%94%9F%E7%89%A9%E5%8A%9B%E5%AD%A6/images/790450_b3558145-0109-4f88-c9a0-19ee37491ef4.png)
+    - Osteons骨单位
+        - 3 types of osteons
+            - type T (transverse)
+            - type A (alternating)
+            - type L (longitudinal)
+            - 图
+                - ![](https://vexpaer-blog-media.vexpaer.workers.dev/media/%E7%94%9F%E7%89%A9%E5%8A%9B%E5%AD%A6/images/790450_6428e336-5510-4248-9307-d8ce50ddd0a3.png)
+        - degree of mineralization 矿化度影响
+            - 图
+                - ![](https://vexpaer-blog-media.vexpaer.workers.dev/media/%E7%94%9F%E7%89%A9%E5%8A%9B%E5%AD%A6/images/790450_e0d450c6-feca-4b08-aeea-c04f17f8909b.png)
+            - The degree of mineralization has little effect on type A osteons, while it has great effect on the type L osteons, both on stiffness and deformation until rupture.
+            - The two types of osteons has similar behavior under less mineralization condition.
+            - The strength and stiffness of osteons increase with increasing mineralization.
+        - 不同受力情况
+            - Type L osteon have greater tensile strength and lower ultimate deformation than the type A osteons.
+            - Under shear, the type A and type T osteons have similar properties, with greater strength and stiffness than the type L osteons.
+            - Under compression, the type T osteons have greater strength,and they are stiffer.
+            - 图
+                - ![](https://vexpaer-blog-media.vexpaer.workers.dev/media/%E7%94%9F%E7%89%A9%E5%8A%9B%E5%AD%A6/images/790450_4102504e-0079-4168-8ea2-14a1e2a5908b.png)
+    - Cortical Bone
+        - 不同受力情况强度不同
+            - The longitudinal alignment of the osteons and the orientation of the lamellae give cortical bone strongly **anisotropic** properties.
+            - 骨单位的纵向排列和骨板的方向使得皮质骨具有强烈的各向异性特性.
+            - Stiffness and strength along the axis of cortical bone (longitudinal direction) are greater than properties transverse to the bone's axis.
+            - Cortical bone is stronger in compression than in tension.
+            - The stiffness and strength of cortical bone depend not only on the orientation but also on the rate at which the bone is strained.
+            - 图
+                - ![](https://vexpaer-blog-media.vexpaer.workers.dev/media/%E7%94%9F%E7%89%A9%E5%8A%9B%E5%AD%A6/images/790450_39cb3218-0b4b-4b99-8396-dde777a73351.png)
+        - porosity
+            - Very small porosity increases greatly affect cortical bone strength.
+                - ![](https://vexpaer-blog-media.vexpaer.workers.dev/media/%E7%94%9F%E7%89%A9%E5%8A%9B%E5%AD%A6/images/790450_7ba96351-6d25-4f3e-e071-016836bd662a.png)
+            - The elastic modulus is proportional to a power of the volume fraction
+                - Cortical bone E ~ (1-p)^7.4
+                - Trabecular bone E ~ (1-p)^2
+                - Cortical and trabecular bone E ~ (1-p)^3
+        - 图片
+            - 图
+                - ![](https://vexpaer-blog-media.vexpaer.workers.dev/media/%E7%94%9F%E7%89%A9%E5%8A%9B%E5%AD%A6/images/790450_75f4591d-2daf-4554-81bd-04520bc89c62.png)
+            - On the left two picture, the darker pixels represent more fibers oriented in a longitudinal direction, and the lighter pixels represent more fibers oriented in the transversal direction.
+            - 在左侧2图中，较暗的像素表示更多纤维沿纵向方向排列，而较亮的像素表示更多纤维沿横向方向排列
+            - The darker region is where bone is under tensile stresses where the lighter correspond to bone in compression.
+            - It suggests that collagen fibers tend to align depending on mechanical stimulus.
+            - The right two picture show that the compression side is more mineralized.
+        - rate of deformation
+            - Bone is a viscoelastic material, and thus, the properties depend on the rate of deformation.
+            - Whenthe rate of deformation increases, the bone stiffness and strength also increases, but the bone behavior is more fragile.
+            - The energy necessary to bone failure has a maximum for a rate of deformation of 0.01 - 0.10 s^-1.
+            - 图
+                - ![](https://vexpaer-blog-media.vexpaer.workers.dev/media/%E7%94%9F%E7%89%A9%E5%8A%9B%E5%AD%A6/images/790450_be5ec18c-ecfc-4ce7-9a1a-d029443e7a04.png)
+    - Trabecular Bone
+        - The mechanical properties of a specimen of trabecular bone, which is composed of many trabecular struts and has dimensions greater than 1 mm, are referred to as the **apparent mechanical properties**.
+        - The apparent properties depend on the material properties of the bone tissue matrix, the amount of tissue, and the structural organization of the trabeculae.
+        - Because the relative density and architecture of trabecular bone vary with anatomic site, age, and disease, there is significant variation in the stiffness and strength of trabecular bone.
+            - ![](https://vexpaer-blog-media.vexpaer.workers.dev/media/%E7%94%9F%E7%89%A9%E5%8A%9B%E5%AD%A6/images/790450_723ce593-f1c6-4fa5-e60e-265b3e47857b.png)
+- health
+    - Fracture and Failure
+        - 2 reason
+            - 达到极限应力
+                - If a bone is loaded monotonically to a stress level that exceeds the failure or ultimate stress of the bone tissue, then fracture will occur.
+                - This type of failure can occur with trauma or impact, such as a fall on the hip.
+            - 微小裂痕
+                - Bone can also fail at stress levels well below the yield stress through the growth of preexisting cracks.
+                - Bone is filled with micro-cracks.
+                - In normal, healthy bone, these micro-cracks are repaired by bone cells.
+                - Growth of micro-cracks, if unchecked, can lead to failure and fracture.
+        - tension
+            - Clinically, fractures produced by tensile loading are usually seen in bones with a large proportion of cancellous bone.
+            - Examples are fractures of the base of the fifth metatarsal adjacent to the attachment of the peroneus brevis tendon and fractures of the calcaneus adjacent to the attachment of the Achilles tendon.
+                - ![](https://vexpaer-blog-media.vexpaer.workers.dev/media/%E7%94%9F%E7%89%A9%E5%8A%9B%E5%AD%A6/images/790450_8431b60a-3646-4319-e281-bd98beb6a896.png)
+            - Intense contraction of the triceps surae muscle produces abnormally high tensile loads on the bone, which is problematic because bone is usually weaker in tension than in compression.
+        - compression
+            - Clinically, compression fractures are commonly found in the vertebrae, which are subjected to high compressive loads.
+                - ![](https://vexpaer-blog-media.vexpaer.workers.dev/media/%E7%94%9F%E7%89%A9%E5%8A%9B%E5%AD%A6/images/790450_98df5cf2-e06c-4742-f3a4-b5fbfe6f04f9.png)
+            - These fractures are most often seen in the elderly with osteoporotic bone tissue.
+            - The shortening and widening that takes place in a human vertebra subjected to a high compressive load.
+            - In a joint, compressive loading to failure can be produced by abnormally strong contraction of the surrounding muscles.
+                - ![](https://vexpaer-blog-media.vexpaer.workers.dev/media/%E7%94%9F%E7%89%A9%E5%8A%9B%E5%AD%A6/images/790450_94d542fa-59d2-4cdb-bd54-af05caaaa603.png)
+            - Bone Cement
+                - Tricalcium phosphate
+                - PMMA
+                - Percutaneous balloon kyphoplasty (PKP)
+                    - Clinical treatment to compression fracture of osteoporotic vertebra
+                        - ![](https://vexpaer-blog-media.vexpaer.workers.dev/media/%E7%94%9F%E7%89%A9%E5%8A%9B%E5%AD%A6/images/790450_80be13ae-4bd0-425a-96f8-7f4ff3cc0198.png)
+        - Fracture Healing
+            - Three Biological Phases
+                - Inflammatory Phase
+                - Reparative Phase
+                - Remodeling phase
+            - Four Biomechanical Stages
+                - Stage I
+                    - Virtually no stiffness is seen, and failure occurs through the original fracture line.
+                    - This stage corresponds to the inflammatory and early reparative (i.e., provisional callus) phases of healing.
+                    - Days 1– 26 in the rabbit tibia.
+                - Stage II
+                    - Substantial stiffness is now encountered, but failure still occurs through the original fracture line.
+                    - This stage corresponds to the middle of the reparative phase when the callus骨痂 has become bony骨化 but still is not so large or calcified as it will become.
+                    - Days 27 - 49 in the rabbit tibia.
+                - Stage III
+                    - There is no further increase in stiffness, but failure is now partially through the original fracture line and partially through intact完整 bone.
+                    - Days 49– 56 in the rabbit tibia.
+                - Stage IV
+                    - Failure occurs through the intact bone rather than the callus骨痂 at the fracture site.
+                    - After day 56 in the rabbit tibia.
+                - Stages III and IV correspond to the later portion of the reparative phase and the early remodeling phase, when the full bony callus exists but its mineral content and strength are still increasing.
+            - Mechanical Modulation of Fracture Healing
+                - The mechanical environment imposed by the fixation device, cast, brace, external fixation, or intramedullary nail influences the mass and distribution of callus.
+                - If the fixation applied is too rigid, an atrophic nonunion will result, while if the fixation is not rigid enough, a hypertrophic nonunion occurs.
+                    - ![](https://vexpaer-blog-media.vexpaer.workers.dev/media/%E7%94%9F%E7%89%A9%E5%8A%9B%E5%AD%A6/images/790450_15f36be2-a1d4-4148-8222-1338c2341506.png)
+                - A marked callus asymmetry was observed, which was closely related to the placement of the external fixator, more callus appearing on the side of the fracture adjacent to the fixator than on the side opposite it.
+    - Fatigue
+        - Cortical specimens demonstrated higher fatigue strength than cancellous specimens.
+            - ![](https://vexpaer-blog-media.vexpaer.workers.dev/media/%E7%94%9F%E7%89%A9%E5%8A%9B%E5%AD%A6/images/790450_f30cb804-1ea0-4844-ef37-7efd16c50aee.png)
+        - Microspecimens from **cortical** bone tissue consist of layers of lamellae parallel to the long axis of the specimen with at most only one cement line, a favorable structure to withstand bending load.
+        - 来自皮质骨组织的微样本由平行于样本长轴的板层构成,最多只有一条水泥线,这是一种有利于承受弯曲载荷的结构.
+        - Microspecimens from **cancellous** bone tissue contain several cement lines and a mosaic-like microstructure with lamellae running across the long axis of the specimen.
+        - 来自松质骨组织的微样本包含若干水泥线和一种马赛克状的微结构,其板层横跨样本的长轴.
+    - Age-Related Changes
+        - Both cancellous and cortical bone tissue from young adults (age 20 to 40) have significantly higher moduli than the tissue from older aging adults (age 55 to 65 and 75 to 85)
+            - ![](https://vexpaer-blog-media.vexpaer.workers.dev/media/%E7%94%9F%E7%89%A9%E5%8A%9B%E5%AD%A6/images/790450_0390f11e-bb53-4382-9e02-3651907b28ec.png)
+        - The increase in bending fracture toughness with crack length is also strongly affected by age
+            - ![](https://vexpaer-blog-media.vexpaer.workers.dev/media/%E7%94%9F%E7%89%A9%E5%8A%9B%E5%AD%A6/images/790450_cd6aff8a-8211-4cc2-845d-a02e3d74f84f.png)
+- Bone Adaptation
+    - “Wolff’s law” of bone remodeling
+        - Bone structure is optimized for strength with respect to its weight
+        - Trabeculae are aligned with the principal directions of stress
+        - Bone adapts its structure through the responsiveness of bone cells to local mechanical stimuli
+        - Bone structure (its shape and mass) is regulated to find the best (the optimum) solution to **minimize both fracture risk and bone mass** for the loadings that the bone experiences.
+            - ![](https://vexpaer-blog-media.vexpaer.workers.dev/media/%E7%94%9F%E7%89%A9%E5%8A%9B%E5%AD%A6/images/790450_30e0fe00-e04c-4a5e-cf0f-61a859bae278.png)
+        - The adaptation of bone is a **somatic change**, the limits of which are determined by the genome of the organism.
+    - Functional Environment of the Skeleton
+        - All long bones are loaded in a manner that minimize any bending.
+        - 所有长骨都以最小化任何弯曲的方式承载负荷.
+        - Any increase in axial compression and any flexural deformation initiated **bone formation on the concave side** of the bone and **resorption on the convex side** to cause a drift of the bone back into axial compressive loading.
+            - ![](https://vexpaer-blog-media.vexpaer.workers.dev/media/%E7%94%9F%E7%89%A9%E5%8A%9B%E5%AD%A6/images/790450_dd57ffac-4507-49f0-9852-8b999fbbc73d.png)
+        - These adaptations can occur throughout the skeleton or within one limb, one bone, or even at a specifically defined site within a bone.
+    - Main Factors Regulating the Form of Adult Bone
+        - 基因 - The predetermined genetic template that explains individual differences in the general size of bones between individuals.
+        - 对外力反应 - Bone as a tissue is able to react to changes in the level of mechanical loading and, as suggested by Wolff, will respond to both the magnitude and pattern of loading.
+            - ![](https://vexpaer-blog-media.vexpaer.workers.dev/media/%E7%94%9F%E7%89%A9%E5%8A%9B%E5%AD%A6/images/790450_ff5774f9-819d-443c-cc10-f1c1ed500ac9.png)
+    - Generalized Reduced Loading
+        - 比如太空飞行
+            - Prolonged periods of bed rest or long-term space flight result in a loss of bone throughout most of the skeleton.
+            - 长期卧床休息或长期太空飞行会导致全身大部分骨骼的骨质流失.
+            - In long-term space flight there is a considerable loss of bone mass of up to 7% of skeletal mass.
+            - 在长期太空飞行中，骨量会大量流失，高达骨骼质量的7%.
+            - The distal bones of the lower limb have been found to sustain the greatest loss of bone.
+            - 已发现下肢远端骨骼的骨质流失最为严重.
+            - The use of a high-frequency, short-term, cyclical mechanical stimulus prevented the reduction in bone mass associated with reduced mechanical loading associated with reduction of gravitational forces.
+            - 使用高频、短期、周期性的机械刺激可以防止因重力减少而导致的机械负荷降低所引起的骨量减少.
+        - The **skull** does **NOT** exhibit such change, since it protect the most important vital organ, the brain.
+        - 颅骨不会表现出这种变化，因为它保护着最重要的生命器官——大脑.
+        - Bears are in a supine state during hibernation, but their bone mass remains UNCHANGED compared to summer values.
+        - 熊在冬眠期间处于仰卧状态，但它们的骨量与夏季相比保持不变.
+        - Deer grow antlers on a seasonal basis and exhibit REDUCED bone mass to mobilize the calcium required for rapid bone growth associated with deer antler formation.
+        - 鹿会季节性生长鹿角，并表现出骨量减少，以调动鹿角形成过程中快速骨生长所需的钙.
+    - Localized Loss of Bone
+        - eg.石膏固定
+            - When immobilizing the forelimbs of dogs with plaster casts, an increase in diameter of the medullary cavity was observed.
+                - ![](https://vexpaer-blog-media.vexpaer.workers.dev/media/%E7%94%9F%E7%89%A9%E5%8A%9B%E5%AD%A6/images/790450_952c9a58-b8c0-4929-8aa7-d1606295b7d6.png)
+            - By reintroducing normal activity, bone loss can be reversed, demonstrating the dynamic properties of mechanical related bone models.
+            - Functional adaptation to mechanical conditions may be localized to a single bone or even to a specific site within a single bone.
+        - eg.全髋关节置换术
+            - After total hip replacement, the femoral endoprosthesis results in a radical change in distribution of loads in the proximal femur.
+            - 全髋关节置换后，股骨内假体导致股骨近端载荷分布发生根本性改变.
+            - The normal anatomical load transfer from the femoral head to the diaphyseal cortices by the internal cancellous bony architecture is replaced by transfer from the endoprosthesis directly to the cortex.
+            - 正常的解剖学载荷通过内部松质骨结构从股骨头传递到骨干皮质，被直接从内假体传递到皮质的载荷所替代.
+            - A是刚进行手术,原先力从松质骨均匀传递,现在假体直接传递后导致松质骨不受力,出现B这样应力遮挡导致骨减少
+                - ![](https://vexpaer-blog-media.vexpaer.workers.dev/media/%E7%94%9F%E7%89%A9%E5%8A%9B%E5%AD%A6/images/790450_567ebacb-eefe-4351-9512-a27c59180bf8.png)
+    - Dietary Effects on Mechanical Adaptation of Bone
+        - 盖,磷,蛋白可以帮助骨骼成长,一些动物的饮食结构不同导致骨骼不同
+            - ![](https://vexpaer-blog-media.vexpaer.workers.dev/media/%E7%94%9F%E7%89%A9%E5%8A%9B%E5%AD%A6/images/790450_7b33fc96-2449-4d0e-c137-aab4b2f46bf1.png)
+- Design of Bone
+    - 特点
+        - Strength to resist axial, bending, torsion, and impact loading, but with greater strength in some directions than others depending on the predominant modes of loading.
+        - 具有抵抗轴向、弯曲、扭转和冲击载荷的强度，但在某些方向上的强度高于其他方向，具体取决于主要的载荷模式.
+        - Stiffness under axial, bending, and torsion loading, but again stiffer in some directions than others depending on the predominant modes of loading.
+        - 在轴向、弯曲和扭转载荷下的刚度，但同样在某些方向上比其他方向更硬，具体取决于主要的载荷模式.
+        - Lowweight.
+        - 低重量.
+        - High fatigue fracture resistance.
+        - 高抗疲劳断裂性能.
+        - Able to absorb energy during impact.
+        - 能够在冲击过程中吸收能量.
+        - Able to repair itself.
+        - 能够自我修复.
+        - Able to optimize its structure dynamically.
+        - 能够动态优化自身结构.
+    - 综合性能&gt;最优单一性能
+        - Bone is not optimally designed for any one function or to meet any single requirement.
+        - 骨骼并非为任何单一功能或满足任何单一要求而最优设计.
+        - Instead, it is optimized to perform acceptably well in many categories over the range of normally encountered physiological conditions.
+        - 相反，它在通常遇到的生理条件范围内，在许多方面都被优化以表现可接受的良好性能.
+        - Bones that are designed to be very stiff to resist flexing when pulled on by the muscle attachments, which they do at the expense of increased mass.
+        - 那些设计得非常坚硬以抵抗肌肉附着点拉动时发生弯曲的骨骼，是以增加质量为代价来实现这一点的.
+        - Light distal bones have lower mass moments of inertia about the joint center and therefore require less muscle force to accelerate.
+        - 轻质的远端骨骼关于关节中心的质量惯性矩较低，因此需要较少的肌肉力量来加速.
+        - Incidence of fracture of various bones in males aged 20–45 years
+            - ![](https://vexpaer-blog-media.vexpaer.workers.dev/media/%E7%94%9F%E7%89%A9%E5%8A%9B%E5%AD%A6/images/790450_993ee1e9-a5b7-4634-bded-c88bfb69a9ef.png)
+- Case Studies
+    - Case Study 1
+        - 图 - image-only case slides in the PDF; no extractable text available from the provided slide text.
+    - Case Study 2
+        - The article simulated the microgravity environment using a hindlimb unloading model.
+        - Increased excitability of the sympathetic nervous system leads to a decrease in
+            - trabecular bone mass
+            - cortical bone thickness
+            - mineral density
+        - tyrosine hydroxylase酪氨酸羟化酶
+        - neuropeptide Y神经肽Y
+        - 微重力/卸载不是只有力学少了, 神经调控也会参与骨量下降
+- Take-Home Message
+    - What is the basic composition of bone?
+        - Answer EN
+            - Bone tissue consists of cells embedded in an extracellular matrix (ECM).
+            - The ECM contains an organic collagen-based phase and a mineral phase.
+            - The mineral phase is mainly crystalline hydroxyapatite ([Ca3(PO4)2]3·Ca(OH)2).
+            - Bone is living and dynamic; about 10-15% of body bone is replaced every year.
+        - 回答 中文
+            - 骨 = 细胞 + 细胞外基质 ECM
+            - ECM 主要包括胶原为主的有机相和羟基磷灰石为主的矿物相
+            - 胶原相主要给韧性和抗拉, 矿物相主要给刚度和强度
+            - 骨是活组织, 每年大约有 10-15% 的全身骨被新骨替换
+    - What is bone remodeling? Which cells are involved in bone remodeling?
+        - Answer EN
+            - Bone remodeling is the continuous renewal of bone by coordinated bone resorption and bone formation.
+            - Osteoclasts are recruited to dissolve or resorb bone.
+            - Osteoblasts are recruited to synthesize new bone matrix.
+            - Osteocytes and lining cells reside in bone tissue and communicate through small canals.
+            - Osteocytes are important mechanosensors that help regulate local remodeling.
+        - 回答 中文
+            - 骨重塑就是旧骨被吸收、新骨被形成的持续更新过程
+            - 破骨细胞 osteoclasts 负责吸收/溶解骨
+            - 成骨细胞 osteoblasts 负责合成新骨基质
+            - 骨细胞 osteocytes 和衬细胞 lining cells 长期存在于骨组织内, 通过小管互相交流
+            - 可以理解为: 破骨拆旧, 成骨建新, 骨细胞负责感受局部环境和传信号
+    - What are the physiologic and anatomic differences between cortical and trabecular bone?
+        - Answer EN
+            - Cortical bone, also called compact bone, lines the outer surface of most bones and forms the shafts of long bones.
+            - It has low porosity, typically &lt; 10%, so it is stronger, stiffer, and heavier.
+            - Trabecular bone, also called cancellous or spongy bone, is found in vertebrae and at the ends of long bones.
+            - It is a three-dimensional porous network of trabeculae with marrow-filled spaces.
+            - Trabecular bone is lighter, weaker than solid cortical bone, and generally more active in remodeling.
+            - Trabecular architecture varies with anatomical location, mechanical function, age, and disease.
+        - 回答 中文
+            - 皮质骨/密质骨在骨外层和长骨骨干, 孔隙率低, 通常 &lt; 10%, 所以更强、更硬、更重
+            - 松质骨/海绵骨在椎骨和长骨两端, 是三维骨小梁网络, 孔隙中有骨髓
+            - 松质骨更轻, 强度低于密实皮质骨, 但重塑更活跃
+            - 松质骨的孔隙率和骨小梁结构会随部位、功能、年龄和疾病变化
+    - Explain the biomechanical properties of the two types of bone.
+        - Answer EN
+            - Both cortical and trabecular bone are biphasic composites: mineral provides stiffness, while collagen provides tensile strength, ductility, and toughness.
+            - Cortical bone is strongly anisotropic because osteons and lamellae are directionally organized.
+            - Cortical bone is stronger and stiffer along the longitudinal axis than in the transverse direction.
+            - Cortical bone is stronger in compression than in tension.
+            - Cortical bone is viscoelastic: higher deformation rate increases stiffness and strength but makes failure more fragile.
+            - Cortical bone is very sensitive to porosity; E ~ (1-p)^7.4.
+            - Trabecular bone mechanics are apparent properties of a porous strut network.
+            - Trabecular stiffness and strength depend on tissue material properties, amount of tissue, relative density, and trabecular architecture.
+        - 回答 中文
+            - 两种骨都像双相复合材料: 矿物相给刚度, 胶原相给抗拉、延展性和韧性
+            - 皮质骨因为骨单位和骨板有方向排列, 各向异性很强
+            - 皮质骨纵向刚度和强度高于横向, 抗压强于抗拉
+            - 皮质骨有黏弹性, 变形速率越高通常越硬、越强, 但也更脆
+            - 皮质骨对孔隙率特别敏感, E ~ (1-p)^7.4, 一点孔隙增加就能明显降强度
+            - 松质骨看的是 apparent properties, 因为它是骨小梁网络整体在受力
+            - 松质骨强度和刚度取决于骨组织材料、组织量、相对密度和骨小梁空间结构
+    - What is bone adaptation?
+        - Answer EN
+            - Bone adaptation is the regulation of bone shape, mass, and internal architecture in response to mechanical loading.
+            - According to Wolff's law, trabeculae align with principal stress directions.
+            - Bone cells respond to local mechanical stimuli and adjust formation and resorption.
+            - The goal is to minimize both fracture risk and bone mass for the loads the bone experiences.
+            - Adaptation can occur throughout the skeleton or locally within one limb, one bone, or one site.
+        - 回答 中文
+            - 骨适应就是骨根据受力情况改变形状、质量和内部结构
+            - Wolff 定律, 骨小梁会沿主应力方向排列
+            - 骨细胞感受局部力学刺激, 调节成骨和骨吸收
+            - 目标不是骨越多越好, 而是在当前载荷下用尽量少的骨量降低骨折风险
+            - 这种适应可以是全身性的, 也可以局限在一条肢体、一块骨或骨内某个局部区域
+    - Name the factors that cause the loss of bone and provide suggestion for these issues.
+        - Answer EN
+            - Reduced mechanical loading causes bone loss, such as prolonged bed rest, immobilization, and long-term space flight.
+            - Osteoporosis and aging reduce bone mass, modulus, and fracture toughness.
+            - Stress shielding after implants reduces load transfer to adjacent bone and can cause localized resorption.
+            - Dietary insufficiency, especially inadequate calcium, phosphorus, or protein, can impair bone growth and adaptation.
+            - Suggestions: restore normal activity when possible, use appropriate cyclic mechanical stimulus, maintain sufficient nutrition, treat osteoporosis, and design implants to avoid excessive stress shielding.
+        - 回答 中文
+            - 骨丢失因素包括 长期卧床、固定、太空飞行等机械加载减少
+            - 骨质疏松和衰老会降低骨量、模量和断裂韧性
+            - 植入物后的应力遮挡会让周围骨受力减少, 导致局部骨吸收
+            - 钙、磷、蛋白等营养不足会影响骨生长和力学适应
+            - 建议: 尽早恢复合理活动, 给予合适的周期性机械刺激, 保证钙/磷/蛋白摄入, 治疗骨质疏松, 植入物设计避免过强应力遮挡
+    - What is stress shielding?
+        - Answer EN
+            - Stress shielding occurs when an implant or prosthesis carries too much of the load that should normally be transferred through bone.
+            - The surrounding bone becomes underloaded, so bone remodeling shifts toward resorption.
+            - After total hip replacement, load may transfer directly from the femoral endoprosthesis to the cortex instead of through cancellous architecture.
+            - This can cause localized bone loss around the implant and may compromise long-term fixation.
+        - 回答 中文
+            - 应力遮挡就是植入物太硬或承担了太多载荷, 原本应该受力的骨反而不怎么受力
+            - 骨组织长期低载荷后会按 Wolff 定律发生吸收, 出现局部骨量减少
+            - 全髋关节置换后, 力可能由假体直接传到皮质骨, 不再通过原来的松质骨结构传递
+            - 结果是植入物周围骨减少, 可能影响长期固定稳定性
+        - 可以重新设计来解决

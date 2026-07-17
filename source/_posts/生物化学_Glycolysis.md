@@ -13,9 +13,9 @@ mindmap: true
     - its principal steps occur with no oxygen
     - provide precursor molecules for aerobic catabolic pathways 有氧代谢过程
     - Compartmentalization of glycolysis, the citric acid cycle, and oxidative phosphorylation.
-        - ![](/media/生物化学/images/790450_58a7418c-1dda-47ba-d242-792ae13659bd.png)
+        - ![](https://vexpaer-blog-media.vexpaer.workers.dev/media/生物化学/images/790450_58a7418c-1dda-47ba-d242-792ae13659bd.png)
     - 图
-        - ![](/media/生物化学/images/790450_efdefa5d-8dfd-46ef-a56e-9f5d5c4279ca.png)
+        - ![](https://vexpaer-blog-media.vexpaer.workers.dev/media/生物化学/images/790450_efdefa5d-8dfd-46ef-a56e-9f5d5c4279ca.png)
 - two phase
     - first phase
         - basic
@@ -24,10 +24,10 @@ mindmap: true
         - Reaction 1 - Phosphorylation of Glucose → G-6-P (-ATP) 调控步骤
             The First Priming Reaction
             - glucose → Glucose-6-Phosphate
-                - ![](/media/生物化学/images/790450_4e32a2a6-bba1-45ea-f110-beac6e90a480.png)
+                - ![](https://vexpaer-blog-media.vexpaer.workers.dev/media/生物化学/images/790450_4e32a2a6-bba1-45ea-f110-beac6e90a480.png)
             - Cellular Advantages 对细胞有什么好处
                 - 1. phosphorylation keeps the substrate in the cell, G-6-P带负电出不去
-                    - ![](/media/生物化学/images/790450_2e264a8a-a498-4ebb-bef0-90172cbb796d.png)
+                    - ![](https://vexpaer-blog-media.vexpaer.workers.dev/media/生物化学/images/790450_2e264a8a-a498-4ebb-bef0-90172cbb796d.png)
                 - 2. keeps the intracellular concentration of glucose low, 可以让更多glucose扩散进来
                 - 3. because regulatory control can be imposed only on reactions not at equilibrium (∆G=0), the favorable thermodynamics of this first reaction makes it an important site for regulation 这步反应可以用于调节
             - 酶 - Hexokinase 己糖激酶 or Glucokinase 葡(萄)糖激酶
@@ -53,15 +53,15 @@ mindmap: true
                         环境中有信号诱导酶才会大量合成, Patients with type 2 diabetes 糖尿病 produce insufficient insulin
             - Glucose-6-phosphate is the branch point for several metabolic pathways
                 - 图
-                    - ![](/media/生物化学/images/790450_464c81e6-52a9-4f04-9e8b-8074a61a2eb3.png)
+                    - ![](https://vexpaer-blog-media.vexpaer.workers.dev/media/生物化学/images/790450_464c81e6-52a9-4f04-9e8b-8074a61a2eb3.png)
         - Reaction 2 - the Isomerization 异构化 of G-6-P → F-6-P
             - Glucose-6-Phosphate → Fructose-6-Phosphate
-                - ![](/media/生物化学/images/790450_c1a5613c-5670-441b-a7f0-a5233b18fc51.png)
+                - ![](https://vexpaer-blog-media.vexpaer.workers.dev/media/生物化学/images/790450_c1a5613c-5670-441b-a7f0-a5233b18fc51.png)
             - 具体机制
                 - 醛酮互变异构
-                    - ![](/media/生物化学/images/790450_7d353dda-38c1-46af-afc0-b9d50e9a046f.png)
+                    - ![](https://vexpaer-blog-media.vexpaer.workers.dev/media/生物化学/images/790450_7d353dda-38c1-46af-afc0-b9d50e9a046f.png)
                 - 图
-                    - ![](/media/生物化学/images/790450_61396810-c2fa-4013-cdb4-26102dc572b0.png)
+                    - ![](https://vexpaer-blog-media.vexpaer.workers.dev/media/生物化学/images/790450_61396810-c2fa-4013-cdb4-26102dc572b0.png)
                 - opening of the pyranose 吡喃糖ring (Step A)
                 - proton abstraction leading to enediol烯二醇formation (Step B)
                 - and proton addition to the double bond, followed by ring closure (Step C)
@@ -78,21 +78,21 @@ mindmap: true
         - Reaction 3 - F-6-P → FBP (-ATP) 调控步骤
             The Second Priming Reaction
             - Fructose-6-Phosphate → Frutose-1,6-BiPhosphate
-                - ![](/media/生物化学/images/790450_cabdc580-e1de-4b9b-b3ca-5c0f5c769090.png)
+                - ![](https://vexpaer-blog-media.vexpaer.workers.dev/media/生物化学/images/790450_cabdc580-e1de-4b9b-b3ca-5c0f5c769090.png)
             - At pH 7 and 37°C
                 - the phosphofructokinase reaction equilibrium lies far to the right
                 - commits 指派the cell to metabolizing glucose rather than converting it to another sugar or storing it
-                    - ![](/media/生物化学/images/790450_1ae4a653-b9ee-4b97-d71f-dc801d470385.png)
+                    - ![](https://vexpaer-blog-media.vexpaer.workers.dev/media/生物化学/images/790450_1ae4a653-b9ee-4b97-d71f-dc801d470385.png)
             - 酶 - phosphofructokinase 磷酸果糖激酶
                 - Phosphofructokinase with ADP shown in white and fructose-6-P in red
-                    - ![](/media/生物化学/images/790450_2ef877e1-6e52-47fa-f683-535a959794ca.png)
+                    - ![](https://vexpaer-blog-media.vexpaer.workers.dev/media/生物化学/images/790450_2ef877e1-6e52-47fa-f683-535a959794ca.png)
                 - most important site of regulation in the glycolytic pathway
                 - regulation - allosteric
                     - ↓ ATP
                         - ATP is an allosteric inhibitor of this enzyme
-                            - ![](/media/生物化学/images/790450_b40dba2a-117b-426e-c3ee-ab5aaf1b9931.png)
+                            - ![](https://vexpaer-blog-media.vexpaer.workers.dev/media/生物化学/images/790450_b40dba2a-117b-426e-c3ee-ab5aaf1b9931.png)
                         - adenylate kinase腺苷酸激酶会催化以下反应
-                            - ![](/media/生物化学/images/790450_e5a80acc-a3f0-43bf-d756-ca8d755ebdf6.png)
+                            - ![](https://vexpaer-blog-media.vexpaer.workers.dev/media/生物化学/images/790450_e5a80acc-a3f0-43bf-d756-ca8d755ebdf6.png)
                         - ATP and AMP levels represent the cellular energy status
                     - ↓ citrate 柠檬酸盐
                         - Glycolysis and TCA are coupled via phosphofructokinase
@@ -100,21 +100,21 @@ mindmap: true
                         - When the citric acid cycle reaches saturation, glycolysis slows down
                     - ↑ AMP
                         - AMP reverses the inhibition due to ATP
-                            - ![](/media/生物化学/images/790450_bc4171d7-5ed9-41d0-daba-6ddf387659bf.png)
+                            - ![](https://vexpaer-blog-media.vexpaer.workers.dev/media/生物化学/images/790450_bc4171d7-5ed9-41d0-daba-6ddf387659bf.png)
                     - ↑ β-D-fructose-2,6-bisphosphate
                         - 三个功能
                             - increases the affinity of phosphofructokinase for the substrate fructose-6-phosphate
                             - decreasing the inhibitory effects of ATP
-                                - ![](/media/生物化学/images/790450_eac275b5-84c3-4d4c-dbf9-17c0e75395eb.png)
+                                - ![](https://vexpaer-blog-media.vexpaer.workers.dev/media/生物化学/images/790450_eac275b5-84c3-4d4c-dbf9-17c0e75395eb.png)
                             - inhibiting fructose-1,6bisphosphatase, the enzyme that catalyzes this reaction in the opposite direction
-                                - ![](/media/生物化学/images/790450_f3e4facc-37b8-4204-aabf-7d04602cb6ba.png)
+                                - ![](https://vexpaer-blog-media.vexpaer.workers.dev/media/生物化学/images/790450_f3e4facc-37b8-4204-aabf-7d04602cb6ba.png)
                         - increases the net flow of glucose through glycolysis by stimulating phosphofructokinase
                         - 这个增强剂与这步反应的产物对比
-                            - ![](/media/生物化学/images/790450_8f16e4be-af1c-471a-95c7-ebd1b7c93d44.png)
+                            - ![](https://vexpaer-blog-media.vexpaer.workers.dev/media/生物化学/images/790450_8f16e4be-af1c-471a-95c7-ebd1b7c93d44.png)
                         - 被PFK-2 & F-2,6-BPase调控
         - Reaction 4 - Cleavage of FBP → DHAP + G-3-P
             - Fructose-1,6-bisP → DiHydroxyAcetone Phosphate ＋ Glyceraldehyde-3-Phosphate
-                - ![](/media/生物化学/images/790450_baf9aa56-dbc3-4354-ca53-2756f9cd3f42.png)
+                - ![](https://vexpaer-blog-media.vexpaer.workers.dev/media/生物化学/images/790450_baf9aa56-dbc3-4354-ca53-2756f9cd3f42.png)
             - cleaves fructose-1,6-bisphosphate between the C-3 and C-4 carbons to yield two triose phosphates 磷酸丙糖
                 - dihydroxyacetone phosphate (DHAP) 磷酸二羟基丙酮
                 - glyceraldehyde-3-phosphate (G-3-P) 3-磷酸甘油醛
@@ -125,7 +125,7 @@ mindmap: true
                 - At physiological concentrations, the reaction is essentially at equilibrium
         - Reaction 5 - DHAP ⇄ G-3-P
             - DiHydroxyAcetone Phosphate ⇄ Glyceraldehyde-3-Phosphate
-                - ![](/media/生物化学/images/790450_3383bc3f-b224-4107-be8c-546397b149c6.png)
+                - ![](https://vexpaer-blog-media.vexpaer.workers.dev/media/生物化学/images/790450_3383bc3f-b224-4107-be8c-546397b149c6.png)
             - 这步和上一步加起来相当于FBP → 2G-3-P
             - 只有G-3-P能进入glycolysis二阶段, 所以要把DHAP变成G-3-P
             - 酶 - Triose Phosphate Isomerase 磷酸丙糖异构酶
@@ -139,16 +139,16 @@ mindmap: true
             - produce 4 ATP
         - Reaction 6 - G-3-P → 1,3-BPG (-2P +2NADH)
             - G-3-P → 1,3-BPG
-                - ![](/media/生物化学/images/790450_eca78873-15c3-4521-9e46-b4a607df9cad.png)
+                - ![](https://vexpaer-blog-media.vexpaer.workers.dev/media/生物化学/images/790450_eca78873-15c3-4521-9e46-b4a607df9cad.png)
             - makes a high-energy phosphate in preparation for ATP synthesis
             - 酶 - Glyceraldehyde-3-Phosphate Dehydrogenase 脱氢酶
                 - Although the oxidation of an aldehyde to a carboxylic acid is a highly exergonic放能 reaction
-                    - ![](/media/生物化学/images/790450_1636a51e-571b-4d93-fff1-1c444c175475.png)
+                    - ![](https://vexpaer-blog-media.vexpaer.workers.dev/media/生物化学/images/790450_1636a51e-571b-4d93-fff1-1c444c175475.png)
                 - the overall reaction involves both formation of a carboxylic-phosphoric anhydride and the reduction of NAD to NADH
                 - therefore slightly endergonic吸能的 at standard state, with a ∆G of +6.30 kJ/mol
         - Reaction 7 - 1,3-BPG → 3-PG (+2ATP)
             - 1,3-BPG → 3-PG
-                - ![](/media/生物化学/images/790450_7fb7ccdc-20df-41ad-a1b1-3fa07686eebb.png)
+                - ![](https://vexpaer-blog-media.vexpaer.workers.dev/media/生物化学/images/790450_7fb7ccdc-20df-41ad-a1b1-3fa07686eebb.png)
             - 酶 - Phosphoglycerate Kinase 磷酸甘油酸激酶
                 - Mg2+ ion is required for activity
                 - exergonic 放能
@@ -156,25 +156,25 @@ mindmap: true
                     这步放能拉着前面两步能量不利的往前反应
         - Reaction 8 - phosphoryl transfer
             - 3-PhosphoGlycerate → 2-PhosphoGlycerate
-                - ![](/media/生物化学/images/790450_a0f38847-24cc-4d94-f3bb-39759fa43c43.png)
+                - ![](https://vexpaer-blog-media.vexpaer.workers.dev/media/生物化学/images/790450_a0f38847-24cc-4d94-f3bb-39759fa43c43.png)
             - 酶 - Phosphoglycerate mutase 磷酸甘油酸变位酶
                 - The term mutase 变位酶 is applied to enzymes that catalyze migration of a functional group within a substrate molecule
                 - The free energy change for this reaction is very small under cellular conditions
         - Reaction 9 - Dehydration 2-PG → PEP (-H2O)
             - 2-PhosphoGlycerate → PhosphoEnolPyruvate 磷酸烯醇丙酮酸
-                - ![](/media/生物化学/images/790450_7b56f2b5-cc6e-4ccd-a20a-d1785a3dcd0f.png)
+                - ![](https://vexpaer-blog-media.vexpaer.workers.dev/media/生物化学/images/790450_7b56f2b5-cc6e-4ccd-a20a-d1785a3dcd0f.png)
             - makes a high-energy phosphate in preparation for ATP synthesis
             - 酶 - Enolase 烯醇酶
                 - The ∆G° for this reaction is relatively small at 1.8 kJ/mol (Keq 0.5)
                 - under cellular conditions, ∆G is very close to zero
         - Reaction 10 - PEP → pyruvate (+2ATP) 调控步骤
             - PhosphoEnolPyruvate → pyruvate
-                - ![](/media/生物化学/images/790450_fd0549bc-47ba-4768-f7e6-3f578b39f03d.png)
+                - ![](https://vexpaer-blog-media.vexpaer.workers.dev/media/生物化学/images/790450_fd0549bc-47ba-4768-f7e6-3f578b39f03d.png)
             - 酶 - Pyruvate Kinase 丙酮酸激酶
                 - The reaction requires Mg2+ ion and is stimulated by K+ and certain other monovalent cations单价阳离子
                 - Keq at 25°C is 3.63×10^5, equilibrium far right
                 - The large negative G of this reaction makes pyruvate kinase a target site for regulation of glycolysis 适合调控
-                    - ![](/media/生物化学/images/790450_12206062-d022-4b20-e024-4aac0dbd09d2.png)
+                    - ![](https://vexpaer-blog-media.vexpaer.workers.dev/media/生物化学/images/790450_12206062-d022-4b20-e024-4aac0dbd09d2.png)
                 - regulation - allosteric
                     - ↑ AMP
                     - ↑ fructose-1,6-bisphosphate
@@ -194,7 +194,7 @@ mindmap: true
         - it is oxidized to CO2 with the production of additional NADH (and FADH2).
         - the NADH produced in glycolysis and the citric acid cycle is reoxidized to NAD+ in the mitochondrial electron transport chain
         - 图
-            - ![](/media/生物化学/images/790450_a7fd2dd1-0abb-4ae2-d7b3-ba5c6c99b784.png)
+            - ![](https://vexpaer-blog-media.vexpaer.workers.dev/media/生物化学/images/790450_a7fd2dd1-0abb-4ae2-d7b3-ba5c6c99b784.png)
     - Anaerobic 无氧
         - fermentation 发酵
             - pyruvate → lactate/ethanol都算fermentation
@@ -214,7 +214,7 @@ mindmap: true
                     Enzymes with Slightly Different Subunits, 催化同一种反应但是催化效率与倾向不同
                 - depending on the tetrameric 四聚体 association of two different subunits(A&B)
                 - A4, A3B, A2B2, AB3, B4
-                    - ![](/media/生物化学/images/790450_8819e53c-a117-48c8-b419-9fa4b5f1b937.png)
+                    - ![](https://vexpaer-blog-media.vexpaer.workers.dev/media/生物化学/images/790450_8819e53c-a117-48c8-b419-9fa4b5f1b937.png)
                 - their relative affinities for the various substrates and their sensitivity to inhibition by product are different
                 - Different tissues express different isozyme forms
                     - muscle
@@ -227,22 +227,22 @@ mindmap: true
                         - using the pyruvate to fuel the citric acid cycle to obtain energy
                         - The heart LDH isozyme (B4) is inhibited by excess pyruvate so the fuel won’t be wasted
                     - 图
-                        - ![](/media/生物化学/images/790450_8a6cc323-95e6-4f2e-9ca1-7428e1822cab.png)
+                        - ![](https://vexpaer-blog-media.vexpaer.workers.dev/media/生物化学/images/790450_8a6cc323-95e6-4f2e-9ca1-7428e1822cab.png)
             - Lactic acid fermentation
-                - ![](/media/生物化学/images/790450_4356b517-3d7c-4db3-f23a-45ba6b2789a3.png)
+                - ![](https://vexpaer-blog-media.vexpaer.workers.dev/media/生物化学/images/790450_4356b517-3d7c-4db3-f23a-45ba6b2789a3.png)
         - pyruvate → ethanol + CO2
             in yeast
             - provides a means for regenerating NAD consumed in the glyceraldehyde-3-P dehydrogenase reaction
             - Alcoholic fermentations are the basis for the brewing酿造 of beers and the fermentation of grape sugar in wine making
             - Alcoholic fermentation
-                - ![](/media/生物化学/images/790450_a7d7e3c2-5bea-4ae5-e714-e642fd53bb67.png)
+                - ![](https://vexpaer-blog-media.vexpaer.workers.dev/media/生物化学/images/790450_a7d7e3c2-5bea-4ae5-e714-e642fd53bb67.png)
     - 总结
         - 图
-            - ![](/media/生物化学/images/790450_b69bbc79-4b8f-4f71-da62-35f233165e35.png)
+            - ![](https://vexpaer-blog-media.vexpaer.workers.dev/media/生物化学/images/790450_b69bbc79-4b8f-4f71-da62-35f233165e35.png)
 - 其他
     - energy elegance
         - 反应在标准状态以及细胞内的自由能
-            - ![](/media/生物化学/images/790450_9345b0a2-2aa5-4452-8cdf-40f4f038cfed%201.png)
+            - ![](https://vexpaer-blog-media.vexpaer.workers.dev/media/生物化学/images/790450_9345b0a2-2aa5-4452-8cdf-40f4f038cfed%201.png)
         - 细胞内反应2和反应4-9 ∆G is very close to zero, so that these reactions operate essentially at equilibrium
         - The driving force for glycolysis lies in the hexokinase (1), phosphofructokinase (3), and pyruvate kinase (10) reactions
         - These reactions are thus the sites of glycolytic regulation
@@ -252,7 +252,7 @@ mindmap: true
             - The maintenance of reactions 2 and 4 through 9 at or near equilibrium permits these reactions (and their respective enzymes) to operate effectively in either the forward or reverse direction
     - Other Substrates in Glycolysis
         - Mannose, galactose, fructose, and other simple metabolites can enter the glycolytic pathway through being converted by appropriate enzymes to one of the intermediates of glycolysis.
-            - ![](/media/生物化学/images/d0305552-0c8b-452e-9dbc-16ca99a5c33d-790450.jpeg)
+            - ![](https://vexpaer-blog-media.vexpaer.workers.dev/media/生物化学/images/d0305552-0c8b-452e-9dbc-16ca99a5c33d-790450.jpeg)
     - Nucleoside 5'-Triphosphates Are Carriers of Chemical Energy
         - ATP, GTP, CTP, UTP and dATP, dGTP, dCTP, dTTP.
             Four NTPs and their dNTPcounterparts are the substrates for the synthesis of the nucleic acids

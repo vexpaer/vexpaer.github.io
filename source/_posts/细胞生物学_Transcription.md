@@ -33,13 +33,13 @@ Promoter: contain specific DNA sequences that provide a initial binding site for
 TF: is a protein that controls the rate of transcription, bind to the promoter, by promoting (the activation of gene expression), or blocking (the repression of gene expression) the  recruitment of RNA polymerase.  
 转录因子通过招募/阻断招募RNA聚合酶来控制转录速率  
 
-![alt text](/media/细胞生物学/images/6-image.png)
+![alt text](https://vexpaer-blog-media.vexpaer.workers.dev/media/细胞生物学/images/6-image.png)
 
 ## E.coil的转录起始//其他都是真核细胞
 
 ### promoter
 InE.coli , the promoter contains two short sequences about 10 and 35 nts upstream from the transcription start site   
-![alt text](/media/细胞生物学/images/6-image-2.png)
+![alt text](https://vexpaer-blog-media.vexpaer.workers.dev/media/细胞生物学/images/6-image-2.png)
 ### RNA polymerase(RNA Pol)
 Core enzyme:   α2 β′ β ω
 ### σ factor
@@ -47,7 +47,7 @@ Sigma factor (σ factor) is a bacterial transcription initiation factor that ena
 
 ## RNA polymerase
 真核细胞有三种RNA聚合酶,转录不同种类的基因,对应不同的启动子  
-![alt text](/media/细胞生物学/images/6-image-3.png)  
+![alt text](https://vexpaer-blog-media.vexpaer.workers.dev/media/细胞生物学/images/6-image-3.png)  
 注意到 RNA Pol Ⅱ 是最重要的  
 
 ## promoter
@@ -62,7 +62,7 @@ Sigma factor (σ factor) is a bacterial transcription initiation factor that ena
 通常在25-35 bp upstream the transcription start site  
 
 启动子美图↓  
-![alt text](/media/细胞生物学/images/6-image-4.png)
+![alt text](https://vexpaer-blog-media.vexpaer.workers.dev/media/细胞生物学/images/6-image-4.png)
 
 ## General transcription factors (GTFs)
 
@@ -74,20 +74,20 @@ GTFs include : TFIIA, TFIIB, TFIIC, TFIID, etc
 
 TFIID 有一个亚基叫 TATA binding protein (TBP)
 
-![alt text](/media/细胞生物学/images/6-image-5.png)
+![alt text](https://vexpaer-blog-media.vexpaer.workers.dev/media/细胞生物学/images/6-image-5.png)
 
 ## 过程  
 
 刚开始是TBP bind to TATA box,creating a sharp bend in the promoter DNA.  
 TBP 把DNA启动子大力掰弯↓  
-![alt text](/media/细胞生物学/images/6-image-6.png)  
+![alt text](https://vexpaer-blog-media.vexpaer.workers.dev/media/细胞生物学/images/6-image-6.png)  
 
 然后Other GTFs and RNA Pol II assemble to form a **transcription initiation complex** (转录起始复合体).
 
 再然后TFIIH phosphorylates a long C-terminal polypeptide tail, also called the C-terminal domain (CTD), that extends from the pol II, changing its conformation so that the pol II is released from GTFs and can begin the elongation phase of transcription.  
 说中文是TFIIH磷酸化RNA聚合酶的C端,改变其形状,释放出RNA聚合酶,开始转录
 
-![alt text](/media/细胞生物学/images/6-image-7.png)
+![alt text](https://vexpaer-blog-media.vexpaer.workers.dev/media/细胞生物学/images/6-image-7.png)
 
 ## activator,enhancers & mediator
 
@@ -99,9 +99,9 @@ activator promote gene expression by binding to enhancers
 The binding causes the DNA to bend, bringing them near a gene promoter  
 mediator allow the activator proteins to communicate properly with the poly II and GTFs  
 
-![alt text](/media/细胞生物学/images/6-image-8.png)  
+![alt text](https://vexpaer-blog-media.vexpaer.workers.dev/media/细胞生物学/images/6-image-8.png)  
 
-![alt text](/media/细胞生物学/images/6-image-9.png)
+![alt text](https://vexpaer-blog-media.vexpaer.workers.dev/media/细胞生物学/images/6-image-9.png)
 
 # RNA processing
 
@@ -114,7 +114,7 @@ mediator allow the activator proteins to communicate properly with the poly II a
 2. The removal of intron sequences by RNA 
 splicing  
 
-![alt text](/media/细胞生物学/images/6-image-18.png)
+![alt text](https://vexpaer-blog-media.vexpaer.workers.dev/media/细胞生物学/images/6-image-18.png)
 
 The 5ʹ-methyl cap and 3’-Poly A tail distinguish mRNAs from the other types of RNA
 
@@ -123,7 +123,7 @@ The 5ʹ-methyl cap and 3’-Poly A tail distinguish mRNAs from the other types o
 capping protein first bind to the RNA Pol II C-terminal tail when it is phosphorylated on CTD  
 盖帽蛋白先结合到RNA聚合酶的CTD(忘了就看看转录那)  
 
-![alt text](/media/细胞生物学/images/6-image-10.png)
+![alt text](https://vexpaer-blog-media.vexpaer.workers.dev/media/细胞生物学/images/6-image-10.png)
 
 capping protein有三个酶,按照顺序催化给RNA加帽  
 
@@ -139,7 +139,7 @@ mRNA guanylyltransferase uses GTP as a GMP donor, added to the 5 'end, and then 
 看下面那个图就知道,先加个磷酸,然后加个GMP,然后给GMP加个甲基,就盖帽完事了  
 
 加帽完是这样↓  
-![alt text](/media/细胞生物学/images/6-image-11.png)
+![alt text](https://vexpaer-blog-media.vexpaer.workers.dev/media/细胞生物学/images/6-image-11.png)
 
 ##  3' End Polyadenylation 3'端聚腺苷酸化
 
@@ -148,7 +148,7 @@ mRNA need to undergo cleavage of the 3’ end non-coding sequence, plus a string
 
 The 3'end polyadenylation site contains the consensus sequence “AAUAAA” (polyadenylation signal), followed by CA about 10-30n not after(the cleavage site) and a GU-rich sequence downstream  
 
-![alt text](/media/细胞生物学/images/6-image-12.png)
+![alt text](https://vexpaer-blog-media.vexpaer.workers.dev/media/细胞生物学/images/6-image-12.png)
 
 ### 过程
 
@@ -161,13 +161,13 @@ Poly-A polymerase adds, one at a time, approximately 200 Adenines to the 3ʹ end
 
 Poly-A-binding proteins (PAPs) assemble onto the poly-A tail and determine the final length of the tail.  
 
-![alt text](/media/细胞生物学/images/6-image-13.png)
+![alt text](https://vexpaer-blog-media.vexpaer.workers.dev/media/细胞生物学/images/6-image-13.png)
 
 ## RNA splicing
 
 真核细胞一个基因转录出来的东西有多种剪切方式,allowing the same gene to produce a corresponding set of different proteins 
 
-![alt text](/media/细胞生物学/images/6-image-16.png)
+![alt text](https://vexpaer-blog-media.vexpaer.workers.dev/media/细胞生物学/images/6-image-16.png)
 
 ### 内含子&外显子
 
@@ -180,7 +180,7 @@ intervening sequences 插入序列 or introns 内含子
 
 外显子和内含子都转录成RNA然后被RNA splicing切除  
 
-![alt text](/media/细胞生物学/images/6-image-14.png)
+![alt text](https://vexpaer-blog-media.vexpaer.workers.dev/media/细胞生物学/images/6-image-14.png)
 
 ### spliceosome 剪切体
 
@@ -191,7 +191,7 @@ ribonucleoproteins (snRNPs)
 
 U1, U2, U4, U5, and U6 snRNAs (small nuclear RNAs), each is complexed with at least seven protein subunits to form an snRNP(small nuclear ribonucleoprotein).  
 
-![alt text](/media/细胞生物学/images/6-image-15.png)
+![alt text](https://vexpaer-blog-media.vexpaer.workers.dev/media/细胞生物学/images/6-image-15.png)
 
 Each splicing event removes **one intron**, which join two exons together while removing the intron between them as a “lariat”套索
 
@@ -202,7 +202,7 @@ These sequences usually contain their own
 complementary regions, which can lead to the formation of stem loop or hairpin structures发夹结构  
 
 This structure causes the polymerase and transcription to stop.  
-![alt text](/media/细胞生物学/images/6-image-1.png)
+![alt text](https://vexpaer-blog-media.vexpaer.workers.dev/media/细胞生物学/images/6-image-1.png)
 
 ## export
 
@@ -210,4 +210,4 @@ Successfully processed mRNAs are guided through the nuclear pore complexes (NPCs
 
 Improperly processed mRNAs and other RNA debris are degraded in the nucleus.
 
-![alt text](/media/细胞生物学/images/6-image-17.png)
+![alt text](https://vexpaer-blog-media.vexpaer.workers.dev/media/细胞生物学/images/6-image-17.png)

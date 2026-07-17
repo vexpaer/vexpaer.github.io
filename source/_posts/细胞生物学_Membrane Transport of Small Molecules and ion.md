@@ -30,7 +30,7 @@ permease 载体蛋白也被叫做通透酶
 2. porin 孔蛋白,线粒体上有
 3. aquaporin 水通道
 
-![alt text](/media/细胞生物学/images/11-image-2.png)
+![alt text](https://vexpaer-blog-media.vexpaer.workers.dev/media/细胞生物学/images/11-image-2.png)
 
 ### ion channel分类
 
@@ -63,7 +63,7 @@ small uncharged polar can diffuse across slowly
 
 ion can't diffuse across bilayer  
 
-![alt text](/media/细胞生物学/images/11-image.png)
+![alt text](https://vexpaer-blog-media.vexpaer.workers.dev/media/细胞生物学/images/11-image.png)
 
 ### 特点
 
@@ -85,7 +85,7 @@ move down the concentration gradients 顺浓度
 
 转运glucose到红细胞里并通过血脑屏障
 
-![alt text](/media/细胞生物学/images/11-image-3.png)
+![alt text](https://vexpaer-blog-media.vexpaer.workers.dev/media/细胞生物学/images/11-image-3.png)
 
 # active transport
 
@@ -98,15 +98,15 @@ Requires cellular energy，such as an electrochemical gradient or ATP
 需要电势能/ATP
 
 有三种主动运输方法👇  
-![alt text](/media/细胞生物学/images/11-image-4.png)
+![alt text](https://vexpaer-blog-media.vexpaer.workers.dev/media/细胞生物学/images/11-image-4.png)
 
 ### ATP-Driven Pump
 
 也叫ATPases
 
 有4种ATPases👇  
-![alt text](/media/细胞生物学/images/11-image-5.png)  
-![alt text](/media/细胞生物学/images/11-image-6.png)
+![alt text](https://vexpaer-blog-media.vexpaer.workers.dev/media/细胞生物学/images/11-image-5.png)  
+![alt text](https://vexpaer-blog-media.vexpaer.workers.dev/media/细胞生物学/images/11-image-6.png)
 
 #### P-class
 
@@ -116,7 +116,7 @@ Requires cellular energy，such as an electrochemical gradient or ATP
 
 比如说Na+/K+-ATPase  
 1ATP=in 2 K+,out 3 Na+👇  
-![alt text](/media/细胞生物学/images/11-image-7.png)
+![alt text](https://vexpaer-blog-media.vexpaer.workers.dev/media/细胞生物学/images/11-image-7.png)
 
 Na+/K+-ATPase功能
 1. Maintain the membrane potential  
@@ -135,7 +135,7 @@ F-type H+ pump inner mitochondrial membrane线粒体内膜, and chloroplast memb
 
 消耗H+梯度合成ATP,也被叫做H+-ATP synthetase
 
-![alt text](/media/细胞生物学/images/11-image-8.png)
+![alt text](https://vexpaer-blog-media.vexpaer.workers.dev/media/细胞生物学/images/11-image-8.png)
 
 #### V-class
 
@@ -143,11 +143,11 @@ V-type H+ pump
 
 消耗ATP转运H+到细胞器中,保持细胞器酸性,比如溶酶体,液泡
 
-![alt text](/media/细胞生物学/images/11-image-9.png)
+![alt text](https://vexpaer-blog-media.vexpaer.workers.dev/media/细胞生物学/images/11-image-9.png)
 
 #### ABC transporter
 
-![alt text](/media/细胞生物学/images/11-image-10.png)
+![alt text](https://vexpaer-blog-media.vexpaer.workers.dev/media/细胞生物学/images/11-image-10.png)
 
 转运小分子物质
 
@@ -159,7 +159,7 @@ V-type H+ pump
 
 Na+最常用,因为有Na+/K+-ATPase维持浓度
 
-![alt text](/media/细胞生物学/images/11-image-11.png)
+![alt text](https://vexpaer-blog-media.vexpaer.workers.dev/media/细胞生物学/images/11-image-11.png)
 
 #### Symporters/Co-transporters (同向协同转运蛋白)
 
@@ -167,7 +167,7 @@ Na+最常用,因为有Na+/K+-ATPase维持浓度
 
 比如Na+-Glucose Symporter,从肠道运输到细胞中,用2个Na+转运1个glucose
 
-![alt text](/media/细胞生物学/images/11-image-12.png)
+![alt text](https://vexpaer-blog-media.vexpaer.workers.dev/media/细胞生物学/images/11-image-12.png)
 
 ####  Antiporters/exchangers (反向协同转运蛋白)
 

@@ -27,7 +27,7 @@ mindmap: true
                 酶与代谢抑制剂、激活剂之间更快速的可逆性相互作用
     - Nomenclature
         - Provides a Systematic Way of Naming Metabolic Reactions
-            - ![](/media/生物化学/images/790450_47d7dff6-c59d-4dac-ce9b-30b04449d34d.png)
+            - ![](https://vexpaer-blog-media.vexpaer.workers.dev/media/生物化学/images/790450_47d7dff6-c59d-4dac-ce9b-30b04449d34d.png)
         - Kinase
             - is a term for enzymes that are ATP-dependent phosphotransferases
         - Phosphatase
@@ -49,22 +49,22 @@ mindmap: true
         - 反应可以通过两个方法加速
             - the temperature can be raised
                 - The rates of many chemical reactions are doubled by a 10°C rise in temperature
-                    - ![](/media/生物化学/images/790450_e6430baa-5b72-4375-883c-99a1af8fbfa6.png)
+                    - ![](https://vexpaer-blog-media.vexpaer.workers.dev/media/生物化学/images/790450_e6430baa-5b72-4375-883c-99a1af8fbfa6.png)
             - accelerated by catalysts
                 - 降低活化能 lower the free energy of activation ∆G‡ for the reaction
-                    - ![](/media/生物化学/images/790450_fb8e274e-3011-4fec-aa3d-539f10236277.png)
+                    - ![](https://vexpaer-blog-media.vexpaer.workers.dev/media/生物化学/images/790450_fb8e274e-3011-4fec-aa3d-539f10236277.png)
         - Arrhenius equation
             - relationship between activation energy and the rate constant of the reaction k
-                - ![](/media/生物化学/images/790450_f8894fd1-13a8-49aa-a19f-508a56d3cbad.png)
+                - ![](https://vexpaer-blog-media.vexpaer.workers.dev/media/生物化学/images/790450_f8894fd1-13a8-49aa-a19f-508a56d3cbad.png)
             - k is inversely proportional to e^∆G‡/RT
-                - ![](/media/生物化学/images/790450_09235b70-acb2-420f-bd29-8f1645fd5f1f.png)
+                - ![](https://vexpaer-blog-media.vexpaer.workers.dev/media/生物化学/images/790450_09235b70-acb2-420f-bd29-8f1645fd5f1f.png)
             - if the energy of activation decreases, the reaction rate increases
-                - ![](/media/生物化学/images/790450_3078ab20-6370-41e8-f59e-6f781b3f2514.png)
+                - ![](https://vexpaer-blog-media.vexpaer.workers.dev/media/生物化学/images/790450_3078ab20-6370-41e8-f59e-6f781b3f2514.png)
     - 酶的化学动力学
         - The Michaelis–Menten Equation 米氏方程
             - 基础
                 - 酶是E, 底物是S, 酶和底物先结合变成ES, 然后生成产物P
-                    - ![](/media/生物化学/images/790450_70b05571-091c-441f-d005-0f6dfb180560.png)
+                    - ![](https://vexpaer-blog-media.vexpaer.workers.dev/media/生物化学/images/790450_70b05571-091c-441f-d005-0f6dfb180560.png)
                 - 前提
                     - 1. The reaction involves only one substrate, or if the reaction is multisubstrate, the concentration of only one substrate is varied while the concentration of all other substrates is held constant.
                         只有一种底物
@@ -76,43 +76,43 @@ mindmap: true
                         反应条件不变
             - Ks
                 - 定义为 enzyme / substrate dissociation constant 酶 / 底物解离常数
-                    - ![](/media/生物化学/images/790450_2391abcd-215b-4fc6-e073-fb4a45b79462.png)
+                    - ![](https://vexpaer-blog-media.vexpaer.workers.dev/media/生物化学/images/790450_2391abcd-215b-4fc6-e073-fb4a45b79462.png)
             - Michaelis – Menten equation推导
                 影响v的因素
                 - 图
-                    - ![](/media/生物化学/images/790450_0afdd398-2f2e-42fe-a01a-1602687b693a.png)
+                    - ![](https://vexpaer-blog-media.vexpaer.workers.dev/media/生物化学/images/790450_0afdd398-2f2e-42fe-a01a-1602687b693a.png)
                 - v, at any moment is determined by two constants, Km and Vmax, and the concentration of substrate at that moment
             - Km
                 - The Michaelis Constant
                 - Defined as (k-1+k2)/k1
                 - at v=Vmax/2, Km=[S]
-                    - ![](/media/生物化学/images/790450_be9c471f-70fa-4284-9ec0-4ce68eda861d.png)
+                    - ![](https://vexpaer-blog-media.vexpaer.workers.dev/media/生物化学/images/790450_be9c471f-70fa-4284-9ec0-4ce68eda861d.png)
                 - Km is defined by the substrate concentration that gives a velocity equal to 1/2 the maximal velocity
                 - has the units of molarity
                 - Km 与酶对底物的亲和力呈反比关系, Km 值越小，说明酶与底物的结合能力越强，只需较低浓度的底物就能让酶达到一半的最大催化速率
             - 图像
                 - a rectangular hyperbola 直角双曲线
-                    - ![](/media/生物化学/images/790450_d00dd34d-8e20-4e5c-de50-8fbbc58fe2ff.png)
+                    - ![](https://vexpaer-blog-media.vexpaer.workers.dev/media/生物化学/images/790450_d00dd34d-8e20-4e5c-de50-8fbbc58fe2ff.png)
                 - 反映了v与[S]关系
-                    - ![](/media/生物化学/images/790450_b48fb8d6-781c-4725-936d-7830b8f69dc6.png)
+                    - ![](https://vexpaer-blog-media.vexpaer.workers.dev/media/生物化学/images/790450_b48fb8d6-781c-4725-936d-7830b8f69dc6.png)
             - kcat
                 - The turnover number of an enzyme
                     酶的转换数
                 - a measure of an enzyme maximal catalytic activity
                     酶最大催化效率的参数
                 - defined as the number of substrate molecules converted into product per enzyme molecule per unit time when the enzyme is saturated with substrate
-                    - ![](/media/生物化学/images/790450_df9f8771-b11e-4468-d204-07b7fb73990f.png)
+                    - ![](https://vexpaer-blog-media.vexpaer.workers.dev/media/生物化学/images/790450_df9f8771-b11e-4468-d204-07b7fb73990f.png)
                     定义为当酶被底物完全饱和（所有酶分子都结合底物形成 ES 复合物）时，每单位时间内，单个酶分子能将底物转化为产物的分子数
                 - 常见的Kcat
-                    - ![](/media/生物化学/images/790450_35f26e2e-a4bc-48a8-b199-a53f031e4529.png)
+                    - ![](https://vexpaer-blog-media.vexpaer.workers.dev/media/生物化学/images/790450_35f26e2e-a4bc-48a8-b199-a53f031e4529.png)
             - kcat / Km
                 - provides an index of the catalytic efficiency of an enzyme operating at substrate concentrations substantially below saturation amounts
                     为酶在底物浓度远低于饱和量时的催化效率，提供了一个衡量指标
                 - 常见数值
-                    - ![](/media/生物化学/images/790450_643208e3-bfbd-484c-d34c-33d16ec6abbe.png)
+                    - ![](https://vexpaer-blog-media.vexpaer.workers.dev/media/生物化学/images/790450_643208e3-bfbd-484c-d34c-33d16ec6abbe.png)
             - Lineweaver–Burk double-reciprocal plot 双倒数图
                 - 符合Michaelis–Menten equation的双倒数是一个直线
-                    - ![](/media/生物化学/images/790450_0471b6a2-3c4e-42e9-c12b-a888b3e4b173.png)
+                    - ![](https://vexpaer-blog-media.vexpaer.workers.dev/media/生物化学/images/790450_0471b6a2-3c4e-42e9-c12b-a888b3e4b173.png)
                 - If the kinetics of the reaction disobey the Michaelis–Menten equation, the violation is revealed by a departure from linearity in these straight-line graphs.
                     若反应动力学不符合米氏方程，这种偏离会通过这些直线图中非线性的特征表现出来
                 - Such deviations from linearity are characteristic of the kinetics of regulatory enzymes known as allosteric enzymes 变构酶.
@@ -121,54 +121,54 @@ mindmap: true
         - pH & 温度的影响
             - pH
                 - have a particular pH at which their catalytic activity is optimal
-                    - ![](/media/生物化学/images/790450_9a135eb7-7e99-4381-a7a2-04ebfd79cf25.png)
+                    - ![](https://vexpaer-blog-media.vexpaer.workers.dev/media/生物化学/images/790450_9a135eb7-7e99-4381-a7a2-04ebfd79cf25.png)
             - 温度
                 - (a)the characteristic increase in reaction rate with temperature .
                     - Most enzymatic reactions double in rate for every 10°C rise in temperature as long as the enzyme is stable and fully active.
                 - (b) thermal denaturation of protein structure at higher temperatures
-                    - ![](/media/生物化学/images/790450_aca03ed7-c724-41e8-d66e-56ccc76c1daa.png)
+                    - ![](https://vexpaer-blog-media.vexpaer.workers.dev/media/生物化学/images/790450_aca03ed7-c724-41e8-d66e-56ccc76c1daa.png)
                 - 基本都符合先上升后下降
-                    - ![](/media/生物化学/images/790450_46bcb2cf-3e21-4fde-922d-4906e60bbb4e.png)
+                    - ![](https://vexpaer-blog-media.vexpaer.workers.dev/media/生物化学/images/790450_46bcb2cf-3e21-4fde-922d-4906e60bbb4e.png)
     - Enzyme Inhibition
         - Reversible Inhibition
             noncovalent association-dissociation
             - competitive
                 竞争性抑制
                 - Inhibitor combines only with E
-                    - ![](/media/生物化学/images/790450_e384382b-63b9-4cec-b4a6-99c1b69f6945.png)
+                    - ![](https://vexpaer-blog-media.vexpaer.workers.dev/media/生物化学/images/790450_e384382b-63b9-4cec-b4a6-99c1b69f6945.png)
                 - substrate and inhibitor compete for the same binding site on the enzyme, the so-called active site or S-binding site
                 - high [S] can overcome the effects of Inhibitor
                 - The Km term in the denominator 分母 in the inhibited case is increased, Vmax is the same whether I is present or not
-                    - ![](/media/生物化学/images/790450_8ef812ab-ceb9-4175-d47f-a8943037c7aa.png)
+                    - ![](https://vexpaer-blog-media.vexpaer.workers.dev/media/生物化学/images/790450_8ef812ab-ceb9-4175-d47f-a8943037c7aa.png)
                 - S and I must share a high degree of structural similarity because they bind at the same site on the enzyme
-                    - ![](/media/生物化学/images/790450_8ecb557c-a74d-4dfa-8d1f-a6bb7a488670.png)
+                    - ![](https://vexpaer-blog-media.vexpaer.workers.dev/media/生物化学/images/790450_8ecb557c-a74d-4dfa-8d1f-a6bb7a488670.png)
             - noncompetitive
                 非竞争性抑制
                 - Inhibitor combines with E and ES
-                    - ![](/media/生物化学/images/790450_692548c0-d9d0-4d85-c8fa-c030fd1d26ef.png)
+                    - ![](https://vexpaer-blog-media.vexpaer.workers.dev/media/生物化学/images/790450_692548c0-d9d0-4d85-c8fa-c030fd1d26ef.png)
                 - cannot be overcome by increasing [S]
                 - Pure Noncompetitive Inhibition
                     - 不结合在S-binding site, 不影响S与E的结合, Km is unchanged by Inhibitor
                     - Vmax decreases, as if I lowered [E]
-                        - ![](/media/生物化学/images/790450_f34e75b3-07b9-460b-96fa-fff3d6e10785.png)
+                        - ![](https://vexpaer-blog-media.vexpaer.workers.dev/media/生物化学/images/790450_f34e75b3-07b9-460b-96fa-fff3d6e10785.png)
                     - This situation is relatively uncommon
                 - Mixed Noncompetitive Inhibition
                     - This inhibitory pattern is commonly encountered
                     - Both Km and Vmax are altered by the presence of I, and Km/Vmax is not constant
                     - the binding sites for I and S are near one another or conformational changes in E caused by I affect S binding
-                        - ![](/media/生物化学/images/790450_744f77dd-6314-48d6-b1dc-c821f9640eae.png)
+                        - ![](https://vexpaer-blog-media.vexpaer.workers.dev/media/生物化学/images/790450_744f77dd-6314-48d6-b1dc-c821f9640eae.png)
             - uncompetitive
                 反竞争性抑制
                 - Inhibitor combines only with ES
                 - Both Km and Vmax are altered by the presence of I, but Km/Vmax is constant
-                    - ![](/media/生物化学/images/790450_96cc7f1c-d810-48f0-c80c-9b7577abd671.png)
+                    - ![](https://vexpaer-blog-media.vexpaer.workers.dev/media/生物化学/images/790450_96cc7f1c-d810-48f0-c80c-9b7577abd671.png)
             - 总结
                 - Competitive inhibition: Km ↑, Vmax no change
                 - Pure Noncompetitive inhibition: Km no change, Vmax ↓
                 - Mixed Noncompetitive inhibition: Km ↑, Vmax ↓
                 - Uncompetitive Inhibition: Km↓,Vmax ↓. Km/Vmax is constant
                 - 图
-                    - ![](/media/生物化学/images/790450_3730969a-32e6-4995-f8b3-0148fd751d0f.png)
+                    - ![](https://vexpaer-blog-media.vexpaer.workers.dev/media/生物化学/images/790450_3730969a-32e6-4995-f8b3-0148fd751d0f.png)
         - Irreversible Inhibition
             covalent alterations
             - usually cause stable, covalent alterations in the enzyme
@@ -179,7 +179,7 @@ mindmap: true
                 - 2. Also, unlike reversible inhibitions, dilution or dialysis of the enzyme - inhibitor solution does not dissociate the EI complex and restore enzyme activity
             - 应用 - penicillin 青霉素
                 - covalently reacting with an essential serine residue in the active site of glycoprotein peptidase, an enzyme that acts to cross-link the peptidoglycan chains during synthesis of bacterial cell walls
-                    - ![](/media/生物化学/images/790450_af4d6477-9185-42e0-bc0d-9634afcef434.png)
+                    - ![](https://vexpaer-blog-media.vexpaer.workers.dev/media/生物化学/images/790450_af4d6477-9185-42e0-bc0d-9634afcef434.png)
                     与糖蛋白肽酶活性中心的一个必需丝氨酸残基发生共价反应, 该酶在细菌细胞壁合成过程中负责催化肽聚糖链的交联反应
                 - Once cell wall synthesis is blocked, the bacterial cells are very susceptible torupture by osmotic lysis, and bacterial growth is halted
                     一旦细胞壁合成受阻，细菌细胞就极易因渗透裂解而破裂，细菌的生长也会随之停止
@@ -192,7 +192,7 @@ mindmap: true
             - Its active site comprises only a small portion of the overall enzyme structure.
                 活性中心仅占酶整体结构的很小一部分
             - The active site is part of the conformation of the enzyme molecule arranged to create a special pocket or cleft 裂口 whose three-dimensional structure is complementary to the structure of the substrate.
-                - ![](/media/生物化学/images/790450_3bb954bc-8b81-426a-8caa-969e7bd298af.png)
+                - ![](https://vexpaer-blog-media.vexpaer.workers.dev/media/生物化学/images/790450_3bb954bc-8b81-426a-8caa-969e7bd298af.png)
                 它是酶分子构象的组成部分，形成一个特殊的凹陷或裂口，其三维结构与底物的结构具有互补性
             - The enzyme and the substrate molecules “recognize” each other through this structural complementarity.
                 酶与底物分子通过这种结构互补性实现 “识别”
@@ -208,13 +208,13 @@ mindmap: true
             - the substrate also changes as it adapts to the conformation of the enzyme
                 底物在适应酶构象的同时，自身构象也会发生变化
             - the enzyme causes the substrate to adopt a form that mimics the transition-state intermediate of the reaction
-                - ![](/media/生物化学/images/790450_7a919ea0-4830-41fe-e0ef-caf00d389e48.png)
+                - ![](https://vexpaer-blog-media.vexpaer.workers.dev/media/生物化学/images/790450_7a919ea0-4830-41fe-e0ef-caf00d389e48.png)
                 酶会促使底物形成一种模拟反应过渡态中间体的构象
         - Specificity and Reactivity
             - Consider, for example, why hexokinase己糖激酶catalyzes the ATP-dependent phosphorylation of hexoses but not smaller phosphoryl-group acceptors such as glycerol, ethanol, or even water. Surely these smaller compounds are not sterically 空间上 forbidden from approaching the active site of hexokinase. Indeed, water should penetrate the active site easily and serve as a highly effective phosphoryl-group acceptor. Accordingly, hexokinase should display high ATPase activity. It does not. Only the binding of hexoses induces hexokinase to assume its fully active conformation. The hexose-binding site of hexokinase is located between two protein domains. Binding of glucose in the active site induces a conformational change in hexokinase that causes the two domains to close upon one another, creating the catalytic site.
             - 以己糖激酶为例，我们来思考一个问题：为什么它能催化己糖的 ATP 依赖性磷酸化反应，却不能催化甘油、乙醇甚至水等更小的磷酸基团受体？显然，这些小分子化合物在空间上并非无法接近己糖激酶的活性中心. 事实上，水分子本应能轻易进入活性中心，并成为高效的磷酸基团受体. 照此推测，己糖激酶理应表现出很高的 ATP 酶活性，但实际情况并非如此. 只有当己糖与己糖激酶结合时，才能诱导其形成完全的活性构象. 己糖激酶的己糖结合位点位于两个蛋白质结构域之间，葡萄糖在活性中心的结合会引发己糖激酶的构象变化，使这两个结构域相互闭合，进而形成催化位点
             - 图
-                - ![](/media/生物化学/images/790450_9d082d9b-4ae1-4d7e-b9a2-bba60ba42345.png)
+                - ![](https://vexpaer-blog-media.vexpaer.workers.dev/media/生物化学/images/790450_9d082d9b-4ae1-4d7e-b9a2-bba60ba42345.png)
     - 非蛋白的酶
         - catalytic RNAs / ribozymes
             - Most ribozymes act in RNA processing, cutting the phosphodiester backbone at specific sites and religating needed segments to form functional RNA strands while discarding extraneou spieces
@@ -251,7 +251,7 @@ mindmap: true
         - 特点
             - 1. Their kinetics do not obey the Michaelis–Menten equation. 不遵循米氏方程
                 - Their v versus [S] plots yield sigmoid- or S-shaped curves rather than rectangular hyperbolas
-                    - ![](/media/生物化学/images/790450_60e268b5-4e3c-41ac-ba5d-9da1fdfa2735.png)
+                    - ![](https://vexpaer-blog-media.vexpaer.workers.dev/media/生物化学/images/790450_60e268b5-4e3c-41ac-ba5d-9da1fdfa2735.png)
                     它们的反应速率 v 对底物浓度 [S] 的曲线图呈 S 形，而非矩形双曲线
                 - Such curves suggest a second-order (or higher) relationship between v and [S], that is, v is proportional to [S]^n, where n > 1.
                     类曲线表明 v 与 [S] 之间存在二级或更高阶关系, 即 v 与 [S] 的 n 次方成正比，其中 n > 1
@@ -272,7 +272,7 @@ mindmap: true
         - reversible covalent attachment of a chemical group
         - Enzymes susceptible to such regulation are called interconvertible enzymes
         - 比如kinase可以给酶一个pi, phosphatase可以remove pi
-            - ![](/media/生物化学/images/790450_930a6c98-39f6-4f18-c81d-56e389b6c4b9.png)
+            - ![](https://vexpaer-blog-media.vexpaer.workers.dev/media/生物化学/images/790450_930a6c98-39f6-4f18-c81d-56e389b6c4b9.png)
             这两种酶的作用是相反的, 所以必须对他们进行调控, 不能同时作用
     - 6. Zymogens/proenzymes Are Inactive Precursors of Enzymes
         - 酶原
@@ -280,14 +280,14 @@ mindmap: true
         - 酶原在特定位置被水解然后激活的过程是不可逆的 irreversible
         - 例 - insulin
             - Proteolytic removal of residues 31 to 65 yields insulin, 剩下的部分由 disulfide bridges 二硫键连着
-                - ![](/media/生物化学/images/790450_c850aac1-941d-4c77-e1ac-a968bfaa69e9.png)
+                - ![](https://vexpaer-blog-media.vexpaer.workers.dev/media/生物化学/images/790450_c850aac1-941d-4c77-e1ac-a968bfaa69e9.png)
         - 例 - Proteolytic Enzymes of the Digestive Tract
             - 消化道的水解酶都用这种方式调控, 以酶原形式在胃和胰腺中合成
-                - ![](/media/生物化学/images/790450_5e2d9cba-1494-4c58-fe30-aec7aab68f67.png)
+                - ![](https://vexpaer-blog-media.vexpaer.workers.dev/media/生物化学/images/790450_5e2d9cba-1494-4c58-fe30-aec7aab68f67.png)
         - 例 - Blood Clotting
             - The formation of blood clots is the result of a series of zymogen activations
             - The cascade of activation steps leading to blood clotting
-                - ![](/media/生物化学/images/790450_82e75ede-b2dc-4adc-df94-f416cfb3a0ae.png)
+                - ![](https://vexpaer-blog-media.vexpaer.workers.dev/media/生物化学/images/790450_82e75ede-b2dc-4adc-df94-f416cfb3a0ae.png)
     - 7. Isozymes Are Enzymes with Slightly Different Subunits
         - 例 - 酶 - lactate dehydrogenase 乳酸脱氢酶 LDH
     - 有的酶 Controlled by Both Allosteric Regulation and Covalent Modification 酶 - glycogen phosphorylase 糖原磷酸化酶

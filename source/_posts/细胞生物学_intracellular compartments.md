@@ -55,7 +55,7 @@ Is an interconnecting network of tubular membrane elements
 
 Lipid synthesis, signal transduction
 
-![alt text](/media/细胞生物学/images/12-1-image.png)
+![alt text](https://vexpaer-blog-media.vexpaer.workers.dev/media/细胞生物学/images/12-1-image.png)
 
 ## function
 1. The main function of rER is to synthesize protein.  
@@ -84,7 +84,7 @@ the factory of sugar synthesis in cells
 cis靠近细胞核, 凸面  
 trans靠近细胞膜, 凹面
 
-![alt text](/media/细胞生物学/images/12-1-image-1.png)
+![alt text](https://vexpaer-blog-media.vexpaer.workers.dev/media/细胞生物学/images/12-1-image-1.png)
 
 1. CGN & cis cisterna  
 CGN accepts the newly synthesized substances from ER and sort into the medial cisterna
@@ -103,7 +103,7 @@ Some "late" protein modifications also occur in TGN.
 ① lysosome  
 ② regulated secretion pathway  
 ③ constitutive secretion pathway  
-![alt text](/media/细胞生物学/images/12-1-image-2.png)
+![alt text](https://vexpaer-blog-media.vexpaer.workers.dev/media/细胞生物学/images/12-1-image-2.png)
 
 2. The glycosylation modification of most proteins or lipids  
 ① The glycosylation of most proteins promote protein folding and enhance protein stability  
@@ -118,7 +118,7 @@ Some "late" protein modifications also occur in TGN.
 
 3. Protease hydrolysis  
 ① 切掉proprotein蛋白原不需要的部分,变成mature peptides,比如胰岛素  
-![alt text](/media/细胞生物学/images/12-1-image-3.png)  
+![alt text](https://vexpaer-blog-media.vexpaer.workers.dev/media/细胞生物学/images/12-1-image-3.png)  
 ② 一些蛋白质在粗面内质网（rER）合成期间是含有多个相同氨基酸序列的前体蛋白，然后在高尔基体中被水解形成相同的活性肽
 ③ Same protein precursor前体 may be processed in different ways in different cells to produce different kinds of peptides
 
@@ -141,7 +141,7 @@ main function is to  **intracellular digestion** 胞内消化
 3. Intense glycosylation of membrane proteins  
 高度糖基化的蛋白,防止被降解  
 
-![alt text](/media/细胞生物学/images/12-1-image-4.png)
+![alt text](https://vexpaer-blog-media.vexpaer.workers.dev/media/细胞生物学/images/12-1-image-4.png)
 
 ## divide
 
@@ -161,7 +161,7 @@ which is of great significance for maintaining the normal metabolic activity of 
 1. Phagocytosis (吞噬作用)
 2. Autophagy (自噬作用)
 
-![alt text](/media/细胞生物学/images/12-1-image-5.png)
+![alt text](https://vexpaer-blog-media.vexpaer.workers.dev/media/细胞生物学/images/12-1-image-5.png)
 
 # Peroxisomes 过氧化物酶体
 

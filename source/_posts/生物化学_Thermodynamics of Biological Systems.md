@@ -11,7 +11,7 @@ mindmap: true
 - Basic Thermodynamic Concepts
     - 系统
         - 分为三类
-            - ![](/media/生物化学/images/790450_164ea389-0304-49c5-eed5-84f93a9d9237.png)
+            - ![](https://vexpaer-blog-media.vexpaer.workers.dev/media/生物化学/images/790450_164ea389-0304-49c5-eed5-84f93a9d9237.png)
         - Living things are typically open systems that exchange matter (nutrients and waste products) and energy (heat from metabolism) with their surroundings.
     - The Second Law and Entropy
         - entropy, S, which is a measure of disorder and randomness in the system (or the surroundings)
@@ -43,7 +43,7 @@ mindmap: true
                 - guanidino phosphate (creatine phosphate)
                 - thioesters 硫酯，such as acetyl-CoA
                 - 图
-                    - ![](/media/生物化学/images/790450_696a9748-32ea-46b5-e75b-3004d251ee5a.png)
+                    - ![](https://vexpaer-blog-media.vexpaer.workers.dev/media/生物化学/images/790450_696a9748-32ea-46b5-e75b-3004d251ee5a.png)
     - 特性
         - not long-term energy storage substances
             - They are transient forms of stored energy, meant to carry energy from point to point, from one enzyme system to another, in the minute-to-minute existence of the cell.
@@ -54,7 +54,7 @@ mindmap: true
     - activation energy
         - A substantial activation energy must be delivered to ATP to hydrolyze the terminal phosphate group.
         - In fact, the activation energy that must be absorbed by the molecule to break the O-P bond is normally 200 to 400 kJ/mol
-            - ![](/media/生物化学/images/790450_25c06eba-9133-4217-f386-2cdd34c0418a.png)
+            - ![](https://vexpaer-blog-media.vexpaer.workers.dev/media/生物化学/images/790450_25c06eba-9133-4217-f386-2cdd34c0418a.png)
         - which is substantially larger than the net 30.5 kJ/mol released in the hydrolysis reaction.
     - ATP的T0地位
         - ATP Is an Intermediate Energy-Shuttle Molecule
@@ -66,9 +66,9 @@ mindmap: true
         - The ATP/ADP pair is an intermediately placed acceptor/donor system among high-energy phosphates.
     - 结构
         - Compounds containing phosphoric acid anhydride 磷酸酐 linkages all exhibit large negative free energies of hydrolysis.
-            - ![](/media/生物化学/images/790450_72d6a9b8-80e5-4552-a06e-bfd3dd20a4ea.png)
+            - ![](https://vexpaer-blog-media.vexpaer.workers.dev/media/生物化学/images/790450_72d6a9b8-80e5-4552-a06e-bfd3dd20a4ea.png)
         - 有三个P
-            - ![](/media/生物化学/images/790450_10dc84ff-49ad-4e09-b4c8-872b8b0c5dc3.png)
+            - ![](https://vexpaer-blog-media.vexpaer.workers.dev/media/生物化学/images/790450_10dc84ff-49ad-4e09-b4c8-872b8b0c5dc3.png)
     - The Multiple Ionization States of ATP
         - ATP在不同的pH环境下可以解离出H+
         - ATP has four dissociable protons

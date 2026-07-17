@@ -15,7 +15,7 @@ lipid rafts model 脂筏模型
 liposome 脂质体,人造的双分子层,可以用于药物传递
 
 总览👇  
-![alt text](/media/细胞生物学/images/10-image.png)
+![alt text](https://vexpaer-blog-media.vexpaer.workers.dev/media/细胞生物学/images/10-image.png)
 
 # Composition
 
@@ -27,14 +27,14 @@ lipid bilayer 磷脂双分子层
 
 #### phosphoglycerides 甘油磷脂
 
-![alt text](/media/细胞生物学/images/10-image-1.png)  
+![alt text](https://vexpaer-blog-media.vexpaer.workers.dev/media/细胞生物学/images/10-image-1.png)  
 甘油👇  
-![alt text](/media/细胞生物学/images/10-image-2.png)
+![alt text](https://vexpaer-blog-media.vexpaer.workers.dev/media/细胞生物学/images/10-image-2.png)
 
 #### sphingolipids 鞘脂
-![alt text](/media/细胞生物学/images/10-image-4.png)  
+![alt text](https://vexpaer-blog-media.vexpaer.workers.dev/media/细胞生物学/images/10-image-4.png)  
 sphingosine (鞘氨醇)👇  
-![alt text](/media/细胞生物学/images/10-image-3.png)
+![alt text](https://vexpaer-blog-media.vexpaer.workers.dev/media/细胞生物学/images/10-image-3.png)
 
 ### sterol 固醇
 
@@ -46,9 +46,9 @@ membranes.
 containing a rigid ring (甾环) attached to a single polar hydroxyl group and a short nonpolar hydrocarbon chain
 
 胆固醇结构👇  
-![alt text](/media/细胞生物学/images/10-image-5.png)
+![alt text](https://vexpaer-blog-media.vexpaer.workers.dev/media/细胞生物学/images/10-image-5.png)
 
-![alt text](/media/细胞生物学/images/10-image-6.png)  
+![alt text](https://vexpaer-blog-media.vexpaer.workers.dev/media/细胞生物学/images/10-image-6.png)  
 胆固醇orient themselves in the bilayer with their hydroxyl group close to the polar head groups of adjacent phospholipid molecules  
 
 Alters membrane fluidity and strengthen the bilayer
@@ -62,7 +62,7 @@ Reduces the permeability通透性 of the plasma membrane to neutral solutes中�
 3. Flexion (脂分子的尾部摆动)
 4. Transverse diffusion, or “flip-flop” (双层脂分子间的翻转运动) Flippases翻转酶 catalyze the flip-flop
 
-![alt text](/media/细胞生物学/images/10-image-7.png)
+![alt text](https://vexpaer-blog-media.vexpaer.workers.dev/media/细胞生物学/images/10-image-7.png)
 
 
 ## membrane protein 膜蛋白
@@ -82,12 +82,12 @@ The outer leaflet: ⑥ Glycophosphatidylinositol (GPI)-linked proteins (the oute
 3. Peripheral / Extrinsic membrane proteins外固膜蛋白 are attached to the membrane by weak noncovalent 
 interactions. ⑦⑧
 
-![alt text](/media/细胞生物学/images/10-image-8.png)
+![alt text](https://vexpaer-blog-media.vexpaer.workers.dev/media/细胞生物学/images/10-image-8.png)
 ## carbonhydrates 碳水化合物
 
 不论是连接脂质还是蛋白的糖都在膜的外侧,where it forms a sugar coating called glycocalyx糖包被
 
-![alt text](/media/细胞生物学/images/10-image-9.png)
+![alt text](https://vexpaer-blog-media.vexpaer.workers.dev/media/细胞生物学/images/10-image-9.png)
 
 ### function
 
@@ -109,7 +109,7 @@ interactions. ⑦⑧
 the inner (cytoplasmic) leaflet is composed most of PE(磷脂酰乙醇胺) and PS(磷脂酰丝氨酸)  
 the outer (extracellular) leaflet is based on PC(卵磷脂), sphingomyelin (鞘磷脂)  
 
-![alt text](/media/细胞生物学/images/10-image-10.png)
+![alt text](https://vexpaer-blog-media.vexpaer.workers.dev/media/细胞生物学/images/10-image-10.png)
 
 Lipid asymmetry gives the membrane leaflets小叶 different physical and chemical properties appropriate for the different interactions occurring at the two membrane faces
 
@@ -125,7 +125,7 @@ the membrane skeleton is mostly associated with actin, it is called actin-based 
 
 The components of membrane protein skeleton include spectrin (血影蛋白), actin (肌动蛋白), ankyrin(锚蛋白) and band 4.1 protein.
 
-![alt text](/media/细胞生物学/images/10-image-11.png)
+![alt text](https://vexpaer-blog-media.vexpaer.workers.dev/media/细胞生物学/images/10-image-11.png)
 
 # Function of the Membrane
 

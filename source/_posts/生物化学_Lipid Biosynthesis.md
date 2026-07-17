@@ -34,27 +34,27 @@ mindmap: true
         - Reducing equivalents (electrons) derived from glycolysis in the form of NADH can be transformed into NADPH by the combined action of malate dehydrogenase and malic enzyme.
             NADH不能用于fatty acid合成, 借助合成再分解malate变成NADPH
     - 蓝线代表carbon, 红线代表electrons
-        - ![](/media/生物化学/images/790450_91ad78e1-51b2-49d0-8379-e6f59aa690ad.png)
+        - ![](https://vexpaer-blog-media.vexpaer.workers.dev/media/生物化学/images/790450_91ad78e1-51b2-49d0-8379-e6f59aa690ad.png)
 - Acetyl-CoA → Malonyl-CoA
     - The carboxylation of acetyl-CoA to form malonyl-CoA is essentially irreversible and is the committed step in the synthesis of fatty acids.
         a "committed step" is an effectively irreversible enzymatic reaction that occurs early in a metabolic pathway, once this step happens, the molecule is "committed" to continuing down that specific pathway to the end product
     - The reaction is catalyzed by acetyl-CoA carboxylase,which contains a biotin维生素B7 prosthetic group辅基
     - This carboxylase is the only enzyme of fatty acid synthesis in animals that is not part of the multienzyme complex called fatty acid synthase
     - The acetyl-CoA carboxylase reaction produces malonyl-CoA for fatty acid synthesis
-        - ![](/media/生物化学/images/efc7d52b-e440-45df-b2ab-9eb6c09148c3-790450.jpeg)
+        - ![](https://vexpaer-blog-media.vexpaer.workers.dev/media/生物化学/images/efc7d52b-e440-45df-b2ab-9eb6c09148c3-790450.jpeg)
 - Acyl Carrier Proteins (ACP) Carry the Intermediates in Fatty Acid Synthesis
     - The basic building blocks of fatty acid synthesis are acetyl and malonyl groups, but they are first passed to Acyl Carrier Proteins (ACP)
     - ACP consists (in E. coli) of a single polypeptide chain of 77 residues to which is attached (on a serine residue) a phosphopantetheine group磷酸泛酰巯基乙胺基团, the same group that forms the “business end” of coenzyme A.
         fatty acid 就是通过蓝色这个p巴拉巴拉集团连接到CoA/ACP上的
     - Thus, ACP is a somewhat larger version of coenzyme A, specialized for use in fatty acid biosynthesis.
     - ACP 相当于合成 fatty acid 的专用 CoA
-        - ![](/media/生物化学/images/790450_00114039-23f0-43ef-ae91-7f9edbc4052e.png)
+        - ![](https://vexpaer-blog-media.vexpaer.workers.dev/media/生物化学/images/790450_00114039-23f0-43ef-ae91-7f9edbc4052e.png)
 - In Some Organisms, Fatty Acid Synthesis Takes Place in Multienzyme Complexes
     - fatty acyl synthase I (FAS I)
         - FAS in mammals on homodimeric FAS I, each 270-kD polypeptide of which contains all reaction centers required to produce a fatty acid
         - FAS in lower eukaryotes, such as yeast and fungi, the enzymatic activities of FAS are distributed on two multifunctional peptide chains
         - 图
-            - ![](/media/生物化学/images/790450_2e50569e-647d-473c-807c-91885cc64409.png)
+            - ![](https://vexpaer-blog-media.vexpaer.workers.dev/media/生物化学/images/790450_2e50569e-647d-473c-807c-91885cc64409.png)
         - In both the fungal and the mammalian FAS structures, the close association of enzymic domains within one large complex permits efficient transfer of intermediates from one active site to the next.
     - fatty acyl synthase II (FAS II)
         - In plants, most bacteria, and parasites寄生虫
@@ -62,7 +62,7 @@ mindmap: true
         - this collection of enzymes is referred to as FAS II
 - C16 fatty acid synthesis reaction 核心反应
     - 外面是第一圈, 中间是后续循环, 原理一样, 底物长度逐渐增加
-        - ![](/media/生物化学/images/790450_a7576bc9-e7b4-47fb-9bc0-8728ff4b3d81.png)
+        - ![](https://vexpaer-blog-media.vexpaer.workers.dev/media/生物化学/images/790450_a7576bc9-e7b4-47fb-9bc0-8728ff4b3d81.png)
     - 第一圈把 Acetyl-ACP / Malonyl-ACP 接一块, 后续在接一块的butyryl上面循环加2个C, 第一圈和后续循环的原理是一样的, 除了底物C每次加2
     - 0. Acetyl-CoA / Malonyl-CoA 上 ACP
         起手
@@ -96,11 +96,11 @@ mindmap: true
     - The mitochondrial reactions
         - involve addition of acetyl units
         - These reactions are essentially a reversal of fatty acid oxidation, with the exception that NADPH is utilized in the saturation of the double bond, instead of FADH2
-            - ![](/media/生物化学/images/790450_45ae960b-5d4d-4fdd-eb5e-b803920a1e9b.png)
+            - ![](https://vexpaer-blog-media.vexpaer.workers.dev/media/生物化学/images/790450_45ae960b-5d4d-4fdd-eb5e-b803920a1e9b.png)
 - Regulation of fatty acid synthesis and oxidation
     - 产物对两个方向的负反馈调节
         - 图
-            - ![](/media/生物化学/images/1caf24b6-9a51-479b-970c-e79c65188019-790450.jpeg)
+            - ![](https://vexpaer-blog-media.vexpaer.workers.dev/media/生物化学/images/1caf24b6-9a51-479b-970c-e79c65188019-790450.jpeg)
         - Malonyl-CoA
             - inhibiting the carnitine acyltransferase
             - inhibits the uptake of fatty acylcarnitine 脂肪酰肉碱 (and thusfatty acid oxidation) by mitochondria.
@@ -115,7 +115,7 @@ mindmap: true
                 碳链越长, 别构抑制作用越强
     - Hormonal Signals
         - 图
-            - ![](/media/生物化学/images/b879799b-1e57-4758-b4bc-dd9665f812c5-790450.jpeg)
+            - ![](https://vexpaer-blog-media.vexpaer.workers.dev/media/生物化学/images/b879799b-1e57-4758-b4bc-dd9665f812c5-790450.jpeg)
         - hormone
             - glucagon 胰高血糖素
                 - G protein → cAMP → protein kinase A → phosphate ACC / phosphate lipase
@@ -125,7 +125,7 @@ mindmap: true
                 - activate lipase
         - ACC
             - 结构图, Phosphorylation at Ser1200 is primarily responsible for decreasing the affinity for citrate
-                - ![](/media/生物化学/images/790450_a3e21ef8-0fb0-483c-d5c0-43161faec747.png)
+                - ![](https://vexpaer-blog-media.vexpaer.workers.dev/media/生物化学/images/790450_a3e21ef8-0fb0-483c-d5c0-43161faec747.png)
             - 2种状态
                 - 1200没P
                     - 不会降低对citrate的affinity
@@ -136,7 +136,7 @@ mindmap: true
                     - 低浓度脂肪就会抑制
                     - 这种状态不利于合成脂肪
                 - 图, 由于ACC单体串成一串, 示意图中每个P代表不同单体1200位置
-                    - ![](/media/生物化学/images/790450_f12725a5-69ee-4e3f-ef8e-dee5824e0d4e.png)
+                    - ![](https://vexpaer-blog-media.vexpaer.workers.dev/media/生物化学/images/790450_f12725a5-69ee-4e3f-ef8e-dee5824e0d4e.png)
             - glucagon可以将它切换到有P状态, 抑制脂肪合成
             - PP2A可以将它切换到无P状态, 促进脂肪合成
                 - 这是五碳糖途径促进脂肪合成的一部分体现, 五碳糖途径可以促进脂肪合成 → Regulation of fatty acid synthesis and oxidation
@@ -159,9 +159,9 @@ mindmap: true
     - Because most proteins have densities of about 1.3 to 1.4 g/mL, and lipid aggregates usually possess densities of about 0.8 g/mL, the more protein and the less lipid in a complex, the denser the lipoprotein.
     - 由于大多数蛋白质的密度约为 1.3 至 1.4 g/mL，而脂质聚集体的密度通常约为 0.8 g/mL，因此复合物中蛋白质越多、脂质越少，脂蛋白的密度就越大
     - there are high-density lipoproteins (HDLs), low-density lipoproteins(LDLs), intermediate-density lipoproteins (IDLs), very-low-density lipoproteins(VLDLs), and also chylomicrons 乳糜微粒
-        - ![](/media/生物化学/images/790450_bf25c74f-9379-4956-ea69-6618e1bf11cd.png)
+        - ![](https://vexpaer-blog-media.vexpaer.workers.dev/media/生物化学/images/790450_bf25c74f-9379-4956-ea69-6618e1bf11cd.png)
     - Pro-Atherogenic 促动脉粥样硬化 lipoproteins, Anti-atherogneic 抗动脉粥样硬化 lipoproteins
-        - ![](/media/生物化学/images/dd142b10-8abb-45bb-9c59-9ecc94d973ab-790450.jpeg)
+        - ![](https://vexpaer-blog-media.vexpaer.workers.dev/media/生物化学/images/dd142b10-8abb-45bb-9c59-9ecc94d973ab-790450.jpeg)
     - Chylomicrons
         - the largest lipoproteins.
         - They deliver TGs甘油三酯 from the intestine (via lymph and blood) to tissues (muscle for energy, adipose for storage).

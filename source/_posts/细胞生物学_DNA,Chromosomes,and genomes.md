@@ -35,7 +35,7 @@ paired polymer chains
 
 a sugar (deoxyribose)-phosphate molecule + nitrogen containing side group (base)  
 
-![核苷酸](/media/细胞生物学/images/4-1733130415173.png)
+![核苷酸](https://vexpaer-blog-media.vexpaer.workers.dev/media/细胞生物学/images/4-1733130415173.png)
 
 ### base
 
@@ -59,7 +59,7 @@ phosphodiester bond 磷酸二酯键
 # The Central Dogma
 
 ## 总览
-![中心法则](/media/细胞生物学/images/4-1733131615769.png)  
+![中心法则](https://vexpaer-blog-media.vexpaer.workers.dev/media/细胞生物学/images/4-1733131615769.png)  
 
 ## DNA复制
 DNA is synthesized on a template formed by a pre-existing DNA strand.  
@@ -93,13 +93,13 @@ Nucleosomes Are Packed Together into a Compact Chromatin Fiber
 octameric histone core  
 
 (H2A)2(H2B)2(H3)2(H4)2  
-![hxt](/media/细胞生物学/images/4-1733132843366.png)  
+![hxt](https://vexpaer-blog-media.vexpaer.workers.dev/media/细胞生物学/images/4-1733132843366.png)  
 
 许多核小体形成一个zigzag model of chromatin fiber  
-![zigzag](/media/细胞生物学/images/4-1733132951534.png)
+![zigzag](https://vexpaer-blog-media.vexpaer.workers.dev/media/细胞生物学/images/4-1733132951534.png)
 
 还有一个H1组蛋白,用来连接核小体  
-![H1](/media/细胞生物学/images/4-1733133202983.png)
+![H1](https://vexpaer-blog-media.vexpaer.workers.dev/media/细胞生物学/images/4-1733133202983.png)
 
 ## chromosome 染色体
 
@@ -113,7 +113,7 @@ centromere 着丝粒
 telomere 端粒  
 
 有丝分裂时候染色体👇  
-![中间是染色体](/media/细胞生物学/images/4-1733133846981.png)
+![中间是染色体](https://vexpaer-blog-media.vexpaer.workers.dev/media/细胞生物学/images/4-1733133846981.png)
 
 ## Heterochromatin 异染色质  
 
@@ -142,4 +142,4 @@ exon 外显子
 ### Single-nucleotide polymorphism
 单核苷酸多态性
 
-![请看ppt](/media/细胞生物学/images/4-1733146518472.png)
+![请看ppt](https://vexpaer-blog-media.vexpaer.workers.dev/media/细胞生物学/images/4-1733146518472.png)

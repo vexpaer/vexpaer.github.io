@@ -14,7 +14,7 @@ inner membrane 内膜
 intermembrane space 膜间隙  
 matrix 基质  
 
-![alt text](/media/细胞生物学/images/14-image.png)
+![alt text](https://vexpaer-blog-media.vexpaer.workers.dev/media/细胞生物学/images/14-image.png)
 
 ## outer membrane
 
@@ -44,9 +44,9 @@ Allow the passage of metabolites
 
 2. DNA replication , RNA transcription
 
-![alt text](/media/细胞生物学/images/14-image-1.png)
+![alt text](https://vexpaer-blog-media.vexpaer.workers.dev/media/细胞生物学/images/14-image-1.png)
 
-![alt text](/media/细胞生物学/images/14-image-2.png)
+![alt text](https://vexpaer-blog-media.vexpaer.workers.dev/media/细胞生物学/images/14-image-2.png)
 
 # ATP synthase
 
@@ -54,7 +54,7 @@ Allow the passage of metabolites
 
 存在于inner membrane上,头朝着matrix
 
-![alt text](/media/细胞生物学/images/14-image-3.png)
+![alt text](https://vexpaer-blog-media.vexpaer.workers.dev/media/细胞生物学/images/14-image-3.png)
 
 ### F1
 hydrophilic
@@ -83,7 +83,7 @@ c is proton channel
 
 ## mechanism
 
-![alt text](/media/细胞生物学/images/14-image-4.png)
+![alt text](https://vexpaer-blog-media.vexpaer.workers.dev/media/细胞生物学/images/14-image-4.png)
 
 用H+流动drive conformational change
 
@@ -98,14 +98,14 @@ rotor转子每转120°构象变化一次,合成一个ATP
 
 低能电子最终与O2形成H2O
 
-![alt text](/media/细胞生物学/images/14-image-5.png)
+![alt text](https://vexpaer-blog-media.vexpaer.workers.dev/media/细胞生物学/images/14-image-5.png)
 
 ## Electron Transport Chain 电子传递链
 
 电子从NADH来  
 NADH → NAD+ + H+ + 2e-
 
-![alt text](/media/细胞生物学/images/14-image-7.png)
+![alt text](https://vexpaer-blog-media.vexpaer.workers.dev/media/细胞生物学/images/14-image-7.png)
 
 电子路径  
 Complex I and II → UQ → Complex III → Cytc → Complex IV

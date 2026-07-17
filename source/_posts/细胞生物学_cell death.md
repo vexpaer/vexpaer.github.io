@@ -30,7 +30,7 @@ Giemsa staining-stain chromatin
 DAPI-bind to DNA
 ## 2.Electrophoretic DNA analysis 电泳分析
 细胞凋亡会产生许多endonucleases,会把DNA切断成fragments,所以电泳时DNA会分成很多条带  
-![电泳](/media/细胞生物学/images/16-18-1732877758877.png)
+![电泳](https://vexpaer-blog-media.vexpaer.workers.dev/media/细胞生物学/images/16-18-1732877758877.png)
 ## 3.Terminal deoxynucleotidyl transferase(TdT) dUTP nick end labeling(TUNEL) 末端脱氧核苷酸转移酶(TdT)dUTP缺口末端标记
 ## 4.Annexin V(AV) and propidium iodide(PI) staining by flow cytometry 流式细胞术
 活细胞 AV-/PI-  
@@ -64,16 +64,16 @@ hetero activation 异源激活
 ## 机理
 Caspases are synthesized in the cell as inactive precursors and are activated only during apoptosis.  
 caspases 在细胞中先合成前体,细胞凋亡时候才被激活  
-![细胞凋亡启动机理](/media/细胞生物学/images/16-18-1732895213191.png)
+![细胞凋亡启动机理](https://vexpaer-blog-media.vexpaer.workers.dev/media/细胞生物学/images/16-18-1732895213191.png)
 ## 两种激活途径
 ### extrinsic pathway
-![外源途径](/media/细胞生物学/images/16-18-1732897807780-1.png)  
+![外源途径](https://vexpaer-blog-media.vexpaer.workers.dev/media/细胞生物学/images/16-18-1732897807780-1.png)  
 death receptor 激活凋亡
 ### intrinsic pathway(mitochondrial pathway)
-![内源途径](/media/细胞生物学/images/16-18-1732897864051.png)  
+![内源途径](https://vexpaer-blog-media.vexpaer.workers.dev/media/细胞生物学/images/16-18-1732897864051.png)  
 先从线粒体中释放cytochrome c细胞色素c,再形成一个apotosome凋亡复合体  
 
 #### bcl2 调节内源途径
-![bcl2](/media/细胞生物学/images/16-18-1732904580841.png)  
+![bcl2](https://vexpaer-blog-media.vexpaer.workers.dev/media/细胞生物学/images/16-18-1732904580841.png)  
 bcl2 抑制凋亡  
 bax,bak 促进凋亡

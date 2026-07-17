@@ -96,13 +96,13 @@ hydrophobic signal molecules信号分子疏水
 调控转录
 ## cell-surface receptors
 ### 1.ion-channel-coupled receptors
-![ion](/media/细胞生物学/images/15-1733041290346.png)
+![ion](https://vexpaer-blog-media.vexpaer.workers.dev/media/细胞生物学/images/15-1733041290346.png)
 ### 2.G-protein-coupled receptors
 G-protein代表trimeric GPT-binding protein  
-![G](/media/细胞生物学/images/15-1733041325490.png)
+![G](https://vexpaer-blog-media.vexpaer.workers.dev/media/细胞生物学/images/15-1733041325490.png)
 ### 3.enzyme-coupled receptors
 function as enzymes or associate directly with enzymes that they activate  
-![enzyme](/media/细胞生物学/images/15-1733041390902.png)
+![enzyme](https://vexpaer-blog-media.vexpaer.workers.dev/media/细胞生物学/images/15-1733041390902.png)
 
 ## cell surface receptor通过细胞内信号分子转导信号
 
@@ -122,15 +122,15 @@ eg.DAG
 产生kinase cascades 激酶级联反应
 
 #### 1.activated by pi
-![pi](/media/细胞生物学/images/15-1733044745109.png)
+![pi](https://vexpaer-blog-media.vexpaer.workers.dev/media/细胞生物学/images/15-1733044745109.png)
 
 #### 2.GTP-binding protein
-![GTP](/media/细胞生物学/images/15-1733044963321.png)
+![GTP](https://vexpaer-blog-media.vexpaer.workers.dev/media/细胞生物学/images/15-1733044963321.png)
 
 # signaling through G-protein-coupled receptors
 
 ## 总览
-![总览](/media/细胞生物学/images/15-image.png)
+![总览](https://vexpaer-blog-media.vexpaer.workers.dev/media/细胞生物学/images/15-image.png)
 
 ## GPCRs
 G-protein-coupled receptors  
@@ -147,8 +147,8 @@ form a cylindrical structure 圆柱形
 
 a deep ligand-biding site at center  
 
-![结构](/media/细胞生物学/images/15-1733045990878.png)  
-![结构2](/media/细胞生物学/images/15-1733046401999.png)
+![结构](https://vexpaer-blog-media.vexpaer.workers.dev/media/细胞生物学/images/15-1733045990878.png)  
+![结构2](https://vexpaer-blog-media.vexpaer.workers.dev/media/细胞生物学/images/15-1733046401999.png)
 
 ## Trimeric G protein
 
@@ -157,29 +157,29 @@ a deep ligand-biding site at center
 
 α亚基是GTPase,被GTP调控的分子开关  
 
-![结构](/media/细胞生物学/images/15-image-1.png)
+![结构](https://vexpaer-blog-media.vexpaer.workers.dev/media/细胞生物学/images/15-image-1.png)
 
 ### 机理
 
 Activation of a G protein by an activated GPCR  
 
-![机理](/media/细胞生物学/images/15-1733047082423.png)
+![机理](https://vexpaer-blog-media.vexpaer.workers.dev/media/细胞生物学/images/15-1733047082423.png)
 
 ## 路径
 
 ### 1.GPCRs → G protein → ac → cAMP → PKA → target protein
 可以induce rapid response  
 eg.肾上腺素加速糖原分解  
-![肾上腺素](/media/细胞生物学/images/15-1733054056318.png)
+![肾上腺素](https://vexpaer-blog-media.vexpaer.workers.dev/media/细胞生物学/images/15-1733054056318.png)
 
 也可以induce slow response  
 eg.PKA从核孔进入激活指导转录的蛋白
 
 ### 2.GPCRs → G proteins → PLC → DAG&IP3 → 
-![2](/media/细胞生物学/images/15-image-2.png)  
+![2](https://vexpaer-blog-media.vexpaer.workers.dev/media/细胞生物学/images/15-image-2.png)  
 
 Ca2+可以激活calmodulin钙调蛋白,钙调蛋白可以bind to 并激活其他蛋白  
-![ca](/media/细胞生物学/images/15-1733055239933.png)  
+![ca](https://vexpaer-blog-media.vexpaer.workers.dev/media/细胞生物学/images/15-1733055239933.png)  
 
 PKC可以激活基因转录  
 
@@ -200,7 +200,7 @@ The desensitization of the GPCRs depends on their phosphorylation by PKA, PKC, o
 # signaling through enzyme-couplued receptors
 
 通常酶联受体只有一部分穿过膜  
-![en](/media/细胞生物学/images/15-1733055964516.png)
+![en](https://vexpaer-blog-media.vexpaer.workers.dev/media/细胞生物学/images/15-1733055964516.png)
 
 ## RTKs
 receptor tyrosine kinase 受体酪氨酸激酶 
@@ -208,11 +208,11 @@ receptor tyrosine kinase 受体酪氨酸激酶
 signal protein会导致两个RTKs dimerize二聚
 
 然后phosphorylating 自己的络氨酸残基  
-![pi](/media/细胞生物学/images/15-1733056895486.png)  
+![pi](https://vexpaer-blog-media.vexpaer.workers.dev/media/细胞生物学/images/15-1733056895486.png)  
 
 或者并不通过磷酸化activate而是通过conformational changes 构象变化  
 
-![cc](/media/细胞生物学/images/15-1733056982960.png)
+![cc](https://vexpaer-blog-media.vexpaer.workers.dev/media/细胞生物学/images/15-1733056982960.png)
 
 ### 激活后
 Phosphorylated tyrosines on RTKs serve as docking sites for intracellular 
@@ -222,7 +222,7 @@ signaling proteins
 
 磷酸化的络氨酸可以结合有SH2 domain / PTB domain的信号蛋白  
 
-![thr](/media/细胞生物学/images/15-1733057183731.png)
+![thr](https://vexpaer-blog-media.vexpaer.workers.dev/media/细胞生物学/images/15-1733057183731.png)
 
 ### 路径
 
@@ -232,16 +232,16 @@ RTKs可以激活Ras
 
 MAP 是 mitogen-activated protein  
 
-![Ras](/media/细胞生物学/images/15-1733057498132.png)  
+![Ras](https://vexpaer-blog-media.vexpaer.workers.dev/media/细胞生物学/images/15-1733057498132.png)  
 
 中间的一整坨叫 MAP kinase module  
 这一坨东西有scaffold protein支架蛋白固定防止cross-talk干扰  
-![alt text](/media/细胞生物学/images/15-1733058394002.png)
+![alt text](https://vexpaer-blog-media.vexpaer.workers.dev/media/细胞生物学/images/15-1733058394002.png)
 
 #### 2.RTKs → PI3K → PI(3,4,5)P3 → PDK1 → AKT → target protein
 
 这条通路刺激动物细胞生存并长大  
-![akt](/media/细胞生物学/images/15-1733058183488.png)
+![akt](https://vexpaer-blog-media.vexpaer.workers.dev/media/细胞生物学/images/15-1733058183488.png)
 
 ## tyrosine-kinase-associated receptors
 连着络氨酸激酶的一种受体  
@@ -259,16 +259,16 @@ Janus kinases (JAKs)
 
 JAKs phosphorylate and activate transcription regulators called STATs (signal transducer信号转到子 and activator of transcription转录激活因子)  
 
-![cytokine](/media/细胞生物学/images/15-1733069229198.png)
+![cytokine](https://vexpaer-blog-media.vexpaer.workers.dev/media/细胞生物学/images/15-1733069229198.png)
 
 ## receptor serine/threonine kinases
 
 主要介导TGFβ的信号  
-![TGFβ](/media/细胞生物学/images/15-1733069643286.png)
+![TGFβ](https://vexpaer-blog-media.vexpaer.workers.dev/media/细胞生物学/images/15-1733069643286.png)
 
 # alternative signaling routes in gene regulation
 还好几页ppt,不想写了,估计不考
 
 # 总结
 
-![alt text](/media/细胞生物学/images/15-image-3.png)
+![alt text](https://vexpaer-blog-media.vexpaer.workers.dev/media/细胞生物学/images/15-image-3.png)

@@ -24,7 +24,7 @@ Exocytosis (胞吐作用): The process by which secretory vesicles carrying intr
 the vesicles formed by invagination of the plasma membrane are called **endocytic vesicles胞吞泡**
 
 有两种胞吞👇  
-![alt text](/media/细胞生物学/images/13-image.png)
+![alt text](https://vexpaer-blog-media.vexpaer.workers.dev/media/细胞生物学/images/13-image.png)
 
 ## phagocytosis吞噬作用
 
@@ -40,7 +40,7 @@ remove pathogens病原体 and senescent衰老 or apoptotic凋亡 cells
 
 pseudopod伪足
 
-![alt text](/media/细胞生物学/images/13-image-1.png)
+![alt text](https://vexpaer-blog-media.vexpaer.workers.dev/media/细胞生物学/images/13-image-1.png)
 
 ## pinocytosis胞吞作用
 
@@ -54,11 +54,11 @@ occurs in all kind of cells
 3. Macropinocytosis(大型胞饮作用)
 4. Clathrin and caveola independent endocytosis (非网格蛋白/胞膜窖依赖的胞吞作用)
 
-![alt text](/media/细胞生物学/images/13-image-2.png)
+![alt text](https://vexpaer-blog-media.vexpaer.workers.dev/media/细胞生物学/images/13-image-2.png)
 
 # Exocytosis
 
-![alt text](/media/细胞生物学/images/13-image-3.png)
+![alt text](https://vexpaer-blog-media.vexpaer.workers.dev/media/细胞生物学/images/13-image-3.png)
 
 ## Constitutive exocytosis pathway (组成型胞吐途径)
 
@@ -72,7 +72,7 @@ specialized secretory cells
 
 # Coated Vesicles
 
-![alt text](/media/细胞生物学/images/13-image-4.png)
+![alt text](https://vexpaer-blog-media.vexpaer.workers.dev/media/细胞生物学/images/13-image-4.png)
 
 distinguished by their coat proteins,有3种
 
@@ -85,7 +85,7 @@ CGN → ER
 3. COPII-coated  
 ER → CGN
 
-![alt text](/media/细胞生物学/images/13-image-11.png)
+![alt text](https://vexpaer-blog-media.vexpaer.workers.dev/media/细胞生物学/images/13-image-11.png)
 
 # Clathrin/AP coated Vesicles
 
@@ -96,7 +96,7 @@ double-coated vesicles
 外面的一层是clathrin protein网格蛋白,里面一层是 adaptin complex接头复合物
 
 clathrin subunit consist of 3 dimers(1 heavy chain,1 light chain),form a **triskelion三腿结构**  
-![alt text](/media/细胞生物学/images/13-image-5.png)
+![alt text](https://vexpaer-blog-media.vexpaer.workers.dev/media/细胞生物学/images/13-image-5.png)
 
 ## formation
 
@@ -105,8 +105,8 @@ clathrin subunit consist of 3 dimers(1 heavy chain,1 light chain),form a **trisk
 3. Vesicle formation (膜泡形成) —— Dynamin
 4. Uncoating (膜泡脱包被) ——ARF(ARF-GTP to ARF-GDP)，HSP70(ATP to ADP)
 
-![alt text](/media/细胞生物学/images/13-image-6.png)  
-![alt text](/media/细胞生物学/images/13-image-7.png)  
+![alt text](https://vexpaer-blog-media.vexpaer.workers.dev/media/细胞生物学/images/13-image-6.png)  
+![alt text](https://vexpaer-blog-media.vexpaer.workers.dev/media/细胞生物学/images/13-image-7.png)  
 
 上面4条明显不说人话,下面是中文解释  
 1. 细胞膜上的受体结合了要运送的货物后,会召集adaptin接头蛋白,同时再ARF的帮助下,招募chathrin
@@ -124,12 +124,12 @@ Cells use RME to import selected extracellular macromolecules.
 
 Most cholesterol胆固醇 is transported in the blood as low-density lipoproteins **LDLs**
 
-![alt text](/media/细胞生物学/images/13-image-8.png)
+![alt text](https://vexpaer-blog-media.vexpaer.workers.dev/media/细胞生物学/images/13-image-8.png)
 
 LDL结合细胞膜上的受体后通过clathrin/ap-coated vesicle 进入细胞内  
-![alt text](/media/细胞生物学/images/13-image-9.png)
+![alt text](https://vexpaer-blog-media.vexpaer.workers.dev/media/细胞生物学/images/13-image-9.png)
 
-![alt text](/media/细胞生物学/images/13-image-10.png)
+![alt text](https://vexpaer-blog-media.vexpaer.workers.dev/media/细胞生物学/images/13-image-10.png)
 
 endosome胞内体,是一个转运内吞的物质的细胞器,可以将受体与要转运的物质分离,然后把物质送到溶酶体降解
 
@@ -161,6 +161,6 @@ COPII外被蛋白具有特异性结合膜上或待运输受体蛋白上的分选
 1. Rab proteins and Rab effectors **dock** the vesicle to specific spots on the correct target membrane.
 2. SNARE proteins and SNARE regulators mediate the **fusion** of the vesicle membrane to the target membrane.
 
-![alt text](/media/细胞生物学/images/13-image-12.png)
+![alt text](https://vexpaer-blog-media.vexpaer.workers.dev/media/细胞生物学/images/13-image-12.png)
 
 Rab介导锚定,SNARE介导融合

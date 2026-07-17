@@ -10,10 +10,10 @@ mindmap: true
 25. Nitrogen Acquisition and Amino Acid Metabolism
 - Nitrogen Is Cycled Between Organisms and the Inanimate Environment
     - The nitrogen cycle. Organic nitrogenous compounds are formed by the incorporation of NH4+ into carbon skeletons. Note that denitrification and nitrogen fixation are anaerobic processes.
-        - ![](/media/生物化学/images/790450_3b9aae3f-444c-49d4-d46e-8ab4da1eb8e5.png)
+        - ![](https://vexpaer-blog-media.vexpaer.workers.dev/media/生物化学/images/790450_3b9aae3f-444c-49d4-d46e-8ab4da1eb8e5.png)
         反硝化作用和固氮作用都是厌氧过程
     - 图
-        - ![](/media/生物化学/images/790450_c4e21309-c8b0-4c2c-ec53-869f27b93380.png)
+        - ![](https://vexpaer-blog-media.vexpaer.workers.dev/media/生物化学/images/790450_c4e21309-c8b0-4c2c-ec53-869f27b93380.png)
     - The reduction of NO3- to NH4+ occurs in green plants, various fungi, and certain bacteria in a two-step metabolic pathway known as nitrate assimilation硝酸盐同化.
     - The formation of NH4+ from N2 gas is termed nitrogen fixation.
     - N2 fixation is an prokaryotic only process,although bacteria in symbiotic 共生的 association with certain green plants also carry out nitrogen fixation.
@@ -32,26 +32,26 @@ mindmap: true
     - Nitrate assimilation is the predominant means by which green plants, algae, and many micro organisms acquire nitrogen.
     - accounts for more than 99% of the inorganic nitrogen (nitrate or N2) assimilated into organisms
     - reaction
-        - ![](/media/生物化学/images/36d49788-4b53-4803-a436-3e54f864a37f-790450.jpeg)
+        - ![](https://vexpaer-blog-media.vexpaer.workers.dev/media/生物化学/images/36d49788-4b53-4803-a436-3e54f864a37f-790450.jpeg)
     - 酶(1) - nitrate reductase 硝酸还原酶
         - Nitrate Reductase Contains Cytochrome b557 and Molybdenum钼 Cofactor
         - Nitrate reductases typically are cytosolic 220-kD dimeric proteins.
         - Mo cofactor is necessary for both nitrate reductase activity and the assembly of nitrate reductase subunits into the active dimeric holoenzyme全酶 form.
         - prosthetic group - molybdenum cofactor 钼辅因子
-            - ![](/media/生物化学/images/790450_3395c421-dee7-4b7f-c627-fc89d8a3f1cc.png)
+            - ![](https://vexpaer-blog-media.vexpaer.workers.dev/media/生物化学/images/790450_3395c421-dee7-4b7f-c627-fc89d8a3f1cc.png)
             prosthetic group辅基是连在蛋白质上的东西, 扩展了蛋白的功能, 这里面使用钼原子可以传递电子
         - A pair of electrons is transferred from NADH to nitrate and reduce nitrate to nitrite.
-            - ![](/media/生物化学/images/790450_4f6e9d6f-f09f-4c6f-c93a-b57f86429a84.png)
+            - ![](https://vexpaer-blog-media.vexpaer.workers.dev/media/生物化学/images/790450_4f6e9d6f-f09f-4c6f-c93a-b57f86429a84.png)
             This transfer is via enzyme-associated sulfhydryl groups 巯基,FAD, cytochrome b557, and MoCo (an essential molybdenum钼-containing cofactor).
         - The brackets [ ] denote the protein-bound prosthetic groups that constitute an e- transport chain between NADH and nitrate.
     - 酶(2) - nitrite reductase 亚硝酸还原酶
         - prosthetic group - Siroheme 西罗血红素
-            - ![](/media/生物化学/images/54e97f55-ad0b-484c-8919-7f59b508ca40-790450.jpeg)
+            - ![](https://vexpaer-blog-media.vexpaer.workers.dev/media/生物化学/images/54e97f55-ad0b-484c-8919-7f59b508ca40-790450.jpeg)
             有8个-COOH侧链, These -COOH may act as H+ donors during the reduction of NO2- to NH4+
         - Six electrons are required to reduce NO2- to NH4+
-            - ![](/media/生物化学/images/790450_35aa168e-9e32-4473-9d25-d7f88c577526.png)
+            - ![](https://vexpaer-blog-media.vexpaer.workers.dev/media/生物化学/images/790450_35aa168e-9e32-4473-9d25-d7f88c577526.png)
         - Nitrite reductases in photosynthetic organisms obtain these electrons from six molecules of photosynthetically reduced ferredoxin (Fdred) 光合还原铁氧还蛋白
-            - ![](/media/生物化学/images/790450_34829d3d-0cab-497f-ee23-2959b5cd5910%201.png)
+            - ![](https://vexpaer-blog-media.vexpaer.workers.dev/media/生物化学/images/790450_34829d3d-0cab-497f-ee23-2959b5cd5910%201.png)
         - In higher plants, nitrite reductase is found in chloroplasts, where it has ready access to its primary reductant Fdred
 - Nitrogen Fixation
     Organisms Gain Access to Atmospheric N2 Via the Pathway of Nitrogen Fixation
@@ -59,7 +59,7 @@ mindmap: true
         - Less than 1% of the inorganic N incorporated into organic compounds by organisms can be attributed to nitrogen fixation, 但是是唯一利用大气中N2的途径
         - N2-fixing bacteria may be either free-living or living as symbionts with higher plants, 可以自己活也可以和高等生物共生, 比如 Rhizobia 根瘤菌 与 soybeans 大豆
     - reaction
-        - ![](/media/生物化学/images/790450_10bb9646-00df-45a6-85cf-1daeb6557090.png)
+        - ![](https://vexpaer-blog-media.vexpaer.workers.dev/media/生物化学/images/790450_10bb9646-00df-45a6-85cf-1daeb6557090.png)
     - 酶 - nitrogenase固氮酶
         - found only in prokaryotic cells
         - Composed of Two Metalloproteins
@@ -82,7 +82,7 @@ mindmap: true
             - The primary e- donor for the nitrogenase system is reduced ferredoxin
         - 3. ATP
             - very strong bonding between the two N atoms in N2, need ATP energy to break the bond
-                - ![](/media/生物化学/images/1dee8bb3-462c-4fe3-b6d3-75eba7fa0497-790450.jpeg)
+                - ![](https://vexpaer-blog-media.vexpaer.workers.dev/media/生物化学/images/1dee8bb3-462c-4fe3-b6d3-75eba7fa0497-790450.jpeg)
         - 4. O2-free conditions
             - Two Metalloproteins is oxygen labile
     - regulation
@@ -91,4 +91,4 @@ mindmap: true
             nif基因 - 固氮基因
         - (c) In some organisms, the nitrogenase complex is regulated by covalent modification. ADP–ribosylation 核糖基化 of nitrogenase reductase leads to its inactivation.
         - 图
-            - ![](/media/生物化学/images/790450_e8b53b76-7dbb-417c-d7b4-7e125e2f8c16.png)
+            - ![](https://vexpaer-blog-media.vexpaer.workers.dev/media/生物化学/images/790450_e8b53b76-7dbb-417c-d7b4-7e125e2f8c16.png)

@@ -10,41 +10,41 @@ mindmap: true
 56.Proteins
 - Key takeaways from this class
     - 图
-        - ![](/media/生物化学/images/790450_5d208240-0dc2-4507-d325-a34ca4d3d72a.png)
+        - ![](https://vexpaer-blog-media.vexpaer.workers.dev/media/生物化学/images/790450_5d208240-0dc2-4507-d325-a34ca4d3d72a.png)
 - 结构
     - Protein Shape
         - fibrous proteins
             - Proteins having structural roles in cells are typically fibrous and often water insoluble.
             - Collagen胶原蛋白 is a good example. Collagen is composed of three polypeptide chains that intertwine.
-                - ![](/media/生物化学/images/790450_ce578e19-3328-4ba6-b540-83b4659146fd.png)
+                - ![](https://vexpaer-blog-media.vexpaer.workers.dev/media/生物化学/images/790450_ce578e19-3328-4ba6-b540-83b4659146fd.png)
         - globular proteins
             - Soluble proteins serving metabolic functions can be characterized as compactly folded globular molecules, such as myoglobin 肌红蛋白.
-                - ![](/media/生物化学/images/790450_abb78b6d-cb8d-48e2-8008-ae3f4170befc.png)
+                - ![](https://vexpaer-blog-media.vexpaer.workers.dev/media/生物化学/images/790450_abb78b6d-cb8d-48e2-8008-ae3f4170befc.png)
             - The folding pattern puts hydrophilic amino acid side chains on the outside and buries hydrophobic side chains in the interior, making the protein highly watersoluble.
         - membrane proteins
             - Membrane proteins fold so that hydrophobic amino acid side chains are exposed in their membrane-associated regions.
             - The portions of membrane proteins extending into or exposed at the aqueous environments are hydrophilic in character, like soluble proteins.
                 延伸至水环境中或暴露在水环境表面的膜蛋白部分，其性质与可溶性蛋白类似，均为亲水性
             - Bacteriorhodopsin 噬菌调理素 is a typical membrane protein; it binds the light-absorbing pigment, cis-retinal顺视黄醛, shown here in red.
-                - ![](/media/生物化学/images/790450_77d3611e-eb35-4b3b-9cec-31d5d15e2868.png)
+                - ![](https://vexpaer-blog-media.vexpaer.workers.dev/media/生物化学/images/790450_77d3611e-eb35-4b3b-9cec-31d5d15e2868.png)
                 细菌视紫红质（Bacteriorhodopsin）是一种典型的膜蛋白，它能结合吸光色素 ——顺式视黄醛（cis-retinal），图中红色部分即为此物质
     - The Levels of Protein Structure
         - Primary Structure
             - The Sequence of Amino Acids in Proteins 氨基酸排列顺序
             - 例
                 - Bovine pancreatic ribonuclease Acontains 124 amino acid residues, none of which are tryptophan. Four intrachain disulfide bridges (S-S) form cross-links in this polypeptide between Cys26 and Cys84, Cys40 and Cys95, Cys58 and Cys110, andCys65 and Cys72. These disulfides are depicted by yellow bars.
-                    - ![](/media/生物化学/images/790450_47a1b018-b6ad-4163-cbe6-06f0e49d89e5.png)
+                    - ![](https://vexpaer-blog-media.vexpaer.workers.dev/media/生物化学/images/790450_47a1b018-b6ad-4163-cbe6-06f0e49d89e5.png)
                     牛胰核糖核酸酶 A 包含 124 个氨基酸残基，且不含色氨酸。该多肽链中存在 4 个链内二硫键，可形成交联结构，具体连接方式为：半胱氨酸 26 与半胱氨酸 84、半胱氨酸 40 与半胱氨酸 95、半胱氨酸 58 与半胱氨酸 110、半胱氨酸 65 与半胱氨酸 72. 这些二硫键通过黄色线条进行展示
         - Secondary Structure
             - 二级结构指蛋白质多肽链本身的折叠和盘绕的方式
             - Both α-helix and the β-strand owe their stability to the formation of hydrogen bonds between N-H and O=C functions along the polypeptide backbone
-                - ![](/media/生物化学/images/790450_411b53f1-75ce-4c74-9d27-b5154a3f4999.png)
+                - ![](https://vexpaer-blog-media.vexpaer.workers.dev/media/生物化学/images/790450_411b53f1-75ce-4c74-9d27-b5154a3f4999.png)
                 α- 螺旋和 β- 折叠的稳定性，均依赖于多肽主链上 N-H 基团与 O=C 基团之间形成的氢键
         - Tertiary Structure
             - 三级结构指蛋白质分子处于它的天然折叠状态的三维构象
             - a representation of the tertiary structure of Chymotrypsin 胰凝乳蛋白酶, a proteolytic enzyme, are shown here.
             - The tertiary representation in (b) shows the course of the chymotrypsin folding pattern by successive numbering of the amino acids in its sequence.
-                - ![](/media/生物化学/images/790450_e6630d71-37e8-436d-acdb-98b55bff7ffc.png)
+                - ![](https://vexpaer-blog-media.vexpaer.workers.dev/media/生物化学/images/790450_e6630d71-37e8-436d-acdb-98b55bff7ffc.png)
                 通过按序列对氨基酸进行连续编号，展示了胰凝乳蛋白酶的折叠路径
         - Quaternary Structure
             - 在体内有许多蛋白质含有2条或2条以上多肽链,才能全面地执行功能
@@ -53,7 +53,7 @@ mindmap: true
             - 这种蛋白质分子中各亚基的空间排布及亚基接触部位的布局和相互作用,称为蛋白质的四级结构
             - Hemoglobin血色素
                 - consists of two α and two β polypeptide chains, is an example of the quaternary level of protein structure.
-                    - ![](/media/生物化学/images/790450_012edc30-0fab-4b01-b0e5-22546691219d.png)
+                    - ![](https://vexpaer-blog-media.vexpaer.workers.dev/media/生物化学/images/790450_012edc30-0fab-4b01-b0e5-22546691219d.png)
                 - In this drawing, the β-chains are the two uppermost polypeptides and the two α-chains are the lower half of the molecule.
                 - The heme 亚铁血红素 groups of the four globin chains are represented by rectangles with spheres (the heme iron atom).
                 - Note the symmetry of this macromolecular arrangement.
@@ -68,15 +68,15 @@ mindmap: true
         - D/L - Configurations
             - D与L互相转化 can be achieved only by breaking and remaking bonds
             - D- and L-configurations of glyceraldehyde 甘油醛
-                - ![](/media/生物化学/images/790450_5aac3b65-389e-42a9-f980-5d2bce5c00f0.png)
+                - ![](https://vexpaer-blog-media.vexpaer.workers.dev/media/生物化学/images/790450_5aac3b65-389e-42a9-f980-5d2bce5c00f0.png)
         - 单键可以旋转
             - The intrinsic free rotation around single covalent bonds creates a great variety of three-dimensional conformations构象, even for relatively simple molecules.
-                - ![](/media/生物化学/images/790450_24806369-404d-4a4b-959f-ccea28c0aab1.png)
+                - ![](https://vexpaer-blog-media.vexpaer.workers.dev/media/生物化学/images/790450_24806369-404d-4a4b-959f-ccea28c0aab1.png)
                 围绕单共价键的固有自由旋转，即便对于相对简单的分子，也能产生多种三维构象
             - Steric空间 repulsion 排阻效应 between eclipsed and partially eclipsed conformations keeps the possibilities at a reasonable number
                 重叠式构象与部分重叠式构象之间的空间排阻效应，会将构象的可能数量控制在合理范围内
             - Imagine the conformational possibilities for a protein in which two of every three bonds along its backbone are freely rotating single bonds
-                - ![](/media/生物化学/images/790450_24741f9d-e89b-4713-e10d-a2c27210c1a1.png)
+                - ![](https://vexpaer-blog-media.vexpaer.workers.dev/media/生物化学/images/790450_24741f9d-e89b-4713-e10d-a2c27210c1a1.png)
                 试想一种蛋白质的构象可能性, 其主链上每三个化学键中, 就有两个是可自由旋转的单键
 - Isolation and Purification of Protein Mixtures
     - Separation methods based on size
@@ -84,20 +84,20 @@ mindmap: true
         - size exclusion chromatography 排阻色谱法、筛析色谱法
             - A gel filtration chromatography column.
             - Larger molecules are excluded from the gel beads and emerge from the column sooner than smaller molecules, whose migration is retarded because they can enter the beads.
-                - ![](/media/生物化学/images/790450_c3fda803-e7a1-4adf-a1d9-dbd4cc24b971.png)
+                - ![](https://vexpaer-blog-media.vexpaer.workers.dev/media/生物化学/images/790450_c3fda803-e7a1-4adf-a1d9-dbd4cc24b971.png)
                 较大的分子无法进入凝胶珠，会先从层析柱中流出, 而较小的分子能进入凝胶珠，迁移速度会减慢，因此流出时间更晚
         - dialysis and ultrafiltration 透析与超滤
             - dialysis
                 - use osmotic pressure
                 - The solution of macromolecules to be dialyzed is placed in a semipermeable membrane bag, and the bag is immersed in a bathing solution.
-                    - ![](/media/生物化学/images/790450_ec20a5f9-6205-4b61-c72a-5314cb2bf33c.png)
+                    - ![](https://vexpaer-blog-media.vexpaer.workers.dev/media/生物化学/images/790450_ec20a5f9-6205-4b61-c72a-5314cb2bf33c.png)
                     待透析的大分子溶液被装入半透膜袋中，该膜袋再浸入透析液中
                 - A magnetic stirrer gently mixes the solution to facilitate equilibrium of diffusible solutes between the dialysate and the solution contained in the bag
                     磁力搅拌器会缓慢搅拌溶液，以促进可扩散溶质在透析液和膜袋内溶液之间达到平衡
             - ultrafiltration
                 - an improvement on the dialysis principle
                 - Filters having pore sizes over the range of biomolecular dimensions are used to filter solutions to select for molecules in a particular size range
-                    - ![](/media/生物化学/images/790450_76b8dab2-8e2c-4ad1-a9e4-90b46625dff5.png)
+                    - ![](https://vexpaer-blog-media.vexpaer.workers.dev/media/生物化学/images/790450_76b8dab2-8e2c-4ad1-a9e4-90b46625dff5.png)
                     该技术使用孔径在生物分子尺寸范围内的滤膜过滤溶液，以筛选出特定尺寸范围的分子
                 - Because the pore sizes in these filters are microscopic, high pressures are often required to force the solution through the filter
                     由于这些滤膜的孔径极小，通常需要施加高压才能迫使溶液通过滤膜
@@ -110,7 +110,7 @@ mindmap: true
             - The solubility of most globular proteins is markedly influenced by pH and ionic strength
             - pH
                 - Proteins tend to be least soluble at their isoelectric point, the pH value at which the sum of their positive and negative electrical charges is zero.
-                    - ![](/media/生物化学/images/790450_76996ec4-57fe-4808-847e-d99f9c569167.png)
+                    - ![](https://vexpaer-blog-media.vexpaer.workers.dev/media/生物化学/images/790450_76996ec4-57fe-4808-847e-d99f9c569167.png)
                 - At this pH, electrostatic repulsion between protein molecules is minimal and they are more likely to coalesce聚合 and precipitate沉淀 out of solution.
             - Ionic strength
                 - Most globular proteins tend to become increasingly soluble as the ionic strength is raised
@@ -123,18 +123,18 @@ mindmap: true
                 - 按质量分离
                 - SDS 会使蛋白质带负电并变性，消除电荷干扰，蛋白质仅按分子质量大小在凝胶中迁移
                 - SDS
-                    - ![](/media/生物化学/images/790450_c1cbabcf-0041-43f0-e210-836f48a195de.png)
+                    - ![](https://vexpaer-blog-media.vexpaer.workers.dev/media/生物化学/images/790450_c1cbabcf-0041-43f0-e210-836f48a195de.png)
             - 2-DE, 2-Dimentional Electrophoresis 双向电泳
-                - ![](/media/生物化学/images/790450_00a9e764-c698-45a3-85fb-709e3a95a5db.png)
+                - ![](https://vexpaer-blog-media.vexpaer.workers.dev/media/生物化学/images/790450_00a9e764-c698-45a3-85fb-709e3a95a5db.png)
                 先跑一个IEF, 然后在IEF的带子上再横过来跑一个SDS-PAGE
         - ion exchange chromatography 离子交换层析
     - Purification of Protein Mixtures
         - Proteins have been separated and purified on the basis of their two prominent physical properties, size and electrical charge
         - A more direct approach is to employ affinity purification strategies that take advantage of the biological function or similar specific recognition properties of a protein.
-            - ![](/media/生物化学/images/790450_972d77b1-974d-46f6-acb6-f723da7d079e.png)
+            - ![](https://vexpaer-blog-media.vexpaer.workers.dev/media/生物化学/images/790450_972d77b1-974d-46f6-acb6-f723da7d079e.png)
         - A Typical Protein Purification Scheme
             - 从真菌中纯化黄嘌呤脱氢酶的典型流程及各步骤的关键指标
-                - ![](/media/生物化学/images/790450_184068bf-bc47-41cb-8f85-dd161eb2d0a4.png)
+                - ![](https://vexpaer-blog-media.vexpaer.workers.dev/media/生物化学/images/790450_184068bf-bc47-41cb-8f85-dd161eb2d0a4.png)
             - 5个步骤 - 粗提、盐析、离子交换层析、分子筛层析、免疫亲和层析
             - 参数
                 - 体积 - 每一步得到的样品体积变化，反映样品的浓缩或稀释情况
@@ -147,7 +147,7 @@ mindmap: true
     - The complex amino acid mixture in the hydrolysate 水解产物 obtained after digestion of a protein in 6 N HCl can be separated into the component amino acids by
         - ion exchange chromatography
         - reversed-phase high-pressure liquid chromatography (HPLC)
-            - ![](/media/生物化学/images/790450_c4795091-c951-4d2b-aca6-965111a29ee1.png)
+            - ![](https://vexpaer-blog-media.vexpaer.workers.dev/media/生物化学/images/790450_c4795091-c951-4d2b-aca6-965111a29ee1.png)
     - Amino acid analysis provides no information on the order or sequence of amino acid residues in the polypeptide chain
 - Determining the Primary Structure of a Protein
     - Although many sequences have been determined from application of the principles first established by Sanger, most are now deduced from knowledge of the nucleotide sequence of the gene that encodes the protein
@@ -170,7 +170,7 @@ mindmap: true
                 - This method is preferable because it allows the sequential identification of a series of residues beginning at the N-terminus
                     该方法更具优势，因为它能够从 N - 末端开始，对一系列氨基酸残基进行连续鉴定
                 - 该方法基于一种化学反应，利用异硫氰酸苯酯（Phenylisothiocyanate，PITC）与多肽或蛋白质的 N - 末端氨基酸反应，形成苯氨基硫甲酰（PTC）衍生物. 然后，在酸性条件下，PTC 衍生物环化，裂解产生苯乙内酰硫脲（Phenylthiohydantoin，PTH） - 氨基酸， 而剩下的多肽链少了一个氨基酸，其 N - 末端变成了原来的第二个氨基酸. 生成的 PTH - 氨基酸可以通过高效液相色谱（HPLC）等技术进行分离和鉴定，从而确定 N - 末端氨基酸的种类. 接着，对剩余的多肽链重复上述步骤，依次确定后续的氨基酸序列
-                    - ![](/media/生物化学/images/790450_6b1e6dc4-4b5f-4220-a748-99dc3622dc55.png)
+                    - ![](https://vexpaer-blog-media.vexpaer.workers.dev/media/生物化学/images/790450_6b1e6dc4-4b5f-4220-a748-99dc3622dc55.png)
                     总结来说可以把N端第一个氨基酸抢出来
         - C-Terminal Analysis
             - For the identification of the C-terminal residue of polypeptides, an enzymatic approach is commonly used
@@ -181,20 +181,20 @@ mindmap: true
     - 步骤4
         - Fragmentation of the polypeptide chain
         - 用不同的方法可以在特定位置切开氨基酸序列
-            - ![](/media/生物化学/images/790450_d226c74b-2a6c-45ba-a856-8012d9789ef3.png)
+            - ![](https://vexpaer-blog-media.vexpaer.workers.dev/media/生物化学/images/790450_d226c74b-2a6c-45ba-a856-8012d9789ef3.png)
         - 比如Trypsin可以且Arg / Lys的C端的肽键
-            - ![](/media/生物化学/images/790450_3eb3a308-3bd5-47f3-820f-bb3f7f8d37ea.png)
+            - ![](https://vexpaer-blog-media.vexpaer.workers.dev/media/生物化学/images/790450_3eb3a308-3bd5-47f3-820f-bb3f7f8d37ea.png)
 - Nature of Amino Acid Sequences
     - Homologous 同源的 Proteins from Different Organisms Have Homologous Amino Acid Sequences
     - The number of amino acid differences among the cytochrome c 细胞色素c sequences of various organisms can be compared
-        - ![](/media/生物化学/images/790450_6888c852-d6d1-4570-865c-80982fb06279.png)
+        - ![](https://vexpaer-blog-media.vexpaer.workers.dev/media/生物化学/images/790450_6888c852-d6d1-4570-865c-80982fb06279.png)
         差别越小在进化上越接近
     - Related Proteins Share a Common Evolutionary Origin
         - Myoglobin肌红蛋白与hemoglobin血红蛋白
-            - ![](/media/生物化学/images/790450_9df58878-a475-46cd-eb25-97fa638f7f58.png)
+            - ![](https://vexpaer-blog-media.vexpaer.workers.dev/media/生物化学/images/790450_9df58878-a475-46cd-eb25-97fa638f7f58.png)
     - Apparently Different Proteins May Share a Common Ancestry
         - 图
-            - ![](/media/生物化学/images/790450_8a037ba9-960d-4f0e-96b7-9c0b2331bf0b.png)
+            - ![](https://vexpaer-blog-media.vexpaer.workers.dev/media/生物化学/images/790450_8a037ba9-960d-4f0e-96b7-9c0b2331bf0b.png)
 - Solid phase synthesis of a peptide
     - [https://www.bilibili.com/video/BV1PJ411V7uR/](https://www.bilibili.com/video/BV1PJ411V7uR/)
 - Some Proteins Have Chemical Groups Other Than Amino Acids
@@ -232,7 +232,7 @@ mindmap: true
             - hemoproteins 血红蛋白
                 - a subclass of metalloproteins
                 - prosthetic group 辅基 is heme 亚铁血红素
-                    - ![](/media/生物化学/images/790450_cfcdea26-5e43-4d1b-e285-61273dd8cfc5.png)
+                    - ![](https://vexpaer-blog-media.vexpaer.workers.dev/media/生物化学/images/790450_cfcdea26-5e43-4d1b-e285-61273dd8cfc5.png)
         - flavoproteins 黄素蛋白
             - Flavin黄素 is an essential substance for the activity of a number of important oxidoreductases
                 黄素是多种重要氧化还原酶发挥活性所必需的物质
@@ -255,7 +255,7 @@ mindmap: true
     - Transport Proteins
         - 比如 the protein hemoglobin 血红素 transports oxygen from the lungs to actively respiring tissues
         - 比如 some transport proteins are localized in cellular membranes
-            - ![](/media/生物化学/images/790450_e697b0db-a757-42ad-9b7e-e75031934546.png)
+            - ![](https://vexpaer-blog-media.vexpaer.workers.dev/media/生物化学/images/790450_e697b0db-a757-42ad-9b7e-e75031934546.png)
     - Storage Proteins
         - Ovalbumin 卵清蛋白
             - the protein of egg white
@@ -270,12 +270,12 @@ mindmap: true
         - Three Classes of Motor Proteins Move Intracellular Cargo
             - myosins肌球蛋白
                 - 图
-                    - ![](/media/生物化学/images/790450_c4054914-2788-4277-8977-b0dad9402bdd.png)
+                    - ![](https://vexpaer-blog-media.vexpaer.workers.dev/media/生物化学/images/790450_c4054914-2788-4277-8977-b0dad9402bdd.png)
             - motor proteins马达蛋白
                 - kinesins驱动蛋白
                 - dyneins动力蛋白
                 - 图
-                    - ![](/media/生物化学/images/790450_d19d4dd7-1da3-49f8-854e-37433b48768f.png)
+                    - ![](https://vexpaer-blog-media.vexpaer.workers.dev/media/生物化学/images/790450_d19d4dd7-1da3-49f8-854e-37433b48768f.png)
     - Structural Proteins
         - 比如 Collagen 胶原蛋白 , elastin 弹性蛋白
         - 1/3 of the total protein in a vertebrate animal脊椎动物 is collagen
@@ -283,7 +283,7 @@ mindmap: true
         - Scaffold or adapter proteins play a role in the complex pathways of cellular response to hormones and growth factors
         - 是许多关键信号通路的关键调节因子
         - 它们会与信号传导途径的多个成员相互作用或结合，从而将它们束缚在多蛋白复合物中
-            - ![](/media/生物化学/images/790450_d6198716-90d9-4132-e66f-ccbd1d7f9255.png)
+            - ![](https://vexpaer-blog-media.vexpaer.workers.dev/media/生物化学/images/790450_d6198716-90d9-4132-e66f-ccbd1d7f9255.png)
     - Protective and Exploitive Proteins
         - protective or exploitive proteins play active role in cell defense, protection, or exploitation
         - immunoglobulins 免疫球蛋白 or antibodies 抗体

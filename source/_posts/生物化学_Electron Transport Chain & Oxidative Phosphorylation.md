@@ -12,20 +12,20 @@ mindmap: true
     - 整体上将电子传递给O2,建立H+梯度并利用合成ATP
         - A total of 3 ATP per NADH and 2 ATP per FADH2 may be produced through the processes of electron transport and oxidative phosphorylation
         - Combining glycolysis and the TCA cycle gives
-            - ![](/media/生物化学/images/790450_e9eabedb-8f5e-42b3-b2c9-289b33fe7243%201.png)
+            - ![](https://vexpaer-blog-media.vexpaer.workers.dev/media/生物化学/images/790450_e9eabedb-8f5e-42b3-b2c9-289b33fe7243%201.png)
             注意一个glycose进行一次glycolysis和两次TCA
         - Electrons stored in the form of the reduced coenzymes, NADH or [FADH2], are passed through a highly organized chain of proteins and coenzymes, the so-called electron transport chain, finally reaching O2(the terminal electron acceptor)
         - This reoxidation process involves the removal of both protons and electrons from NADH and FADH2
-            - ![](/media/生物化学/images/790450_5d99d1ae-ccf6-43fe-ed40-a6d51fc38dea.png)
+            - ![](https://vexpaer-blog-media.vexpaer.workers.dev/media/生物化学/images/790450_5d99d1ae-ccf6-43fe-ed40-a6d51fc38dea.png)
         - Each component of the chain can exist in (at least) two oxidation states, and as electrons move through the chain from NADH (or FADH2) to O2,each component is successively reduced and reoxidied.
         - In the course of electron transport, a proton gradient is established across the inner mitochondrial membrane, it is the energy of this proton gradient that drives ATP synthesis.
-            - ![](/media/生物化学/images/790450_14c18854-5347-433c-9b6f-9a0af963453c.png)
+            - ![](https://vexpaer-blog-media.vexpaer.workers.dev/media/生物化学/images/790450_14c18854-5347-433c-9b6f-9a0af963453c.png)
         - 图
-            - ![](/media/生物化学/images/790450_32b74c2a-7bbe-46c6-9d27-a930df1a2ec6.png)
+            - ![](https://vexpaer-blog-media.vexpaer.workers.dev/media/生物化学/images/790450_32b74c2a-7bbe-46c6-9d27-a930df1a2ec6.png)
         - 总结
-            - ![](/media/生物化学/images/790450_187d8102-7498-4446-8966-06e71e7f1b6b.png)
+            - ![](https://vexpaer-blog-media.vexpaer.workers.dev/media/生物化学/images/790450_187d8102-7498-4446-8966-06e71e7f1b6b.png)
         - NADH的2e-传递有10H+穿膜
-            - ![](/media/生物化学/images/4ec36db1-71d1-4b57-a483-789cdb77e6c7-790450.jpeg)
+            - ![](https://vexpaer-blog-media.vexpaer.workers.dev/media/生物化学/images/4ec36db1-71d1-4b57-a483-789cdb77e6c7-790450.jpeg)
     - 线粒体结构
         - Mitochondria are surrounded by a simple outer membrane and a more complex inner membrane.
             - outer
@@ -34,7 +34,7 @@ mindmap: true
                     - a transmembrane protein, that forms large channels across the membrane
                     - permitting free diffusion of molecules with molecular weights of about 10,000 or less
                     - 图
-                        - ![](/media/生物化学/images/790450_1d8b1f4f-8a99-4d44-b78e-f3b61cde70d0.png)
+                        - ![](https://vexpaer-blog-media.vexpaer.workers.dev/media/生物化学/images/790450_1d8b1f4f-8a99-4d44-b78e-f3b61cde70d0.png)
             - inner
                 - The inner membrane is richly packed with proteins and is extensively folded as cristae 嵴, provide the inner membrane with a large surface area in a small volume.
         - The space between the inner and outer membranes is referred to as the intermembrane space.
@@ -42,7 +42,7 @@ mindmap: true
             - contains most of the enzymes of the TCA cycle and fatty acid oxidation
                 An exception, succinate dehydrogenase of the TCA cycle is located in the inner membrane.
         - 图
-            - ![](/media/生物化学/images/790450_5cfbff4d-08e7-4a85-ba02-67f79d40dc26.png)
+            - ![](https://vexpaer-blog-media.vexpaer.workers.dev/media/生物化学/images/790450_5cfbff4d-08e7-4a85-ba02-67f79d40dc26.png)
         - In addition, mitochondria contain circular DNA molecules, ribosomes and the enzymes required to synthesize protein coded within the mitochondrial genome.
         - The cytosolic side, where H accumulates, is referred to as the P (positive) face, the matrix side is the N (negative) face.
             线粒体内膜, P face对着intermembrane space, Nface 对着 matrix
@@ -54,23 +54,23 @@ mindmap: true
             - are proteins containing heme 亚铁血红素 prosthetic groups, which function by carrying or transferring electrons
             - heme
                 - Heme is formed when protoporphyrin IX binds Fe2+
-                    - ![](/media/生物化学/images/790450_295fde30-999f-4480-e530-32f5d095c2b8.png)
+                    - ![](https://vexpaer-blog-media.vexpaer.workers.dev/media/生物化学/images/790450_295fde30-999f-4480-e530-32f5d095c2b8.png)
                 - The TCA cycle provides intermediates for many biosynthetic processes in the cell, 比如 porphyrin 卟啉 bu lin
-                    - ![](/media/生物化学/images/790450_c550192e-82bd-498f-a30b-5f85db41c001.png)
+                    - ![](https://vexpaer-blog-media.vexpaer.workers.dev/media/生物化学/images/790450_c550192e-82bd-498f-a30b-5f85db41c001.png)
                 - 图
-                    - ![](/media/生物化学/images/790450_d90fe5f1-837a-4f8d-8f79-08e8aeaac95c.png)
+                    - ![](https://vexpaer-blog-media.vexpaer.workers.dev/media/生物化学/images/790450_d90fe5f1-837a-4f8d-8f79-08e8aeaac95c.png)
                 - Myoglobin (Mb) 肌红蛋白
                     - Oxygen binds to Mb via its heme
-                        - ![](/media/生物化学/images/64320b08-5373-4ad9-b9bc-0b2bcff9b67c-790450.jpeg)
+                        - ![](https://vexpaer-blog-media.vexpaer.workers.dev/media/生物化学/images/64320b08-5373-4ad9-b9bc-0b2bcff9b67c-790450.jpeg)
                     - Myoglobin is an oxygen-storage protein of muscle while Hemoglobin is the oxygen carrier
                 - Hemoglobin (Hb) 血红蛋白
                     - Hb is a tetramer.
-                        - ![](/media/生物化学/images/790450_f810c9aa-1696-45ee-d7a3-7efefcfe3641.png)
+                        - ![](https://vexpaer-blog-media.vexpaer.workers.dev/media/生物化学/images/790450_f810c9aa-1696-45ee-d7a3-7efefcfe3641.png)
                     - It consists of four polypeptide chains, each of which is very similar structurally to the Mb polypeptide chain, and each has a heme group.
                     - So, a Hb molecule can bind 4 O2 molecules
                     - O2 Binding Alters Hb Conformation. The binding of O2 to one heme of Hb makes it easier for the Hb molecule to bind additional equivalents of O2
                 - Hb displays sigmoid-shaped O2-binding curves. In contrast, Mb’s interaction with oxygen obeys classical Michaelis–Menten-type 米氏曲线 substrate saturation behavior.
-                    - ![](/media/生物化学/images/790450_71483a02-f304-4326-c65b-88c16c28dc96.png)
+                    - ![](https://vexpaer-blog-media.vexpaer.workers.dev/media/生物化学/images/790450_71483a02-f304-4326-c65b-88c16c28dc96.png)
             - Several cytochromes including cytochromes b, c, c1, a, and a3.
             - Cytochromes are one-electron transfer agents, in which the heme iron is converted from Fe2+ (ferrous) to Fe3+ (ferric iron) and back.
         - (c) iron–sulfur proteins 铁硫蛋白
@@ -88,33 +88,33 @@ mindmap: true
     - Complex I - NADH–Coenzyme Q Reductase
         NADH dehydrogenase
         - 图
-            - ![](/media/生物化学/images/790450_0358351b-5e95-4387-d974-17d68af95816.png)
+            - ![](https://vexpaer-blog-media.vexpaer.workers.dev/media/生物化学/images/790450_0358351b-5e95-4387-d974-17d68af95816.png)
         - transfers a pair of electrons from NADH to coenzyme Q
         - coenzyme Q
             - a small, hydrophobic, yellow compound
             - a mobile electron carrier
-                - ![](/media/生物化学/images/790450_9edfbab2-7a7f-4b60-d0da-ccff1339383f.png)
+                - ![](https://vexpaer-blog-media.vexpaer.workers.dev/media/生物化学/images/790450_9edfbab2-7a7f-4b60-d0da-ccff1339383f.png)
             - Its isoprenoid 类异戊二烯 tail makes it highly hydrophobic, and it diffuses freely in the hydrophobic core ofthe inner mitochondrial membrane.
-                - ![](/media/生物化学/images/790450_257107b2-ada9-4504-9ad8-ca6c764a820b.png)
+                - ![](https://vexpaer-blog-media.vexpaer.workers.dev/media/生物化学/images/790450_257107b2-ada9-4504-9ad8-ca6c764a820b.png)
             - As a result, it shuttles electrons from Complexes I and II to Complex III
         - link between glycolysis, TCA cycle, fattyacid oxidation, and the electron transport chain
         - 4 H+ transported per two electrons passed from NADH to UQ
     - Complex II - Succinate–Coenzyme Q Reductase
         succinate dehydrogenase
         - 图
-            - ![](/media/生物化学/images/29c106ea-eb79-4014-a5cd-8bbddf074bc0-790450.jpeg)
+            - ![](https://vexpaer-blog-media.vexpaer.workers.dev/media/生物化学/images/29c106ea-eb79-4014-a5cd-8bbddf074bc0-790450.jpeg)
         - The only TCA cycle enzyme that is an integral membrane protein in the inner mitochondrial membrane
         - link between the TCA cycle and electron transport
         - When succinate is converted to fumarate in the TCA cycle, concomitant伴随着 reduction of bound FAD to FADH2 occurs in succinate dehydrogenase.
-            - ![](/media/生物化学/images/7099734f-4c5a-45e9-a086-dd890294c1ee-790450.jpeg)
+            - ![](https://vexpaer-blog-media.vexpaer.workers.dev/media/生物化学/images/7099734f-4c5a-45e9-a086-dd890294c1ee-790450.jpeg)
         - This FADH2 transfers its electrons immediately to Fe-S centers, which pass them on to UQ.
         - Electron flow from succinate to UQ
         - Proton transport does not occur in this complex
     - Complex III - Coenzyme Q–Cytochrome c Reductase
         - 图
-            - ![](/media/生物化学/images/790450_451cd86b-49c0-4bb4-c426-1c3518a34cb4.png)
+            - ![](https://vexpaer-blog-media.vexpaer.workers.dev/media/生物化学/images/790450_451cd86b-49c0-4bb4-c426-1c3518a34cb4.png)
         - In the third complex of the electron transport chain, reduced coenzyme Q (UQH2) passes its electrons to cytochrome c via a unique redox pathway known as the Q cycle.
-            - ![](/media/生物化学/images/790450_1dba014c-e418-4f90-9c15-720fdaf17784.png)
+            - ![](https://vexpaer-blog-media.vexpaer.workers.dev/media/生物化学/images/790450_1dba014c-e418-4f90-9c15-720fdaf17784.png)
         - structure
             - The structure of UQ-cyt c reductase, as known as cytochrome bc1.
             - The complex is dime
@@ -122,38 +122,38 @@ mindmap: true
                 - Heme groups are shown in red, Fe/S centers in green and associated phospholipids in blue.
             - The bottom of the structure as shown extends approximately 75 Å into the mitochondrial matrix and the top of the structure as shown extends about 38 Å into the intermembrane space
             - 图
-                - ![](/media/生物化学/images/790450_4cb70220-1918-49af-e35d-96eac023263c.png)
+                - ![](https://vexpaer-blog-media.vexpaer.workers.dev/media/生物化学/images/790450_4cb70220-1918-49af-e35d-96eac023263c.png)
         - Cytochrome c
             - Cytochrome c is the only one of the cytochromes that is water-soluble.
             - It is globular, the planar heme group lies near the center of the protein, surrounded mainly by hydrophobic protein residues
-                - ![](/media/生物化学/images/790450_73c297f6-965d-475c-e428-9f304455592d.png)
+                - ![](https://vexpaer-blog-media.vexpaer.workers.dev/media/生物化学/images/790450_73c297f6-965d-475c-e428-9f304455592d.png)
             - Cytochrome c, like UQ, is a mobile electron carrier.
             - It associates loosely with the inner mitochondrial membrane to acquire electrons from Complex III,and then it migrates along the membrane surface and transfers electrons to complex IV
         - Q cycle
             - The electron-transfer pathway following oxidation of the first UQH2 at the Qp site near the cytosolic face of the inner membrane, releases 2 H+
-                - ![](/media/生物化学/images/790450_1450bfb1-e881-4d49-e21a-5ca74e3370d1.png)
+                - ![](https://vexpaer-blog-media.vexpaer.workers.dev/media/生物化学/images/790450_1450bfb1-e881-4d49-e21a-5ca74e3370d1.png)
             - The pathway following oxidation of a second UQH2
-                - ![](/media/生物化学/images/790450_9afb2e25-44b1-4ac1-a95f-88c2496c0d46.png)
+                - ![](https://vexpaer-blog-media.vexpaer.workers.dev/media/生物化学/images/790450_9afb2e25-44b1-4ac1-a95f-88c2496c0d46.png)
     - Complex IV - Cytochrome c Oxidase
         - 图
-            - ![](/media/生物化学/images/790450_e411a674-27f0-47a3-80a4-b21252efa04a.png)
+            - ![](https://vexpaer-blog-media.vexpaer.workers.dev/media/生物化学/images/790450_e411a674-27f0-47a3-80a4-b21252efa04a.png)
         - accepts electrons from cytochrome c and directs them to the four-electron reduction of O2 to form H2O
-            - ![](/media/生物化学/images/790450_f2979de6-c919-4261-9bf6-2259adf921f8.png)
+            - ![](https://vexpaer-blog-media.vexpaer.workers.dev/media/生物化学/images/790450_f2979de6-c919-4261-9bf6-2259adf921f8.png)
         - Electron transfer through Complex IV begins with binding of cytochrome c to the CuA center, next to heme a, and finally to the CuB/heme a3 active site, where O2 is reduced to H2O
-            - ![](/media/生物化学/images/790450_e1734f1c-44e7-474c-a37b-70afa0f26515.png)
+            - ![](https://vexpaer-blog-media.vexpaer.workers.dev/media/生物化学/images/790450_e1734f1c-44e7-474c-a37b-70afa0f26515.png)
         - Transfer of 4 electrons through this complex drives the transport of 4 H+
     - The Complexes of Electron Transport May Function as Supercomplexes
         - An electron microscopy image of a supercomplex formed from Complex I, Complex III,and Complex IV, and a model of this complex.
-            - ![](/media/生物化学/images/f068cf9e-2f2f-4e52-889b-775e381535ef-790450.jpeg)
+            - ![](https://vexpaer-blog-media.vexpaer.workers.dev/media/生物化学/images/f068cf9e-2f2f-4e52-889b-775e381535ef-790450.jpeg)
         - 这些complex可能合在一起形成respirasomes呼吸体
     - Complex V - ATP Synthase
         - The proton and electrochemical gradients across the inner mitochondrial membrane generated by electron transport represents a source of potential energy
-            - ![](/media/生物化学/images/790450_6b337e00-11bd-4aff-95f0-5205bd50fae2.png)
+            - ![](https://vexpaer-blog-media.vexpaer.workers.dev/media/生物化学/images/790450_6b337e00-11bd-4aff-95f0-5205bd50fae2.png)
         - the ATP synthase projections凸起结构 appear on the matrix-facing surface of the inner membrane
         - 上面对着matrix, 下面对着intermembrane space
-            - ![](/media/生物化学/images/790450_6ce8828e-5cd5-4f43-c3e5-e01370f1287b.png)
+            - ![](https://vexpaer-blog-media.vexpaer.workers.dev/media/生物化学/images/790450_6ce8828e-5cd5-4f43-c3e5-e01370f1287b.png)
         - 图
-            - ![](/media/生物化学/images/790450_3305a098-21b2-42b0-cbd7-01a333dc7c64.png)
+            - ![](https://vexpaer-blog-media.vexpaer.workers.dev/media/生物化学/images/790450_3305a098-21b2-42b0-cbd7-01a333dc7c64.png)
         - Consists of Two Complexes
             - F1
                 - hydrophilic
@@ -182,21 +182,21 @@ mindmap: true
         - Oligomycin 寡霉素
         - DCCD
     - 图
-        - ![](/media/生物化学/images/790450_23f56f10-759d-45ba-b975-bf645e328718.png)
+        - ![](https://vexpaer-blog-media.vexpaer.workers.dev/media/生物化学/images/790450_23f56f10-759d-45ba-b975-bf645e328718.png)
 - Uncouplers 解偶联剂
     - disrupt the tight coupling between electron transport and the ATP synthase
     - Uncouplers act by dissipating the proton gradient across the inner mitochondrial membrane created by the electron transport system
     - 不直接结合电子传递链或 ATP 合酶，但能破坏电子传递与 ATP 合成之间紧密偶联关系
     - 他们会顺着质子梯度带质子穿过线粒体内膜, 把能量作为热量散失不合成ATP
     - hydrophobic character and a dissociable proton 都具有疏水性和可以解离的质子
-        - ![](/media/生物化学/images/e6fa08ca-0037-4685-a8e2-fd045348b178-790450.jpeg)
+        - ![](https://vexpaer-blog-media.vexpaer.workers.dev/media/生物化学/images/e6fa08ca-0037-4685-a8e2-fd045348b178-790450.jpeg)
     - 有一些耐寒动物, 冬眠动物, 新生动物, 植物会不合成ATP释放热量
-        - ![](/media/生物化学/images/790450_ef342107-6468-4b30-db99-796b5e2d4c51.png)
+        - ![](https://vexpaer-blog-media.vexpaer.workers.dev/media/生物化学/images/790450_ef342107-6468-4b30-db99-796b5e2d4c51.png)
 - ATP–ADP Translocase 移位酶
     - ATP需要出线粒体发挥作用, ADP需要回线粒体
     - highly charged ATP and ADP molecules do not readily cross biological membranes, 所以需要移位酶帮他们
     - 1ATP出去 1ADP进来
-        - ![](/media/生物化学/images/790450_84b016f3-d3ce-4d84-973a-e95ebc671cba.png)
+        - ![](https://vexpaer-blog-media.vexpaer.workers.dev/media/生物化学/images/790450_84b016f3-d3ce-4d84-973a-e95ebc671cba.png)
     - The translocase accounts for approximately 14% of the total mitochondrial membrane protein
     - a homodimer同源二聚体 of 30-kD subunits
     - It binds ATP on the matrix side, reorients to face the cytosol, and exchanges ATP for ADP, with subsequent movement back to the matrix face of the inner membrane
@@ -210,14 +210,14 @@ mindmap: true
     - These “consensus values” P/O ratios are of 2.7 and 1.6 for mitochondrial oxidation of NADH and [FADH2]. They may not reflect actual values and because these ratios may change depending on metabolic conditions, these estimates of ATP yield from glucose oxidation are approximate.
         目前公认的 NADH 和 FADH₂线粒体氧化的 P/O 比值分别为 2.7 和 1.6, 但这些数值并非绝对, 由于代谢条件变化可能影响该比值，因此葡萄糖氧化过程中 ATP 产量的估算值仅为近似值
     - All six carbons of glucose are liberated as CO2, and a total of four molecules of ATP are formed thus far in substrate-level phosphorylations. A total of 2.7 ATP per NADH and 1.6 ATP per FADH2 may be produced through the processes of electron transport and oxidative phosphorylation. Thus the 12 reduced coenzymes produced up to this point can eventually produce a maximum of 30.2 molecules of ATP in the electron transport and oxidative phosphorylation pathways. Thus, a glucose can produce 34.2 ATP.
-        - ![](/media/生物化学/images/790450_1e3e3547-a775-40a8-c60f-4521e4e128b8.png)
+        - ![](https://vexpaer-blog-media.vexpaer.workers.dev/media/生物化学/images/790450_1e3e3547-a775-40a8-c60f-4521e4e128b8.png)
     - 葡萄糖的 6 个碳原子均以 CO₂形式释放，截至目前（糖酵解 + 三羧酸循环阶段）通过底物水平磷酸化共生成 4 分子 ATP。通过电子传递链与氧化磷酸化过程，每分子 NADH 可产生约 2.7 分子 ATP，每分子 FADH₂可产生约 1.6 分子 ATP。因此，至此阶段生成的 12 分子还原型辅酶（NADH+FADH₂），最终可通过电子传递与氧化磷酸化途径最多生成 30.2 分子 ATP. 综上，1 分子葡萄糖完全氧化可产生 34.2 分子 ATP
 - shuttle system
     让细胞质中糖酵解产生的NADH参与电子传递
     - Eukaryotic cells have a number of shuttle systems that harvest the electrons of cytosolic NADH for delivery to mitochondria without actually transporting NADH across the inner membrane
     - Glycerophosphate Shuttle
         - 3-磷酸甘油穿梭途径
-            - ![](/media/生物化学/images/790450_a69e9ade-0a2f-4c6f-cb1c-1b89ce7a48c1.png)
+            - ![](https://vexpaer-blog-media.vexpaer.workers.dev/media/生物化学/images/790450_a69e9ade-0a2f-4c6f-cb1c-1b89ce7a48c1.png)
             Glycerophosphate is different from glyceraldehyde-3-phosphate (G-3-P)3-磷酸甘油醛
         - The glycerophosphate shuttle couples the cytosolic oxidation of NADH with mitochondrial reduction of [FAD]
         - Cytosolic NADH oxidized via this shuttle route yields only 1.6 molecules of ATP. The cell “pays” with a potential ATP molecule for the convenience of getting cytosolic NADH into the mitochondria.
@@ -226,7 +226,7 @@ mindmap: true
             3-磷酸甘油穿梭系统本质上是不可逆的，即使 NADH 相对于 NAD 的水平很低，该循环仍能有效运转
     - The Malate–Aspartate Shuttle
         - 苹果酸-天冬氨酸途径
-            - ![](/media/生物化学/images/790450_d341636a-c2ac-43a9-92b0-001bc59d9006.png)
+            - ![](https://vexpaer-blog-media.vexpaer.workers.dev/media/生物化学/images/790450_d341636a-c2ac-43a9-92b0-001bc59d9006.png)
         - Oxaloacetate草酰乙酸 is reduced in the cytosol, acquiring the electrons of NADH and to generate Malate苹果酸
         - Malate苹果酸 is transported across the inner membrane, converting NAD to NADH in the matrix and to generate oxaloacetate草酰乙酸
         - The oxaloacetate草酰乙酸 can not cross the inner membrane, and must be transaminated to form aspartate天冬氨酸
@@ -247,4 +247,4 @@ mindmap: true
     - over all shape is sensitive to metabolic conditions in the cell
     - 从葡萄糖将能量转化为ATP的效率约为54%
     - 图
-        - ![](/media/生物化学/images/790450_835526fe-1e51-4408-da5c-6367860a5c41.png)
+        - ![](https://vexpaer-blog-media.vexpaer.workers.dev/media/生物化学/images/790450_835526fe-1e51-4408-da5c-6367860a5c41.png)

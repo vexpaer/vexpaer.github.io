@@ -1,0 +1,263 @@
+---
+title: "生物化学_Glycolysis"
+date: 2026-01-18 12:00:00
+tags:
+- 生物化学
+- undergraduate
+cover: /img/tag-biology-cover.png
+mindmap: true
+---
+18.Glycolysis
+- basic
+    - Carried out in the cytosol of cells, it is basically an anaerobic 厌氧 process
+    - its principal steps occur with no oxygen
+    - provide precursor molecules for aerobic catabolic pathways 有氧代谢过程
+    - Compartmentalization of glycolysis, the citric acid cycle, and oxidative phosphorylation.
+        - ![](/media/生物化学/images/790450_58a7418c-1dda-47ba-d242-792ae13659bd.png)
+    - 图
+        - ![](/media/生物化学/images/790450_efdefa5d-8dfd-46ef-a56e-9f5d5c4279ca.png)
+- two phase
+    - first phase
+        - basic
+            - glucose → two molecules of glyceraldehyde-3-phosphate (G-3-P) 3-磷酸甘油醛
+            - consume 2 ATP
+        - Reaction 1 - Phosphorylation of Glucose → G-6-P (-ATP) 调控步骤
+            The First Priming Reaction
+            - glucose → Glucose-6-Phosphate
+                - ![](/media/生物化学/images/790450_4e32a2a6-bba1-45ea-f110-beac6e90a480.png)
+            - Cellular Advantages 对细胞有什么好处
+                - 1. phosphorylation keeps the substrate in the cell, G-6-P带负电出不去
+                    - ![](/media/生物化学/images/790450_2e264a8a-a498-4ebb-bef0-90172cbb796d.png)
+                - 2. keeps the intracellular concentration of glucose low, 可以让更多glucose扩散进来
+                - 3. because regulatory control can be imposed only on reactions not at equilibrium (∆G=0), the favorable thermodynamics of this first reaction makes it an important site for regulation 这步反应可以用于调节
+            - 酶 - Hexokinase 己糖激酶 or Glucokinase 葡(萄)糖激酶
+                - Hexokinase 己糖激酶
+                    - In most animal, plant, and microbial cells, the enzyme that phosphorylates glucose is hexokinase
+                    - can phosphorylate a variety of hexose sugars, including glucose, mannose 甘露糖, and fructose 果糖
+                    - Mg2+ is required for this reaction, the true substrate for the hexokinase reaction is MgATP2-
+                    - The Km for glucose is ~0.1 mM, and the enzyme thus work efficiently at normal blood glucose levels of 4 mM
+                    - regulation
+                        - Different body tissues possess different isozymes同工酶 of hexokinase , each exhibiting somewhat different kinetic properties
+                        - 负反馈调节
+                            - The animal enzyme is allosterically inhibited by the product, G-6-P
+                            - 被产物变构抑制
+                            - levels of G-6-P inhibit hexokinase activity until consumption by glycolysis lowers its concentration
+                        - The hexokinase reaction is one of three points in the glycolysis pathway that are regulated
+                - Glucokinase 葡(萄)糖激酶
+                    - Liver contains an enzyme called glucokinase
+                    - highly specific for D-glucose
+                        自然界中存在的葡萄糖
+                    - has a much higher Km for glucose, ~10.0 mM, works only when liver glucose levels are high, and store G-6-P in liver as glycogen
+                    - not product-inhibited
+                    - is an inducible enzyme诱导酶, the amount present in the liver is controlled by insulin 胰岛素
+                        环境中有信号诱导酶才会大量合成, Patients with type 2 diabetes 糖尿病 produce insufficient insulin
+            - Glucose-6-phosphate is the branch point for several metabolic pathways
+                - 图
+                    - ![](/media/生物化学/images/790450_464c81e6-52a9-4f04-9e8b-8074a61a2eb3.png)
+        - Reaction 2 - the Isomerization 异构化 of G-6-P → F-6-P
+            - Glucose-6-Phosphate → Fructose-6-Phosphate
+                - ![](/media/生物化学/images/790450_c1a5613c-5670-441b-a7f0-a5233b18fc51.png)
+            - 具体机制
+                - 醛酮互变异构
+                    - ![](/media/生物化学/images/790450_7d353dda-38c1-46af-afc0-b9d50e9a046f.png)
+                - 图
+                    - ![](/media/生物化学/images/790450_61396810-c2fa-4013-cdb4-26102dc572b0.png)
+                - opening of the pyranose 吡喃糖ring (Step A)
+                - proton abstraction leading to enediol烯二醇formation (Step B)
+                - and proton addition to the double bond, followed by ring closure (Step C)
+                - The furanose 呋喃糖 is formed by attack of the C-5 hydroxyl on the carbonyl group
+            - 作用
+                - First, the next step in glycolysis is phosphorylation at C-1, and the hemiacetal半缩醛-OH of glucose would be more difficult to phosphorylate than a simple primary hydroxyl 羟基.
+                - 第一，糖酵解的下一步是在 C-1 位发生磷酸化，而葡萄糖的半缩醛羟基比简单的伯羟基更难发生磷酸化
+                - Second, the isomerization to fructose (with a carbonyl group at position 2 in the linear form) activates carbon C-3 for cleavage in the fourth step of glycolysis
+                - 第二，异构化为果糖（其线性形式中 C-2 位含羰基）可激活 C-3 位碳，以便在糖酵解第四步中发生断裂
+            - 酶 - phosphoglucose isomerase 磷酸葡萄糖异构酶
+                - phosphoglucose isomerase 磷酸葡糖异构酶, also known as glucose phosphate isomerase
+                - requires Mg2+, highly specific for glucose-6-phosphate
+                - ∆G =1.67kJ/moL namely, 0.4 kcal/mol, means that the reaction operates near equilibrium in the cell and is readily reversible 在细胞内接近平衡, 容易逆向发生
+        - Reaction 3 - F-6-P → FBP (-ATP) 调控步骤
+            The Second Priming Reaction
+            - Fructose-6-Phosphate → Frutose-1,6-BiPhosphate
+                - ![](/media/生物化学/images/790450_cabdc580-e1de-4b9b-b3ca-5c0f5c769090.png)
+            - At pH 7 and 37°C
+                - the phosphofructokinase reaction equilibrium lies far to the right
+                - commits 指派the cell to metabolizing glucose rather than converting it to another sugar or storing it
+                    - ![](/media/生物化学/images/790450_1ae4a653-b9ee-4b97-d71f-dc801d470385.png)
+            - 酶 - phosphofructokinase 磷酸果糖激酶
+                - Phosphofructokinase with ADP shown in white and fructose-6-P in red
+                    - ![](/media/生物化学/images/790450_2ef877e1-6e52-47fa-f683-535a959794ca.png)
+                - most important site of regulation in the glycolytic pathway
+                - regulation - allosteric
+                    - ↓ ATP
+                        - ATP is an allosteric inhibitor of this enzyme
+                            - ![](/media/生物化学/images/790450_b40dba2a-117b-426e-c3ee-ab5aaf1b9931.png)
+                        - adenylate kinase腺苷酸激酶会催化以下反应
+                            - ![](/media/生物化学/images/790450_e5a80acc-a3f0-43bf-d756-ca8d755ebdf6.png)
+                        - ATP and AMP levels represent the cellular energy status
+                    - ↓ citrate 柠檬酸盐
+                        - Glycolysis and TCA are coupled via phosphofructokinase
+                        - citrate 柠檬酸盐, an intermediate in the citric acid cycle, is an allosteric inhibitor of phosphofructokinase
+                        - When the citric acid cycle reaches saturation, glycolysis slows down
+                    - ↑ AMP
+                        - AMP reverses the inhibition due to ATP
+                            - ![](/media/生物化学/images/790450_bc4171d7-5ed9-41d0-daba-6ddf387659bf.png)
+                    - ↑ β-D-fructose-2,6-bisphosphate
+                        - 三个功能
+                            - increases the affinity of phosphofructokinase for the substrate fructose-6-phosphate
+                            - decreasing the inhibitory effects of ATP
+                                - ![](/media/生物化学/images/790450_eac275b5-84c3-4d4c-dbf9-17c0e75395eb.png)
+                            - inhibiting fructose-1,6bisphosphatase, the enzyme that catalyzes this reaction in the opposite direction
+                                - ![](/media/生物化学/images/790450_f3e4facc-37b8-4204-aabf-7d04602cb6ba.png)
+                        - increases the net flow of glucose through glycolysis by stimulating phosphofructokinase
+                        - 这个增强剂与这步反应的产物对比
+                            - ![](/media/生物化学/images/790450_8f16e4be-af1c-471a-95c7-ebd1b7c93d44.png)
+                        - 被PFK-2 & F-2,6-BPase调控
+        - Reaction 4 - Cleavage of FBP → DHAP + G-3-P
+            - Fructose-1,6-bisP → DiHydroxyAcetone Phosphate ＋ Glyceraldehyde-3-Phosphate
+                - ![](/media/生物化学/images/790450_baf9aa56-dbc3-4354-ca53-2756f9cd3f42.png)
+            - cleaves fructose-1,6-bisphosphate between the C-3 and C-4 carbons to yield two triose phosphates 磷酸丙糖
+                - dihydroxyacetone phosphate (DHAP) 磷酸二羟基丙酮
+                - glyceraldehyde-3-phosphate (G-3-P) 3-磷酸甘油醛
+            - 酶 - Fructose bisphosphate aldolase 果糖二磷酸醛缩酶
+                - equilibrium constant of approximately 10^-4 M, and a corresponding ∆G° of 23.9 kJ/mol.
+                - 表面数据这个反应很难发生, 但是是一个分子产生两个分子, 受到浓度影响大
+                - The value of ∆ G in erythrocytes 红细胞 is actually -0.23 kJ/mol.
+                - At physiological concentrations, the reaction is essentially at equilibrium
+        - Reaction 5 - DHAP ⇄ G-3-P
+            - DiHydroxyAcetone Phosphate ⇄ Glyceraldehyde-3-Phosphate
+                - ![](/media/生物化学/images/790450_3383bc3f-b224-4107-be8c-546397b149c6.png)
+            - 这步和上一步加起来相当于FBP → 2G-3-P
+            - 只有G-3-P能进入glycolysis二阶段, 所以要把DHAP变成G-3-P
+            - 酶 - Triose Phosphate Isomerase 磷酸丙糖异构酶
+        - energy
+            - Although the last two steps of the pathway are energetically unfavorable, the overall five-step reaction sequence has a net ∆G°of +2.2 kJ/mol (Keq≈0.43).
+            - It is the free energy of hydrolysis from the two priming molecules of ATP that brings the overall equilibrium constant close to 1 under standard-state conditions.
+            - The net ∆ G under cellular conditions is quite negative (-53.4 kJ/mol in erythrocytes)
+    - second phase
+        - basic
+            - two molecules of glyceraldehyde-3-phosphate → two molecules of pyruvate 丙酮酸
+            - produce 4 ATP
+        - Reaction 6 - G-3-P → 1,3-BPG (-2P +2NADH)
+            - G-3-P → 1,3-BPG
+                - ![](/media/生物化学/images/790450_eca78873-15c3-4521-9e46-b4a607df9cad.png)
+            - makes a high-energy phosphate in preparation for ATP synthesis
+            - 酶 - Glyceraldehyde-3-Phosphate Dehydrogenase 脱氢酶
+                - Although the oxidation of an aldehyde to a carboxylic acid is a highly exergonic放能 reaction
+                    - ![](/media/生物化学/images/790450_1636a51e-571b-4d93-fff1-1c444c175475.png)
+                - the overall reaction involves both formation of a carboxylic-phosphoric anhydride and the reduction of NAD to NADH
+                - therefore slightly endergonic吸能的 at standard state, with a ∆G of +6.30 kJ/mol
+        - Reaction 7 - 1,3-BPG → 3-PG (+2ATP)
+            - 1,3-BPG → 3-PG
+                - ![](/media/生物化学/images/790450_7fb7ccdc-20df-41ad-a1b1-3fa07686eebb.png)
+            - 酶 - Phosphoglycerate Kinase 磷酸甘油酸激酶
+                - Mg2+ ion is required for activity
+                - exergonic 放能
+                - In fact, the aldolase 醛缩酶 and triose phosphate isomerase 磷酸三糖异构酶 are also pulled forward by phosphoglycerate kinase
+                    这步放能拉着前面两步能量不利的往前反应
+        - Reaction 8 - phosphoryl transfer
+            - 3-PhosphoGlycerate → 2-PhosphoGlycerate
+                - ![](/media/生物化学/images/790450_a0f38847-24cc-4d94-f3bb-39759fa43c43.png)
+            - 酶 - Phosphoglycerate mutase 磷酸甘油酸变位酶
+                - The term mutase 变位酶 is applied to enzymes that catalyze migration of a functional group within a substrate molecule
+                - The free energy change for this reaction is very small under cellular conditions
+        - Reaction 9 - Dehydration 2-PG → PEP (-H2O)
+            - 2-PhosphoGlycerate → PhosphoEnolPyruvate 磷酸烯醇丙酮酸
+                - ![](/media/生物化学/images/790450_7b56f2b5-cc6e-4ccd-a20a-d1785a3dcd0f.png)
+            - makes a high-energy phosphate in preparation for ATP synthesis
+            - 酶 - Enolase 烯醇酶
+                - The ∆G° for this reaction is relatively small at 1.8 kJ/mol (Keq 0.5)
+                - under cellular conditions, ∆G is very close to zero
+        - Reaction 10 - PEP → pyruvate (+2ATP) 调控步骤
+            - PhosphoEnolPyruvate → pyruvate
+                - ![](/media/生物化学/images/790450_fd0549bc-47ba-4768-f7e6-3f578b39f03d.png)
+            - 酶 - Pyruvate Kinase 丙酮酸激酶
+                - The reaction requires Mg2+ ion and is stimulated by K+ and certain other monovalent cations单价阳离子
+                - Keq at 25°C is 3.63×10^5, equilibrium far right
+                - The large negative G of this reaction makes pyruvate kinase a target site for regulation of glycolysis 适合调控
+                    - ![](/media/生物化学/images/790450_12206062-d022-4b20-e024-4aac0dbd09d2.png)
+                - regulation - allosteric
+                    - ↑ AMP
+                    - ↑ fructose-1,6-bisphosphate
+                    - ↓ ATP
+                    - ↓ acetyl-CoA
+                    - ↓ alanine丙氨酸
+                    - Furthermore, liver pyruvate kinase is regulated by covalent modification
+- The Products of Glycolysis
+    - ATP
+    - NADH
+        - NADH must be recycled to NAD+, lest以免 NAD+ become limiting in glycolysis.
+        - NADH can be recycled by both aerobic需氧的 and anaerobic厌氧的 paths, either of which results in further metabolism of pyruvate.
+    - pyruvate 丙酮酸
+- after glycolysis
+    - Aerobic 有氧
+        - pyruvate sent into the citric acid cycle (TCA)
+        - it is oxidized to CO2 with the production of additional NADH (and FADH2).
+        - the NADH produced in glycolysis and the citric acid cycle is reoxidized to NAD+ in the mitochondrial electron transport chain
+        - 图
+            - ![](/media/生物化学/images/790450_a7fd2dd1-0abb-4ae2-d7b3-ba5c6c99b784.png)
+    - Anaerobic 无氧
+        - fermentation 发酵
+            - pyruvate → lactate/ethanol都算fermentation
+            - the production of ATP energy by reaction pathways in which organic molecules function as donors and acceptors of electrons
+            - In either case, reduction of pyruvate provides a way of reoxidizing the NADH produced in the glyceraldehyde-3-phosphate dehydrogenase reaction of glycolysis
+        - pyruvate → lactate 乳酸
+            in microorganisms(other than yeast) and animals
+            - NAD is regenerated in the lactate dehydrogenase reaction
+            - produce the taste of sour milk characteristic taste and fragrance of sauerkraut 泡菜, which in reality is fermented cabbage
+            - Lactate Accumulates Under Anaerobic Conditions in Animal Tissues
+                - Pyruvate reduction occurs in tissues that normally experience minimal access to blood flow (e.g. the cornea 角膜) and also in rapidly contracting skeletal muscle
+                - In anaerobic muscle tissue, lactate represents the end of glycolysis
+                - cramps 抽筋 and muscle soreness 酸痛, fatigue 疲劳 associated with the buildup 堆积 of lactic acid in the muscle
+                - Most of this lactate must be carried out of the muscle by the blood and transported to the liver, where it can be resynthesized into glucose in gluconeogenesis
+            - 酶 - lactate dehydrogenase 乳酸脱氢酶 LDH
+                - Mammalian LDH exists as five different isozymes同工酶
+                    Enzymes with Slightly Different Subunits, 催化同一种反应但是催化效率与倾向不同
+                - depending on the tetrameric 四聚体 association of two different subunits(A&B)
+                - A4, A3B, A2B2, AB3, B4
+                    - ![](/media/生物化学/images/790450_8819e53c-a117-48c8-b419-9fa4b5f1b937.png)
+                - their relative affinities for the various substrates and their sensitivity to inhibition by product are different
+                - Different tissues express different isozyme forms
+                    - muscle
+                        - anaerobic
+                        - needs LDH to regenerate NAD from NADH so glycolysis can continue
+                        - The muscle LDH isozyme (A4) works best in the NAD regenerating direction
+                    - heart
+                        - aerobic 有氧
+                        - uses lactate as a fuel, converting it to pyruvate via LDH
+                        - using the pyruvate to fuel the citric acid cycle to obtain energy
+                        - The heart LDH isozyme (B4) is inhibited by excess pyruvate so the fuel won’t be wasted
+                    - 图
+                        - ![](/media/生物化学/images/790450_8a6cc323-95e6-4f2e-9ca1-7428e1822cab.png)
+            - Lactic acid fermentation
+                - ![](/media/生物化学/images/790450_4356b517-3d7c-4db3-f23a-45ba6b2789a3.png)
+        - pyruvate → ethanol + CO2
+            in yeast
+            - provides a means for regenerating NAD consumed in the glyceraldehyde-3-P dehydrogenase reaction
+            - Alcoholic fermentations are the basis for the brewing酿造 of beers and the fermentation of grape sugar in wine making
+            - Alcoholic fermentation
+                - ![](/media/生物化学/images/790450_a7d7e3c2-5bea-4ae5-e714-e642fd53bb67.png)
+    - 总结
+        - 图
+            - ![](/media/生物化学/images/790450_b69bbc79-4b8f-4f71-da62-35f233165e35.png)
+- 其他
+    - energy elegance
+        - 反应在标准状态以及细胞内的自由能
+            - ![](/media/生物化学/images/790450_9345b0a2-2aa5-4452-8cdf-40f4f038cfed%201.png)
+        - 细胞内反应2和反应4-9 ∆G is very close to zero, so that these reactions operate essentially at equilibrium
+        - The driving force for glycolysis lies in the hexokinase (1), phosphofructokinase (3), and pyruvate kinase (10) reactions
+        - These reactions are thus the sites of glycolytic regulation
+        - gluconeogenesis 糖质新生
+            - the biosynthesis of glucose
+            - different enzymes are used to carry out reactions 1, 3, and 10 in reverse, effecting the net synthesis of glucose.
+            - The maintenance of reactions 2 and 4 through 9 at or near equilibrium permits these reactions (and their respective enzymes) to operate effectively in either the forward or reverse direction
+    - Other Substrates in Glycolysis
+        - Mannose, galactose, fructose, and other simple metabolites can enter the glycolytic pathway through being converted by appropriate enzymes to one of the intermediates of glycolysis.
+            - ![](/media/生物化学/images/d0305552-0c8b-452e-9dbc-16ca99a5c33d-790450.jpeg)
+    - Nucleoside 5'-Triphosphates Are Carriers of Chemical Energy
+        - ATP, GTP, CTP, UTP and dATP, dGTP, dCTP, dTTP.
+            Four NTPs and their dNTPcounterparts are the substrates for the synthesis of the nucleic acids
+        - The evolution of metabolism has led to the dedication of one of these four NTPs to each of the major branches of metabolism
+        - ATP has been termed the energy currency of the cell.
+        - GTP is the major energy source for protein synthesis.
+        - CTP is an essential metabolite in phospholipid synthesis.
+        - UTP forms activated intermediates with sugars that go on to serve as substrates in the biosynthesis of complex carbohydrates and polysaccharides

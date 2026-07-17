@@ -1,0 +1,138 @@
+---
+title: "生物化学_Nucleotides and Nucleic Acids"
+date: 2026-01-18 12:00:00
+tags:
+- 生物化学
+- undergraduate
+cover: /img/tag-biology-cover.png
+mindmap: true
+---
+1011.Nucleotides and Nucleic Acids
+- Nitrogenous Bases
+    - Two purines 嘌呤 and three pyrimidines 嘧啶 are commonly found in cells
+        - ![](/media/生物化学/images/790450_874e4555-55b3-4405-b315-1f82e8fda798.png)
+- The Pentoses of Nucleotides and Nucleic Acids
+    - In both RNA and DNA, the pentose is in the five-membered ring form known as furanose 呋喃糖 - D-ribofuranose for RNA and 2-deoxy-D-ribofuranose for DNA
+        - ![](/media/生物化学/images/790450_61c2ac5a-b81f-444b-b521-835efeacc233.png)
+- Nucleosides Are Formed by Joining a Nitrogenous Base to a Sugar
+    - b-Glycosidic bonds 糖苷键 link nitrogenous bases and sugars to form nucleosides 核苷
+        - ![](/media/生物化学/images/790450_8db589c2-84eb-4faa-cb40-5d336f789cf3.png)
+    - The common ribonucleosides—cytidine, uridine, adenosine,and guanosine. Also,inosine drawn in anti conformation
+        - ![](/media/生物化学/images/b823f2df-5f5d-493c-b7ba-3e7db8fbc96a-790450.jpeg)
+    - Adenosine腺苷 - A Nucleoside with Physiological Activity
+        - For the most part, nucleosides have no biological role other than to serve as component parts of nucleotides, Adenosine腺嘌呤核苷is an exception.
+            - ![](/media/生物化学/images/790450_52030ab1-4825-48d6-d9f7-46eeff5532ad.png)
+        - In mammals, adenosine functions as an autocoid自体有效物质, or “local hormone.”
+        - Among its physiological activities, by blocking the flow of electrical current, adenosine slows the heart rate.
+        - In addition, adenosine is implicated in sleep regulation.
+        - During periods of extended wakefulness, extracellular adenosine levels rise as a result of metabolic activity in the brain, and this increase promotes sleepiness, since adenosine slows the heart rate. During sleep, adenosine levels fall.
+        - Caffeine 咖啡因 promotes wakefulness by blocking the interaction of extracellular adenosine with its neuronal receptors through competition.
+            - ![](/media/生物化学/images/790450_bbdbb307-e0c1-4fc9-f3a1-f0549e2cdb24.png)
+- Nucleotides Are Nucleoside Phosphates
+    - A nucleotide 核苷酸 results when phosphoric acid is esterified to a sugar -OH group of a nucleoside 核苷
+        - ![](/media/生物化学/images/790450_c5c568de-f907-4e1f-b034-9664891aeb31.png)
+    - Cyclic Nucleotides - cAMP and cGMP, are important regulators of cellular metabolism
+        - Nucleoside monophosphates in which the phosphoric acid is esterified to two of the available ribose hydroxyl groups are found in all cells.
+        - Forming two such ester linkages with one phosphate results in a cyclic structure - 3,5-cyclic AMP, often abbreviated cAMP, and its guanine analog 3,5-cyclic GMP, or cGMP.
+            - ![](/media/生物化学/images/790450_2d589844-8128-4e87-94c1-0d3b265b4b6f.png)
+    - A property of pyrimidines and purines is their strong absorbance of ultraviolet (UV) light, which is also a consequence of the aromaticity of their heterocyclic ring structures.
+        This property is particularly useful in quantitative and qualitative analysis of nucleotides and nucleic acids.
+        - Here shows characteristic absorption spectra of several of the common bases of nucleic acids - adenine, uracil, cytosine, and guanine - in their nucleotide forms - AMP, UMP, CMP, and GMP.
+            - ![](/media/生物化学/images/104de3ec-8c0d-4680-9a6f-42a6d9fb2973-790450.jpeg)
+    - Nucleoside Diphosphates and Triphosphates
+        - Successive addition of phosphate groups via phosphoric anhydride 酐 linkages forms ADP and ATP.
+            - ![](/media/生物化学/images/790450_de9db9b3-5209-4d4c-b1ef-be75f3f9405d.png)
+            Note the removal of equivalents of H2O in these dehydration synthesis reactions.
+    - Nucleoside 5'-Triphosphates Are Carriers of Chemical Energy
+        - ATP, GTP, CTP, UTP and dATP, dGTP, dCTP, dTTP.
+            Four NTPs and their dNTP counterparts are the substrates for the synthesis of the nucleic acids
+        - The evolution of metabolism has led to the dedication of one of these four NTPs to each of the major branches of metabolism
+        - ATP has been termed the energy currency of the cell.
+        - GTP is the major energy source for protein synthesis.
+        - CTP is an essential metabolite in phospholipid synthesis.
+        - UTP forms activated intermediates with sugars that go on to serve as substrates in the biosynthesis of complex carbohydrates and polysaccharides
+- Nucleic Acids Are Polynucleotides 核酸是多聚核苷酸
+    - Nucleicacids are linear polymers of nucleotides linked 3’ to 5’ by phosphodiester bridges
+        - ![](/media/生物化学/images/790450_508d53bb-979b-471e-84b7-6da309649390.png)
+    - They are formed as 5’-nucleoside monophosphates are successively added to the 3’-OH group of the preceding nucleotide, a process that gives the polymer a directional sense 5’-3’
+    - In 2-deoxy-D-ribofuranose for DNA, only the 3’- and 5’-hydroxyl groups are available for inter nucleotide phosphodiester bonds.
+        - ![](/media/生物化学/images/dc3310d4-b5f4-47d9-98cd-26d926671353-790450.jpeg)
+    - The convention in all notations of nucleic acid structure is to read the polynucleotide chain from the 5-end of the polymer to the 3-end, 5'-3'. It is the direction of its biosynthesis
+        - ![](/media/生物化学/images/790450_de886a4b-05b2-46d7-ac4a-99144ad9acc2.png)
+- DNA
+    - only one biological role
+        - preserve information of making all the functional macromolecules of the cell(even DNA itself)
+    - form
+        - In viruses or bacteria
+            - only a single DNA molecule (or chromosome)
+            - DNA is a threadlike molecule
+                - The diameter of the DNA double helix is only 2 nm, but the length of the DNA molecule forming the E. coli chromosome is over 1.6X10^6 nm (1.6 mm).
+                - Because the long dimension of an E. coli cellis only 2000 nm (0.002 mm), its DNA must be highly folded
+            - Bacterial chromosome DNA surrounding the cell in electron micrographs.
+                - ![](/media/生物化学/images/790450_06136956-b428-49ee-e8e8-2aa12334d69d.png)
+            - The single chromosome of prokaryotic cells is typically a circular DNA molecule associated with relatively little protein
+        - In eukaryotic cells 真核细胞
+            - have many chromosomes, and DNA is found principally in two copies in the diploid 二倍体 chromosomes of the nucleus
+            - it also occurs in mitochondria and in chloroplasts
+            - DNA molecules of eukaryotic cells are linear and richly adorned with proteins, in the form of chromosomes
+            - histones 组蛋白 interact ionically with the anionic phosphate groups in the DNA backbone to form nucleosomes 核小体
+    - discovery of DNA double helix structure
+        - Rosalind Franklin's x-ray diffraction photo of sodium deoxyribose nucleate from calf thymus
+            - ![](/media/生物化学/images/790450_8a8bea1d-976f-465a-aabe-44e0254c4ffb.png)
+            罗莎琳德·富兰克林拍摄的牛胸腺脱氧核糖核酸钠X射线衍射照片
+        - James Watson and Francis Crick, at Cambridge University in 1953
+            - ![](/media/生物化学/images/b6e9e187-e24b-4241-8fc1-bc8da9783211-790450.jpeg)
+    - Base Pairs are Held Together by Hydrogen Bonds
+        - Purines(adenine and guanine) pair with pyrimidines (thymine and cytosine) by hydrogen bonding (colored regions). When the purines and pyrimidines first cometogether, they form the bonds indicated by the dotted lines
+            - ![](/media/生物化学/images/790450_2988dcc4-f633-472e-a1bb-8ccae09c15b7.png)
+- RNA
+    - RNA occurs in multiple copies and various forms
+        - ![](/media/生物化学/images/790450_0b32f4ff-9594-43c5-caba-f7f51c87a783.png)
+    - Ribosomal RNA – provides the structural and functional foundation for ribosomes
+        - Ribosomes核糖体 contain about 65% RNA of the ribosomal RNA type.
+        - Ribosomal RNA has a complex secondary structure due to many intrastrand hydrogen bonds
+            - ![](/media/生物化学/images/790450_9bbfd7c4-66b2-4938-849a-be230e865713.png)
+        - The different species of rRNA are generally referred to according to their sedimentation, which are a rough measure of their relative size
+            - ![](/media/生物化学/images/790450_72d748f8-ac9c-42f9-b011-5f42c0a33782.png)
+    - Transfer RNAs – carry amino acids to ribosomes for use in protein synthesis
+        - Transfer RNA also has a complex secondary structure due to many intrastrand hydrogen bonds
+            - ![](/media/生物化学/images/790450_ed8927b0-07c0-4336-f173-fece7b896d56.png)
+    - Messenger RNA - carries the sequence information for synthesis of a protein
+- DNA vs RNA
+    - Two fundamental chemical differences distinguish DNA from RNA
+        - 1. DNA contains 2-deoxyribose instead of ribose.
+        - 2. DNA contains thymine instead of uracil
+    - DNA is a more stable polymeric form than RNA.
+        - 1. The 2-deoxyribose makes DNA more resistance to alkaline hydrolysis
+            - Hydrolysis of RNA by alkali - sodium hydroxide (NaOH)
+                - ![](/media/生物化学/images/790450_e563d312-272a-468d-dcb1-9cf5b2d22c8c.png)
+            - DNA is resistant to alkali hydrolysis
+                - ![](/media/生物化学/images/790450_0e0f0d4a-4c62-4a3c-d758-c256d44f51c6.png)
+        - 2. Thymine help the cellular repair mechanism “proofreads” to remove transformed U
+            - Deamination of cytosine胞嘧啶 form suracil尿嘧啶
+                - ![](/media/生物化学/images/790450_a30e7bc6-12cc-4a5b-8e86-3bfaa986d868.png)
+            - 细胞内的DNA修复机制(如尿嘧啶-DNA糖基化酶)能够“校对”并去除由胞嘧啶转化而来的尿嘧啶，从而维持遗传信息的准确性, 而DNA使用胸腺嘧啶(T)而非尿嘧啶(U)的好处之一，就是让这些错误的U更容易被修复系统识别和清除
+- Hydrolysis of Nucleic Acids
+    - Hydrolysis by Acid or Base
+        - Base
+            - DNA is not susceptible to alkaline hydrolysis
+            - RNA is alkali labile 不稳定的 and is readily hydrolyzed by dilute sodium hydroxide (NaOH)
+        - Acid
+            - RNA is relatively resistant to the effects of dilute acid
+            - gentle treatment of DNA with 1 mM HCl(hydrogen chloride) leads to hydrolysis
+        - This information can be used to separate DNA and RNA from cell respectively
+            - Tris-saturated phenol pH 8.0 for DNA
+                DNA提取用Tris饱和酚
+            - Water-saturated phenol pH 6.0 for RNA
+                RNA提取用水饱和酚
+    - Enzymatic Hydrolysis
+        - Enzymes that hydrolyze nucleicacids are called nucleases, nucleases are phosphodiesterases that catalyze the cleavage of phosphodiester bonds by H2O
+        - Some nucleases act only on DNA (DNases), while others are specific for RNA (RNases)
+        - 一些核酸外切酶与核酸内切酶
+            - ![](/media/生物化学/images/790450_5a5669a4-e297-4335-a9a2-b12e712bf582.png)
+        - Exonucleases 外切酶 - 从多糖核苷酸链末端进行水解，产物为单个核苷酸
+            - ![](/media/生物化学/images/790450_aae30285-74f1-44e3-e6bd-b6175ac7f2ff.png)
+            (a) 3'→5'外切酶 (b) 5'→3'外切酶
+        - Endonucleases - 内切酶：从多糖核苷酸链中间进行水解，使核苷酸链断裂
+            - ![](/media/生物化学/images/790450_f350e84c-44f4-43ca-e0b1-b2d943702d3f.png)
+        - CRISPR-Cas9 Genome Editing Technology

@@ -1,0 +1,166 @@
+---
+title: "生物化学_TCA"
+date: 2026-01-18 12:00:00
+tags:
+- 生物化学
+- undergraduate
+cover: /img/tag-biology-cover.png
+mindmap: true
+---
+19.TCA
+- basic
+    - 图
+        - ![](/media/生物化学/images/790450_ecb8f018-5688-4453-f2a1-1b9729b91095.png)
+    - 图
+        - ![](/media/生物化学/images/790450_d7827fac-b6f2-41e2-ada0-1bb0e593e19f.png)
+    - TCA gives -2H2O +GTP +FADH2 +2CO2 +3NADH + 3H+
+        - ![](/media/生物化学/images/790450_6d0ce896-1d01-4b14-b9f2-d0cef05942da.png)
+        第0步 +CO2 +NADH +H+
+    - Combining glycolysis and the TCA cycle gives
+        - ![](/media/生物化学/images/790450_e9eabedb-8f5e-42b3-b2c9-289b33fe7243.png)
+        注意一个glycose进行一次glycolysis和两次TCA
+    - 理论上 1 * glycose → 38 * ATP
+        - All six carbons of glucose are released as CO2
+        - 4 molecules of ATP are formed in substrate-level phosphorylation
+        - glycolysis + TCA 产生了 10 * NADH 与 2 * FADH2
+        - in electron transport and oxidative phosphorylation
+            - NADH → 3 ATP
+            - FADH2 → 2 ATP
+        - 但是细胞质基质产生的NADH不一定进入电子传递链
+- steps
+    - step0 - Oxidative Decarboxylation of Pyruvate → Acetyl-CoA (+CO2 +NADH +H+)
+        - pyruvate + CoASH + NAD+ → Acetyl-CoA + NADH + CO2 + H+
+            - ![](/media/生物化学/images/790450_7479f548-380e-4994-d8f2-b6697de2658e.png)
+        - CoA 是 Coenzyme A 辅酶A
+        - pyruvate must first enter the mitochondria to enter the TCA cycle
+        - 酶 - pyruvate dehydrogenase
+            - a multienzyme complex
+            - The pyruvate dehydrogenase complex (PDC) is a noncovalent assembly of three different enzymes
+            - 由三种不同酶构成的非共价组装体
+            - operating to catalyze successive steps in the conversion of pyruvate to acetyl-CoA
+            - 它们协同作用，催化丙酮酸转化为乙酰辅酶 A 过程中的连续反应步骤
+            - The active sites of all three enzymes are not far removed from one another
+            - 这三种酶的活性中心彼此相距不远
+            - the product of the first enzyme is passed directly to the second enzyme and so on, without diffusion of substrates and products through the solution
+            - 第一种酶的产物会直接传递给第二种酶，依此类推，无需底物和产物在溶液中扩散
+    - step1 - oxaloacetate + Acetyl-CoA → citrate (-H2O) 调控步骤
+        - oxaloacetate + Acetyl-CoA ⇄ Citryl-CoA + H2O ⇄ citrate + CoA
+            - ![](/media/生物化学/images/790450_475770ca-36ef-4564-9298-772a86fbd6f2.png)
+        - The overall ∆G°is -31.4 kJ/mol, and the reaction is irreversible
+        - Although the mitochondrial concentration of oxaloacetate is very low (much less than 1 µM), the strong negative ∆ G°drives the reaction forward.
+        - 酶 - Citrate Synthase
+            - a dimer of 49-kD subunits
+            - On each subunit, oxaloacetate and acetyl-CoA bind to the active site
+            - Binding of oxaloacetate induces a conformational change that facilitates the binding of acetyl-CoA and closes the active site
+            - In the monomer of citrate synthase, citrate is shown in green, and CoA is red
+                - ![](/media/生物化学/images/8ebdebfe-6f9e-4d27-be58-355b9443e93a-790450.jpeg)
+            - regulation
+                - a highly regulated enzyme
+                - allosteric inhibitor
+                    - NADH , a product of the TCA cycle
+                    - succinyl-CoA, the product of the following step in the cycle
+    - step2 - Citrate ⇄ Isocitrate
+        - The Isomerization of Citrate
+            - ![](/media/生物化学/images/790450_657d9b17-2481-4dc8-bae7-9c80a1c69a88.png)
+        - 柠檬酸的OH在中间,进一步氧化比较困难, 所以把OH变到旁边
+        - 酶 - Aconitase 顺乌头酸酶
+    - step3 - isocitrate → α-ketoglutarate (+CO2 +NADH +H+) 调控步骤
+        The First Oxidation in the Cycle
+        - isocitrate + NAD+ → NADH + H+ +oxalosuccinate → CO2 + α-Ketoglutarate
+            - ![](/media/生物化学/images/790450_1d5573bb-5def-4858-f50b-33919bf3d252.png)
+        - decarboxylate 脱羧
+        - The reaction has a net ∆G° of -8.4 kJ/mol, and it is sufficiently exergonic to pull the aconitase reaction forward
+        - 酶 - Isocitrate Dehydrogenase
+            - 链接电子传递链与TCA
+            - regulation
+                - allosteric inhibitors
+                    - NADH
+                    - ATP
+                - allosteric activator
+                    - ADP
+                        - lowering the Km for isocitrate by a factor of 10
+                        - The enzyme is virtually inactive in the absence of ADP
+    - step4 - α-ketoglutarate → succinyl-CoA (+CO2 +NADH +H+) 调控步骤
+        A Second Decarboxylation
+        - α-Ketoglutarate + NAD+ +CoA → NADH + H+ +CO2 + succinyl-CoA
+            - ![](/media/生物化学/images/790450_9e29d158-1207-4ba4-983a-2e1fdec5d1ae.png)
+        - free energy changes for these reactions are-29 to-33.5 kJ/mol
+        - 酶 - α-Ketoglutarate Dehydrogenase
+            - a multienzyme complex
+                - ![](/media/生物化学/images/781c597a-9b35-4e10-842d-841699e54eb1-790450.jpeg)
+    - step5 - succinyl-CoA → succinate (+GTP)
+        - Succinyl-CoA + GDP + P → succinate + GTP +CoA
+            - ![](/media/生物化学/images/790450_1ec4bb89-7b2f-4c06-ba0d-c10f1f0eeb45.png)
+        - 酶 - Succinyl-CoA Synthetase 琥珀酰辅酶A合成酶
+        - drive the phosphorylation of GDP to GTP (in mammals) or ADP to ATP (in plants and bacteria)
+        - 是TCA中唯一一个用底物水解的能量磷酸化的反应 substrate-level phosphorylation
+            不依赖电子传递链, 不利用质子梯度
+        - nucleoside diphosphate kinase reaction
+            - The GTP produced by mammals in this reaction can exchange its terminal phosphoryl group with ADP
+                - ![](/media/生物化学/images/790450_eaf4196b-6633-4f29-a70d-580e7975a863.png)
+    - step6 - succinate ⇄ fumarate (+FADH2)
+        - succinate +FAD ⇄ fumarate + FADH2
+            - ![](/media/生物化学/images/790450_f604d95e-d64f-4823-e048-e98ff3d5dac8.png)
+        - 酶 - succinate dehydrogenase
+            - succinate dehydrogenase is an integral membrane protein
+                其他都是soluble proteins found in the mitochondrial matrix
+            - tightly associated with the inner mitochondrial membrane
+            - actually part of the electron transport chain
+            - FAD-Dependent
+    - step7 - fumarate → malate (-H2O)
+        - fumarate + H2O → L-malate
+            - ![](/media/生物化学/images/b72edd25-5bb8-402b-8b1e-93d07cba7112-790450.jpeg)
+        - Trans-Hydration of fumarate
+        - 酶 - Fumarase 延胡索酸酶
+    - step8 - malate ⇄ oxaloacetate (+NADH +H+)
+        - malate + NAD+ ⇄ oxaloacetate + NADH + H+
+            - ![](/media/生物化学/images/790450_bac96528-8ab3-4b37-a3d1-8102272af5b7.png)
+        - very endergonic, with a △G°of +30 kJ/mol
+        - the concentration of oxaloacetate in the mitochondrial matrix is usually quite low
+        - pulled forward by the favorable citrate synthase reaction
+        - 酶 - Malate Dehydrogenase 脱氢酶
+- TCA主线外的分支
+    - The TCA Cycle Provides Intermediates for Biosynthetic Pathways
+        - 图
+            - ![](/media/生物化学/images/790450_3c46f5b7-e996-425e-a27a-7bde3fd891d9.png)
+        - four-, five-, and six-carbon species produced in the TCA cycle also fuel a variety of biosynthetic processes
+        - α-Ketoglutarate, succinyl-CoA, fumarate, and oxaloacetate are all precursors of important cellular species
+        - In order to participate in eukaryotic biosynthetic processes, they must first be transported out of the mitochondria
+            - ATP–citrate lyase
+                - Citrate broken down to generate oxaloacetate and acetyl-CoA, a precursor of fatty acids
+                - Oxaloacetate is recycled to malate or pyruvate, which re-enters the mitochondria
+                - This cycle permits citrate to provide acetyl-CoA for biosynthetic processes
+                - 图
+                    - ![](/media/生物化学/images/3f8baa53-1a80-453b-921a-8057249ec6a6-790450.jpeg)
+    - The Anaplerotic补给
+        - cell also feeds many intermediates back into the TCA cycle from other reactions
+        - The catabolism of amino acids provides pyruvate, acetyl-CoA, oxaloacetate, Fumarate, α-ketoglutarate, and succinate
+        - Pyruvate carboxylase, phosphoenolpyruvate (PEP) carboxylase, and malic enzyme catalyze anaplerotic reactions
+            - ![](/media/生物化学/images/790450_25228c8c-4c97-4b0c-fc49-7094d3e79cf4.png)
+        - Pyruvate carboxylase
+            - catalyze the most important anaplerotic reactions
+            - pyruvate 变成 acetyl-CoA进TCA跑一圈就没了, 通过这个反应可以补充中间的酸
+            - exists in the mitochondria of animal cells but not in plants
+            - has an absolute allosteric requirement for acetyl-CoA
+                - Thus, when acetyl-CoA levels exceed the oxaloacetate supply, allosteric activation of pyruvate carboxylase by acetyl-CoA raises oxaloacetate levels, so that the excess acetyl-CoA can enter the TCA cycle
+                - 这个酶需要acetyl-CoA的别构激活, 所以acetyl-CoA超量供应时候就会激活这个酶, 把 pyruvate 变成 oxaloacetate 平衡TCA第一步两个反应物的量
+- regulation
+    - the sites of regulation would be characterized by large, negative ∆G values
+        - citrate synthase
+        - isocitrate dehydrogenase
+        - α-ketoglutarate dehydrogenase
+    - 图
+        - ![](/media/生物化学/images/790450_d8132420-5be0-4e58-b828-e1c18ade8128.png)
+    - The principal regulatory signals
+        - NADH
+            - 全都抑制
+            - inhibits Pyruvate dehydrogenase, citrate synthase, isocitrate dehydrogenase, and α-ketoglutarate dehydrogenase
+        - cell energy
+            - The TCA cycle is turned on when either the ADP/ATP or NAD/NADH ratio is high
+        - acetyl-CoA
+            - acts as a signal to the TCA cycle that glycolysis or fatty acid breakdown is producing two-carbon units
+            - activates pyruvate carboxylase, the anaplerotic reaction that provides oxaloacetate, the acceptor for increased flux of acetyl-CoA into the TCA cycle
+        - succinyl-CoA
+            - an intracycle regulator
+            - inhibiting citrate synthase and α-ketoglutarate dehydrogenase
+- 乙醛酸循环

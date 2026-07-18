@@ -61,6 +61,8 @@ if page.mindmap_page === true
   link(rel='stylesheet', href=url_for('/vendor/mindmap/katex.min.css'))
 if is_home()
   link(rel='stylesheet', href=url_for('/css/vexpaer-home.css'))
+  link(rel='modulepreload', href=url_for('/js/vendor/three.module.min.js'))
+  link(rel='modulepreload', href=url_for('/js/vendor/three.core.min.js'))
 if is_post() && !page.mindmap_page && theme.poker_pet && theme.poker_pet.enable
   link(rel='stylesheet', href=url_for('/css/poker-pet.css'))
 link(rel='stylesheet', href=url_for(theme.CDN.fontawesome) media="print" onload="this.media='all'")

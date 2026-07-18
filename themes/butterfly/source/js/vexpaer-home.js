@@ -12,9 +12,9 @@
 
   var themes = ['dusk', 'space', 'life']
   var themeMeta = {
-    dusk: { label: '暮野', icon: '◒' },
-    space: { label: '深空', icon: '✦' },
-    life: { label: '生命游戏', icon: '▦' }
+    dusk: { label: '暮野', icon: '◒', browserColor: '#17182d' },
+    space: { label: '深空', icon: '✦', browserColor: '#000002' },
+    life: { label: '生命游戏', icon: '▦', browserColor: '#000000' }
   }
   var storageKey = 'immersive-scene-theme'
   var width = 1
@@ -69,13 +69,12 @@
   }
 
   function applyDuskTitleLayout () {
-    var layouts = width < 720
-      ? [[50, 27], [50, 38]]
-      : [[24, 28], [72, 29], [22, 54]]
-    var layout = layouts[Math.floor(Math.random() * layouts.length)]
-    var jitter = width < 720 ? 3 : 4
-    root.style.setProperty('--vexpaer-title-x', (layout[0] + (Math.random() - 0.5) * jitter).toFixed(2) + '%')
-    root.style.setProperty('--vexpaer-title-y', (layout[1] + (Math.random() - 0.5) * jitter).toFixed(2) + '%')
+    // Keep the composition art-directed: the sun lives on the left, while the
+    // wordmark balances it on the right. A deterministic mobile layout also
+    // prevents resize/orientation changes from leaving the title off-screen.
+    var layout = width < 768 ? [50, 29] : [72, 30]
+    root.style.setProperty('--vexpaer-title-x', layout[0] + '%')
+    root.style.setProperty('--vexpaer-title-y', layout[1] + '%')
     root.dataset.duskTitleLayout = layout[0] + '-' + layout[1]
   }
 
@@ -90,6 +89,8 @@
     if (icon) icon.textContent = current.icon
     button.setAttribute('aria-label', '当前背景：' + current.label + '。点击切换到' + next.label)
     root.setAttribute('data-scene', activeTheme)
+    var browserTheme = document.querySelector('meta[name="theme-color"]')
+    if (browserTheme) browserTheme.setAttribute('content', current.browserColor)
   }
 
   function commitTheme (theme) {
@@ -193,6 +194,7 @@
     context.setTransform(pixelRatio, 0, 0, pixelRatio, 0, 0)
     rebuildParticles()
     seedLife()
+    if (activeTheme === 'dusk') applyDuskTitleLayout()
     if (threeLayer) threeLayer.resize(width, height, pixelRatio)
     draw(performance.now())
   }
@@ -221,175 +223,386 @@
 
   function drawDusk (time) {
     if (threeLayer && threeLayer.hasDuskScene) {
-      fillBackground('#37165d', '#ff7c61')
+      fillBackground('#11182d', '#a85f55')
       return
     }
-    // Multi-stop sky gradient: deep indigo top → warm purple mid → amber-pink horizon
+
+    var seconds = time * 0.001
+    var motionSeconds = reducedMotion.matches ? 0 : seconds
+    var horizonY = height * 0.585
+
+    // Restrained indigo-to-terracotta sky, matching the WebGL scene rather
+    // than turning the horizon into a saturated orange band.
     var skyGradient = context.createLinearGradient(0, 0, 0, height)
-    skyGradient.addColorStop(0, '#0a0a2e')
-    skyGradient.addColorStop(0.18, '#1a1145')
-    skyGradient.addColorStop(0.38, '#2d1b4e')
-    skyGradient.addColorStop(0.55, '#4a2248')
-    skyGradient.addColorStop(0.7, '#7a3b3f')
-    skyGradient.addColorStop(0.82, '#c46a42')
-    skyGradient.addColorStop(0.92, '#e8a04e')
-    skyGradient.addColorStop(1, '#d4783a')
+    skyGradient.addColorStop(0, '#11182d')
+    skyGradient.addColorStop(0.34, '#30384f')
+    skyGradient.addColorStop(0.61, '#5b4854')
+    skyGradient.addColorStop(0.82, '#a15d57')
+    skyGradient.addColorStop(1, '#c48566')
     context.fillStyle = skyGradient
     context.fillRect(0, 0, width, height)
 
-    // Sun with multi-layer godray glow
-    var sunX = width * 0.3
-    var sunY = height * 0.22
-    var sunRadius = Math.max(42, Math.min(width, height) * 0.065)
-    var seconds = time * 0.001
-    var sunPulse = 1 + Math.sin(seconds * 0.4) * 0.04
+    var sunX = width * (width < 640 ? 0.21 : 0.265)
+    var sunY = height * 0.39
+    var sunRadius = Math.max(32, Math.min(width, height) * 0.068)
+    var sunPulse = 1 + Math.sin(motionSeconds * 0.42) * 0.018
+    var haloRadius = sunRadius * 4.2 * sunPulse
+    var sunHalo = context.createRadialGradient(sunX, sunY, sunRadius * 0.3, sunX, sunY, haloRadius)
+    sunHalo.addColorStop(0, 'rgba(255, 225, 175, .48)')
+    sunHalo.addColorStop(0.2, 'rgba(246, 181, 119, .22)')
+    sunHalo.addColorStop(0.56, 'rgba(214, 115, 91, .075)')
+    sunHalo.addColorStop(1, 'rgba(190, 92, 82, 0)')
+    context.fillStyle = sunHalo
+    context.fillRect(sunX - haloRadius, sunY - haloRadius, haloRadius * 2, haloRadius * 2)
 
-    // Outermost haze
-    var glow4 = context.createRadialGradient(sunX, sunY, 0, sunX, sunY, sunRadius * 7 * sunPulse)
-    glow4.addColorStop(0, 'rgba(255, 190, 100, .08)')
-    glow4.addColorStop(0.4, 'rgba(255, 140, 60, .03)')
-    glow4.addColorStop(1, 'rgba(255, 100, 50, 0)')
-    context.fillStyle = glow4
-    context.fillRect(0, 0, width, height)
+    // A few broad cloud strokes give the sky scale without particle work.
+    context.lineCap = 'round'
+    context.strokeStyle = 'rgba(205, 180, 179, .105)'
+    context.lineWidth = Math.max(5, height * 0.011)
+    context.beginPath()
+    context.moveTo(width * 0.04, height * 0.235)
+    context.bezierCurveTo(width * 0.15, height * 0.218, width * 0.27, height * 0.25, width * 0.39, height * 0.228)
+    context.stroke()
+    context.strokeStyle = 'rgba(220, 177, 157, .08)'
+    context.lineWidth *= 0.62
+    context.beginPath()
+    context.moveTo(width * 0.64, height * 0.38)
+    context.bezierCurveTo(width * 0.76, height * 0.36, width * 0.87, height * 0.39, width * 0.97, height * 0.365)
+    context.stroke()
 
-    // Warm godray layer
-    var glow3 = context.createRadialGradient(sunX, sunY, 0, sunX, sunY, sunRadius * 4.8 * sunPulse)
-    glow3.addColorStop(0, 'rgba(255, 200, 120, .18)')
-    glow3.addColorStop(0.3, 'rgba(250, 160, 90, .08)')
-    glow3.addColorStop(1, 'rgba(245, 130, 70, 0)')
-    context.fillStyle = glow3
-    context.fillRect(sunX - sunRadius * 5, sunY - sunRadius * 5, sunRadius * 10, sunRadius * 10)
-
-    // Inner corona
-    var glow2 = context.createRadialGradient(sunX, sunY, 0, sunX, sunY, sunRadius * 2.8 * sunPulse)
-    glow2.addColorStop(0, 'rgba(255, 220, 160, .48)')
-    glow2.addColorStop(0.5, 'rgba(245, 180, 110, .14)')
-    glow2.addColorStop(1, 'rgba(245, 164, 101, 0)')
-    context.fillStyle = glow2
-    context.fillRect(sunX - sunRadius * 3, sunY - sunRadius * 3, sunRadius * 6, sunRadius * 6)
-
-    // Sun body with warm gradient
-    var sunBody = context.createRadialGradient(sunX - sunRadius * 0.15, sunY - sunRadius * 0.15, 0, sunX, sunY, sunRadius)
-    sunBody.addColorStop(0, '#f5c882')
-    sunBody.addColorStop(0.6, '#e09a55')
-    sunBody.addColorStop(1, '#c87a3a')
+    var sunBody = context.createRadialGradient(sunX - sunRadius * 0.22, sunY - sunRadius * 0.24, sunRadius * 0.06, sunX, sunY, sunRadius)
+    sunBody.addColorStop(0, '#fff0c8')
+    sunBody.addColorStop(0.58, '#ffd59b')
+    sunBody.addColorStop(1, '#efa66f')
     context.beginPath()
     context.arc(sunX, sunY, sunRadius, 0, Math.PI * 2)
     context.fillStyle = sunBody
     context.fill()
 
-    // Scattered stars in the upper dark sky
-    for (var si = 0; si < stars.length; si++) {
-      var duskStar = stars[si]
-      if (duskStar.y > 0.4) continue
-      var duskStarAlpha = duskStar.alpha * 0.35 * (0.5 + Math.sin(seconds * duskStar.speed + duskStar.phase) * 0.5) * (1 - duskStar.y / 0.4)
-      if (duskStarAlpha < 0.02) continue
-      context.beginPath()
-      context.arc(duskStar.x * width, duskStar.y * height, Math.max(0.3, duskStar.radius * 0.5), 0, Math.PI * 2)
-      context.fillStyle = 'rgba(220, 215, 240, ' + duskStarAlpha + ')'
-      context.fill()
-    }
-
-    // Three mountain layers with richer colors
-    drawMountains(height * 0.52, 'rgba(58, 48, 82, 0.85)', [
-      [0.05, 0.46], [0.12, 0.26], [0.22, 0.44], [0.3, 0.2], [0.38, 0.46],
-      [0.48, 0.18], [0.56, 0.42], [0.65, 0.16], [0.74, 0.44], [0.82, 0.22], [0.92, 0.48]
+    // Three irregular ridges. The first crosses the lower sun so it reads as
+    // a true sunset instead of a floating disc.
+    var farMountain = context.createLinearGradient(0, height * 0.38, 0, height * 0.62)
+    farMountain.addColorStop(0, '#716474')
+    farMountain.addColorStop(1, '#454451')
+    drawMountains(height * 0.61, farMountain, [
+      [0.04, 0.49], [0.1, 0.465], [0.155, 0.43], [0.195, 0.405], [0.235, 0.438],
+      [0.29, 0.46], [0.355, 0.405], [0.405, 0.455], [0.47, 0.43], [0.535, 0.475],
+      [0.6, 0.42], [0.665, 0.465], [0.73, 0.435], [0.79, 0.475], [0.855, 0.425], [0.93, 0.49]
     ])
-    drawMountains(height * 0.62, '#312e4a', [
-      [0.08, 0.48], [0.16, 0.32], [0.24, 0.52], [0.34, 0.28],
-      [0.43, 0.54], [0.55, 0.26], [0.64, 0.52], [0.76, 0.3], [0.88, 0.5]
+    var middleMountain = context.createLinearGradient(0, height * 0.45, 0, height * 0.68)
+    middleMountain.addColorStop(0, '#785959')
+    middleMountain.addColorStop(1, '#41373f')
+    drawMountains(height * 0.665, middleMountain, [
+      [0.035, 0.565], [0.095, 0.505], [0.145, 0.53], [0.205, 0.485], [0.27, 0.555],
+      [0.33, 0.515], [0.39, 0.56], [0.46, 0.49], [0.525, 0.54], [0.585, 0.505],
+      [0.65, 0.555], [0.72, 0.49], [0.785, 0.54], [0.85, 0.5], [0.925, 0.565]
     ])
-    drawMountains(height * 0.72, '#1e2436', [
-      [0.06, 0.6], [0.18, 0.48], [0.3, 0.65], [0.44, 0.46],
-      [0.58, 0.64], [0.72, 0.48], [0.86, 0.6]
+    var nearMountain = context.createLinearGradient(0, height * 0.51, 0, height * 0.72)
+    nearMountain.addColorStop(0, '#594343')
+    nearMountain.addColorStop(1, '#292a31')
+    drawMountains(height * 0.72, nearMountain, [
+      [0.025, 0.625], [0.09, 0.575], [0.155, 0.605], [0.225, 0.545], [0.29, 0.62],
+      [0.36, 0.58], [0.43, 0.625], [0.505, 0.56], [0.57, 0.61], [0.64, 0.57],
+      [0.715, 0.63], [0.79, 0.555], [0.855, 0.61], [0.93, 0.57], [0.98, 0.63]
     ])
 
-    // Mist layer between mountains and grass
-    var mistGradient = context.createLinearGradient(0, height * 0.55, 0, height * 0.78)
-    mistGradient.addColorStop(0, 'rgba(180, 140, 120, 0)')
-    var mistOpacity = 0.06 + Math.sin(seconds * 0.2) * 0.02
-    mistGradient.addColorStop(0.4, 'rgba(180, 150, 135, ' + mistOpacity + ')')
-    mistGradient.addColorStop(0.7, 'rgba(150, 130, 145, ' + (mistOpacity * 0.7) + ')')
-    mistGradient.addColorStop(1, 'rgba(120, 110, 140, 0)')
-    context.fillStyle = mistGradient
-    context.fillRect(0, height * 0.55, width, height * 0.25)
+    // Sand plain and dune lips.
+    var sandGradient = context.createLinearGradient(0, horizonY, 0, height)
+    sandGradient.addColorStop(0, '#9b654f')
+    sandGradient.addColorStop(0.48, '#755047')
+    sandGradient.addColorStop(1, '#493439')
+    context.fillStyle = sandGradient
+    context.fillRect(0, horizonY, width, height - horizonY)
 
-    // Grass with 4 color palettes
-    var grassPalettes = [
-      'rgba(108, 142, 72, .75)',  // emerald green
-      'rgba(62, 88, 52, .78)',    // dark forest
-      'rgba(145, 158, 68, .7)',   // golden green
-      'rgba(38, 62, 42, .8)'      // deep moss
-    ]
-    var grassHighlights = [
-      'rgba(158, 192, 88, .6)',   // bright highlight
-      'rgba(120, 155, 62, .65)'   // soft highlight
-    ]
+    context.fillStyle = 'rgba(181, 116, 83, .43)'
+    context.beginPath()
+    context.moveTo(0, height * 0.65)
+    context.bezierCurveTo(width * 0.13, height * 0.605, width * 0.25, height * 0.625, width * 0.39, height * 0.68)
+    context.lineTo(width * 0.43, height)
+    context.lineTo(0, height)
+    context.closePath()
+    context.fill()
+    context.fillStyle = 'rgba(101, 66, 62, .36)'
+    context.beginPath()
+    context.moveTo(width, height * 0.64)
+    context.bezierCurveTo(width * 0.86, height * 0.61, width * 0.77, height * 0.66, width * 0.65, height * 0.72)
+    context.lineTo(width * 0.59, height)
+    context.lineTo(width, height)
+    context.closePath()
+    context.fill()
+    context.strokeStyle = 'rgba(225, 153, 105, .19)'
+    context.lineWidth = Math.max(1, height * 0.002)
+    context.beginPath()
+    context.moveTo(0, height * 0.71)
+    context.bezierCurveTo(width * 0.15, height * 0.67, width * 0.27, height * 0.705, width * 0.4, height * 0.75)
+    context.stroke()
+    context.beginPath()
+    context.moveTo(width * 0.64, height * 0.765)
+    context.bezierCurveTo(width * 0.77, height * 0.7, width * 0.9, height * 0.69, width, height * 0.73)
+    context.stroke()
+
+    // Sparse roadside silhouettes keep the fallback recognisably desert.
+    var cactusX = width * 0.115
+    var cactusBase = height * 0.755
+    var cactusScale = Math.max(14, Math.min(width, height) * 0.035)
+    context.strokeStyle = '#39433f'
+    context.lineWidth = cactusScale * 0.28
     context.lineCap = 'round'
-    for (var blade = 0; blade < grass.length; blade++) {
-      var item = grass[blade]
-      var x = item.x * width
-      var base = height * (0.62 + item.depth * 0.42)
-      var length = (20 + item.depth * 95) * item.height
-      var sway = Math.sin(seconds * 0.7 + item.phase) * (1.5 + item.depth * 4.5)
-      sway += Math.sin(seconds * 1.4 + item.phase * 2.3) * (0.5 + item.depth * 1.2)
-      var tipX = x + sway
-      var tipY = base - length
-      if (pointerActive) {
-        var grassDx = tipX - pointerX
-        var grassDy = tipY - pointerY
-        var grassDistance = Math.sqrt(grassDx * grassDx + grassDy * grassDy) || 1
-        if (grassDistance < 170) {
-          var grassInfluence = 1 - grassDistance / 170
-          tipX += grassDx / grassDistance * grassInfluence * 32
-          tipY += grassDy / grassDistance * grassInfluence * 10
-        }
-      }
-      context.beginPath()
-      context.moveTo(x, base)
-      context.quadraticCurveTo(x + sway * 0.35, base - length * 0.5, tipX, tipY)
-      var paletteIndex = Math.floor(item.shade * grassPalettes.length) % grassPalettes.length
-      context.strokeStyle = item.shade > 0.88 ? grassHighlights[blade % 2] : grassPalettes[paletteIndex]
-      context.lineWidth = 0.55 + item.depth * 1.35
-      context.stroke()
-    }
+    context.beginPath()
+    context.moveTo(cactusX, cactusBase)
+    context.lineTo(cactusX, cactusBase - cactusScale * 1.65)
+    context.moveTo(cactusX, cactusBase - cactusScale * 0.92)
+    context.lineTo(cactusX - cactusScale * 0.62, cactusBase - cactusScale * 1.12)
+    context.lineTo(cactusX - cactusScale * 0.62, cactusBase - cactusScale * 1.44)
+    context.moveTo(cactusX, cactusBase - cactusScale * 0.63)
+    context.lineTo(cactusX + cactusScale * 0.56, cactusBase - cactusScale * 0.81)
+    context.lineTo(cactusX + cactusScale * 0.56, cactusBase - cactusScale * 1.09)
+    context.stroke()
 
-    // Fireflies with warm halo glow
-    for (var light = 0; light < fireflies.length; light++) {
-      var firefly = fireflies[light]
-      var pulse = 0.35 + Math.sin(seconds * firefly.drift + firefly.phase) * 0.32
-      var fireflyX = firefly.x * width + Math.sin(seconds * 0.18 + firefly.phase) * 12
-      var fireflyY = firefly.y * height + Math.cos(seconds * 0.15 + firefly.phase) * 8
-      if (pointerActive) {
-        var fireflyDx = fireflyX - pointerX
-        var fireflyDy = fireflyY - pointerY
-        var fireflyDistance = Math.sqrt(fireflyDx * fireflyDx + fireflyDy * fireflyDy) || 1
-        if (fireflyDistance < 190) {
-          var fireflyInfluence = 1 - fireflyDistance / 190
-          fireflyX += fireflyDx / fireflyDistance * fireflyInfluence * 42
-          fireflyY += fireflyDy / fireflyDistance * fireflyInfluence * 42
-          pulse += fireflyInfluence * 0.55
-        }
-      }
-      // Outer halo
-      var haloRadius = firefly.radius * 4.5
-      var haloAlpha = Math.max(0.01, pulse * 0.12)
-      var haloGrad = context.createRadialGradient(fireflyX, fireflyY, 0, fireflyX, fireflyY, haloRadius)
-      haloGrad.addColorStop(0, 'rgba(255, 240, 140, ' + haloAlpha + ')')
-      haloGrad.addColorStop(0.5, 'rgba(255, 220, 100, ' + (haloAlpha * 0.4) + ')')
-      haloGrad.addColorStop(1, 'rgba(255, 200, 80, 0)')
-      context.fillStyle = haloGrad
-      context.fillRect(fireflyX - haloRadius, fireflyY - haloRadius, haloRadius * 2, haloRadius * 2)
-      // Core
+    var vanishX = width * 0.485
+    var roadCenterBottom = width * 0.515
+    var roadHalf = Math.min(width * 0.34, height * 0.48)
+    var asphaltHalf = roadHalf * 0.84
+
+    // Curved perspective highway: a warm shoulder, cool asphalt and moving
+    // centre dashes are enough to sell depth without a large object pool.
+    context.fillStyle = '#71483b'
+    context.beginPath()
+    context.moveTo(vanishX - 3, horizonY)
+    context.bezierCurveTo(vanishX - width * 0.02, height * 0.69, roadCenterBottom - roadHalf * 0.58, height * 0.83, roadCenterBottom - roadHalf, height)
+    context.lineTo(roadCenterBottom + roadHalf, height)
+    context.bezierCurveTo(roadCenterBottom + roadHalf * 0.58, height * 0.83, vanishX + width * 0.025, height * 0.69, vanishX + 3, horizonY)
+    context.closePath()
+    context.fill()
+
+    var asphaltGradient = context.createLinearGradient(0, horizonY, 0, height)
+    asphaltGradient.addColorStop(0, '#3b3639')
+    asphaltGradient.addColorStop(1, '#24242a')
+    context.fillStyle = asphaltGradient
+    context.beginPath()
+    context.moveTo(vanishX - 2, horizonY)
+    context.bezierCurveTo(vanishX - width * 0.016, height * 0.69, roadCenterBottom - asphaltHalf * 0.58, height * 0.83, roadCenterBottom - asphaltHalf, height)
+    context.lineTo(roadCenterBottom + asphaltHalf, height)
+    context.bezierCurveTo(roadCenterBottom + asphaltHalf * 0.58, height * 0.83, vanishX + width * 0.02, height * 0.69, vanishX + 2, horizonY)
+    context.closePath()
+    context.fill()
+
+    context.strokeStyle = 'rgba(232, 214, 187, .82)'
+    context.lineWidth = Math.max(1.1, Math.min(width, height) * 0.0025)
+    context.beginPath()
+    context.moveTo(vanishX - 2, horizonY)
+    context.bezierCurveTo(vanishX - width * 0.016, height * 0.69, roadCenterBottom - asphaltHalf * 0.58, height * 0.83, roadCenterBottom - asphaltHalf, height)
+    context.moveTo(vanishX + 2, horizonY)
+    context.bezierCurveTo(vanishX + width * 0.02, height * 0.69, roadCenterBottom + asphaltHalf * 0.58, height * 0.83, roadCenterBottom + asphaltHalf, height)
+    context.stroke()
+
+    var dashPhase = motionSeconds * 0.34 % 1
+    context.fillStyle = '#d8a34f'
+    for (var dashIndex = 0; dashIndex < 7; dashIndex++) {
+      var dashProgress = (dashIndex / 7 + dashPhase) % 1
+      var dashPerspective = dashProgress * dashProgress
+      var dashY = horizonY + (height - horizonY) * dashPerspective
+      var dashCenterX = vanishX + (roadCenterBottom - vanishX) * dashPerspective
+      var dashHeight = 2 + dashPerspective * Math.max(10, height * 0.025)
+      var dashWidth = 1 + dashPerspective * Math.max(4, width * 0.006)
       context.beginPath()
-      context.arc(fireflyX, fireflyY, firefly.radius, 0, Math.PI * 2)
-      var warmShift = Math.sin(seconds * 0.5 + firefly.phase * 3) * 0.5 + 0.5
-      var coreR = Math.round(239 + warmShift * 16)
-      var coreG = Math.round(222 - warmShift * 30)
-      var coreB = Math.round(130 - warmShift * 40)
-      context.fillStyle = 'rgba(' + coreR + ', ' + coreG + ', ' + coreB + ', ' + Math.max(0.1, pulse) + ')'
+      context.moveTo(dashCenterX - dashWidth * 0.35, dashY)
+      context.lineTo(dashCenterX + dashWidth * 0.35, dashY)
+      context.lineTo(dashCenterX + dashWidth * 0.5, dashY + dashHeight)
+      context.lineTo(dashCenterX - dashWidth * 0.5, dashY + dashHeight)
+      context.closePath()
       context.fill()
     }
+
+    var carWidth = Math.max(104, Math.min(182, width * 0.22, height * 0.3))
+    var carX = roadCenterBottom + roadHalf * 0.025
+    var carBottom = Math.min(height - 13, height * 0.925) + Math.sin(motionSeconds * 2.35) * 1.2
+    var exhaustX = carX + carWidth * 0.33
+    var exhaustY = carBottom - carWidth * 0.045
+    var puffCount = width < 620 ? 9 : 11
+    var plumeReach = Math.min(carWidth * 1.22, Math.max(carWidth * 0.7, width - exhaustX - 12))
+
+    // A continuous, outlined puff chain echoes the WebGL comic exhaust. It is
+    // drawn before the car so the first puff tucks naturally under the bumper.
+    context.lineJoin = 'round'
+    for (var puffIndex = puffCount - 1; puffIndex >= 0; puffIndex--) {
+      var puffProgress = puffIndex / Math.max(1, puffCount - 1)
+      var puffWave = Math.sin(motionSeconds * 2.8 - puffIndex * 0.82)
+      var puffX = exhaustX + plumeReach * puffProgress + puffWave * carWidth * 0.018
+      var puffY = exhaustY + carWidth * (0.02 + puffProgress * 0.14) + Math.cos(motionSeconds * 2.1 + puffIndex) * carWidth * 0.014
+      var puffRadius = carWidth * (0.026 + puffProgress * 0.065) * (1 + puffWave * 0.07)
+      context.fillStyle = puffIndex % 2 ? '#cbbabd' : '#ffe2bb'
+      context.strokeStyle = '#4d3d4a'
+      context.lineWidth = Math.max(1.5, puffRadius * 0.17)
+      context.beginPath()
+      if (puffIndex % 4 === 3) {
+        context.arc(puffX, puffY, puffRadius, 0, Math.PI * 2)
+        context.arc(puffX, puffY, puffRadius * 0.46, 0, Math.PI * 2, true)
+        context.fill('evenodd')
+        context.stroke()
+      } else {
+        context.moveTo(puffX - puffRadius * 0.94, puffY + puffRadius * 0.2)
+        context.bezierCurveTo(puffX - puffRadius * 1.08, puffY - puffRadius * 0.18, puffX - puffRadius * 0.7, puffY - puffRadius * 0.62, puffX - puffRadius * 0.35, puffY - puffRadius * 0.55)
+        context.bezierCurveTo(puffX - puffRadius * 0.18, puffY - puffRadius, puffX + puffRadius * 0.38, puffY - puffRadius * 0.94, puffX + puffRadius * 0.52, puffY - puffRadius * 0.58)
+        context.bezierCurveTo(puffX + puffRadius, puffY - puffRadius * 0.55, puffX + puffRadius * 1.04, puffY, puffX + puffRadius * 0.8, puffY + puffRadius * 0.22)
+        context.bezierCurveTo(puffX + puffRadius * 0.58, puffY + puffRadius * 0.75, puffX + puffRadius * 0.08, puffY + puffRadius * 0.72, puffX - puffRadius * 0.12, puffY + puffRadius * 0.55)
+        context.bezierCurveTo(puffX - puffRadius * 0.46, puffY + puffRadius * 0.8, puffX - puffRadius * 0.92, puffY + puffRadius * 0.6, puffX - puffRadius * 0.94, puffY + puffRadius * 0.2)
+        context.closePath()
+        context.fill()
+        context.stroke()
+      }
+    }
+
+    context.strokeStyle = 'rgba(77, 61, 74, .66)'
+    context.lineWidth = Math.max(1.5, carWidth * 0.012)
+    context.beginPath()
+    context.moveTo(exhaustX + plumeReach * 0.7, exhaustY - carWidth * 0.1)
+    context.lineTo(exhaustX + plumeReach * 0.91, exhaustY - carWidth * 0.14)
+    context.moveTo(exhaustX + plumeReach * 0.77, exhaustY + carWidth * 0.27)
+    context.lineTo(exhaustX + plumeReach * 0.96, exhaustY + carWidth * 0.31)
+    context.stroke()
+
+    var carShadow = context.createRadialGradient(carX, carBottom - carWidth * 0.02, carWidth * 0.06, carX, carBottom - carWidth * 0.02, carWidth * 0.58)
+    carShadow.addColorStop(0, 'rgba(11, 8, 13, .68)')
+    carShadow.addColorStop(0.56, 'rgba(11, 8, 13, .36)')
+    carShadow.addColorStop(1, 'rgba(11, 8, 13, 0)')
+    context.save()
+    context.translate(carX, carBottom - carWidth * 0.02)
+    context.scale(1, 0.25)
+    context.fillStyle = carShadow
+    context.beginPath()
+    context.arc(0, 0, carWidth * 0.59, 0, Math.PI * 2)
+    context.fill()
+    context.restore()
+
+    // Rear-view car: tyres and mirrors first, then a tapered body, glass,
+    // trunk, lighting and chrome details for a compact but readable model.
+    context.fillStyle = '#111116'
+    context.strokeStyle = '#08080b'
+    context.lineWidth = Math.max(1.5, carWidth * 0.018)
+    for (var wheelSide = -1; wheelSide <= 1; wheelSide += 2) {
+      var wheelX = carX + wheelSide * carWidth * 0.415
+      var wheelY = carBottom - carWidth * 0.13
+      context.beginPath()
+      context.ellipse(wheelX, wheelY, carWidth * 0.105, carWidth * 0.145, 0, 0, Math.PI * 2)
+      context.fill()
+      context.stroke()
+      context.fillStyle = '#6f625d'
+      context.beginPath()
+      context.ellipse(wheelX, wheelY, carWidth * 0.04, carWidth * 0.075, 0, 0, Math.PI * 2)
+      context.fill()
+      context.fillStyle = '#111116'
+    }
+
+    context.fillStyle = '#79252d'
+    context.strokeStyle = '#421c25'
+    context.lineWidth = Math.max(2, carWidth * 0.02)
+    context.beginPath()
+    context.moveTo(carX - carWidth * 0.5, carBottom - carWidth * 0.39)
+    context.lineTo(carX - carWidth * 0.565, carBottom - carWidth * 0.43)
+    context.lineTo(carX - carWidth * 0.53, carBottom - carWidth * 0.49)
+    context.lineTo(carX - carWidth * 0.43, carBottom - carWidth * 0.455)
+    context.moveTo(carX + carWidth * 0.5, carBottom - carWidth * 0.39)
+    context.lineTo(carX + carWidth * 0.565, carBottom - carWidth * 0.43)
+    context.lineTo(carX + carWidth * 0.53, carBottom - carWidth * 0.49)
+    context.lineTo(carX + carWidth * 0.43, carBottom - carWidth * 0.455)
+    context.fill()
+    context.stroke()
+
+    var bodyGradient = context.createLinearGradient(0, carBottom - carWidth * 0.67, 0, carBottom)
+    bodyGradient.addColorStop(0, '#d24a47')
+    bodyGradient.addColorStop(0.48, '#b13239')
+    bodyGradient.addColorStop(1, '#641f29')
+    context.fillStyle = bodyGradient
+    context.strokeStyle = '#421c25'
+    context.beginPath()
+    context.moveTo(carX - carWidth * 0.44, carBottom - carWidth * 0.04)
+    context.quadraticCurveTo(carX - carWidth * 0.51, carBottom - carWidth * 0.13, carX - carWidth * 0.48, carBottom - carWidth * 0.28)
+    context.lineTo(carX - carWidth * 0.4, carBottom - carWidth * 0.46)
+    context.lineTo(carX - carWidth * 0.27, carBottom - carWidth * 0.5)
+    context.lineTo(carX - carWidth * 0.19, carBottom - carWidth * 0.635)
+    context.quadraticCurveTo(carX, carBottom - carWidth * 0.7, carX + carWidth * 0.19, carBottom - carWidth * 0.635)
+    context.lineTo(carX + carWidth * 0.27, carBottom - carWidth * 0.5)
+    context.lineTo(carX + carWidth * 0.4, carBottom - carWidth * 0.46)
+    context.lineTo(carX + carWidth * 0.48, carBottom - carWidth * 0.28)
+    context.quadraticCurveTo(carX + carWidth * 0.51, carBottom - carWidth * 0.13, carX + carWidth * 0.44, carBottom - carWidth * 0.04)
+    context.closePath()
+    context.fill()
+    context.stroke()
+
+    var glassGradient = context.createLinearGradient(0, carBottom - carWidth * 0.62, 0, carBottom - carWidth * 0.39)
+    glassGradient.addColorStop(0, '#31364a')
+    glassGradient.addColorStop(1, '#171a27')
+    context.fillStyle = glassGradient
+    context.strokeStyle = '#641f29'
+    context.lineWidth = Math.max(2, carWidth * 0.026)
+    context.beginPath()
+    context.moveTo(carX - carWidth * 0.165, carBottom - carWidth * 0.615)
+    context.quadraticCurveTo(carX, carBottom - carWidth * 0.655, carX + carWidth * 0.165, carBottom - carWidth * 0.615)
+    context.lineTo(carX + carWidth * 0.265, carBottom - carWidth * 0.43)
+    context.lineTo(carX - carWidth * 0.265, carBottom - carWidth * 0.43)
+    context.closePath()
+    context.fill()
+    context.stroke()
+    context.strokeStyle = 'rgba(168, 179, 201, .3)'
+    context.lineWidth = Math.max(1, carWidth * 0.009)
+    context.beginPath()
+    context.moveTo(carX - carWidth * 0.12, carBottom - carWidth * 0.59)
+    context.lineTo(carX + carWidth * 0.16, carBottom - carWidth * 0.47)
+    context.stroke()
+
+    context.fillStyle = '#8f2933'
+    context.strokeStyle = '#5c2029'
+    context.lineWidth = Math.max(1.5, carWidth * 0.014)
+    context.beginPath()
+    context.moveTo(carX - carWidth * 0.41, carBottom - carWidth * 0.36)
+    context.quadraticCurveTo(carX, carBottom - carWidth * 0.405, carX + carWidth * 0.41, carBottom - carWidth * 0.36)
+    context.lineTo(carX + carWidth * 0.43, carBottom - carWidth * 0.17)
+    context.quadraticCurveTo(carX, carBottom - carWidth * 0.135, carX - carWidth * 0.43, carBottom - carWidth * 0.17)
+    context.closePath()
+    context.fill()
+    context.stroke()
+
+    for (var lightSide = -1; lightSide <= 1; lightSide += 2) {
+      var lightX = carX + lightSide * carWidth * 0.29
+      var lightY = carBottom - carWidth * 0.255
+      var tailGlow = context.createRadialGradient(lightX, lightY, 0, lightX, lightY, carWidth * 0.17)
+      tailGlow.addColorStop(0, 'rgba(255, 67, 52, .45)')
+      tailGlow.addColorStop(1, 'rgba(255, 49, 43, 0)')
+      context.fillStyle = tailGlow
+      context.fillRect(lightX - carWidth * 0.18, lightY - carWidth * 0.18, carWidth * 0.36, carWidth * 0.36)
+      context.fillStyle = '#351c23'
+      context.fillRect(lightX - carWidth * 0.115, lightY - carWidth * 0.06, carWidth * 0.23, carWidth * 0.12)
+      var tailGradient = context.createLinearGradient(lightX - carWidth * 0.09, lightY, lightX + carWidth * 0.09, lightY)
+      tailGradient.addColorStop(0, '#ff382f')
+      tailGradient.addColorStop(0.55, '#d9232d')
+      tailGradient.addColorStop(1, '#ff7a46')
+      context.fillStyle = tailGradient
+      context.fillRect(lightX - carWidth * 0.092, lightY - carWidth * 0.038, carWidth * 0.184, carWidth * 0.076)
+    }
+
+    context.fillStyle = '#d1c0ab'
+    context.strokeStyle = '#6a5552'
+    context.lineWidth = Math.max(1, carWidth * 0.009)
+    context.fillRect(carX - carWidth * 0.43, carBottom - carWidth * 0.105, carWidth * 0.86, carWidth * 0.055)
+    context.strokeRect(carX - carWidth * 0.43, carBottom - carWidth * 0.105, carWidth * 0.86, carWidth * 0.055)
+    context.fillStyle = '#f1daa1'
+    context.fillRect(carX - carWidth * 0.105, carBottom - carWidth * 0.145, carWidth * 0.21, carWidth * 0.105)
+    context.strokeStyle = '#6a5552'
+    context.strokeRect(carX - carWidth * 0.105, carBottom - carWidth * 0.145, carWidth * 0.21, carWidth * 0.105)
+    context.fillStyle = '#6e524a'
+    context.fillRect(carX - carWidth * 0.072, carBottom - carWidth * 0.111, carWidth * 0.144, carWidth * 0.018)
+
+    context.strokeStyle = '#c9b8a6'
+    context.lineWidth = Math.max(3, carWidth * 0.035)
+    context.beginPath()
+    context.moveTo(carX + carWidth * 0.27, carBottom - carWidth * 0.055)
+    context.lineTo(carX + carWidth * 0.345, carBottom - carWidth * 0.005)
+    context.stroke()
+    context.fillStyle = '#241c23'
+    context.beginPath()
+    context.arc(carX + carWidth * 0.35, carBottom, Math.max(2, carWidth * 0.025), 0, Math.PI * 2)
+    context.fill()
   }
 
   function drawSpace (time) {
@@ -590,6 +803,8 @@
 
     renderer.setClearColor(0x000000, 0)
     if (THREE.SRGBColorSpace) renderer.outputColorSpace = THREE.SRGBColorSpace
+    if (THREE.ACESFilmicToneMapping) renderer.toneMapping = THREE.ACESFilmicToneMapping
+    renderer.toneMappingExposure = 1.08
 
     var scene = new THREE.Scene()
     var aspect = width / Math.max(1, height)
@@ -604,9 +819,9 @@
     // Endless sunset highway. Road chunks are recycled ahead of the moving car,
     // so the route keeps changing without allowing the scene graph to grow forever.
     var duskScene = new THREE.Scene()
-    duskScene.fog = new THREE.FogExp2('#66516a', 0.01)
-    var duskCamera = new THREE.PerspectiveCamera(48, aspect, 0.1, 320)
-    var duskRandom = randomFactory((Date.now() ^ 0x6475736b) >>> 0)
+    duskScene.fog = new THREE.Fog('#986b67', 76, 292)
+    var duskCamera = new THREE.PerspectiveCamera(47, aspect, 0.1, 360)
+    var duskRandom = randomFactory(0x6475736b)
     var duskTravel = 0
     var duskLastTime = 0
     var duskElapsed = 0
@@ -614,70 +829,196 @@
     var duskCameraDesired = new THREE.Vector3()
     var duskLookDesired = new THREE.Vector3()
 
-    var duskSky = new THREE.Mesh(new THREE.SphereGeometry(170, 32, 18), new THREE.ShaderMaterial({
+    var duskSky = new THREE.Mesh(new THREE.SphereGeometry(285, 36, 20), new THREE.ShaderMaterial({
       side: THREE.BackSide,
       depthWrite: false,
       fog: false,
       uniforms: {
-        uZenith: { value: new THREE.Color('#37165d') },
-        uUpper: { value: new THREE.Color('#8e4085') },
-        uHorizon: { value: new THREE.Color('#ff7c61') },
-        uGlow: { value: new THREE.Color('#ffb06f') }
+        uZenith: { value: new THREE.Color('#11182d') },
+        uUpper: { value: new THREE.Color('#37405b') },
+        uHorizon: { value: new THREE.Color('#a85f55') },
+        uGlow: { value: new THREE.Color('#e3a972') },
+        uSunDir: { value: new THREE.Vector3(-0.2, 0.075, -0.98).normalize() }
       },
       vertexShader: ['varying vec3 vLocal;', 'void main(){vLocal=position;gl_Position=projectionMatrix*modelViewMatrix*vec4(position,1.0);}'].join('\n'),
       fragmentShader: [
-        'uniform vec3 uZenith;uniform vec3 uUpper;uniform vec3 uHorizon;uniform vec3 uGlow;varying vec3 vLocal;',
-        'void main(){float h=normalize(vLocal).y;vec3 low=mix(uGlow,uHorizon,smoothstep(-.18,.06,h));',
-        'vec3 color=mix(low,uUpper,smoothstep(-.04,.2,h));color=mix(color,uZenith,smoothstep(.14,.52,h));',
-        'float band=sin(h*49.0+normalize(vLocal).x*4.0)*.5+.5;color+=vec3(.12,.025,.08)*band*smoothstep(.05,.5,h)*.12;',
+        'uniform vec3 uZenith;uniform vec3 uUpper;uniform vec3 uHorizon;uniform vec3 uGlow;uniform vec3 uSunDir;varying vec3 vLocal;',
+        'void main(){vec3 dir=normalize(vLocal);float h=dir.y;',
+        'vec3 low=mix(uGlow,uHorizon,smoothstep(-.16,.035,h));',
+        'vec3 color=mix(low,uUpper,smoothstep(-.035,.28,h));color=mix(color,uZenith,smoothstep(.22,.72,h));',
+        'float halo=pow(max(dot(dir,normalize(uSunDir)),0.0),18.0);color+=uGlow*halo*.2;',
+        'float horizonHaze=1.0-smoothstep(.0,.16,abs(h));color=mix(color,uGlow,horizonHaze*.055);',
         'gl_FragColor=vec4(color,1.0);}'
       ].join('\n')
     }))
     duskScene.add(duskSky)
 
-    var duskSun = new THREE.Mesh(new THREE.SphereGeometry(6.5, 24, 16), new THREE.MeshBasicMaterial({ color: '#ffd29b', fog: false }))
-    duskScene.add(duskSun)
-
-    var duskGroundGeometry = new THREE.PlaneGeometry(240, 340, 42, 56)
-    var duskGroundPosition = duskGroundGeometry.getAttribute('position')
-    var duskGroundColors = new Float32Array(duskGroundPosition.count * 3)
-    var duskSandLow = new THREE.Color('#715747')
-    var duskSandHigh = new THREE.Color('#c18b5f')
-    var duskSandColor = new THREE.Color()
-    for (var groundIndex = 0; groundIndex < duskGroundPosition.count; groundIndex++) {
-      var groundX = duskGroundPosition.getX(groundIndex)
-      var groundZ = duskGroundPosition.getY(groundIndex)
-      var groundHeight = (Math.sin(groundX * 0.055) * 0.65 + Math.cos(groundZ * 0.042) * 0.5 + Math.sin((groundX + groundZ) * 0.025) * 0.75) * 0.3 - 0.55
-      duskGroundPosition.setZ(groundIndex, groundHeight)
-      duskSandColor.copy(duskSandLow).lerp(duskSandHigh, Math.max(0, Math.min(1, (groundHeight + 1.5) / 3)))
-      duskGroundColors[groundIndex * 3] = duskSandColor.r
-      duskGroundColors[groundIndex * 3 + 1] = duskSandColor.g
-      duskGroundColors[groundIndex * 3 + 2] = duskSandColor.b
+    function createDuskGlowTexture () {
+      var glowCanvas = document.createElement('canvas')
+      glowCanvas.width = 256
+      glowCanvas.height = 256
+      var glowContext = glowCanvas.getContext('2d')
+      var glowGradient = glowContext.createRadialGradient(128, 128, 0, 128, 128, 128)
+      glowGradient.addColorStop(0, 'rgba(255, 244, 211, 1)')
+      glowGradient.addColorStop(0.12, 'rgba(255, 211, 145, .92)')
+      glowGradient.addColorStop(0.34, 'rgba(246, 167, 103, .42)')
+      glowGradient.addColorStop(0.7, 'rgba(225, 113, 80, .1)')
+      glowGradient.addColorStop(1, 'rgba(205, 92, 72, 0)')
+      glowContext.fillStyle = glowGradient
+      glowContext.fillRect(0, 0, 256, 256)
+      var texture = new THREE.CanvasTexture(glowCanvas)
+      if (THREE.SRGBColorSpace) texture.colorSpace = THREE.SRGBColorSpace
+      return texture
     }
-    duskGroundGeometry.setAttribute('color', new THREE.BufferAttribute(duskGroundColors, 3))
-    duskGroundGeometry.computeVertexNormals()
-    var duskGround = new THREE.Mesh(duskGroundGeometry, new THREE.MeshStandardMaterial({ vertexColors: true, roughness: 1 }))
-    duskGround.rotation.x = -Math.PI / 2
-    duskGround.receiveShadow = true
-    duskScene.add(duskGround)
-    duskScene.add(new THREE.HemisphereLight('#9188b5', '#66503b', 1.28))
-    var duskSunLight = new THREE.DirectionalLight('#ffd8b5', 1.9)
-    duskSunLight.position.set(-22, 28, 18)
+
+    var duskGlowTexture = createDuskGlowTexture()
+    var duskSun = new THREE.Mesh(new THREE.SphereGeometry(8.4, 32, 20), new THREE.MeshBasicMaterial({ color: '#ffd9a4', fog: false }))
+    duskScene.add(duskSun)
+    var duskSunHalo = new THREE.Sprite(new THREE.SpriteMaterial({
+      map: duskGlowTexture,
+      color: '#ffd0a0',
+      transparent: true,
+      opacity: 0.72,
+      blending: THREE.AdditiveBlending,
+      depthWrite: false,
+      depthTest: true,
+      fog: false
+    }))
+    duskSunHalo.scale.set(58, 58, 1)
+    duskScene.add(duskSunHalo)
+
+    var duskGroundGroup = new THREE.Group()
+    var duskTerrainWidth = 250
+    var duskTerrainLength = 104
+    var duskTerrainChunks = []
+    var duskSandLow = new THREE.Color('#4d3637')
+    var duskSandMid = new THREE.Color('#765044')
+    var duskSandHigh = new THREE.Color('#b57956')
+    var duskSandColor = new THREE.Color()
+    var duskGroundMaterial = new THREE.MeshStandardMaterial({ vertexColors: true, roughness: 0.98, metalness: 0, side: THREE.DoubleSide })
+
+    function clampDusk (value, minimum, maximum) {
+      return Math.max(minimum, Math.min(maximum, value))
+    }
+
+    function duskTerrainHeight (worldX, worldZ) {
+      var broadDune = Math.sin(worldX * 0.021 + worldZ * 0.012) * 0.62 + Math.sin(worldX * 0.038 - worldZ * 0.009 + 1.7) * 0.38
+      var diagonalDune = Math.sin(worldX * 0.075 + worldZ * 0.026 + Math.sin(worldZ * 0.009) * 1.4) * 0.21
+      var ripple = Math.sin(worldX * 0.23 + worldZ * 0.058) * 0.045
+      var heightValue = -0.24 + broadDune * 0.44 + diagonalDune + ripple
+      var roadDistance = Math.abs(worldX - duskRoadCenter(worldZ))
+      var shoulderBlend = clampDusk((roadDistance - 4.25) / 5.5, 0, 1)
+      return -0.08 + (heightValue + 0.08) * shoulderBlend
+    }
+
+    function updateDuskTerrainChunk (chunk, centerZ) {
+      var position = chunk.geometry.getAttribute('position')
+      var color = chunk.geometry.getAttribute('color')
+      for (var terrainIndex = 0; terrainIndex < position.count; terrainIndex++) {
+        var localX = position.getX(terrainIndex)
+        var localZ = position.getY(terrainIndex)
+        var worldZ = centerZ - localZ
+        var terrainHeight = duskTerrainHeight(localX, worldZ)
+        position.setZ(terrainIndex, terrainHeight)
+        var colorMix = clampDusk((terrainHeight + 0.78) / 1.05, 0, 1)
+        if (colorMix < 0.58) duskSandColor.copy(duskSandLow).lerp(duskSandMid, colorMix / 0.58)
+        else duskSandColor.copy(duskSandMid).lerp(duskSandHigh, (colorMix - 0.58) / 0.42)
+        var grain = Math.sin(localX * 0.41 + worldZ * 0.17) * 0.018
+        color.setXYZ(terrainIndex, clampDusk(duskSandColor.r + grain, 0, 1), clampDusk(duskSandColor.g + grain * 0.72, 0, 1), clampDusk(duskSandColor.b + grain * 0.4, 0, 1))
+      }
+      position.needsUpdate = true
+      color.needsUpdate = true
+      chunk.geometry.computeVertexNormals()
+      chunk.position.z = centerZ
+      chunk.userData.worldZ = centerZ
+    }
+
+    for (var terrainChunkIndex = 0; terrainChunkIndex < 5; terrainChunkIndex++) {
+      var duskGroundGeometry = new THREE.PlaneGeometry(duskTerrainWidth, duskTerrainLength, 30, 18)
+      duskGroundGeometry.setAttribute('color', new THREE.BufferAttribute(new Float32Array(duskGroundGeometry.getAttribute('position').count * 3), 3))
+      var duskGroundChunk = new THREE.Mesh(duskGroundGeometry, duskGroundMaterial)
+      duskGroundChunk.rotation.x = -Math.PI / 2
+      updateDuskTerrainChunk(duskGroundChunk, 36 - terrainChunkIndex * duskTerrainLength)
+      duskTerrainChunks.push(duskGroundChunk)
+      duskGroundGroup.add(duskGroundChunk)
+    }
+    duskScene.add(duskGroundGroup)
+    root.dataset.duskTerrainChunks = String(duskTerrainChunks.length)
+
+    var duskHemisphereLight = new THREE.HemisphereLight('#8792b2', '#4d302d', 0.98)
+    duskScene.add(duskHemisphereLight)
+    var duskSunLight = new THREE.DirectionalLight('#ffd3a8', 2.1)
+    duskSunLight.position.set(-42, 44, -70)
+    duskScene.add(duskSunLight.target)
     duskScene.add(duskSunLight)
 
+    var duskRimLight = new THREE.DirectionalLight('#8798c9', 0.56)
+    duskRimLight.position.set(38, 18, 12)
+    duskScene.add(duskRimLight.target)
+    duskScene.add(duskRimLight)
+    var duskCameraFill = new THREE.PointLight('#d99f89', 0.88, 32, 2)
+    duskScene.add(duskCameraFill)
+
     var duskMountainGroup = new THREE.Group()
-    var duskMountainMaterials = [
-      new THREE.MeshStandardMaterial({ color: '#4b3e57', roughness: 1, flatShading: true }),
-      new THREE.MeshStandardMaterial({ color: '#654958', roughness: 1, flatShading: true }),
-      new THREE.MeshStandardMaterial({ color: '#76554e', roughness: 1, flatShading: true })
-    ]
-    for (var mountainIndex = 0; mountainIndex < 14; mountainIndex++) {
-      var mountain = new THREE.Mesh(new THREE.ConeGeometry(1, 1, 5 + Math.floor(duskRandom() * 3)), duskMountainMaterials[mountainIndex % duskMountainMaterials.length])
-      mountain.position.set(-88 + mountainIndex * 13.5 + (duskRandom() - 0.5) * 8, 4 + duskRandom() * 3, (duskRandom() - 0.5) * 30)
-      mountain.scale.set(8 + duskRandom() * 9, 11 + duskRandom() * 13, 6 + duskRandom() * 8)
-      mountain.rotation.y = duskRandom() * Math.PI
-      duskMountainGroup.add(mountain)
+
+    function createDuskMountainRidge (settings) {
+      var ridgeRandom = randomFactory(settings.seed)
+      var pointCount = settings.points
+      var ridgePositions = new Float32Array(pointCount * 2 * 3)
+      var ridgeColors = new Float32Array(pointCount * 2 * 3)
+      var ridgeIndices = []
+      var ridgeTopColor = new THREE.Color(settings.topColor)
+      var ridgeBaseColor = new THREE.Color(settings.baseColor)
+      var peakProfiles = []
+      for (var peakIndex = 0; peakIndex < settings.peaks; peakIndex++) {
+        peakProfiles.push({
+          center: 0.03 + ridgeRandom() * 0.94,
+          spread: 0.045 + ridgeRandom() * 0.095,
+          height: 0.38 + ridgeRandom() * 0.62
+        })
+      }
+      for (var ridgeIndex = 0; ridgeIndex < pointCount; ridgeIndex++) {
+        var progress = ridgeIndex / (pointCount - 1)
+        var ridgeX = (progress - 0.5) * settings.width
+        if (ridgeIndex > 0 && ridgeIndex < pointCount - 1) ridgeX += (ridgeRandom() - 0.5) * settings.jitter
+        var peakRhythm = 0
+        for (var profileIndex = 0; profileIndex < peakProfiles.length; profileIndex++) {
+          var peakProfile = peakProfiles[profileIndex]
+          var peakDistance = (progress - peakProfile.center) / peakProfile.spread
+          peakRhythm = Math.max(peakRhythm, peakProfile.height * Math.exp(-peakDistance * peakDistance * 1.45))
+        }
+        var ridgeY = settings.baseHeight + peakRhythm * settings.height + Math.sin(progress * Math.PI * settings.wave + settings.seed) * settings.height * 0.035 + (ridgeRandom() - 0.5) * settings.height * 0.035
+        var ridgeZ = settings.z + (ridgeRandom() - 0.5) * settings.depth
+        var topOffset = ridgeIndex * 6
+        var bottomOffset = topOffset + 3
+        ridgePositions[topOffset] = ridgeX
+        ridgePositions[topOffset + 1] = ridgeY
+        ridgePositions[topOffset + 2] = ridgeZ
+        ridgePositions[bottomOffset] = ridgeX
+        ridgePositions[bottomOffset + 1] = -7
+        ridgePositions[bottomOffset + 2] = ridgeZ
+        ridgeColors[topOffset] = ridgeTopColor.r
+        ridgeColors[topOffset + 1] = ridgeTopColor.g
+        ridgeColors[topOffset + 2] = ridgeTopColor.b
+        ridgeColors[bottomOffset] = ridgeBaseColor.r
+        ridgeColors[bottomOffset + 1] = ridgeBaseColor.g
+        ridgeColors[bottomOffset + 2] = ridgeBaseColor.b
+        if (ridgeIndex < pointCount - 1) {
+          var nextTop = (ridgeIndex + 1) * 2
+          ridgeIndices.push(ridgeIndex * 2, ridgeIndex * 2 + 1, nextTop, nextTop, ridgeIndex * 2 + 1, nextTop + 1)
+        }
+      }
+      var ridgeGeometry = new THREE.BufferGeometry()
+      ridgeGeometry.setAttribute('position', new THREE.BufferAttribute(ridgePositions, 3))
+      ridgeGeometry.setAttribute('color', new THREE.BufferAttribute(ridgeColors, 3))
+      ridgeGeometry.setIndex(ridgeIndices)
+      ridgeGeometry.computeVertexNormals()
+      return new THREE.Mesh(ridgeGeometry, new THREE.MeshStandardMaterial({ vertexColors: true, roughness: 1, metalness: 0, flatShading: true, side: THREE.DoubleSide }))
     }
+
+    duskMountainGroup.add(createDuskMountainRidge({ seed: 311, points: 53, peaks: 8, width: 340, height: 18, baseHeight: 4.5, jitter: 2.8, wave: 3, depth: 3.5, z: -210, topColor: '#70626f', baseColor: '#454451' }))
+    duskMountainGroup.add(createDuskMountainRidge({ seed: 557, points: 47, peaks: 8, width: 320, height: 25, baseHeight: 2.8, jitter: 3.4, wave: 4, depth: 5.5, z: -182, topColor: '#765756', baseColor: '#41373f' }))
+    duskMountainGroup.add(createDuskMountainRidge({ seed: 911, points: 43, peaks: 7, width: 300, height: 21, baseHeight: 1.2, jitter: 4.2, wave: 3, depth: 7, z: -152, topColor: '#5a4342', baseColor: '#292a31' }))
     duskScene.add(duskMountainGroup)
 
     function duskRoadCenter (z) {
@@ -688,14 +1029,16 @@
       return Math.atan2(-(duskRoadCenter(z - 1.5) - duskRoadCenter(z + 1.5)), 3)
     }
 
-    var roadLength = 10
-    var roadCount = width < 720 ? 24 : 31
-    var asphaltGeometry = new THREE.BoxGeometry(7.6, 0.12, roadLength * 1.12)
-    var roadLineGeometry = new THREE.BoxGeometry(0.13, 0.025, roadLength * 1.08)
-    var roadDashGeometry = new THREE.BoxGeometry(0.14, 0.035, 2.2)
-    var asphaltMaterial = new THREE.MeshStandardMaterial({ color: '#24222a', roughness: 0.94 })
-    var roadEdgeMaterial = new THREE.MeshBasicMaterial({ color: '#f4d9b2' })
-    var roadDashMaterial = new THREE.MeshBasicMaterial({ color: '#e9a94c' })
+    var roadLength = 8
+    var roadCount = width < 768 ? 36 : 44
+    var roadShoulderGeometry = new THREE.BoxGeometry(8.9, 0.08, roadLength * 1.13)
+    var asphaltGeometry = new THREE.BoxGeometry(7.75, 0.11, roadLength * 1.13)
+    var roadLineGeometry = new THREE.BoxGeometry(0.11, 0.025, roadLength * 1.08)
+    var roadDashGeometry = new THREE.BoxGeometry(0.13, 0.035, 1.85)
+    var roadShoulderMaterial = new THREE.MeshStandardMaterial({ color: '#71483b', roughness: 1 })
+    var asphaltMaterial = new THREE.MeshStandardMaterial({ color: '#26252a', roughness: 0.97, metalness: 0.01 })
+    var roadEdgeMaterial = new THREE.MeshBasicMaterial({ color: '#e8d6bb' })
+    var roadDashMaterial = new THREE.MeshBasicMaterial({ color: '#d8a34f' })
     var roadSegments = []
     var rockGeometries = [
       new THREE.DodecahedronGeometry(0.8, 0),
@@ -703,12 +1046,12 @@
       new THREE.ConeGeometry(0.75, 1.4, 5)
     ]
     var rockMaterials = [
-      new THREE.MeshStandardMaterial({ color: '#763a34', roughness: 1, flatShading: true }),
-      new THREE.MeshStandardMaterial({ color: '#a45240', roughness: 1, flatShading: true }),
-      new THREE.MeshStandardMaterial({ color: '#593036', roughness: 1, flatShading: true })
+      new THREE.MeshStandardMaterial({ color: '#75443a', roughness: 1, flatShading: true }),
+      new THREE.MeshStandardMaterial({ color: '#9b5a45', roughness: 1, flatShading: true }),
+      new THREE.MeshStandardMaterial({ color: '#54343a', roughness: 1, flatShading: true })
     ]
     var gravelGeometry = new THREE.DodecahedronGeometry(0.12, 0)
-    var cactusMaterial = new THREE.MeshStandardMaterial({ color: '#315e48', roughness: 0.88, flatShading: true })
+    var cactusMaterial = new THREE.MeshStandardMaterial({ color: '#3f654f', roughness: 0.92, flatShading: true })
     var cactusTrunkGeometry = new THREE.CylinderGeometry(0.2, 0.28, 2.8, 7)
     var cactusArmGeometry = new THREE.CylinderGeometry(0.13, 0.17, 1.25, 7)
     var cactusTipGeometry = new THREE.CylinderGeometry(0.12, 0.14, 0.65, 7)
@@ -721,6 +1064,16 @@
     var pumpRedMaterial = new THREE.MeshStandardMaterial({ color: '#c8493e', roughness: 0.65 })
     var warmMaterial = new THREE.MeshBasicMaterial({ color: '#ffad46' })
     var fireMaterial = new THREE.MeshBasicMaterial({ color: '#ff572d' })
+    var stationWallMaterial = new THREE.MeshStandardMaterial({ color: '#cf9a76', roughness: 0.92 })
+    var stationRoofMaterial = new THREE.MeshStandardMaterial({ color: '#923d37', roughness: 0.75 })
+    var stationGlassMaterial = new THREE.MeshStandardMaterial({ color: '#263349', emissive: '#17243d', emissiveIntensity: 0.42, roughness: 0.3, metalness: 0.05 })
+    var stationBuildingGeometry = new THREE.BoxGeometry(7.5, 3.3, 4.2)
+    var stationWindowGeometry = new THREE.BoxGeometry(3.4, 1.5, 0.08)
+    var stationCanopyGeometry = new THREE.BoxGeometry(9.5, 0.35, 4.6)
+    var stationCanopyPostGeometry = new THREE.CylinderGeometry(0.11, 0.15, 4, 8)
+    var stationPumpGeometry = new THREE.BoxGeometry(0.75, 1.55, 0.7)
+    var stationSignPoleGeometry = new THREE.CylinderGeometry(0.11, 0.15, 6.2, 8)
+    var stationSignGeometry = new THREE.BoxGeometry(2.2, 1.2, 0.18)
 
     function createRock (random, scale) {
       var type = Math.floor(random() * rockGeometries.length)
@@ -812,30 +1165,27 @@
 
     function createGasStation (random) {
       var station = new THREE.Group()
-      var wallMaterial = new THREE.MeshStandardMaterial({ color: '#dca47d', roughness: 0.9 })
-      var roofMaterial = new THREE.MeshStandardMaterial({ color: '#a63e36', roughness: 0.72 })
-      var glassMaterial = new THREE.MeshStandardMaterial({ color: '#25334a', roughness: 0.22, metalness: 0.3 })
-      var building = new THREE.Mesh(new THREE.BoxGeometry(7.5, 3.3, 4.2), wallMaterial)
+      var building = new THREE.Mesh(stationBuildingGeometry, stationWallMaterial)
       building.position.set(0, 1.65, -2.5)
       station.add(building)
-      var windowMesh = new THREE.Mesh(new THREE.BoxGeometry(3.4, 1.5, 0.08), glassMaterial)
+      var windowMesh = new THREE.Mesh(stationWindowGeometry, stationGlassMaterial)
       windowMesh.position.set(0, 1.75, -0.36)
       station.add(windowMesh)
-      var canopy = new THREE.Mesh(new THREE.BoxGeometry(9.5, 0.35, 4.6), roofMaterial)
+      var canopy = new THREE.Mesh(stationCanopyGeometry, stationRoofMaterial)
       canopy.position.set(0, 4.1, 2.4)
       station.add(canopy)
       for (var columnIndex = -1; columnIndex <= 1; columnIndex += 2) {
-        var canopyPost = new THREE.Mesh(new THREE.CylinderGeometry(0.11, 0.15, 4, 8), postMaterial)
+        var canopyPost = new THREE.Mesh(stationCanopyPostGeometry, postMaterial)
         canopyPost.position.set(columnIndex * 3.5, 2, 2.4)
         station.add(canopyPost)
-        var pump = new THREE.Mesh(new THREE.BoxGeometry(0.75, 1.55, 0.7), columnIndex < 0 ? pumpRedMaterial : roadDashMaterial)
+        var pump = new THREE.Mesh(stationPumpGeometry, columnIndex < 0 ? pumpRedMaterial : roadDashMaterial)
         pump.position.set(columnIndex * 1.7, 0.78, 2.25)
         station.add(pump)
       }
-      var pole = new THREE.Mesh(new THREE.CylinderGeometry(0.11, 0.15, 6.2, 8), postMaterial)
+      var pole = new THREE.Mesh(stationSignPoleGeometry, postMaterial)
       pole.position.set(5.6, 3.1, 0)
       station.add(pole)
-      var gasSign = new THREE.Mesh(new THREE.BoxGeometry(2.2, 1.2, 0.18), signMaterials[0])
+      var gasSign = new THREE.Mesh(stationSignGeometry, signMaterials[0])
       gasSign.position.set(5.6, 6.3, 0)
       station.add(gasSign)
       station.rotation.y = random() > 0.5 ? 0.08 : -0.08
@@ -869,11 +1219,11 @@
           propRoot.add(prop)
         }
       }
-      if (Math.abs(segmentNumber) % 4 === 0) {
+      if (Math.abs(segmentNumber) % 4 === 0 && worldZ < -12) {
         var distantSide = random() > 0.5 ? 1 : -1
-        var distantRock = createRock(random, 5 + random() * 6)
-        distantRock.position.set(distantSide * (31 + random() * 24), 1.2, (random() - 0.5) * 8)
-        distantRock.scale.x *= 1.5 + random()
+        var distantRock = createRock(random, 3.2 + random() * 3.8)
+        distantRock.position.set(distantSide * (35 + random() * 20), 0.8, (random() - 0.5) * 8)
+        distantRock.scale.x *= 1.2 + random() * 0.7
         propRoot.add(distantRock)
       }
       var gravelCount = 1 + Math.floor(random() * 4)
@@ -897,6 +1247,9 @@
 
     for (var roadIndex = 0; roadIndex < roadCount; roadIndex++) {
       var roadGroup = new THREE.Group()
+      var shoulder = new THREE.Mesh(roadShoulderGeometry, roadShoulderMaterial)
+      shoulder.position.y = -0.035
+      roadGroup.add(shoulder)
       roadGroup.add(new THREE.Mesh(asphaltGeometry, asphaltMaterial))
       for (var edgeSide = -1; edgeSide <= 1; edgeSide += 2) {
         var edgeLine = new THREE.Mesh(roadLineGeometry, roadEdgeMaterial)
@@ -905,98 +1258,400 @@
       }
       for (var dashIndex = -1; dashIndex <= 1; dashIndex += 2) {
         var dash = new THREE.Mesh(roadDashGeometry, roadDashMaterial)
-        dash.position.set(0, 0.09, dashIndex * 2.7)
+        dash.position.set(0, 0.09, dashIndex * 2.25)
         roadGroup.add(dash)
       }
       var props = new THREE.Group()
       roadGroup.userData.props = props
       roadGroup.add(props)
-      positionRoadSegment(roadGroup, 40 - roadIndex * roadLength)
+      positionRoadSegment(roadGroup, 76 - roadIndex * roadLength)
       roadSegments.push(roadGroup)
       duskScene.add(roadGroup)
     }
     root.dataset.duskRoadSegments = String(roadCount)
 
+    function createTaperedBoxGeometry (frontWidth, rearWidth, geometryHeight, geometryLength) {
+      var halfHeight = geometryHeight * 0.5
+      var halfLength = geometryLength * 0.5
+      var vertices = new Float32Array([
+        -frontWidth * 0.5, -halfHeight, -halfLength,
+        frontWidth * 0.5, -halfHeight, -halfLength,
+        frontWidth * 0.5, halfHeight, -halfLength,
+        -frontWidth * 0.5, halfHeight, -halfLength,
+        -rearWidth * 0.5, -halfHeight, halfLength,
+        rearWidth * 0.5, -halfHeight, halfLength,
+        rearWidth * 0.5, halfHeight, halfLength,
+        -rearWidth * 0.5, halfHeight, halfLength
+      ])
+      var geometry = new THREE.BufferGeometry()
+      geometry.setAttribute('position', new THREE.BufferAttribute(vertices, 3))
+      geometry.setIndex([
+        0, 1, 2, 0, 2, 3,
+        4, 6, 5, 4, 7, 6,
+        0, 4, 5, 0, 5, 1,
+        3, 2, 6, 3, 6, 7,
+        1, 5, 6, 1, 6, 2,
+        0, 3, 7, 0, 7, 4
+      ])
+      geometry.computeVertexNormals()
+      return geometry
+    }
+
+    function createCabinGeometry (bottomWidth, topWidth, bottomLength, topLength, cabinHeight, topOffset) {
+      var bottomZ = bottomLength * 0.5
+      var topZ = topLength * 0.5
+      var halfHeight = cabinHeight * 0.5
+      var vertices = new Float32Array([
+        -bottomWidth * 0.5, -halfHeight, -bottomZ,
+        bottomWidth * 0.5, -halfHeight, -bottomZ,
+        bottomWidth * 0.5, -halfHeight, bottomZ,
+        -bottomWidth * 0.5, -halfHeight, bottomZ,
+        -topWidth * 0.5, halfHeight, topOffset - topZ,
+        topWidth * 0.5, halfHeight, topOffset - topZ,
+        topWidth * 0.5, halfHeight, topOffset + topZ,
+        -topWidth * 0.5, halfHeight, topOffset + topZ
+      ])
+      var geometry = new THREE.BufferGeometry()
+      geometry.setAttribute('position', new THREE.BufferAttribute(vertices, 3))
+      geometry.setIndex([
+        0, 1, 5, 0, 5, 4,
+        1, 2, 6, 1, 6, 5,
+        2, 3, 7, 2, 7, 6,
+        3, 0, 4, 3, 4, 7,
+        4, 5, 6, 4, 6, 7,
+        0, 3, 2, 0, 2, 1
+      ])
+      geometry.computeVertexNormals()
+      return geometry
+    }
+
     var car = new THREE.Group()
-    var carRedMaterial = new THREE.MeshStandardMaterial({ color: '#c82f34', roughness: 0.4, metalness: 0.4 })
-    var carDarkRedMaterial = new THREE.MeshStandardMaterial({ color: '#771d28', roughness: 0.5, metalness: 0.3 })
-    var carGlassMaterial = new THREE.MeshStandardMaterial({ color: '#171b2b', roughness: 0.14, metalness: 0.55 })
-    var tireMaterial = new THREE.MeshStandardMaterial({ color: '#101014', roughness: 0.9 })
-    var chromeMaterial = new THREE.MeshStandardMaterial({ color: '#c8bdad', roughness: 0.3, metalness: 0.72 })
-    var hubMaterial = new THREE.MeshStandardMaterial({ color: '#e2c8a7', roughness: 0.38, metalness: 0.62 })
-    var carBody = new THREE.Mesh(new THREE.BoxGeometry(2.15, 0.58, 4.1), carRedMaterial)
-    carBody.position.y = 0.78
-    car.add(carBody)
-    var carHood = new THREE.Mesh(new THREE.BoxGeometry(1.95, 0.28, 1.45), carDarkRedMaterial)
-    carHood.position.set(0, 1.1, -1.25)
-    car.add(carHood)
-    var carCabin = new THREE.Mesh(new THREE.BoxGeometry(1.62, 0.72, 1.75), carGlassMaterial)
-    carCabin.position.set(0, 1.35, 0.18)
-    car.add(carCabin)
-    var carRoof = new THREE.Mesh(new THREE.BoxGeometry(1.72, 0.16, 1.45), carRedMaterial)
-    carRoof.position.set(0, 1.76, 0.2)
-    car.add(carRoof)
-    var wheelGeometry = new THREE.CylinderGeometry(0.43, 0.43, 0.34, 12)
-    var hubGeometry = new THREE.CylinderGeometry(0.22, 0.22, 0.37, 10)
-    for (var wheelX = -1; wheelX <= 1; wheelX += 2) {
-      for (var wheelZ = -1; wheelZ <= 1; wheelZ += 2) {
-        var wheel = new THREE.Mesh(wheelGeometry, tireMaterial)
-        wheel.rotation.z = Math.PI / 2
-        wheel.position.set(wheelX * 1.08, 0.5, wheelZ * 1.35)
-        wheel.userData.wheel = true
-        car.add(wheel)
-        var hub = new THREE.Mesh(hubGeometry, hubMaterial)
-        hub.rotation.z = Math.PI / 2
-        hub.position.copy(wheel.position)
-        car.add(hub)
+    var carBodyRig = new THREE.Group()
+    car.add(carBodyRig)
+    var carScale = 0.91
+    var carRedMaterial = new THREE.MeshPhysicalMaterial({ color: '#c42d35', roughness: 0.31, metalness: 0.07, clearcoat: 0.76, clearcoatRoughness: 0.22 })
+    var carDarkRedMaterial = new THREE.MeshStandardMaterial({ color: '#641f29', roughness: 0.48, metalness: 0.04 })
+    var carGlassMaterial = new THREE.MeshStandardMaterial({ color: '#202338', roughness: 0.16, metalness: 0, transparent: true, opacity: 0.76, depthWrite: false, side: THREE.DoubleSide })
+    var carInteriorMaterial = new THREE.MeshStandardMaterial({ color: '#231c25', roughness: 0.88 })
+    var tireMaterial = new THREE.MeshStandardMaterial({ color: '#111116', roughness: 0.96 })
+    var chromeMaterial = new THREE.MeshStandardMaterial({ color: '#d1c0ab', roughness: 0.28, metalness: 0.28 })
+    var hubMaterial = new THREE.MeshStandardMaterial({ color: '#d9c3a4', roughness: 0.36, metalness: 0.18 })
+
+    var carSill = new THREE.Mesh(new THREE.BoxGeometry(2.22, 0.17, 3.62), carDarkRedMaterial)
+    carSill.position.y = 0.56
+    carBodyRig.add(carSill)
+    var carBody = new THREE.Mesh(createTaperedBoxGeometry(1.98, 2.18, 0.62, 4.18), carRedMaterial)
+    carBody.position.y = 0.86
+    carBodyRig.add(carBody)
+    var carHood = new THREE.Mesh(createTaperedBoxGeometry(1.82, 2.01, 0.28, 1.5), carDarkRedMaterial)
+    carHood.position.set(0, 1.14, -1.28)
+    carHood.rotation.x = -0.025
+    carBodyRig.add(carHood)
+    var carTrunk = new THREE.Mesh(createTaperedBoxGeometry(1.91, 2.08, 0.22, 0.94), carRedMaterial)
+    carTrunk.position.set(0, 1.13, 1.61)
+    carTrunk.rotation.x = 0.035
+    carBodyRig.add(carTrunk)
+    var carCabin = new THREE.Mesh(createCabinGeometry(1.76, 1.44, 1.94, 1.26, 0.82, 0.04), carGlassMaterial)
+    carCabin.position.set(0, 1.4, 0.12)
+    carBodyRig.add(carCabin)
+    var carRoof = new THREE.Mesh(createTaperedBoxGeometry(1.42, 1.5, 0.13, 1.25), carRedMaterial)
+    carRoof.position.set(0, 1.86, 0.16)
+    carBodyRig.add(carRoof)
+
+    var pillarGeometry = new THREE.BoxGeometry(0.105, 0.76, 0.12)
+    for (var pillarSide = -1; pillarSide <= 1; pillarSide += 2) {
+      for (var pillarEnd = -1; pillarEnd <= 1; pillarEnd += 2) {
+        var pillar = new THREE.Mesh(pillarGeometry, carDarkRedMaterial)
+        pillar.position.set(pillarSide * 0.77, 1.43, pillarEnd < 0 ? -0.67 : 0.77)
+        pillar.rotation.x = pillarEnd * 0.18
+        pillar.rotation.z = -pillarSide * 0.08
+        carBodyRig.add(pillar)
+      }
+      var mirror = new THREE.Mesh(new THREE.BoxGeometry(0.31, 0.16, 0.34), carRedMaterial)
+      mirror.position.set(pillarSide * 1.08, 1.37, -0.28)
+      mirror.rotation.y = pillarSide * 0.08
+      carBodyRig.add(mirror)
+      var seat = new THREE.Mesh(new THREE.SphereGeometry(0.2, 8, 6), carInteriorMaterial)
+      seat.scale.set(0.85, 1.05, 0.7)
+      seat.position.set(pillarSide * 0.37, 1.32, 0.34)
+      carBodyRig.add(seat)
+    }
+
+    var archGeometry = new THREE.TorusGeometry(0.5, 0.065, 5, 18, Math.PI)
+    for (var archSide = -1; archSide <= 1; archSide += 2) {
+      for (var archEnd = -1; archEnd <= 1; archEnd += 2) {
+        var wheelArch = new THREE.Mesh(archGeometry, carRedMaterial)
+        wheelArch.rotation.y = Math.PI / 2
+        wheelArch.position.set(archSide * 1.065, 0.58, archEnd * 1.35)
+        carBodyRig.add(wheelArch)
       }
     }
-    var tailLightMaterial = new THREE.MeshBasicMaterial({ color: '#ff3d35' })
-    for (var tailSide = -1; tailSide <= 1; tailSide += 2) {
-      var tailLight = new THREE.Mesh(new THREE.BoxGeometry(0.42, 0.2, 0.08), tailLightMaterial)
-      tailLight.position.set(tailSide * 0.68, 0.86, 2.08)
-      car.add(tailLight)
-      var headLight = new THREE.Mesh(new THREE.BoxGeometry(0.42, 0.2, 0.08), new THREE.MeshBasicMaterial({ color: '#fff0b8' }))
-      headLight.position.set(tailSide * 0.68, 0.86, -2.08)
-      car.add(headLight)
-      var mirror = new THREE.Mesh(new THREE.BoxGeometry(0.3, 0.18, 0.36), carRedMaterial)
-      mirror.position.set(tailSide * 1.08, 1.34, -0.05)
-      car.add(mirror)
+
+    var wheelRadius = 0.44
+    var wheelGeometry = new THREE.CylinderGeometry(wheelRadius, wheelRadius, 0.36, 18)
+    var wheelSidewallGeometry = new THREE.TorusGeometry(0.29, 0.055, 7, 18)
+    var hubGeometry = new THREE.CylinderGeometry(0.225, 0.225, 0.39, 14)
+    var spokeGeometry = new THREE.BoxGeometry(0.045, 0.31, 0.055)
+    var wheelRolls = []
+    var frontWheelSteers = []
+
+    function createCarWheel (side, wheelZ, isFront) {
+      var steeringRig = new THREE.Group()
+      steeringRig.position.set(side * 1.08, 0.5, wheelZ)
+      var rollingRig = new THREE.Group()
+      steeringRig.add(rollingRig)
+      var tire = new THREE.Mesh(wheelGeometry, tireMaterial)
+      tire.rotation.z = Math.PI / 2
+      rollingRig.add(tire)
+      var hub = new THREE.Mesh(hubGeometry, hubMaterial)
+      hub.rotation.z = Math.PI / 2
+      rollingRig.add(hub)
+      var sidewall = new THREE.Mesh(wheelSidewallGeometry, tireMaterial)
+      sidewall.rotation.y = Math.PI / 2
+      sidewall.position.x = side * 0.205
+      rollingRig.add(sidewall)
+      for (var spokeIndex = 0; spokeIndex < 5; spokeIndex++) {
+        var spoke = new THREE.Mesh(spokeGeometry, chromeMaterial)
+        spoke.position.x = side * 0.205
+        spoke.rotation.x = spokeIndex / 5 * Math.PI * 2
+        rollingRig.add(spoke)
+      }
+      wheelRolls.push(rollingRig)
+      if (isFront) frontWheelSteers.push(steeringRig)
+      car.add(steeringRig)
     }
-    var rearBumper = new THREE.Mesh(new THREE.BoxGeometry(2.08, 0.16, 0.16), chromeMaterial)
-    rearBumper.position.set(0, 0.54, 2.14)
-    car.add(rearBumper)
+
+    for (var wheelSide = -1; wheelSide <= 1; wheelSide += 2) {
+      createCarWheel(wheelSide, -1.35, true)
+      createCarWheel(wheelSide, 1.35, false)
+    }
+
+    var tailLightMaterial = new THREE.MeshBasicMaterial({ color: '#ff3b32' })
+    var headLightMaterial = new THREE.MeshBasicMaterial({ color: '#ffe7aa' })
+    var lightHousingMaterial = new THREE.MeshStandardMaterial({ color: '#2a1d22', roughness: 0.62 })
+    for (var tailSide = -1; tailSide <= 1; tailSide += 2) {
+      var lightHousing = new THREE.Mesh(new THREE.BoxGeometry(0.52, 0.27, 0.09), lightHousingMaterial)
+      lightHousing.position.set(tailSide * 0.7, 0.91, 2.105)
+      carBodyRig.add(lightHousing)
+      var tailLight = new THREE.Mesh(new THREE.BoxGeometry(0.42, 0.18, 0.08), tailLightMaterial)
+      tailLight.position.set(tailSide * 0.7, 0.91, 2.16)
+      carBodyRig.add(tailLight)
+      var tailGlow = new THREE.Sprite(new THREE.SpriteMaterial({ map: duskGlowTexture, color: '#ff3b2e', transparent: true, opacity: 0.38, blending: THREE.AdditiveBlending, depthWrite: false }))
+      tailGlow.position.set(tailSide * 0.7, 0.91, 2.24)
+      tailGlow.scale.set(0.82, 0.82, 1)
+      carBodyRig.add(tailGlow)
+      var headLight = new THREE.Mesh(new THREE.BoxGeometry(0.42, 0.19, 0.08), headLightMaterial)
+      headLight.position.set(tailSide * 0.67, 0.91, -2.12)
+      carBodyRig.add(headLight)
+    }
+    var rearGlow = new THREE.PointLight('#ff493a', 0.9, 6.5, 2)
+    rearGlow.position.set(0, 0.82, 2.48)
+    carBodyRig.add(rearGlow)
+
+    var rearBumper = new THREE.Mesh(new THREE.BoxGeometry(2.13, 0.15, 0.17), chromeMaterial)
+    rearBumper.position.set(0, 0.55, 2.17)
+    carBodyRig.add(rearBumper)
     var frontBumper = rearBumper.clone()
-    frontBumper.position.z = -2.14
-    car.add(frontBumper)
-    var licensePlate = new THREE.Mesh(new THREE.BoxGeometry(0.62, 0.25, 0.05), new THREE.MeshBasicMaterial({ color: '#f7df9b' }))
-    licensePlate.position.set(0, 0.72, 2.24)
-    car.add(licensePlate)
-    var exhaustPipe = new THREE.Mesh(new THREE.CylinderGeometry(0.07, 0.07, 0.5, 8), chromeMaterial)
+    frontBumper.position.z = -2.17
+    carBodyRig.add(frontBumper)
+    var licensePlate = new THREE.Mesh(new THREE.BoxGeometry(0.64, 0.27, 0.055), new THREE.MeshBasicMaterial({ color: '#f1daa1' }))
+    licensePlate.position.set(0, 0.73, 2.27)
+    carBodyRig.add(licensePlate)
+    var exhaustPipe = new THREE.Mesh(new THREE.CylinderGeometry(0.075, 0.075, 0.56, 10), chromeMaterial)
     exhaustPipe.rotation.x = Math.PI / 2
-    exhaustPipe.position.set(0.52, 0.46, 2.25)
-    car.add(exhaustPipe)
-    car.scale.setScalar(0.78)
+    exhaustPipe.position.set(0.58, 0.47, 2.34)
+    carBodyRig.add(exhaustPipe)
+    var exhaustMouth = new THREE.Mesh(new THREE.CylinderGeometry(0.048, 0.048, 0.035, 10), carInteriorMaterial)
+    exhaustMouth.rotation.x = Math.PI / 2
+    exhaustMouth.position.set(0.58, 0.47, 2.63)
+    carBodyRig.add(exhaustMouth)
+    var exhaustSocket = new THREE.Object3D()
+    exhaustSocket.position.set(0.58, 0.47, 2.68)
+    carBodyRig.add(exhaustSocket)
+    car.scale.setScalar(carScale)
     duskScene.add(car)
+
+    function createCarShadowTexture () {
+      var shadowCanvas = document.createElement('canvas')
+      shadowCanvas.width = 128
+      shadowCanvas.height = 128
+      var shadowContext = shadowCanvas.getContext('2d')
+      var shadowGradient = shadowContext.createRadialGradient(64, 64, 8, 64, 64, 62)
+      shadowGradient.addColorStop(0, 'rgba(8, 6, 10, .72)')
+      shadowGradient.addColorStop(0.48, 'rgba(8, 6, 10, .42)')
+      shadowGradient.addColorStop(1, 'rgba(8, 6, 10, 0)')
+      shadowContext.fillStyle = shadowGradient
+      shadowContext.fillRect(0, 0, 128, 128)
+      return new THREE.CanvasTexture(shadowCanvas)
+    }
+
+    var carShadow = new THREE.Mesh(new THREE.PlaneGeometry(3.15, 5.1), new THREE.MeshBasicMaterial({ map: createCarShadowTexture(), transparent: true, opacity: 0.42, depthWrite: false, polygonOffset: true, polygonOffsetFactor: -2 }))
+    carShadow.rotation.x = -Math.PI / 2
+    carShadow.renderOrder = 2
+    duskScene.add(carShadow)
 
     var nextDuskBump = 3 + duskRandom() * 5
     var duskBumpAge = 99
     var duskBumpStrength = 0
 
-    var exhaustGeometry = new THREE.SphereGeometry(0.42, 6, 5)
-    var exhaustMaterial = new THREE.MeshBasicMaterial({ color: '#f4f1e8' })
-    var exhaustPuffs = []
-    var nextExhaust = 1.5 + duskRandom() * 2.2
+    var exhaustCapacity = width < 768 ? 40 : 60
+    // A fixed sprite pool keeps the comic exhaust bounded: no per-frame scene
+    // graph growth and no garbage collection spikes during long drives.
 
-    function spawnExhaust () {
-      car.updateMatrixWorld()
-      var puff = new THREE.Mesh(exhaustGeometry, exhaustMaterial)
-      puff.position.copy(car.localToWorld(new THREE.Vector3(0.45, 0.58, 2.3)))
-      puff.scale.setScalar(0.32)
-      puff.userData.age = 0
-      puff.userData.drift = (duskRandom() - 0.5) * 0.18
-      duskScene.add(puff)
-      exhaustPuffs.push(puff)
+    function createComicPuffTexture (fillColor, isRing) {
+      var puffCanvas = document.createElement('canvas')
+      puffCanvas.width = 192
+      puffCanvas.height = 192
+      var puffContext = puffCanvas.getContext('2d')
+      puffContext.translate(96, 96)
+      puffContext.lineJoin = 'round'
+      puffContext.lineCap = 'round'
+      puffContext.lineWidth = 10
+      puffContext.strokeStyle = '#4d3d4a'
+      puffContext.fillStyle = fillColor
+      if (isRing) {
+        puffContext.beginPath()
+        puffContext.arc(0, 0, 54, 0, Math.PI * 2)
+        puffContext.fill()
+        puffContext.stroke()
+        puffContext.globalCompositeOperation = 'destination-out'
+        puffContext.beginPath()
+        puffContext.arc(0, 0, 25, 0, Math.PI * 2)
+        puffContext.fill()
+        puffContext.globalCompositeOperation = 'source-over'
+        puffContext.beginPath()
+        puffContext.arc(0, 0, 25, 0, Math.PI * 2)
+        puffContext.lineWidth = 8
+        puffContext.stroke()
+      } else {
+        puffContext.beginPath()
+        puffContext.moveTo(-58, 24)
+        puffContext.bezierCurveTo(-70, 4, -55, -22, -32, -23)
+        puffContext.bezierCurveTo(-31, -51, 2, -62, 20, -41)
+        puffContext.bezierCurveTo(44, -51, 66, -27, 55, -6)
+        puffContext.bezierCurveTo(74, 5, 66, 33, 42, 34)
+        puffContext.bezierCurveTo(22, 54, -5, 46, -14, 34)
+        puffContext.bezierCurveTo(-31, 50, -55, 43, -58, 24)
+        puffContext.closePath()
+        puffContext.fill()
+        puffContext.stroke()
+      }
+      var puffTexture = new THREE.CanvasTexture(puffCanvas)
+      if (THREE.SRGBColorSpace) puffTexture.colorSpace = THREE.SRGBColorSpace
+      return puffTexture
+    }
+
+    function createComicMaterialStages (texture) {
+      return [0.98, 0.68, 0.34].map(function (opacity) {
+        var material = new THREE.SpriteMaterial({ map: texture, transparent: true, opacity: opacity, depthWrite: false, depthTest: true, fog: false })
+        material.toneMapped = false
+        return material
+      })
+    }
+
+    var comicPuffMaterials = [
+      createComicMaterialStages(createComicPuffTexture('#ffe2bb', false)),
+      createComicMaterialStages(createComicPuffTexture('#cbbabd', false)),
+      createComicMaterialStages(createComicPuffTexture('#ffe2bb', true)),
+      createComicMaterialStages(createComicPuffTexture('#cbbabd', true))
+    ]
+
+    var exhaustParticles = []
+    for (var exhaustIndex = 0; exhaustIndex < exhaustCapacity; exhaustIndex++) {
+      var exhaustSprite = new THREE.Sprite(comicPuffMaterials[0][0])
+      exhaustSprite.visible = false
+      exhaustSprite.renderOrder = 12
+      duskScene.add(exhaustSprite)
+      exhaustParticles.push({ active: false, age: 0, life: 1, startSize: 0.2, endSize: 1, style: 0, position: new THREE.Vector3(), velocity: new THREE.Vector3(), sprite: exhaustSprite })
+    }
+    var exhaustCursor = 0
+    var exhaustEmitterPosition = new THREE.Vector3()
+    var exhaustEmitterQuaternion = new THREE.Quaternion()
+    var exhaustTrailOffset = new THREE.Vector3()
+    var exhaustBurstRemaining = 0
+    var exhaustBurstInterval = 0.08
+    var nextExhaustParticle = 0
+    var nextExhaustBurst = 0.28 + duskRandom() * 0.22
+    var lastExhaustDatasetUpdate = 0
+
+    function queueDuskExhaustBurst (emphasized) {
+      var burstSize = emphasized ? 12 + Math.floor(duskRandom() * 4) : (width < 768 ? 7 + Math.floor(duskRandom() * 3) : 9 + Math.floor(duskRandom() * 4))
+      exhaustBurstRemaining = Math.max(exhaustBurstRemaining, burstSize)
+      exhaustBurstInterval = emphasized ? 0.052 + duskRandom() * 0.018 : 0.068 + duskRandom() * 0.026
+      nextExhaustParticle = Math.min(nextExhaustParticle || duskElapsed, duskElapsed)
+    }
+
+    function spawnExhaustParticle () {
+      var particle = exhaustParticles[exhaustCursor]
+      exhaustCursor = (exhaustCursor + 1) % exhaustCapacity
+      exhaustSocket.updateWorldMatrix(true, false)
+      exhaustSocket.getWorldPosition(exhaustEmitterPosition)
+      exhaustSocket.getWorldQuaternion(exhaustEmitterQuaternion)
+      particle.active = true
+      particle.age = 0
+      particle.life = 1.45 + duskRandom() * 0.62
+      particle.startSize = 0.22 + duskRandom() * 0.12
+      particle.endSize = 0.82 + duskRandom() * 0.46
+      particle.position.copy(exhaustEmitterPosition)
+      particle.phase = duskRandom() * Math.PI * 2
+      particle.trailLength = 5.2 + duskRandom() * 1.6
+      particle.driftX = 1.25 + duskRandom() * 0.7
+      particle.velocity.set(0, 0, 0)
+      particle.isRing = duskRandom() < 0.16
+      particle.tone = 0.12 + duskRandom() * 0.72
+      particle.style = (particle.isRing ? 2 : 0) + (particle.tone > 0.54 ? 1 : 0)
+      particle.sprite.material = comicPuffMaterials[particle.style][0]
+      particle.sprite.position.copy(particle.position)
+      particle.sprite.scale.setScalar(particle.startSize * 0.5)
+      particle.sprite.visible = true
+    }
+
+    function updateDuskExhaust (delta) {
+      var spawnedThisFrame = 0
+      while (exhaustBurstRemaining > 0 && duskElapsed >= nextExhaustParticle && spawnedThisFrame < 3) {
+        spawnExhaustParticle()
+        exhaustBurstRemaining--
+        nextExhaustParticle += exhaustBurstInterval
+        spawnedThisFrame++
+      }
+      exhaustSocket.updateWorldMatrix(true, false)
+      exhaustSocket.getWorldPosition(exhaustEmitterPosition)
+      exhaustSocket.getWorldQuaternion(exhaustEmitterQuaternion)
+      var activeCount = 0
+      for (var particleIndex = 0; particleIndex < exhaustParticles.length; particleIndex++) {
+        var particle = exhaustParticles[particleIndex]
+        if (particle.active) {
+          particle.age += delta
+          var progress = particle.age / particle.life
+          if (progress >= 1) {
+            particle.active = false
+            particle.sprite.visible = false
+          } else {
+            // The plume is art-directed in car space so a whole burst remains
+            // visible inside the chase-camera composition instead of rushing
+            // past the lens. Small phase offsets keep the chain lively.
+            exhaustTrailOffset.set(
+              particle.driftX * progress + Math.sin(particle.phase + progress * 7.5) * progress * 0.16,
+              progress * 0.38 + Math.sin(particle.phase * 1.7 + progress * 5.2) * 0.06,
+              progress * particle.trailLength
+            ).applyQuaternion(exhaustEmitterQuaternion)
+            particle.position.copy(exhaustEmitterPosition).add(exhaustTrailOffset)
+            var currentSize = particle.startSize + (particle.endSize - particle.startSize) * (1 - Math.pow(1 - progress, 1.45))
+            var materialStage = progress > 0.82 ? 2 : (progress > 0.62 ? 1 : 0)
+            particle.sprite.material = comicPuffMaterials[particle.style][materialStage]
+            particle.sprite.position.copy(particle.position)
+            particle.sprite.scale.setScalar(currentSize * 0.5)
+            particle.sprite.visible = true
+            activeCount++
+          }
+        } else {
+          particle.sprite.visible = false
+        }
+      }
+      if (duskElapsed - lastExhaustDatasetUpdate > 0.22) {
+        root.dataset.duskExhaustCount = String(activeCount)
+        lastExhaustDatasetUpdate = duskElapsed
+      }
     }
 
     var tumbleweedGeometry = new THREE.IcosahedronGeometry(0.75, 1)
@@ -1014,19 +1669,35 @@
       duskScene.add(tumbleweed)
     }
 
-    var cloudGeometry = new THREE.IcosahedronGeometry(1.25, 1)
-    var cloudMaterial = new THREE.MeshStandardMaterial({ color: '#f3c4c6', roughness: 1, flatShading: true })
-    var duskClouds = []
-    for (var cloudIndex = 0; cloudIndex < 11; cloudIndex++) {
-      var cloud = new THREE.Group()
-      var lobeCount = 3 + Math.floor(duskRandom() * 4)
-      for (var lobeIndex = 0; lobeIndex < lobeCount; lobeIndex++) {
-        var lobe = new THREE.Mesh(cloudGeometry, cloudMaterial)
-        lobe.position.set((lobeIndex - lobeCount / 2) * 1.45, duskRandom() * 0.65, (duskRandom() - 0.5) * 0.8)
-        lobe.scale.set(1.2 + duskRandom() * 1.25, 0.65 + duskRandom() * 0.55, 0.85 + duskRandom() * 0.75)
-        cloud.add(lobe)
+    function createDuskCloudTexture () {
+      var cloudCanvas = document.createElement('canvas')
+      cloudCanvas.width = 256
+      cloudCanvas.height = 128
+      var cloudContext = cloudCanvas.getContext('2d')
+      var cloudLobes = [[58, 73, 38], [95, 58, 49], [139, 62, 54], [184, 73, 40], [116, 80, 60]]
+      for (var cloudLobeIndex = 0; cloudLobeIndex < cloudLobes.length; cloudLobeIndex++) {
+        var cloudLobe = cloudLobes[cloudLobeIndex]
+        var cloudGradient = cloudContext.createRadialGradient(cloudLobe[0], cloudLobe[1], 0, cloudLobe[0], cloudLobe[1], cloudLobe[2])
+        cloudGradient.addColorStop(0, 'rgba(255,255,255,.72)')
+        cloudGradient.addColorStop(0.46, 'rgba(255,255,255,.42)')
+        cloudGradient.addColorStop(1, 'rgba(255,255,255,0)')
+        cloudContext.fillStyle = cloudGradient
+        cloudContext.fillRect(0, 0, 256, 128)
       }
-      cloud.position.set((duskRandom() - 0.5) * 110, 13 + duskRandom() * 14, -20 - duskRandom() * 220)
+      return new THREE.CanvasTexture(cloudCanvas)
+    }
+
+    var cloudTexture = createDuskCloudTexture()
+    var cloudMaterials = [
+      new THREE.SpriteMaterial({ map: cloudTexture, color: '#bca5b0', transparent: true, opacity: 0.32, depthWrite: false, fog: true }),
+      new THREE.SpriteMaterial({ map: cloudTexture, color: '#c6a697', transparent: true, opacity: 0.25, depthWrite: false, fog: true })
+    ]
+    var duskClouds = []
+    for (var cloudIndex = 0; cloudIndex < 10; cloudIndex++) {
+      var cloud = new THREE.Sprite(cloudMaterials[cloudIndex % cloudMaterials.length])
+      cloud.position.set((duskRandom() - 0.5) * 125, 15 + duskRandom() * 13, -35 - duskRandom() * 225)
+      var cloudScale = 12 + duskRandom() * 17
+      cloud.scale.set(cloudScale, cloudScale * (0.27 + duskRandom() * 0.08), 1)
       cloud.userData.speed = 0.08 + duskRandom() * 0.16
       duskClouds.push(cloud)
       duskScene.add(cloud)
@@ -1034,43 +1705,53 @@
 
     function configureDuskCamera () {
       duskCamera.aspect = aspect
-      duskCamera.fov = width < 720 ? 58 : 48
+      duskCamera.fov = width < 768 ? 53 : 46
       duskCamera.updateProjectionMatrix()
       if (!duskLastTime) {
-        duskCamera.position.set(duskRoadCenter(0), 10.3, 15)
-        duskCameraTarget.set(duskRoadCenter(-11), 0.8, -11)
+        duskCamera.position.set(duskRoadCenter(0), width < 768 ? 7.55 : 7.2, width < 768 ? 16.2 : 15.2)
+        duskCameraTarget.set(duskRoadCenter(width < 768 ? -17 : -18), width < 768 ? 0.35 : 0.2, width < 768 ? -17 : -18)
         duskCamera.lookAt(duskCameraTarget)
       }
     }
 
     function updateDusk (time) {
-      var delta = duskLastTime ? Math.min(0.05, (time - duskLastTime) / 1000) : 0.016
+      var delta = reducedMotion.matches ? 0 : (duskLastTime ? Math.min(0.05, (time - duskLastTime) / 1000) : 0.016)
+      var motionTime = reducedMotion.matches ? 0 : time
       duskLastTime = time
       duskElapsed += delta
-      duskTravel += delta * (width < 720 ? 5.2 : 6.6)
-      root.dataset.duskDistance = Math.floor(duskTravel).toString()
+      var travelSpeed = width < 768 ? 5.2 : 6.6
+      duskTravel += delta * travelSpeed
+      if (Math.floor(duskTravel) !== Number(root.dataset.duskDistance)) root.dataset.duskDistance = Math.floor(duskTravel).toString()
       var carZ = -duskTravel
       var carX = duskRoadCenter(carZ)
       var heading = duskRoadHeading(carZ)
+      var steering = clampDusk((duskRoadHeading(carZ - 4.2) - heading) * 2.25, -0.24, 0.24)
+      var bumpTriggered = false
       if (duskElapsed >= nextDuskBump) {
         duskBumpAge = 0
         duskBumpStrength = 0.2 + duskRandom() * 0.25
         nextDuskBump = duskElapsed + 3.5 + duskRandom() * 6.5
+        bumpTriggered = true
       }
       duskBumpAge += delta
       var regularBounce = Math.sin(duskTravel * 2.8) * 0.035 + Math.sin(duskTravel * 5.1) * 0.012
       var largeBounce = duskBumpStrength * Math.exp(-duskBumpAge * 2.8) * Math.abs(Math.sin(duskBumpAge * 11.5))
-      car.position.set(carX, 0.18 + regularBounce + largeBounce, carZ)
-      car.rotation.set(-largeBounce * 0.13 + Math.sin(duskTravel * 2.8) * 0.008, heading, Math.sin(duskTravel * 1.9) * 0.012)
-      for (var childIndex = 0; childIndex < car.children.length; childIndex++) {
-        if (car.children[childIndex].userData.wheel) car.children[childIndex].rotation.x -= delta * 9
-      }
+      car.position.set(carX, 0.2, carZ)
+      car.rotation.set(0, heading, -steering * 0.055)
+      carBodyRig.position.y = regularBounce + largeBounce
+      carBodyRig.rotation.x = -largeBounce * 0.16 + Math.sin(duskTravel * 2.8) * 0.009
+      carBodyRig.rotation.z = -steering * 0.16 + Math.sin(duskTravel * 1.9) * 0.01
+      for (var wheelIndex = 0; wheelIndex < wheelRolls.length; wheelIndex++) wheelRolls[wheelIndex].rotation.x -= delta * travelSpeed / (wheelRadius * carScale)
+      for (var steerIndex = 0; steerIndex < frontWheelSteers.length; steerIndex++) frontWheelSteers[steerIndex].rotation.y = steering
+      carShadow.position.set(carX, 0.205, carZ + 0.08)
+      carShadow.rotation.y = heading
+      rearGlow.intensity = 0.82 + Math.sin(motionTime * 0.006) * 0.12
 
       var minimumRoadZ = Infinity
       for (var roadIndex = 0; roadIndex < roadSegments.length; roadIndex++) minimumRoadZ = Math.min(minimumRoadZ, roadSegments[roadIndex].userData.worldZ)
       for (var recycleIndex = 0; recycleIndex < roadSegments.length; recycleIndex++) {
         var roadSegment = roadSegments[recycleIndex]
-        if (roadSegment.userData.worldZ > carZ + 45) {
+        if (roadSegment.userData.worldZ > carZ + 82) {
           minimumRoadZ -= roadLength
           positionRoadSegment(roadSegment, minimumRoadZ)
         }
@@ -1080,29 +1761,29 @@
           if (prop.userData.campfire) {
             for (var fireIndex = 0; fireIndex < prop.children.length; fireIndex++) {
               var fireChild = prop.children[fireIndex]
-              if (fireChild.userData.flame) fireChild.scale.y = 0.84 + Math.sin(time * 0.009 + fireIndex) * 0.2
-              if (fireChild.userData.fireLight) fireChild.intensity = 3.1 + Math.sin(time * 0.012) * 0.7
+              if (fireChild.userData.flame) fireChild.scale.y = 0.84 + Math.sin(motionTime * 0.009 + fireIndex) * 0.2
+              if (fireChild.userData.fireLight) fireChild.intensity = 3.1 + Math.sin(motionTime * 0.012) * 0.7
             }
           }
         }
       }
 
-      if (duskElapsed >= nextExhaust) {
-        spawnExhaust()
-        nextExhaust = duskElapsed + 2.2 + duskRandom() * 2.7
-      }
-      for (var puffIndex = exhaustPuffs.length - 1; puffIndex >= 0; puffIndex--) {
-        var puff = exhaustPuffs[puffIndex]
-        puff.userData.age += delta
-        puff.position.y += delta * 0.24
-        puff.position.x += puff.userData.drift * delta
-        puff.scale.setScalar(0.32 + puff.userData.age * 0.18)
-        if (puff.userData.age > 4.2 || puff.position.z > carZ + 18) {
-          duskScene.remove(puff)
-          exhaustPuffs.splice(puffIndex, 1)
+      var minimumTerrainZ = Infinity
+      for (var terrainIndex = 0; terrainIndex < duskTerrainChunks.length; terrainIndex++) minimumTerrainZ = Math.min(minimumTerrainZ, duskTerrainChunks[terrainIndex].userData.worldZ)
+      for (var terrainRecycleIndex = 0; terrainRecycleIndex < duskTerrainChunks.length; terrainRecycleIndex++) {
+        var terrainChunk = duskTerrainChunks[terrainRecycleIndex]
+        if (terrainChunk.userData.worldZ > carZ + 90) {
+          minimumTerrainZ -= duskTerrainLength
+          updateDuskTerrainChunk(terrainChunk, minimumTerrainZ)
         }
       }
-      root.dataset.duskExhaustCount = String(exhaustPuffs.length)
+
+      if (bumpTriggered) queueDuskExhaustBurst(true)
+      if (duskElapsed >= nextExhaustBurst && exhaustBurstRemaining === 0) {
+        queueDuskExhaustBurst(false)
+        nextExhaustBurst = duskElapsed + 0.68 + duskRandom() * 0.34
+      }
+      updateDuskExhaust(delta)
 
       if (duskElapsed >= nextTumbleweed) {
         if (duskRandom() < 0.28) spawnTumbleweed(carZ)
@@ -1111,7 +1792,7 @@
       for (var tumbleIndex = tumbleweeds.length - 1; tumbleIndex >= 0; tumbleIndex--) {
         var tumbleweed = tumbleweeds[tumbleIndex]
         tumbleweed.position.x += tumbleweed.userData.speed * delta
-        tumbleweed.position.y = tumbleweed.userData.baseY + Math.abs(Math.sin(time * 0.004 + tumbleIndex)) * 0.42
+        tumbleweed.position.y = tumbleweed.userData.baseY + Math.abs(Math.sin(motionTime * 0.004 + tumbleIndex)) * 0.42
         tumbleweed.rotation.x += delta * 4.2
         tumbleweed.rotation.z += delta * 2.7
         if (Math.abs(tumbleweed.position.x - duskRoadCenter(tumbleweed.position.z)) > 30 || tumbleweed.position.z > carZ + 24) {
@@ -1130,17 +1811,25 @@
         }
       }
 
-      duskGround.position.z = carZ - 125
-      duskSky.position.set(carX, 0, carZ)
-      duskSun.position.set(carX - 42, 21, carZ - 145)
-      duskMountainGroup.position.set(carX, 0, carZ - 175)
-      var pointerShiftX = pointerActive ? (pointerX / Math.max(1, width) - 0.5) * 1.1 : 0
-      var pointerShiftY = pointerActive ? (pointerY / Math.max(1, height) - 0.5) * 0.45 : 0
-      var cameraX = carX + Math.sin(heading) * 14 + pointerShiftX
-      var cameraZ = carZ + Math.cos(heading) * 15
-      var cameraDamping = 1 - Math.exp(-7.5 * delta)
-      duskCameraDesired.set(cameraX, 10.3 - pointerShiftY, cameraZ)
-      duskLookDesired.set(carX - Math.sin(heading) * 10, 0.8, carZ - Math.cos(heading) * 11)
+      duskSky.position.set(carX, 4, carZ)
+      duskSun.position.set(carX - 45, 16.5, carZ - 224)
+      duskSunHalo.position.copy(duskSun.position)
+      duskMountainGroup.position.set(carX, 0, carZ)
+      duskSunLight.position.set(carX - 44, 46, carZ - 78)
+      duskSunLight.target.position.set(carX, 0.5, carZ - 18)
+      duskRimLight.position.set(carX + 36, 20, carZ + 12)
+      duskRimLight.target.position.set(carX, 0.8, carZ)
+      var pointerShiftX = pointerActive ? (pointerX / Math.max(1, width) - 0.5) * 1.35 : 0
+      var pointerShiftY = pointerActive ? (pointerY / Math.max(1, height) - 0.5) * 0.52 : 0
+      var cameraDistance = width < 768 ? 16.2 : 15.2
+      var cameraHeight = width < 768 ? 7.55 : 7.2
+      var cameraLookAhead = width < 768 ? 17 : 18
+      var cameraX = carX + Math.sin(heading) * cameraDistance + pointerShiftX
+      var cameraZ = carZ + Math.cos(heading) * cameraDistance
+      var cameraDamping = delta > 0 ? 1 - Math.exp(-6.8 * delta) : 1
+      duskCameraDesired.set(cameraX, cameraHeight - pointerShiftY, cameraZ)
+      duskLookDesired.set(carX - Math.sin(heading) * cameraLookAhead, width < 768 ? 0.35 : 0.2, carZ - Math.cos(heading) * cameraLookAhead)
+      duskCameraFill.position.set(cameraX, cameraHeight + 1.5, cameraZ - 1)
       duskCamera.position.lerp(duskCameraDesired, cameraDamping)
       duskCameraTarget.lerp(duskLookDesired, cameraDamping)
       duskCamera.lookAt(duskCameraTarget)

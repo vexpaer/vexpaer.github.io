@@ -12,6 +12,8 @@ const required = [
   'css/vexpaer-home.css',
   'css/mindmap.css',
   'js/vexpaer-home.js',
+  'js/vendor/three.module.min.js',
+  'js/vendor/three.core.min.js',
   'vendor/mindmap/katex.min.css',
   'vendor/mindmap/mindmap.min.js',
   'files/background/bg15.jpg'
@@ -24,11 +26,13 @@ for (const path of required) {
 const exampleDirectory = resolve(root, '2026/01/18/组织工程_7.Artificial organ');
 const outlineHtml = await readFile(resolve(exampleDirectory, 'index.html'), 'utf8');
 const mindmapHtml = await readFile(resolve(exampleDirectory, 'mindmap/index.html'), 'utf8');
+const homeScript = await readFile(resolve(root, 'js/vexpaer-home.js'), 'utf8');
 
 function assertIncludes(content, expected, label) {
   if (!content.includes(expected)) throw new Error(`${label} is missing ${expected}.`);
 }
 
+assertIncludes(homeScript, "import('./vendor/three.module.min.js')", 'Homepage script');
 assertIncludes(outlineHtml, 'mindmap-mode-switch', 'Mindmap-enabled outline page');
 assertIncludes(outlineHtml, '/css/mindmap.css', 'Mindmap-enabled outline page');
 assertIncludes(outlineHtml, '/mindmap/', 'Mindmap-enabled outline page');

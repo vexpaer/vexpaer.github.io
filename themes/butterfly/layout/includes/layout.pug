@@ -1,12 +1,13 @@
 - var htmlClassHideAside = theme.aside.enable && theme.aside.hide ? 'hide-aside' : ''
 - var hideAside = !theme.aside.enable || page.aside === false ? 'hide-aside' : ''
 - var pageType = is_post() ? 'post' : 'page'
+- var isLanding = page.landing === true
 
 doctype html
 html(lang=config.language data-theme=theme.display_mode class=htmlClassHideAside)
   head
     include ./head.pug
-  body(class=is_home() ? 'vexpaer-home-page vexpaer-home-hero-visible' : '')
+  body(class=isLanding ? 'vexpaer-home-page vexpaer-home-hero-visible' : '')
     if theme.preloader
       !=partial('includes/loading/loading', {}, {cache: true})
 
@@ -19,16 +20,18 @@ html(lang=config.language data-theme=theme.display_mode class=htmlClassHideAside
       #body-wrap(class=pageType)
         include ./header/index.pug
 
-        if is_home()
+        if isLanding
+          include ./header/blog-gateway.pug
           include ./header/quick-access.pug
-
-        main#content-inner.layout(class=[hideAside, page.mindmap_page === true ? 'mindmap-layout' : ''])
-          if body
-            div!= body
-          else
-            block content
-            if theme.aside.enable && page.aside !== false
-              include widget/index.pug
+          include ./header/home-journey.pug
+        else
+          main#content-inner.layout(class=[hideAside, page.mindmap_page === true ? 'mindmap-layout' : ''])
+            if body
+              div!= body
+            else
+              block content
+              if theme.aside.enable && page.aside !== false
+                include widget/index.pug
 
         - var footerBg = theme.footer_bg
         if (footerBg)

@@ -1,5 +1,8 @@
+- var isLanding = page.landing === true
+- var isBlogIndex = is_home() && !isLanding
 - var pageTitle
 - if (is_archive()) pageTitle = _p('page.archives')
+- else if (isBlogIndex) pageTitle = '博客'
 - else if (is_tag()) pageTitle = _p('page.tag') + ': ' + page.tag
 - else if (is_category()) pageTitle = _p('page.category') + ': ' + page.category
 - else if (is_month()) pageTitle += ': ' + page.month + '/' + page.year
@@ -8,7 +11,7 @@
 - else pageTitle = page.title || config.title || ''
 
 - var isSubtitle = config.subtitle ? ' - ' + config.subtitle : ''
-- var tabTitle = is_home() || !pageTitle ? config.title + isSubtitle : pageTitle + ' | ' + config.title
+- var tabTitle = isLanding || !pageTitle ? config.title + isSubtitle : pageTitle + ' | ' + config.title
 
 - var pageKeywords  
 - if (page.keywords && Array.isArray(page.keywords))  
@@ -22,7 +25,7 @@
 
 - var pageAuthor = config.email ? config.author + ',' + config.email : config.author
 - var pageCopyright = config.copyright || config.author
-- var themeColor = is_home() ? '#0F0F44' : (theme.display_mode === 'dark' ? '#0d0d0d' : '#ffffff')
+- var themeColor = isLanding ? '#0F0F44' : (theme.display_mode === 'dark' ? '#0d0d0d' : '#ffffff')
 
 meta(charset='UTF-8')
 meta(http-equiv="X-UA-Compatible" content="IE=edge")
@@ -59,7 +62,7 @@ if page.mindmap === true
   link(rel='stylesheet', href=url_for('/css/mindmap.css'))
 if page.mindmap_page === true
   link(rel='stylesheet', href=url_for('/vendor/mindmap/katex.min.css'))
-if is_home()
+if isLanding
   link(rel='stylesheet', href=url_for('/css/vexpaer-home.css'))
   link(rel='modulepreload', href=url_for('/js/vendor/three.module.min.js'))
   link(rel='modulepreload', href=url_for('/js/vendor/three.core.min.js'))

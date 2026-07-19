@@ -6,6 +6,8 @@ const warningBytes = 1_000_000_000;
 const maxBytes = 1_073_741_824;
 const required = [
   'index.html',
+  'blog/index.html',
+  'blog/page/2/index.html',
   '2021/05/22/初中の英语笔记/index.html',
   '2026/01/18/组织工程_7.Artificial organ/index.html',
   '2026/01/18/组织工程_7.Artificial organ/mindmap/index.html',
@@ -27,12 +29,37 @@ const exampleDirectory = resolve(root, '2026/01/18/组织工程_7.Artificial org
 const outlineHtml = await readFile(resolve(exampleDirectory, 'index.html'), 'utf8');
 const mindmapHtml = await readFile(resolve(exampleDirectory, 'mindmap/index.html'), 'utf8');
 const homeScript = await readFile(resolve(root, 'js/vexpaer-home.js'), 'utf8');
+const landingHtml = await readFile(resolve(root, 'index.html'), 'utf8');
+const blogHtml = await readFile(resolve(root, 'blog/index.html'), 'utf8');
 
 function assertIncludes(content, expected, label) {
   if (!content.includes(expected)) throw new Error(`${label} is missing ${expected}.`);
 }
 
 assertIncludes(homeScript, "import('./vendor/three.module.min.js')", 'Homepage script');
+assertIncludes(homeScript, 'gsap.registerPlugin(ScrollTrigger)', 'Homepage script');
+assertIncludes(homeScript, 'gsap.matchMedia()', 'Homepage script');
+assertIncludes(landingHtml, 'id="vexpaer-home"', 'Landing page');
+assertIncludes(landingHtml, 'id="vexpaer-blog-gateway"', 'Landing page');
+assertIncludes(landingHtml, 'id="vexpaer-quick-access"', 'Landing page');
+assertIncludes(landingHtml, '/gsap@3.13.0/dist/gsap.min.js', 'Landing page');
+assertIncludes(landingHtml, '/gsap@3.13.0/dist/ScrollTrigger.min.js', 'Landing page');
+assertIncludes(blogHtml, 'id="recent-posts"', 'Blog index');
+
+const landingOrder = [
+  landingHtml.indexOf('id="vexpaer-home"'),
+  landingHtml.indexOf('id="vexpaer-blog-gateway"'),
+  landingHtml.indexOf('id="vexpaer-quick-access"')
+];
+if (landingOrder.some(index => index < 0) || !(landingOrder[0] < landingOrder[1] && landingOrder[1] < landingOrder[2])) {
+  throw new Error('Landing page sections are not ordered as hero, blog gateway, quick access.');
+}
+if (landingHtml.includes('id="recent-posts"')) {
+  throw new Error('Landing page must not contain the article index.');
+}
+if (blogHtml.includes('id="vexpaer-home"') || blogHtml.includes('id="vexpaer-blog-gateway"')) {
+  throw new Error('Blog index incorrectly received landing-page sections.');
+}
 assertIncludes(outlineHtml, 'mindmap-mode-switch', 'Mindmap-enabled outline page');
 assertIncludes(outlineHtml, '/css/mindmap.css', 'Mindmap-enabled outline page');
 assertIncludes(outlineHtml, '/mindmap/', 'Mindmap-enabled outline page');

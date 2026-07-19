@@ -1,0 +1,20 @@
+section#vexpaer-blog-gateway.vexpaer-blog-gateway(aria-labelledby='vexpaer-blog-gateway-title' data-home-panel='blog')
+  .vexpaer-blog-gateway__ambient(aria-hidden='true')
+    i
+    i
+    i
+  a.vexpaer-blog-gateway__card(href=url_for('/blog/') aria-describedby='vexpaer-blog-gateway-description')
+    span.vexpaer-blog-gateway__index(aria-hidden='true') 01 / JOURNAL
+    .vexpaer-blog-gateway__visual(aria-hidden='true')
+      span.vexpaer-blog-gateway__orbit
+        i
+        i
+        i
+      span.vexpaer-blog-gateway__monogram V
+    .vexpaer-blog-gateway__content
+      span.vexpaer-blog-gateway__eyebrow= site.posts.length + ' 篇文章 · 持续更新'
+      h2#vexpaer-blog-gateway-title 博客内容
+      p#vexpaer-blog-gateway-description 从最近更新继续阅读，或沿着标签与归档探索全部笔记。
+      span.vexpaer-blog-gateway__action
+        span 进入博客
+        i(aria-hidden='true') ↗

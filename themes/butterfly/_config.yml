@@ -8,6 +8,7 @@
 
 menu:
   主页: / || fas fa-home
+  博客: /blog/ || fas fa-pen-nib
   档: /archives/ || fas fa-archive
   标签: /tags/ || fas fa-tags
 #  分类: /categories/ || fas fa-folder-open
@@ -870,6 +871,8 @@ CDN:
   jquery: https://cdn.jsdelivr.net/npm/jquery@latest/dist/jquery.min.js
   main: /js/main.js
   utils: /js/utils.js
+  gsap: https://cdn.jsdelivr.net/npm/gsap@3.13.0/dist/gsap.min.js
+  gsap_scrolltrigger: https://cdn.jsdelivr.net/npm/gsap@3.13.0/dist/ScrollTrigger.min.js
 
   # pjax
   pjax: https://cdn.jsdelivr.net/npm/pjax/pjax.min.js

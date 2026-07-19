@@ -2976,6 +2976,207 @@
 
   document.addEventListener('visibilitychange', syncTuringTheme)
 
+  function initHomeMotion () {
+    var gsap = window.gsap
+    var ScrollTrigger = window.ScrollTrigger
+    if (!gsap || !ScrollTrigger) {
+      root.dataset.motion = 'fallback'
+      return
+    }
+
+    gsap.registerPlugin(ScrollTrigger)
+    root.dataset.motion = 'gsap'
+
+    var hero = document.getElementById('page-header')
+    var gateway = document.getElementById('vexpaer-blog-gateway')
+    var quickAccess = document.getElementById('vexpaer-quick-access')
+    var titleText = root.querySelector('.vexpaer-home-title__text')
+    var journey = document.querySelector('.vexpaer-home-journey')
+    var progress = journey && journey.querySelector('.vexpaer-home-journey__progress')
+    var journeyLinks = journey ? Array.prototype.slice.call(journey.querySelectorAll('[data-journey-target]')) : []
+    var panels = [
+      { name: 'hero', element: hero },
+      { name: 'blog', element: gateway },
+      { name: 'links', element: quickAccess }
+    ]
+
+    function setActivePanel (name) {
+      journeyLinks.forEach(function (link) {
+        var active = link.dataset.journeyTarget === name
+        link.classList.toggle('is-active', active)
+        if (active) link.setAttribute('aria-current', 'location')
+        else link.removeAttribute('aria-current')
+      })
+    }
+
+    panels.forEach(function (panel) {
+      if (!panel.element) return
+      ScrollTrigger.create({
+        id: 'vexpaer-panel-' + panel.name,
+        trigger: panel.element,
+        start: 'top center',
+        end: 'bottom center',
+        onToggle: function (self) {
+          if (self.isActive) setActivePanel(panel.name)
+        }
+      })
+    })
+
+    var motionMedia = gsap.matchMedia()
+    motionMedia.add({
+      desktop: '(min-width: 769px)',
+      mobile: '(max-width: 768px)',
+      reduceMotion: '(prefers-reduced-motion: reduce)'
+    }, function (context) {
+      var conditions = context.conditions
+      if (conditions.reduceMotion) return
+
+      if (titleText) {
+        gsap.from(titleText, {
+          autoAlpha: 0,
+          y: conditions.desktop ? 28 : 18,
+          scale: 0.96,
+          duration: 1.05,
+          ease: 'power3.out',
+          clearProps: 'transform,opacity,visibility'
+        })
+      }
+
+      if (gateway) {
+        var gatewayCopy = gateway.querySelectorAll('.vexpaer-blog-gateway__index, .vexpaer-blog-gateway__eyebrow, .vexpaer-blog-gateway__content h2, .vexpaer-blog-gateway__content p, .vexpaer-blog-gateway__action')
+        var gatewayVisual = gateway.querySelector('.vexpaer-blog-gateway__visual')
+        var gatewayOrbit = gateway.querySelector('.vexpaer-blog-gateway__orbit')
+        var ambient = gateway.querySelectorAll('.vexpaer-blog-gateway__ambient i')
+
+        gsap.from(gatewayCopy, {
+          autoAlpha: 0,
+          y: conditions.desktop ? 46 : 30,
+          duration: 0.88,
+          stagger: 0.085,
+          ease: 'power3.out',
+          clearProps: 'transform,opacity,visibility',
+          scrollTrigger: {
+            id: 'vexpaer-blog-copy',
+            trigger: gateway,
+            start: 'clamp(top 72%)',
+            once: true
+          }
+        })
+
+        if (gatewayVisual) {
+          gsap.from(gatewayVisual, {
+            autoAlpha: 0,
+            scale: 0.82,
+            rotationY: conditions.desktop ? -12 : 0,
+            duration: 1.1,
+            ease: 'power3.out',
+            clearProps: 'transform,opacity,visibility',
+            scrollTrigger: {
+              id: 'vexpaer-blog-visual',
+              trigger: gateway,
+              start: 'clamp(top 74%)',
+              once: true
+            }
+          })
+        }
+
+        if (gatewayOrbit) {
+          gsap.to(gatewayOrbit, {
+            rotation: conditions.desktop ? 18 : 9,
+            yPercent: -6,
+            ease: 'none',
+            scrollTrigger: {
+              id: 'vexpaer-blog-orbit',
+              trigger: gateway,
+              start: 'top bottom',
+              end: 'bottom top',
+              scrub: 0.8
+            }
+          })
+        }
+
+        if (ambient.length) {
+          gsap.to(ambient, {
+            y: function (index) { return (index + 1) * (conditions.desktop ? -24 : -10) },
+            stagger: 0.05,
+            ease: 'none',
+            scrollTrigger: {
+              id: 'vexpaer-blog-ambient',
+              trigger: gateway,
+              start: 'top bottom',
+              end: 'bottom top',
+              scrub: 1
+            }
+          })
+        }
+      }
+
+      if (quickAccess) {
+        var quickHeader = quickAccess.querySelectorAll('.vexpaer-quick-access__header > *')
+        var quickCards = quickAccess.querySelectorAll('.vexpaer-quick-card')
+
+        gsap.from(quickHeader, {
+          autoAlpha: 0,
+          y: 28,
+          duration: 0.75,
+          stagger: 0.09,
+          ease: 'power3.out',
+          clearProps: 'transform,opacity,visibility',
+          scrollTrigger: {
+            id: 'vexpaer-links-heading',
+            trigger: quickAccess,
+            start: 'clamp(top 74%)',
+            once: true
+          }
+        })
+
+        gsap.from(quickCards, {
+          autoAlpha: 0,
+          y: conditions.desktop ? 72 : 42,
+          scale: 0.965,
+          duration: 0.92,
+          stagger: conditions.desktop ? 0.13 : 0.08,
+          ease: 'power3.out',
+          clearProps: 'transform,opacity,visibility',
+          scrollTrigger: {
+            id: 'vexpaer-links-cards',
+            trigger: quickAccess,
+            start: 'clamp(top 66%)',
+            once: true
+          }
+        })
+      }
+
+      if (progress) {
+        var progressAxis = conditions.mobile ? 'scaleX' : 'scaleY'
+        var fromState = {}
+        var toState = {
+          ease: 'none',
+          scrollTrigger: {
+            id: 'vexpaer-journey-progress',
+            trigger: document.documentElement,
+            start: 'top top',
+            end: 'max',
+            scrub: 0.25
+          }
+        }
+        fromState[progressAxis] = 0
+        toState[progressAxis] = 1
+        gsap.fromTo(progress, fromState, toState)
+      }
+    })
+
+    window.addEventListener('load', function () {
+      ScrollTrigger.refresh()
+    }, { once: true })
+
+    if (document.fonts && document.fonts.ready) {
+      document.fonts.ready.then(function () {
+        ScrollTrigger.refresh()
+      })
+    }
+  }
+
   if ('ResizeObserver' in window) {
     new ResizeObserver(resize).observe(root)
   } else {
@@ -2995,6 +3196,13 @@
         document.body.classList.toggle('vexpaer-quick-access-visible', Boolean(entries[0] && entries[0].isIntersecting))
       }, { threshold: 0.05 }).observe(quickAccess)
     }
+
+    var blogGateway = document.getElementById('vexpaer-blog-gateway')
+    if (blogGateway) {
+      new IntersectionObserver(function (entries) {
+        document.body.classList.toggle('vexpaer-blog-gateway-visible', Boolean(entries[0] && entries[0].isIntersecting))
+      }, { threshold: 0.05 }).observe(blogGateway)
+    }
   }
 
   reducedMotion.addEventListener && reducedMotion.addEventListener('change', function () {
@@ -3006,5 +3214,6 @@
   resize()
   if (activeTheme === 'dusk') applyDuskTitleLayout()
   loadThreeLayer()
+  initHomeMotion()
   window.requestAnimationFrame(frame)
 })()

@@ -97,11 +97,8 @@
 }
 
 #vexpaer-home[data-scene='turing'] #vexpaer-home-title {
-  color: #eef4ff;
-  font-family: "Century Gothic", CenturyGothic, "Segoe UI", "PingFang SC", "Microsoft YaHei", sans-serif !important;
-  font-weight: 400;
-  letter-spacing: 0.08em;
-  text-shadow: 0 4px 28px rgba(0, 0, 0, 0.8);
+  opacity: 0;
+  visibility: hidden;
 }
 
 #vexpaer-home.is-switching #vexpaer-home-canvas,
@@ -273,11 +270,11 @@
 }
 
 #vexpaer-home[data-scene='space'] #vexpaer-home-title {
-  font-family: Bahnschrift, "Avenir Next", "Segoe UI", sans-serif !important;
-  font-stretch: condensed;
-  font-weight: 300;
-  letter-spacing: 0.16em;
-  text-shadow: 0 0 18px rgba(158, 183, 255, 0.22), 0 2px 14px rgba(0, 0, 0, 0.96), 0 10px 48px rgba(0, 0, 0, 0.72);
+  color: #eef4ff;
+  font-family: "Century Gothic", CenturyGothic, "Segoe UI", "PingFang SC", "Microsoft YaHei", sans-serif !important;
+  font-weight: 400;
+  letter-spacing: 0.08em;
+  text-shadow: 0 4px 28px rgba(0, 0, 0, 0.8);
 }
 
 #vexpaer-home[data-scene='space']:active {

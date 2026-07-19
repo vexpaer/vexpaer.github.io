@@ -1,0 +1,1140 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>图灵斑纹文字实验室</title>
+  <style>
+    :root {
+      color-scheme: dark;
+      --panel: rgba(12, 17, 25, 0.78);
+      --line: rgba(255,255,255,.13);
+      --text: #eef4ff;
+      --muted: #9ba8ba;
+      --accent: #8bd3ff;
+      --accent2: #b89cff;
+      --danger: #ff9ab0;
+    }
+
+    * { box-sizing: border-box; }
+
+    html, body {
+      margin: 0;
+      width: 100%;
+      height: 100%;
+      overflow: hidden;
+      background: #05070b;
+      color: var(--text);
+      font-family: "Century Gothic", CenturyGothic, "Segoe UI",
+                   "PingFang SC", "Microsoft YaHei", sans-serif;
+    }
+
+    #simCanvas {
+      position: fixed;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      image-rendering: auto;
+      background: #05070b;
+    }
+
+    .shade {
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      background:
+        radial-gradient(circle at 75% 20%, rgba(68, 118, 156, .12), transparent 36%),
+        linear-gradient(90deg, rgba(0,0,0,.4), transparent 42%);
+    }
+
+    .panel {
+      display: none;
+    }
+
+    h1 {
+      margin: 0 0 5px;
+      font-size: 20px;
+      letter-spacing: .02em;
+    }
+
+    .subtitle {
+      margin: 0 0 17px;
+      color: var(--muted);
+      font-size: 12px;
+      line-height: 1.55;
+    }
+
+    .grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+    }
+
+    label {
+      display: block;
+      color: var(--muted);
+      font-size: 11px;
+      letter-spacing: .04em;
+    }
+
+    input {
+      width: 100%;
+      margin-top: 6px;
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      outline: none;
+      color: var(--text);
+      background: rgba(255,255,255,.055);
+      transition: border-color .2s, background .2s;
+    }
+
+    input:focus {
+      border-color: rgba(139,211,255,.7);
+      background: rgba(255,255,255,.08);
+    }
+
+    input[type="number"] {
+      height: 40px;
+      padding: 0 11px;
+      font-variant-numeric: tabular-nums;
+    }
+
+    .text-input {
+      height: 44px;
+      padding: 0 13px;
+      font-size: 15px;
+      letter-spacing: .08em;
+    }
+
+    .section-title {
+      margin: 16px 0 8px;
+      color: var(--muted);
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: .12em;
+    }
+
+    .buttons {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 9px;
+      margin-top: 10px;
+    }
+
+    button {
+      min-height: 42px;
+      border: 1px solid var(--line);
+      border-radius: 13px;
+      padding: 0 12px;
+      color: var(--text);
+      background: rgba(255,255,255,.065);
+      font: inherit;
+      font-size: 13px;
+      cursor: pointer;
+      transition: transform .15s, background .15s, border-color .15s;
+    }
+
+    button:hover {
+      transform: translateY(-1px);
+      background: rgba(255,255,255,.11);
+      border-color: rgba(255,255,255,.22);
+    }
+
+    button:active { transform: translateY(0) scale(.985); }
+
+    .primary {
+      grid-column: 1 / -1;
+      color: #06121b;
+      font-weight: 700;
+      background: linear-gradient(135deg, var(--accent), var(--accent2));
+      border: none;
+    }
+
+    .primary:hover { background: linear-gradient(135deg, #a9e1ff, #c7b5ff); }
+
+    .stats {
+      display: grid;
+      grid-template-columns: 1fr auto;
+      gap: 6px 10px;
+      margin-top: 14px;
+      padding-top: 13px;
+      border-top: 1px solid var(--line);
+      color: var(--muted);
+      font-size: 11px;
+    }
+
+    .stats strong {
+      color: var(--text);
+      font-weight: 600;
+      font-variant-numeric: tabular-nums;
+    }
+
+    .hint {
+      margin: 13px 0 0;
+      color: var(--muted);
+      font-size: 11px;
+      line-height: 1.55;
+    }
+
+    .toast {
+      position: fixed;
+      left: 50%;
+      bottom: 25px;
+      transform: translate(-50%, 16px);
+      opacity: 0;
+      pointer-events: none;
+      padding: 10px 15px;
+      border-radius: 999px;
+      border: 1px solid var(--line);
+      background: rgba(10, 14, 20, .78);
+      color: var(--text);
+      backdrop-filter: blur(14px);
+      font-size: 12px;
+      transition: opacity .24s, transform .24s;
+    }
+
+    .toast.show {
+      opacity: 1;
+      transform: translate(-50%, 0);
+    }
+
+  </style>
+</head>
+<body>
+  <canvas id="simCanvas"></canvas>
+  <div class="shade"></div>
+
+  <main class="panel">
+    <h1>图灵斑纹文字实验室</h1>
+    <p class="subtitle">Gray–Scott 反应扩散模型。画面固定为黑色底，彩色纹路自动扩散并在每轮切换为新的随机颜色。</p>
+
+    <div class="grid">
+      <label>
+        Du · 激活物扩散
+        <input id="du" type="number" min="0" max="0.75" step="0.001" value="0.504">
+      </label>
+      <label>
+        Dv · 抑制物扩散
+        <input id="dv" type="number" min="0" max="0.75" step="0.001" value="0.252">
+      </label>
+      <label>
+        F · 补给率
+        <input id="feed" type="number" min="0" max="0.1" step="0.0001" value="0.0290">
+      </label>
+      <label>
+        k · 清除率
+        <input id="kill" type="number" min="0" max="0.1" step="0.0001" value="0.0570">
+      </label>
+    </div>
+
+    <div class="section-title">抑制剂文字</div>
+    <input id="textInput" class="text-input" type="text" maxlength="24"
+           value="v e x p a e r" placeholder="输入字母或文字">
+
+    <div class="grid" style="margin-top: 10px;">
+      <label>
+        字号 · 屏幕像素
+        <input id="fontSizeInput" type="number" min="16" max="600" step="1" value="120">
+      </label>
+      <label>
+        抑制剂时长 · 秒
+        <input id="inhibitorDurationInput" type="number" min="0.2" max="30" step="0.1" value="3.6">
+      </label>
+      <label>
+        生长剂时长 · 秒
+        <input id="growthDurationInput" type="number" min="0.2" max="30" step="0.1" value="3.6">
+      </label>
+      <label>
+        渐变时间 · 秒
+        <input id="fadeDurationInput" type="number" min="0.05" max="10" step="0.05" value="1.2">
+      </label>
+    </div>
+
+    <div class="buttons">
+      <button id="randomBtn">随机参数</button>
+      <button id="resetBtn">重新扩散</button>
+      <button id="showTextBtn" class="primary">显示字母</button>
+    </div>
+
+    <div class="stats">
+      <span>模拟网格</span><strong id="gridStat">—</strong>
+      <span>每帧迭代</span><strong id="speedStat">—</strong>
+      <span>状态</span><strong id="stateStat">运行中</strong>
+    </div>
+
+    <p class="hint">
+      模拟网格宽高均为原版 2 倍。Du、Dv、时间步长和反应倍率已恢复为原来的稳定组合；桌面端平均每帧迭代降至 2.25 次，并通过热循环优化与文字效果合并计算降低卡顿。完整文字始终限制在可见画面内。
+    </p>
+  </main>
+
+  <div id="toast" class="toast"></div>
+
+<script>
+(() => {
+  "use strict";
+
+  const canvas = document.getElementById("simCanvas");
+  const ctx = canvas.getContext("2d", { alpha: false });
+
+  const duInput = document.getElementById("du");
+  const dvInput = document.getElementById("dv");
+  const feedInput = document.getElementById("feed");
+  const killInput = document.getElementById("kill");
+  const textInput = document.getElementById("textInput");
+  const fontSizeInput = document.getElementById("fontSizeInput");
+  const inhibitorDurationInput = document.getElementById("inhibitorDurationInput");
+  const growthDurationInput = document.getElementById("growthDurationInput");
+  const fadeDurationInput = document.getElementById("fadeDurationInput");
+
+  const randomBtn = document.getElementById("randomBtn");
+  const resetBtn = document.getElementById("resetBtn");
+  const showTextBtn = document.getElementById("showTextBtn");
+
+  const gridStat = document.getElementById("gridStat");
+  const speedStat = document.getElementById("speedStat");
+  const stateStat = document.getElementById("stateStat");
+  const toast = document.getElementById("toast");
+
+  const textMaskCanvas = document.createElement("canvas");
+  const textMaskCtx = textMaskCanvas.getContext("2d", { willReadFrequently: true });
+  const growthMaskCanvas = document.createElement("canvas");
+  const growthMaskCtx = growthMaskCanvas.getContext("2d", { willReadFrequently: true });
+  const fillMaskCanvas = document.createElement("canvas");
+  const fillMaskCtx = fillMaskCanvas.getContext("2d", { willReadFrequently: true });
+  const renderCanvas = document.createElement("canvas");
+  const renderCtx = renderCanvas.getContext("2d");
+
+  let W = 240;
+  let H = 150;
+  let u, v, uNext, vNext;
+  let imageData;
+  const displayZoom = 1.5;
+  const simulationSpeedMultiplier = 1.0;
+  // 保留原来的稳定时间步长与反应倍率，避免改变扩散/反应比例。
+  // 降负载主要依靠减少迭代次数和优化每个网格点的热循环。
+  const modelTimeStep = 2.2;
+  const reactionSpeedMultiplier = 1.5;
+  const patternLineWidthScale = 1.2;
+  let baseIterationsPerFrame = 2.25;
+  let iterationsPerFrame = 2.25;
+  let stepRemainder = 0;
+  let lastTime = performance.now();
+  let fps = 60;
+  let running = window.parent === window;
+  let toastTimer = null;
+  let activeTextEffects = [];
+
+  let params = {
+    du: 0.504,
+    dv: 0.252,
+    feed: 0.0290,
+    kill: 0.0570
+  };
+
+  let runtimeParams = { ...params };
+
+  function hslToRgb(h, s, l) {
+    const hue2rgb = (p, q, t) => {
+      if (t < 0) t += 1;
+      if (t > 1) t -= 1;
+      if (t < 1 / 6) return p + (q - p) * 6 * t;
+      if (t < 1 / 2) return q;
+      if (t < 2 / 3) return p + (q - p) * (2 / 3 - t) * 6;
+      return p;
+    };
+
+    if (s === 0) {
+      const gray = Math.round(l * 255);
+      return [gray, gray, gray];
+    }
+
+    const q = l < 0.5 ? l * (1 + s) : l + s - l * s;
+    const p = 2 * l - q;
+
+    return [
+      Math.round(hue2rgb(p, q, h + 1 / 3) * 255),
+      Math.round(hue2rgb(p, q, h) * 255),
+      Math.round(hue2rgb(p, q, h - 1 / 3) * 255)
+    ];
+  }
+
+  function randomTheme() {
+    // 固定黑色背景；每轮只随机扩散纹路的色相、饱和度与亮度。
+    const hue = Math.random();
+    const saturation = 0.72 + Math.random() * 0.28;
+    const lightness = 0.50 + Math.random() * 0.18;
+    const ink = hslToRgb(hue, saturation, lightness);
+
+    // 文字外缘使用同色相、更亮的颜色。
+    const ring = hslToRgb(
+      (hue + (Math.random() - 0.5) * 0.035 + 1) % 1,
+      Math.max(0.55, saturation - 0.10),
+      Math.min(0.82, lightness + 0.18)
+    );
+
+    return {
+      bg: [0, 0, 0],
+      ring: [...ink],
+      ink
+    };
+  }
+
+  let currentTheme = randomTheme();
+  let renderPalette = {
+    bg: [...currentTheme.bg],
+    ring: [...currentTheme.ring],
+    ink: [...currentTheme.ink]
+  };
+
+  let autoCycle = {
+    phase: "diffuse",
+    phaseStartedAt: performance.now(),
+    nextTheme: randomTheme(),
+    fluxSeed: Math.random() * 1000
+  };
+
+  function clamp(n, min, max) {
+    return Math.max(min, Math.min(max, n));
+  }
+
+  function round(n, digits) {
+    const p = 10 ** digits;
+    return Math.round(n * p) / p;
+  }
+
+  function lerp(a, b, t) {
+    return a + (b - a) * t;
+  }
+
+  function smooth01(t) {
+    t = clamp(t, 0, 1);
+    return t * t * (3 - 2 * t);
+  }
+
+  // 0 → 淡入 → 维持 → 淡出 → 0
+  function effectEnvelope(elapsed, duration, fadeDuration) {
+    if (elapsed < 0 || elapsed > duration) return 0;
+
+    const fade = Math.min(
+      Math.max(1, fadeDuration),
+      duration * 0.5
+    );
+
+    if (elapsed < fade) {
+      return smooth01(elapsed / fade);
+    }
+
+    if (elapsed > duration - fade) {
+      return smooth01((duration - elapsed) / fade);
+    }
+
+    return 1;
+  }
+
+  function showToast(message) {
+    toast.textContent = message;
+    toast.classList.add("show");
+    clearTimeout(toastTimer);
+    toastTimer = setTimeout(() => toast.classList.remove("show"), 1300);
+  }
+
+  function mixColor(a, b, t) {
+    return [
+      lerp(a[0], b[0], t),
+      lerp(a[1], b[1], t),
+      lerp(a[2], b[2], t)
+    ];
+  }
+
+  function clampColor(color) {
+    return color.map(v => clamp(v, 0, 255));
+  }
+
+  function restartAutoCycle(now = performance.now()) {
+    autoCycle.phase = "diffuse";
+    autoCycle.phaseStartedAt = now;
+    autoCycle.nextTheme = randomTheme();
+    autoCycle.fluxSeed = Math.random() * 1000;
+    stateStat.textContent = "自动扩散";
+  }
+
+  function getAutoTextValue() {
+    return (textInput.value || "").trim() || "TURING";
+  }
+
+  function getAutoFadeMs() {
+    const requestedFade = clamp(
+      Number(fadeDurationInput.value) || 1.2,
+      0.05,
+      10
+    ) * 1000;
+
+    // 自动模式至少使用 0.9 秒渐变，最多 1.6 秒，让文字消散更慢。
+    return clamp(requestedFade, 900, 1600);
+  }
+
+  function updateAutoCycle(now) {
+    runtimeParams = { ...params };
+
+    const phaseTheme = currentTheme;
+    renderPalette.bg = [...phaseTheme.bg];
+    renderPalette.ring = [...phaseTheme.ring];
+    renderPalette.ink = [...phaseTheme.ink];
+
+    const elapsed = now - autoCycle.phaseStartedAt;
+
+    if (autoCycle.phase === "diffuse") {
+      stateStat.textContent = "自动扩散";
+      if (elapsed >= 3000) {
+        drawTextMask(getAutoTextValue(), {
+          inhibitorDurationMs: 3600,
+          growthDurationMs: 3600,
+          fadeDurationMs: getAutoFadeMs()
+        });
+        autoCycle.phase = "text";
+        autoCycle.phaseStartedAt = now;
+        stateStat.textContent = "自动文字";
+      }
+      return;
+    }
+
+    if (autoCycle.phase === "text") {
+      stateStat.textContent = "自动文字";
+      if (elapsed >= 1000) {
+        autoCycle.phase = "hold";
+        autoCycle.phaseStartedAt = now;
+        stateStat.textContent = "停留";
+      }
+      return;
+    }
+
+    if (autoCycle.phase === "hold") {
+      stateStat.textContent = "停留";
+      if (elapsed >= 3000) {
+        autoCycle.phase = "collapse";
+        autoCycle.phaseStartedAt = now;
+        autoCycle.nextTheme = randomTheme();
+        autoCycle.fluxSeed = Math.random() * 1000;
+        stateStat.textContent = "清除/换色";
+      }
+      return;
+    }
+
+    if (autoCycle.phase === "collapse") {
+      const t = clamp(elapsed / 1500, 0, 1);
+      const clearT = smooth01(t);
+
+      // 通过提高 kill 让画面在约 1.5 秒内逐渐消退。
+      runtimeParams.kill = lerp(params.kill, params.kill + (0.105 - params.kill) * 0.5, clearT);
+
+      const nextTheme = autoCycle.nextTheme;
+      const blendToNext = smooth01(Math.max(0, t - 0.72) / 0.28);
+
+      // 用平滑的整体色彩波动替代逐帧硬闪烁。
+      const fluxA = Math.sin(now * 0.012 + autoCycle.fluxSeed);
+      const fluxB = Math.sin(now * 0.019 + autoCycle.fluxSeed * 1.73 + 1.4);
+      const fluxC = Math.sin(now * 0.027 + autoCycle.fluxSeed * 0.83 + 2.1);
+      const fluxAmount = 30 * clearT;
+
+      // 背景始终保持纯黑，只让扩散纹路与文字边缘发生颜色波动。
+      const jitterBg = [0, 0, 0];
+
+      const jitterRing = clampColor([
+        phaseTheme.ink[0] + fluxB * fluxAmount * 0.72,
+        phaseTheme.ink[1] + fluxC * fluxAmount * 0.72,
+        phaseTheme.ink[2] + fluxA * fluxAmount * 0.72
+      ]);
+
+      const jitterInk = clampColor([
+        phaseTheme.ink[0] + fluxC * fluxAmount * 0.22,
+        phaseTheme.ink[1] + fluxA * fluxAmount * 0.22,
+        phaseTheme.ink[2] + fluxB * fluxAmount * 0.22
+      ]);
+
+      renderPalette.bg = [0, 0, 0];
+      renderPalette.ring = clampColor(mixColor(jitterRing, nextTheme.ring, blendToNext));
+      renderPalette.ink = clampColor(mixColor(jitterInk, nextTheme.ink, blendToNext));
+
+      stateStat.textContent = "清除/换色";
+
+      if (elapsed >= 1500) {
+        currentTheme = autoCycle.nextTheme;
+        initialize();
+      }
+    }
+  }
+
+  function updateParams() {
+    params.du = clamp(Number(duInput.value) || 0, 0, 0.75);
+    params.dv = clamp(Number(dvInput.value) || 0, 0, 0.75);
+    params.feed = clamp(Number(feedInput.value) || 0, 0, 0.1);
+    params.kill = clamp(Number(killInput.value) || 0, 0, 0.1);
+  }
+
+  function fitCanvas() {
+    const dpr = Math.min(window.devicePixelRatio || 1, 2.5);
+    canvas.width = Math.floor(innerWidth * dpr);
+    canvas.height = Math.floor(innerHeight * dpr);
+
+    // 在当前版本基础上，将反应扩散内部网格的宽和高各提升到 4/3 倍；相对原版即为 2 倍，总单元数约为原版 4 倍。
+    const targetCells = innerWidth < 700 ? 168000 : 336000;
+    const aspect = canvas.width / canvas.height;
+    W = Math.max(382, Math.round(Math.sqrt(targetCells * aspect)));
+    H = Math.max(270, Math.round(W / aspect));
+
+    // 偶数网格可使中心种子更对称。
+    W -= W % 2;
+    H -= H % 2;
+
+    // 高分辨率下进一步减少全网格扫描：桌面端平均 1.75 次/帧，移动端 1 次/帧。
+    // 小数迭代由累加器分配到相邻帧，不会固定跳帧。
+    baseIterationsPerFrame = innerWidth < 700 ? 1.5 : 2.25;
+    iterationsPerFrame = baseIterationsPerFrame * simulationSpeedMultiplier;
+    stepRemainder = 0;
+
+    gridStat.textContent = `${W} × ${H}`;
+    speedStat.textContent =
+      `${iterationsPerFrame.toFixed(2)} 次/帧 · 单步 ${modelTimeStep.toFixed(1)}×`;
+    initialize();
+  }
+
+  function initialize() {
+    activeTextEffects = [];
+    stepRemainder = 0;
+    const size = W * H;
+    u = new Float32Array(size);
+    v = new Float32Array(size);
+    uNext = new Float32Array(size);
+    vNext = new Float32Array(size);
+    // 全屏加入极弱随机扰动。
+    // 单靠噪声不一定能越过 Gray–Scott 的有限振幅阈值，
+    // 因此下面还会均匀加入多枚较强种子。
+    for (let i = 0; i < size; i++) {
+      const noise = Math.random() * 0.035;
+      v[i] = noise;
+      u[i] = 1 - noise * 0.45;
+    }
+
+    // 密集而均匀的随机种子，使迷宫纹较快覆盖整个屏幕。
+    // 网格总面积约为原版 4 倍；种子数量随 W × H 自动增长，以保持屏幕上的种子密度不变。
+    const count = Math.max(18, Math.round((W * H) / 2025));
+    for (let i = 0; i < count; i++) {
+      seedCircle(
+        Math.random() * W,
+        Math.random() * H,
+        2.7 + Math.random() * 5.7,
+        0.52 + Math.random() * 0.32
+      );
+    }
+
+    renderCanvas.width = W;
+    renderCanvas.height = H;
+    imageData = renderCtx.createImageData(W, H);
+    restartAutoCycle(performance.now());
+  }
+
+  function seedCircle(cx, cy, radius, strength = 0.8) {
+    if (!u || !v) return;
+    const minX = Math.max(0, Math.floor(cx - radius));
+    const maxX = Math.min(W - 1, Math.ceil(cx + radius));
+    const minY = Math.max(0, Math.floor(cy - radius));
+    const maxY = Math.min(H - 1, Math.ceil(cy + radius));
+    const r2 = radius * radius;
+
+    for (let y = minY; y <= maxY; y++) {
+      for (let x = minX; x <= maxX; x++) {
+        const dx = x - cx;
+        const dy = y - cy;
+        if (dx * dx + dy * dy <= r2) {
+          const i = y * W + x;
+          const falloff = 1 - Math.sqrt(dx * dx + dy * dy) / radius;
+          v[i] = Math.max(v[i], strength * (0.72 + falloff * 0.28));
+          u[i] = Math.min(u[i], 0.28);
+        }
+      }
+    }
+  }
+
+  function step() {
+    const { du, dv, feed, kill } = runtimeParams;
+
+    // 这些值在一次 step 内不变，提前计算可显著减少高分辨率热循环中的乘法。
+    const duStep = Math.min(du * modelTimeStep, 1.20);
+    const dvStep = Math.min(dv * modelTimeStep, 1.20);
+    const reactionScale = reactionSpeedMultiplier * modelTimeStep;
+    const acceleratedFeed = feed * reactionScale;
+    const acceleratedLoss = (feed + kill) * reactionScale;
+
+    for (let y = 0; y < H; y++) {
+      const ym = y === 0 ? H - 1 : y - 1;
+      const yp = y === H - 1 ? 0 : y + 1;
+      const row = y * W;
+      const rowM = ym * W;
+      const rowP = yp * W;
+
+      for (let x = 0; x < W; x++) {
+        const xm = x === 0 ? W - 1 : x - 1;
+        const xp = x === W - 1 ? 0 : x + 1;
+
+        const i = row + x;
+        const cU = u[i];
+        const cV = v[i];
+
+        // 预先缓存行偏移，减少高分辨率下每个网格点的重复乘法。
+        const lapU =
+          -cU +
+          0.20 * (u[row + xm] + u[row + xp] + u[rowM + x] + u[rowP + x]) +
+          0.05 * (u[rowM + xm] + u[rowM + xp] + u[rowP + xm] + u[rowP + xp]);
+
+        const lapV =
+          -cV +
+          0.20 * (v[row + xm] + v[row + xp] + v[rowM + x] + v[rowP + x]) +
+          0.05 * (v[rowM + xm] + v[rowM + xp] + v[rowP + xm] + v[rowP + xp]);
+
+        const reaction = cU * cV * cV * reactionScale;
+        const nextU = cU + (duStep * lapU - reaction + acceleratedFeed * (1 - cU));
+        const nextV = cV + (dvStep * lapV + reaction - acceleratedLoss * cV);
+
+        // 热循环内使用内联限幅，避免每个单元重复调用 clamp()。
+        uNext[i] = nextU < 0 ? 0 : (nextU > 1 ? 1 : nextU);
+        vNext[i] = nextV < 0 ? 0 : (nextV > 1 ? 1 : nextV);
+      }
+    }
+
+    [u, uNext] = [uNext, u];
+    [v, vNext] = [vNext, v];
+  }
+
+  function render() {
+    const data = imageData.data;
+
+    for (let i = 0, p = 0; i < u.length; i++, p += 4) {
+      // 该组合在迷宫参数下会突出 V 富集的细长条纹。
+      let ink = clamp((v[i] - u[i] * 0.36 + 0.28) * 2.05, 0, 1);
+      ink = ink * ink * (3 - 2 * ink);
+      ink = Math.pow(ink, 0.88);
+
+      // 通过轻微下调暗纹阈值，让图案线条视觉上约加宽到原来的 1.2 倍。
+      const widthBias = (patternLineWidthScale - 1) * 0.18;
+      ink = clamp(ink + widthBias, 0, 1);
+
+      // 使用当前主题的底色 / 纹路色。
+      data[p]     = Math.round(lerp(renderPalette.bg[0], renderPalette.ink[0], ink));
+      data[p + 1] = Math.round(lerp(renderPalette.bg[1], renderPalette.ink[1], ink));
+      data[p + 2] = Math.round(lerp(renderPalette.bg[2], renderPalette.ink[2], ink));
+      data[p + 3] = 255;
+    }
+
+    // 显示层也使用相同的淡入/淡出包络，并用 alpha 混合柔化边缘。
+    const now = performance.now();
+    for (const effect of activeTextEffects) {
+      const elapsed = now - effect.startedAt;
+      const growthLevel = effectEnvelope(
+        elapsed,
+        effect.growthDuration,
+        effect.growthFade
+      );
+      const inhibitorLevel = effectEnvelope(
+        elapsed,
+        effect.inhibitorDuration,
+        effect.inhibitorFade
+      );
+
+      for (let i = 0, p = 0; i < u.length; i++, p += 4) {
+        // 不再绘制独立外环；字形外侧直接保留原有彩色扩散纹理。
+
+        // 黑色字面最后混合，但保留柔和的抗锯齿与模糊过渡。
+        if (inhibitorLevel > 0 && effect.inhibitorMask[i] > 0.002) {
+          const a = Math.pow(smooth01(effect.inhibitorMask[i]), 0.92) * inhibitorLevel * 0.90;
+          data[p] = Math.round(lerp(data[p], 0, a));
+          data[p + 1] = Math.round(lerp(data[p + 1], 0, a));
+          data[p + 2] = Math.round(lerp(data[p + 2], 0, a));
+        }
+      }
+    }
+
+    renderCtx.putImageData(imageData, 0, 0);
+
+    ctx.imageSmoothingEnabled = true;
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+    const zoomW = canvas.width * displayZoom;
+    const zoomH = canvas.height * displayZoom;
+    const offsetX = (canvas.width - zoomW) * 0.5;
+    const offsetY = (canvas.height - zoomH) * 0.5;
+
+    // 只放大显示层，不改内部模拟参数与文字参数。
+    ctx.drawImage(renderCanvas, offsetX, offsetY, zoomW, zoomH);
+  }
+
+  function drawTextMask(text, overrides = {}) {
+    const maskScale = 2;
+    const maskW = W * maskScale;
+    const maskH = H * maskScale;
+
+    textMaskCanvas.width = maskW;
+    textMaskCanvas.height = maskH;
+    growthMaskCanvas.width = maskW;
+    growthMaskCanvas.height = maskH;
+    fillMaskCanvas.width = maskW;
+    fillMaskCanvas.height = maskH;
+
+    for (const c of [textMaskCtx, growthMaskCtx, fillMaskCtx]) {
+      c.setTransform(1, 0, 0, 1, 0, 0);
+      c.clearRect(0, 0, maskW, maskH);
+      c.scale(maskScale, maskScale);
+    }
+
+    // 用户输入的是屏幕像素，转换到内部模拟网格的字号。
+    const requestedScreenPx = clamp(Number(fontSizeInput.value) || 120, 16, 600);
+    let fontSize = requestedScreenPx * H / Math.max(1, innerHeight);
+    fontSize = clamp(fontSize, 8, H * 0.78);
+
+    const setSharedTextStyle = (targetCtx, lineWidth) => {
+      targetCtx.strokeStyle = "#fff";
+      targetCtx.lineWidth = lineWidth;
+      targetCtx.lineJoin = "round";
+      targetCtx.lineCap = "round";
+      targetCtx.textAlign = "center";
+      targetCtx.textBaseline = "middle";
+      targetCtx.font = `400 ${fontSize}px "Century Gothic", CenturyGothic, Arial, sans-serif`;
+    };
+
+    // 超采样后适度柔化，减少锯齿。
+    const coreWidth = Math.max(0.50, 0.62 * H / 150);
+    const outerWidth = Math.max(3.0, 4.2 * H / 150);
+    const maskBlur = Math.max(0.85, 1.35 * H / 150);
+
+    setSharedTextStyle(textMaskCtx, coreWidth);
+    setSharedTextStyle(growthMaskCtx, outerWidth);
+    textMaskCtx.filter = `blur(${maskBlur * 0.55}px)`;
+    growthMaskCtx.filter = `blur(${maskBlur}px)`;
+
+    fillMaskCtx.fillStyle = "#fff";
+    fillMaskCtx.textAlign = "center";
+    fillMaskCtx.textBaseline = "middle";
+    fillMaskCtx.font = `400 ${fontSize}px "Century Gothic", CenturyGothic, Arial, sans-serif`;
+    fillMaskCtx.filter = `blur(${maskBlur * 0.95}px)`;
+
+    // 显示层会放大 displayZoom 倍，因此屏幕实际可见的只是内部网格中央区域。
+    // 按旋转后的包围盒缩放并限制中心坐标，确保完整文字始终留在可见页面内。
+    const visibleW = W / displayZoom;
+    const visibleH = H / displayZoom;
+    const visibleLeft = (W - visibleW) * 0.5;
+    const visibleTop = (H - visibleH) * 0.5;
+    const angle = (Math.random() - 0.5) * 0.28;
+    const absCos = Math.abs(Math.cos(angle));
+    const absSin = Math.abs(Math.sin(angle));
+    const safePadding = Math.max(4, outerWidth * 0.65 + maskBlur * 2.5);
+
+    let metrics;
+    let textW;
+    let textH;
+    let rotatedHalfW;
+    let rotatedHalfH;
+
+    while (fontSize > 6) {
+      metrics = textMaskCtx.measureText(text);
+      textW = Math.max(1, metrics.width);
+      textH = Math.max(
+        fontSize,
+        (metrics.actualBoundingBoxAscent || fontSize * 0.75) +
+        (metrics.actualBoundingBoxDescent || fontSize * 0.25)
+      );
+
+      const halfW = textW * 0.5 + outerWidth * 0.5 + maskBlur * 2;
+      const halfH = textH * 0.5 + outerWidth * 0.5 + maskBlur * 2;
+      rotatedHalfW = halfW * absCos + halfH * absSin;
+      rotatedHalfH = halfW * absSin + halfH * absCos;
+
+      if (
+        rotatedHalfW <= visibleW * 0.5 - safePadding &&
+        rotatedHalfH <= visibleH * 0.5 - safePadding
+      ) break;
+
+      fontSize *= 0.94;
+      textMaskCtx.font = `400 ${fontSize}px "Century Gothic", CenturyGothic, Arial, sans-serif`;
+      growthMaskCtx.font = `400 ${fontSize}px "Century Gothic", CenturyGothic, Arial, sans-serif`;
+      fillMaskCtx.font = `400 ${fontSize}px "Century Gothic", CenturyGothic, Arial, sans-serif`;
+    }
+
+    const minX = visibleLeft + safePadding + rotatedHalfW;
+    const maxX = visibleLeft + visibleW - safePadding - rotatedHalfW;
+    const minY = visibleTop + safePadding + rotatedHalfH;
+    const maxY = visibleTop + visibleH - safePadding - rotatedHalfH;
+    const x = maxX > minX ? minX + Math.random() * (maxX - minX) : W * 0.5;
+    const y = maxY > minY ? minY + Math.random() * (maxY - minY) : H * 0.5;
+
+    for (const targetCtx of [growthMaskCtx, textMaskCtx]) {
+      targetCtx.save();
+      targetCtx.translate(x, y);
+      targetCtx.rotate(angle);
+      targetCtx.strokeText(text, 0, 0);
+      targetCtx.restore();
+    }
+
+    fillMaskCtx.save();
+    fillMaskCtx.translate(x, y);
+    fillMaskCtx.rotate(angle);
+    fillMaskCtx.fillText(text, 0, 0);
+    fillMaskCtx.restore();
+
+    const inhibitorPixels = textMaskCtx.getImageData(0, 0, maskW, maskH).data;
+    const growthPixels = growthMaskCtx.getImageData(0, 0, maskW, maskH).data;
+    const fillPixels = fillMaskCtx.getImageData(0, 0, maskW, maskH).data;
+    const inhibitorMask = new Float32Array(W * H);
+    const growthMask = new Float32Array(W * H);
+
+    // 将 2x 超采样蒙版回采样到模拟网格，得到更平滑的 alpha。
+    for (let y0 = 0; y0 < H; y0++) {
+      for (let x0 = 0; x0 < W; x0++) {
+        let inhibitorSum = 0;
+        let broadSum = 0;
+        let fillSum = 0;
+
+        for (let sy = 0; sy < maskScale; sy++) {
+          for (let sx = 0; sx < maskScale; sx++) {
+            const hx = x0 * maskScale + sx;
+            const hy = y0 * maskScale + sy;
+            const p = (hy * maskW + hx) * 4;
+            inhibitorSum += inhibitorPixels[p + 3] / 255;
+            broadSum += growthPixels[p + 3] / 255;
+            fillSum += fillPixels[p + 3] / 255;
+          }
+        }
+
+        const sampleCount = maskScale * maskScale;
+        const inhibitorAlpha = inhibitorSum / sampleCount;
+        const broadAlpha = broadSum / sampleCount;
+        const fillAlpha = fillSum / sampleCount;
+        const i = y0 * W + x0;
+
+        // 保留模糊蒙版的连续灰度，用于柔和混合。
+        inhibitorMask[i] = Math.min(1, fillAlpha);
+
+        // 不再绘制独立外环；这里只保留极弱的外侧稳定区。
+        const outsideEdge = Math.max(0, broadAlpha - Math.min(1, fillAlpha * 1.28));
+        growthMask[i] = Math.min(1, outsideEdge * 0.65);
+      }
+    }
+
+    const inhibitorDuration = overrides.inhibitorDurationMs ??
+      (clamp(
+        Number(inhibitorDurationInput.value) || 3.6,
+        0.2,
+        30
+      ) * 1000);
+
+    const growthDuration = overrides.growthDurationMs ??
+      (clamp(
+        Number(growthDurationInput.value) || 3.6,
+        0.2,
+        30
+      ) * 1000);
+
+    // 用户手动设置淡入和淡出的单段时长；自动模式也可覆盖。
+    // 为避免淡入和淡出互相重叠，最多取各自总持续时间的一半。
+    const requestedFade = overrides.fadeDurationMs ??
+      (clamp(
+        Number(fadeDurationInput.value) || 1.2,
+        0.05,
+        10
+      ) * 1000);
+
+    const inhibitorFade = Math.min(
+      requestedFade,
+      inhibitorDuration * 0.5
+    );
+    const growthFade = Math.min(
+      requestedFade,
+      growthDuration * 0.5
+    );
+
+    activeTextEffects.push({
+      inhibitorMask,
+      growthMask,
+      startedAt: performance.now(),
+      inhibitorDuration,
+      growthDuration,
+      inhibitorFade,
+      growthFade
+    });
+
+    // 不再瞬时强制注入；从下一帧开始按渐变曲线淡入。
+  }
+  function applyTextEffects(now, stepWeight = 1) {
+    if (!activeTextEffects.length) return;
+
+    const remaining = [];
+    const integrationWeight = reactionSpeedMultiplier * modelTimeStep * Math.max(0, stepWeight);
+
+    for (const effect of activeTextEffects) {
+      const elapsed = now - effect.startedAt;
+      const inhibitorLevel = effectEnvelope(
+        elapsed,
+        effect.inhibitorDuration,
+        effect.inhibitorFade
+      );
+      const growthLevel = effectEnvelope(
+        elapsed,
+        effect.growthDuration,
+        effect.growthFade
+      );
+
+      if (inhibitorLevel > 0.0001 || growthLevel > 0.0001) {
+        for (let i = 0; i < v.length; i++) {
+          const core = effect.inhibitorMask[i];
+          const edge = effect.growthMask[i];
+
+          if (growthLevel > 0 && edge > 0.002) {
+            const strength = smooth01(edge) * growthLevel;
+            const mixAmount = 1 - Math.pow(1 - 0.018 * strength, integrationWeight);
+
+            // 只保留很弱的边界稳定作用，不再生成可见的外环。
+            u[i] = lerp(u[i], 0.90, mixAmount);
+            v[i] = lerp(v[i], 0.05, mixAmount);
+          }
+
+          if (inhibitorLevel > 0 && core > 0.002) {
+            const strength = smooth01(core) * inhibitorLevel;
+            const mixAmount = 1 - Math.pow(1 - 0.16 * strength, integrationWeight);
+
+            // 字芯趋向纯黑状态：高 U、低 V。
+            u[i] = lerp(u[i], 0.995, mixAmount);
+            v[i] = lerp(v[i], 0.002, mixAmount);
+          }
+        }
+      }
+
+      if (elapsed <= Math.max(effect.inhibitorDuration, effect.growthDuration)) {
+        remaining.push(effect);
+      }
+    }
+
+    activeTextEffects = remaining;
+  }
+
+  function randomizeParameters() {
+    // 使用原来的稳定参数范围，避免随机参数改变斑纹类型。
+    const presets = [
+      [0.504, 0.252, 0.0290, 0.0570],
+      [0.504, 0.252, 0.0300, 0.0575],
+      [0.504, 0.252, 0.0420, 0.0610],
+      [0.504, 0.252, 0.0350, 0.0600],
+      [0.536, 0.258, 0.0220, 0.0510],
+      [0.457, 0.236, 0.0370, 0.0649],
+      [0.630, 0.315, 0.0460, 0.0630]
+    ];
+
+    const base = presets[Math.floor(Math.random() * presets.length)];
+    const jitter = (amount) => (Math.random() - 0.5) * amount;
+
+    duInput.value = round(clamp(base[0] + jitter(0.079), 0.253, 0.698), 3).toFixed(3);
+    dvInput.value = round(clamp(base[1] + jitter(0.044), 0.113, 0.360), 3).toFixed(3);
+    feedInput.value = round(clamp(base[2] + jitter(0.004), 0.008, 0.075), 4).toFixed(4);
+    killInput.value = round(clamp(base[3] + jitter(0.003), 0.035, 0.075), 4).toFixed(4);
+
+    updateParams();
+    initialize();
+    showToast("已随机参数并重新扩散");
+  }
+
+  function animate(now) {
+    if (running) {
+      updateAutoCycle(now);
+
+      // 小数累加器支持桌面端平均 2.25 次/帧、移动端平均 1.5 次/帧。
+      stepRemainder += iterationsPerFrame;
+      const stepsThisFrame = Math.floor(stepRemainder);
+      stepRemainder -= stepsThisFrame;
+
+      for (let n = 0; n < stepsThisFrame; n++) {
+        step();
+      }
+
+      // 文字作用原本会随每次模拟迭代全屏扫描；现在每帧只扫描一次，
+      // 并用 stepWeight 合并等效强度，文字阶段的计算量明显下降。
+      applyTextEffects(now, stepsThisFrame);
+      render();
+    }
+
+    const dt = now - lastTime;
+    if (dt > 350) {
+      fps = Math.round(1000 / Math.max(1, dt / 20));
+      lastTime = now;
+    }
+    requestAnimationFrame(animate);
+  }
+
+  window.addEventListener("message", (event) => {
+    if (event.origin !== window.location.origin) return;
+    if (!event.data || event.data.type !== "vexpaer-turing-visibility") return;
+    running = Boolean(event.data.visible);
+    if (running) lastTime = performance.now();
+    stateStat.textContent = running ? "运行中" : "已暂停";
+  });
+
+  [duInput, dvInput, feedInput, killInput].forEach(el => {
+    el.addEventListener("input", updateParams);
+    el.addEventListener("change", () => {
+      updateParams();
+      restartAutoCycle(performance.now());
+      showToast("参数已更新");
+    });
+  });
+
+  randomBtn.addEventListener("click", randomizeParameters);
+
+  resetBtn.addEventListener("click", () => {
+    updateParams();
+    initialize();
+    showToast("已重新扩散");
+  });
+
+  showTextBtn.addEventListener("click", () => {
+    const text = textInput.value.trim();
+    if (!text) {
+      showToast("请先输入文字");
+      textInput.focus();
+      return;
+    }
+    drawTextMask(text);
+    showToast(`文字正在渐变出现，渐变 ${Number(fadeDurationInput.value || 1.2).toFixed(2)} 秒`);
+  });
+
+  textInput.addEventListener("keydown", (event) => {
+    if (event.key === "Enter") showTextBtn.click();
+  });
+
+  canvas.addEventListener("pointerdown", (event) => {
+    // 面板区域不响应画布注入。
+    if (event.target !== canvas) return;
+    const rect = canvas.getBoundingClientRect();
+    const gx = (event.clientX - rect.left) / rect.width * W;
+    const gy = (event.clientY - rect.top) / rect.height * H;
+    // 网格宽高均为原版 2 倍，因此交互种子半径也放大到原版 2 倍，保持屏幕上的视觉尺寸不变。
+    seedCircle(gx, gy, 8 + Math.random() * 14, 0.9);
+  });
+
+  window.addEventListener("keydown", (event) => {
+    if (event.code === "Space" && document.activeElement.tagName !== "INPUT") {
+      event.preventDefault();
+      running = !running;
+      stateStat.textContent = running ? "运行中" : "已暂停";
+      showToast(running ? "继续模拟" : "已暂停");
+    }
+  });
+
+  let resizeTimer;
+  window.addEventListener("resize", () => {
+    clearTimeout(resizeTimer);
+    resizeTimer = setTimeout(fitCanvas, 180);
+  });
+
+  updateParams();
+  fitCanvas();
+  requestAnimationFrame(animate);
+})();
+</script>
+</body>
+</html>

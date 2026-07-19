@@ -4,17 +4,19 @@
   var root = document.getElementById('vexpaer-home')
   var canvas = document.getElementById('vexpaer-home-canvas')
   var webglCanvas = document.getElementById('vexpaer-home-webgl')
+  var turingFrame = document.getElementById('vexpaer-home-turing')
   var button = document.getElementById('vexpaer-scene-toggle')
   if (!root || !canvas || !button) return
 
   var context = canvas.getContext('2d', { alpha: false })
   if (!context) return
 
-  var themes = ['dusk', 'space', 'life']
+  var themes = ['dusk', 'space', 'life', 'turing']
   var themeMeta = {
     dusk: { label: '暮野', icon: '◒', browserColor: '#17182d' },
     space: { label: '深空', icon: '✦', browserColor: '#000002' },
-    life: { label: '生命游戏', icon: '▦', browserColor: '#000000' }
+    life: { label: '生命游戏', icon: '▦', browserColor: '#000000' },
+    turing: { label: '图灵斑纹', icon: '◉', browserColor: '#05070b' }
   }
   var storageKey = 'immersive-scene-theme'
   var width = 1
@@ -93,6 +95,20 @@
     if (browserTheme) browserTheme.setAttribute('content', current.browserColor)
   }
 
+  function syncTuringTheme () {
+    if (!turingFrame) return
+    var shouldRun = activeTheme === 'turing' && visible && !document.hidden
+    if (activeTheme === 'turing' && !turingFrame.getAttribute('src')) {
+      turingFrame.setAttribute('src', turingFrame.dataset.src)
+    }
+    if (turingFrame.getAttribute('src') && turingFrame.contentWindow) {
+      turingFrame.contentWindow.postMessage({
+        type: 'vexpaer-turing-visibility',
+        visible: shouldRun
+      }, window.location.origin)
+    }
+  }
+
   function commitTheme (theme) {
     if (themes.indexOf(theme) === -1) return
     var previousTheme = activeTheme
@@ -105,6 +121,7 @@
       window.localStorage.setItem(storageKey, theme)
     } catch (error) {}
     updateButton()
+    syncTuringTheme()
     if (threeLayer) threeLayer.setTheme(theme, previousTheme)
     draw(performance.now())
   }
@@ -2772,6 +2789,15 @@
         spacePointerNdc.set(normalizedX, normalizedY)
       },
       setTheme: function (theme, previousTheme) {
+        if (theme === 'turing') {
+          points.visible = false
+          galaxyGroup.visible = false
+          meteorGroup.visible = false
+          milkyWayBand.visible = false
+          clearMeteors()
+          delete root.dataset.spaceCamera
+          return
+        }
         var settings = themeSettings[theme]
         material.uniforms.uScene.value = settings.index
         material.uniforms.uPointScale.value = settings.size
@@ -2862,6 +2888,7 @@
   }
 
   function draw (time) {
+    if (activeTheme === 'turing') return
     context.setTransform(pixelRatio, 0, 0, pixelRatio, 0, 0)
     if (activeTheme === 'space') drawSpace(time)
     else if (activeTheme === 'life') drawLife(time)
@@ -2943,6 +2970,12 @@
     setTheme(nextTheme())
   })
 
+  if (turingFrame) {
+    turingFrame.addEventListener('load', syncTuringTheme)
+  }
+
+  document.addEventListener('visibilitychange', syncTuringTheme)
+
   if ('ResizeObserver' in window) {
     new ResizeObserver(resize).observe(root)
   } else {
@@ -2953,6 +2986,7 @@
     new IntersectionObserver(function (entries) {
       visible = Boolean(entries[0] && entries[0].isIntersecting)
       document.body.classList.toggle('vexpaer-home-hero-visible', visible)
+      syncTuringTheme()
     }, { threshold: 0.01 }).observe(root)
 
     var quickAccess = document.getElementById('vexpaer-quick-access')
@@ -2968,6 +3002,7 @@
   })
 
   updateButton()
+  syncTuringTheme()
   resize()
   if (activeTheme === 'dusk') applyDuskTitleLayout()
   loadThreeLayer()

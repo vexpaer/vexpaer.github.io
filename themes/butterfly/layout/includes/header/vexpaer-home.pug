@@ -1,6 +1,12 @@
 #vexpaer-home(data-scene='dusk')
   canvas#vexpaer-home-canvas(aria-hidden='true')
   canvas#vexpaer-home-webgl(aria-hidden='true')
+  iframe#vexpaer-home-turing(
+    data-src=url_for('/html/turing-theme.html')
+    title='图灵斑纹动态背景'
+    aria-hidden='true'
+    tabindex='-1'
+  )
   .vexpaer-home__shade(aria-hidden='true')
   h1#vexpaer-home-title= config.title
   button#vexpaer-scene-toggle(type='button' aria-label='当前背景：暮野。点击切换到深空')

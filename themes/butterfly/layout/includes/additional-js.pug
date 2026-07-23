@@ -7,6 +7,10 @@ div
     script(src=url_for(theme.CDN.gsap_scrolltrigger))
     script(src=url_for('/js/vexpaer-home.js'))
 
+  if page.explore_page === true
+    script(src=url_for(theme.CDN.gsap))
+    script(src=url_for('/js/vexpaer-explore.js'))
+
   if is_post() && !page.mindmap_page && theme.poker_pet && theme.poker_pet.enable
     script(src=url_for('/js/poker-pet.js'))
 

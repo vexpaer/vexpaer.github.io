@@ -1,0 +1,129 @@
+groups:
+  - id: media
+    path: /explore/media/
+    order: "01"
+    nav_label: 影游陈列
+    eyebrow: SCREEN & PLAY
+    title: 光影与游艺陈列室
+    lead: 把看过的电影与玩过的游戏收进两面可漫游的数字展墙，在熟悉的作品之间发现新的连接。
+    description: 从银幕收藏到游戏记忆，这里汇集两个以视觉浏览为核心的个人项目。
+    accent: "#ff8a65"
+    glow: "#ff4f81"
+    surface: "#24131e"
+    art: frames
+    home:
+      name: 影游陈列
+      note: 电影与游戏的双面数字展墙
+      code: /explore/media/
+    projects:
+      - id: film-wall
+        name: Film Wall
+        kicker: CINEMA ARCHIVE
+        href: https://vexpaer.github.io/film_wall/
+        path_label: /film_wall/
+        summary: 让电影海报铺成一面可以不断漫游的私人银幕。
+        description: 浏览收藏、重访片单，也让一张海报成为下一段观影旅程的入口。
+        cta: 走进电影墙
+        accent: "#ff9b72"
+        glow: "#ff4f81"
+        art: film
+        tags:
+          - 电影收藏
+          - 海报浏览
+          - 视觉展墙
+      - id: game-wall
+        name: Game Wall
+        kicker: PLAYABLE MEMORIES
+        href: https://vexpaer.github.io/game_wall/
+        path_label: /game_wall/
+        summary: 用封面、色彩与片段，重新排列那些玩过或想玩的世界。
+        description: 一面面向游戏记忆的互动展墙，适合随手翻看，也适合寻找下一次出发。
+        cta: 打开游戏墙
+        accent: "#62d8ff"
+        glow: "#7c63ff"
+        art: game
+        tags:
+          - 游戏收藏
+          - 封面陈列
+          - 灵感漫游
+
+  - id: start
+    path: /explore/start/
+    order: "02"
+    nav_label: 浏览器起点
+    eyebrow: EVERYDAY PORTAL
+    title: 从一个更安静的起点出发
+    lead: Vexpaer Go 把搜索、常用入口与每日浏览整理在同一张轻量主页里。
+    description: 一个为日常打开浏览器的瞬间设计的个人起始页。
+    accent: "#65e4d3"
+    glow: "#1488cc"
+    surface: "#102426"
+    art: portal
+    home:
+      name: 浏览器起点
+      note: 搜索、捷径与每日出发的轻主页
+      code: /explore/start/
+    projects:
+      - id: vexpaer-go
+        name: Vexpaer Go
+        kicker: YOUR NEXT TAB
+        href: https://vexpaer.github.io/vexpaer_go
+        path_label: /vexpaer_go
+        summary: 每一次新标签页，都从清晰、快速又有一点个性的界面开始。
+        description: 聚合搜索与常用入口，减少抵达目标前的干扰，让浏览器真正成为旅程的起点。
+        cta: 设为今日起点
+        accent: "#65e4d3"
+        glow: "#1488cc"
+        art: browser
+        tags:
+          - 浏览器主页
+          - 快速搜索
+          - 常用导航
+
+  - id: incremental
+    path: /explore/incremental/
+    order: "03"
+    nav_label: 增量游戏
+    eyebrow: GROWING WORLDS
+    title: 让成长与势力在点击中生长
+    lead: 两个以《甄嬛传》为灵感的增量游戏，从成长树与势力经营两种方向展开熟悉的宫廷世界。
+    description: 数字不断增长，升级与阵营也随之展开；适合短暂进入，也值得慢慢经营。
+    accent: "#c9a7ff"
+    glow: "#725cff"
+    surface: "#1d1730"
+    art: dynasty
+    home:
+      name: 增量游戏
+      note: 成长树与宫廷势力的增量实验
+      code: /explore/incremental/
+    projects:
+      - id: zhenhuan-tree
+        name: ZhenHuan Tree
+        kicker: CHARACTER GROWTH
+        href: https://vexpaer.github.io/ZhenHuanTree/
+        path_label: /ZhenHuanTree/
+        summary: 从最初的资源开始，让升级节点与成长分支逐步展开。
+        description: 基于 The Modding Tree 的甄嬛主题增量体验，在持续积累与选择中搭建自己的成长路线。
+        cta: 种下成长树
+        accent: "#d9b8ff"
+        glow: "#8a67ff"
+        art: tree
+        tags:
+          - 成长树
+          - 资源增量
+          - 宫廷叙事
+      - id: zhenhuan-company
+        name: ZhenHuan Company
+        kicker: PALACE TYCOON
+        href: https://vexpaer.github.io/ZhenHuanCompany/
+        path_label: /ZhenHuanCompany/
+        summary: 把宫廷变成一盘持续运转的经营棋局，在资源与势力间作出取舍。
+        description: 一款带有角色主题的增量经营游戏，用升级、收益与阵营扩张重组熟悉的宫廷秩序。
+        cta: 开始经营势力
+        accent: "#f2c66d"
+        glow: "#d66a7e"
+        art: company
+        tags:
+          - 增量经营
+          - 资源升级
+          - 阵营扩张

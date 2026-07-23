@@ -8,12 +8,17 @@ const required = [
   'index.html',
   'blog/index.html',
   'blog/page/2/index.html',
+  'explore/media/index.html',
+  'explore/start/index.html',
+  'explore/incremental/index.html',
   '2021/05/22/初中の英语笔记/index.html',
   '2026/01/18/组织工程_7.Artificial organ/index.html',
   '2026/01/18/组织工程_7.Artificial organ/mindmap/index.html',
   'css/vexpaer-home.css',
+  'css/vexpaer-explore.css',
   'css/mindmap.css',
   'js/vexpaer-home.js',
+  'js/vexpaer-explore.js',
   'js/vendor/three.module.min.js',
   'js/vendor/three.core.min.js',
   'vendor/mindmap/katex.min.css',
@@ -31,6 +36,11 @@ const mindmapHtml = await readFile(resolve(exampleDirectory, 'mindmap/index.html
 const homeScript = await readFile(resolve(root, 'js/vexpaer-home.js'), 'utf8');
 const landingHtml = await readFile(resolve(root, 'index.html'), 'utf8');
 const blogHtml = await readFile(resolve(root, 'blog/index.html'), 'utf8');
+const explorePages = {
+  media: await readFile(resolve(root, 'explore/media/index.html'), 'utf8'),
+  start: await readFile(resolve(root, 'explore/start/index.html'), 'utf8'),
+  incremental: await readFile(resolve(root, 'explore/incremental/index.html'), 'utf8')
+};
 
 function assertIncludes(content, expected, label) {
   if (!content.includes(expected)) throw new Error(`${label} is missing ${expected}.`);
@@ -44,7 +54,30 @@ assertIncludes(landingHtml, 'id="vexpaer-blog-gateway"', 'Landing page');
 assertIncludes(landingHtml, 'id="vexpaer-quick-access"', 'Landing page');
 assertIncludes(landingHtml, '/gsap@3.13.0/dist/gsap.min.js', 'Landing page');
 assertIncludes(landingHtml, '/gsap@3.13.0/dist/ScrollTrigger.min.js', 'Landing page');
+assertIncludes(landingHtml, '/explore/media/', 'Landing page');
+assertIncludes(landingHtml, '/explore/start/', 'Landing page');
+assertIncludes(landingHtml, '/explore/incremental/', 'Landing page');
 assertIncludes(blogHtml, 'id="recent-posts"', 'Blog index');
+
+for (const [name, html] of Object.entries(explorePages)) {
+  assertIncludes(html, 'data-explore-root', `${name} explore page`);
+  assertIncludes(html, '/css/vexpaer-explore.css', `${name} explore page`);
+  assertIncludes(html, '/js/vexpaer-explore.js', `${name} explore page`);
+  assertIncludes(html, '/gsap@3.13.0/dist/gsap.min.js', `${name} explore page`);
+  if (html.includes('/ScrollTrigger.min.js')) {
+    throw new Error(`${name} explore page should use GSAP Core without ScrollTrigger.`);
+  }
+}
+
+assertIncludes(explorePages.media, 'https://vexpaer.github.io/film_wall/', 'Media explore page');
+assertIncludes(explorePages.media, 'https://vexpaer.github.io/game_wall/', 'Media explore page');
+assertIncludes(explorePages.start, 'https://vexpaer.github.io/vexpaer_go', 'Start explore page');
+assertIncludes(explorePages.incremental, 'https://vexpaer.github.io/ZhenHuanTree/', 'Incremental explore page');
+assertIncludes(explorePages.incremental, 'https://vexpaer.github.io/ZhenHuanCompany/', 'Incremental explore page');
+
+if (explorePages.media.includes('ZhenHuanCompany') || explorePages.start.includes('film_wall') || explorePages.incremental.includes('game_wall')) {
+  throw new Error('Explore projects are rendered in the wrong topic page.');
+}
 
 const landingOrder = [
   landingHtml.indexOf('id="vexpaer-home"'),

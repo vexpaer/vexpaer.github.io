@@ -12,9 +12,10 @@ menu:
   档: /archives/ || fas fa-archive
   标签: /tags/ || fas fa-tags
 #  分类: /categories/ || fas fa-folder-open
-  something||fas fa-list:
-    电影: https://vexpaer.github.io/film_wall || fas fa-video
-    游戏: https://vexpaer.github.io/game_wall || fas fa-rocket
+  探索||fas fa-compass:
+    影游陈列: /explore/media/ || fas fa-photo-video
+    浏览器起点: /explore/start/ || fas fa-compass
+    增量游戏: /explore/incremental/ || fas fa-seedling
     书籍: /book/ || fas fa-book
 #  友链: /link/ || fas fa-link
   关于: /about/ || fas fa-user-circle

@@ -1,0 +1,142 @@
+extends includes/layout.pug
+
+block content
+  -
+    var exploreData = site.data && site.data.explore ? site.data.explore : {}
+    var exploreGroups = exploreData.groups || []
+    var activeGroup = null
+    var activeIndex = -1
+    exploreGroups.forEach(function (group, index) {
+      if (group.id === page.explore_group) {
+        activeGroup = group
+        activeIndex = index
+      }
+    })
+    var previousGroup = activeIndex > 0 ? exploreGroups[activeIndex - 1] : null
+    var nextGroup = activeIndex > -1 && activeIndex < exploreGroups.length - 1 ? exploreGroups[activeIndex + 1] : null
+
+  if activeGroup
+    -
+      var rootStyle = '--explore-accent:' + activeGroup.accent + ';--explore-glow:' + activeGroup.glow + ';--explore-surface:' + activeGroup.surface
+      var projectCount = activeGroup.projects ? activeGroup.projects.length : 0
+      var projectCountLabel = projectCount < 10 ? '0' + projectCount : projectCount
+
+    article.vexpaer-explore(
+      data-explore-root
+      data-group=activeGroup.id
+      data-art=activeGroup.art
+      style=rootStyle
+      aria-labelledby='vexpaer-explore-title'
+    )
+      header.vexpaer-explore__masthead(data-explore-reveal)
+        a.vexpaer-explore__home(href=url_for('/') + '#vexpaer-quick-access' aria-label='返回首页继续探索')
+          span(aria-hidden='true') ←
+          span 返回首页
+
+        nav.vexpaer-explore-nav(aria-label='继续探索页面')
+          each group in exploreGroups
+            a.vexpaer-explore-nav__item(
+              href=url_for(group.path)
+              class=group.id === activeGroup.id ? 'is-active' : ''
+              aria-current=group.id === activeGroup.id ? 'page' : null
+            )
+              span.vexpaer-explore-nav__index(aria-hidden='true')= group.order
+              span= group.nav_label
+
+      section.vexpaer-explore-hero(aria-labelledby='vexpaer-explore-title')
+        .vexpaer-explore-hero__copy
+          p.vexpaer-explore-hero__eyebrow(data-explore-reveal)
+            span= activeGroup.order
+            |  / 
+            span= activeGroup.eyebrow
+          h1#vexpaer-explore-title(data-explore-reveal)= activeGroup.title
+          p.vexpaer-explore-hero__lead(data-explore-reveal)= activeGroup.lead
+          p.vexpaer-explore-hero__description(data-explore-reveal)= activeGroup.description
+
+        .vexpaer-explore-hero__art(data-explore-reveal aria-hidden='true')
+          span.vexpaer-explore-hero__orbit
+          span.vexpaer-explore-hero__orbit
+          span.vexpaer-explore-hero__core
+            span= activeGroup.order
+
+        dl.vexpaer-explore-hero__meta(data-explore-reveal)
+          div
+            dt 本页项目
+            dd= projectCountLabel
+          div
+            dt 当前展区
+            dd= activeGroup.nav_label
+
+      section.vexpaer-explore-projects(aria-labelledby='vexpaer-explore-projects-title')
+        header.vexpaer-explore-projects__header(data-explore-reveal)
+          p CURATED PROJECTS
+          h2#vexpaer-explore-projects-title 进入项目
+          span= projectCountLabel + ' 个独立站点'
+
+        .vexpaer-explore-projects__grid
+          each project, projectIndex in activeGroup.projects
+            -
+              var projectStyle = '--project-accent:' + project.accent + ';--project-glow:' + project.glow
+              var projectNumber = projectIndex + 1
+              var projectNumberLabel = projectNumber < 10 ? '0' + projectNumber : projectNumber
+
+            article.vexpaer-project-card(
+              data-project-card
+              data-art=project.art
+              data-explore-reveal
+              style=projectStyle
+              aria-labelledby='project-' + project.id
+            )
+              .vexpaer-project-card__visual-stage(aria-hidden='true')
+                span.vexpaer-project-card__visual-index= projectNumberLabel
+                span.vexpaer-project-card__visual-orbit
+                span.vexpaer-project-card__visual-orbit
+                span.vexpaer-project-card__visual-mark
+
+              .vexpaer-project-card__content
+                p.vexpaer-project-card__kicker= project.kicker
+                h3(id='project-' + project.id)= project.name
+                p.vexpaer-project-card__summary= project.summary
+                p.vexpaer-project-card__description= project.description
+
+                ul.vexpaer-project-card__tags(aria-label=project.name + ' 标签')
+                  each tag in project.tags
+                    li= tag
+
+                a.vexpaer-project-card__cta(
+                  href=project.href
+                  target='_blank'
+                  rel='noopener noreferrer'
+                  aria-label=project.cta + '：' + project.name + '（在新窗口打开）'
+                )
+                  span= project.cta
+                  code= project.path_label
+                  span.vexpaer-project-card__cta-arrow(aria-hidden='true') ↗
+
+      nav.vexpaer-explore-pager(aria-label='探索页面前后导航' data-explore-reveal)
+        if previousGroup
+          a.vexpaer-explore-pager__link.vexpaer-explore-pager__link--previous(href=url_for(previousGroup.path))
+            span.vexpaer-explore-pager__direction
+              span(aria-hidden='true') ←
+              |  上一页
+            strong= previousGroup.nav_label
+        else
+          span.vexpaer-explore-pager__link.vexpaer-explore-pager__link--previous.is-disabled(aria-hidden='true')
+            span.vexpaer-explore-pager__direction ← 上一页
+            strong 已到起点
+
+        if nextGroup
+          a.vexpaer-explore-pager__link.vexpaer-explore-pager__link--next(href=url_for(nextGroup.path))
+            span.vexpaer-explore-pager__direction
+              | 下一页 
+              span(aria-hidden='true') →
+            strong= nextGroup.nav_label
+        else
+          span.vexpaer-explore-pager__link.vexpaer-explore-pager__link--next.is-disabled(aria-hidden='true')
+            span.vexpaer-explore-pager__direction 下一页 →
+            strong 已到终点
+  else
+    section.vexpaer-explore.vexpaer-explore--missing(data-explore-root aria-labelledby='vexpaer-explore-missing-title')
+      h1#vexpaer-explore-missing-title 探索页面暂时走失了
+      p 找不到对应的项目分组，请从首页重新进入。
+      a.vexpaer-explore__home(href=url_for('/') + '#vexpaer-quick-access') 返回首页

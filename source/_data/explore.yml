@@ -1,8 +1,9 @@
 groups:
   - id: media
-    path: /explore/media/
+    anchor: vexpaer-explore-media
     order: "01"
     nav_label: 影游陈列
+    journey_label: 影游
     eyebrow: SCREEN & PLAY
     title: 光影与游艺陈列室
     lead: 把看过的电影与玩过的游戏收进两面可漫游的数字展墙，在熟悉的作品之间发现新的连接。
@@ -11,10 +12,6 @@ groups:
     glow: "#ff4f81"
     surface: "#24131e"
     art: frames
-    home:
-      name: 影游陈列
-      note: 电影与游戏的双面数字展墙
-      code: /explore/media/
     projects:
       - id: film-wall
         name: Film Wall
@@ -48,9 +45,10 @@ groups:
           - 灵感漫游
 
   - id: start
-    path: /explore/start/
+    anchor: vexpaer-explore-start
     order: "02"
     nav_label: 浏览器起点
+    journey_label: 起点
     eyebrow: EVERYDAY PORTAL
     title: 从一个更安静的起点出发
     lead: Vexpaer Go 把搜索、常用入口与每日浏览整理在同一张轻量主页里。
@@ -59,10 +57,6 @@ groups:
     glow: "#1488cc"
     surface: "#102426"
     art: portal
-    home:
-      name: 浏览器起点
-      note: 搜索、捷径与每日出发的轻主页
-      code: /explore/start/
     projects:
       - id: vexpaer-go
         name: Vexpaer Go
@@ -81,9 +75,10 @@ groups:
           - 常用导航
 
   - id: incremental
-    path: /explore/incremental/
+    anchor: vexpaer-explore-incremental
     order: "03"
     nav_label: 增量游戏
+    journey_label: 增量
     eyebrow: GROWING WORLDS
     title: 让成长与势力在点击中生长
     lead: 两个以《甄嬛传》为灵感的增量游戏，从成长树与势力经营两种方向展开熟悉的宫廷世界。
@@ -92,10 +87,6 @@ groups:
     glow: "#725cff"
     surface: "#1d1730"
     art: dynasty
-    home:
-      name: 增量游戏
-      note: 成长树与宫廷势力的增量实验
-      code: /explore/incremental/
     projects:
       - id: zhenhuan-tree
         name: ZhenHuan Tree

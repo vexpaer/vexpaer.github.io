@@ -1,3 +1,7 @@
+-
+  var exploreData = site.data && site.data.explore ? site.data.explore : {}
+  var exploreGroups = exploreData.groups || []
+
 nav.vexpaer-home-journey(aria-label='首页章节导航')
   span.vexpaer-home-journey__track(aria-hidden='true')
     span.vexpaer-home-journey__progress
@@ -5,5 +9,6 @@ nav.vexpaer-home-journey(aria-label='首页章节导航')
     span 主页
   a(href='#vexpaer-blog-gateway' data-journey-target='blog')
     span 博客
-  a(href='#vexpaer-quick-access' data-journey-target='links')
-    span 探索
+  each group in exploreGroups
+    a(href='#' + group.anchor data-journey-target='explore-' + group.id)
+      span= group.journey_label || group.nav_label

@@ -13,9 +13,9 @@ menu:
   标签: /tags/ || fas fa-tags
 #  分类: /categories/ || fas fa-folder-open
   探索||fas fa-compass:
-    影游陈列: /explore/media/ || fas fa-photo-video
-    浏览器起点: /explore/start/ || fas fa-compass
-    增量游戏: /explore/incremental/ || fas fa-seedling
+    影游陈列: /#vexpaer-explore-media || fas fa-photo-video
+    浏览器起点: /#vexpaer-explore-start || fas fa-compass
+    增量游戏: /#vexpaer-explore-incremental || fas fa-seedling
     书籍: /book/ || fas fa-book
 #  友链: /link/ || fas fa-link
   关于: /about/ || fas fa-user-circle

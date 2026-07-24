@@ -1,27 +1,98 @@
 -
   var exploreData = site.data && site.data.explore ? site.data.explore : {}
-  var quickLinks = exploreData.groups || []
+  var exploreGroups = exploreData.groups || []
 
-section#vexpaer-quick-access.vexpaer-quick-access(aria-labelledby='vexpaer-quick-access-title' data-home-panel='links')
-  .vexpaer-quick-access__inner
-    header.vexpaer-quick-access__header
-      span 02 / EXPLORE
-      h2#vexpaer-quick-access-title 继续探索
-      p 三条探索路线，通往五个收藏、工具与互动空间。
-    .vexpaer-quick-access__grid
-      each item, index in quickLinks
-        a.vexpaer-quick-card(
-          href=url_for(item.path)
-          style='--quick-accent:' + item.accent + ';--quick-glow:' + item.glow
-          aria-label='探索' + item.home.name
-        )
-          span.vexpaer-quick-card__index(aria-hidden='true')= item.order || ('0' + (index + 1))
-          span.vexpaer-quick-card__visual(aria-hidden='true')
-            i
-            i
-            i
-          span.vexpaer-quick-card__content
-            strong= item.home.name
-            small= item.home.note
-            code= item.home.code
-          span.vexpaer-quick-card__arrow(aria-hidden='true') →
+section#vexpaer-quick-access.vexpaer-explore-stack(aria-label='继续探索')
+  each group, groupIndex in exploreGroups
+    -
+      var groupAnchor = group.anchor || ('vexpaer-explore-' + group.id)
+      var groupTitleId = groupAnchor + '-title'
+      var projectsTitleId = groupAnchor + '-projects-title'
+      var projectCount = group.projects ? group.projects.length : 0
+      var projectCountLabel = projectCount < 10 ? '0' + projectCount : projectCount
+      var groupStyle = '--explore-accent:' + group.accent + ';--explore-glow:' + group.glow + ';--explore-surface:' + group.surface
+
+    section.vexpaer-explore(
+      id=groupAnchor
+      data-explore-root
+      data-home-panel='explore-' + group.id
+      data-group=group.id
+      data-art=group.art
+      style=groupStyle
+      aria-labelledby=groupTitleId
+    )
+      header.vexpaer-explore__masthead(data-explore-reveal)
+        p.vexpaer-explore__context
+          span CONTINUE EXPLORING
+          strong= group.order + ' / 03'
+        p.vexpaer-explore__section-name= group.nav_label
+
+      .vexpaer-explore-hero
+        .vexpaer-explore-hero__copy
+          p.vexpaer-explore-hero__eyebrow(data-explore-reveal)
+            span= group.order
+            |  /
+            span= group.eyebrow
+          h2(id=groupTitleId data-explore-reveal)= group.title
+          p.vexpaer-explore-hero__lead(data-explore-reveal)= group.lead
+          p.vexpaer-explore-hero__description(data-explore-reveal)= group.description
+
+        .vexpaer-explore-hero__art(data-explore-reveal aria-hidden='true')
+          span.vexpaer-explore-hero__orbit
+          span.vexpaer-explore-hero__orbit
+          span.vexpaer-explore-hero__core
+            span= group.order
+
+        dl.vexpaer-explore-hero__meta(data-explore-reveal)
+          div
+            dt 展示项目
+            dd= projectCountLabel
+          div
+            dt 当前展区
+            dd= group.nav_label
+
+      section.vexpaer-explore-projects(aria-labelledby=projectsTitleId)
+        header.vexpaer-explore-projects__header(data-explore-reveal)
+          p CURATED PROJECTS
+          h3(id=projectsTitleId) 进入项目
+          span= projectCountLabel + ' 个站点，直接打开'
+
+        .vexpaer-explore-projects__grid
+          each project, projectIndex in group.projects
+            -
+              var projectStyle = '--project-accent:' + project.accent + ';--project-glow:' + project.glow
+              var projectNumber = projectIndex + 1
+              var projectNumberLabel = projectNumber < 10 ? '0' + projectNumber : projectNumber
+              var projectTitleId = groupAnchor + '-project-' + project.id
+
+            article.vexpaer-project-card(
+              data-project-card
+              data-art=project.art
+              style=projectStyle
+              aria-labelledby=projectTitleId
+            )
+              .vexpaer-project-card__visual-stage(aria-hidden='true')
+                span.vexpaer-project-card__visual-index= projectNumberLabel
+                span.vexpaer-project-card__visual-orbit
+                span.vexpaer-project-card__visual-orbit
+                span.vexpaer-project-card__visual-mark
+
+              .vexpaer-project-card__content
+                p.vexpaer-project-card__kicker= project.kicker
+                h4(id=projectTitleId)= project.name
+                p.vexpaer-project-card__summary= project.summary
+                p.vexpaer-project-card__description= project.description
+
+                ul.vexpaer-project-card__tags(aria-label=project.name + ' 标签')
+                  each tag in project.tags
+                    li= tag
+
+                a.vexpaer-project-card__cta(
+                  href=project.href
+                  target='_blank'
+                  rel='noopener noreferrer'
+                  aria-label=project.cta + '：' + project.name + '（在新窗口打开）'
+                )
+                  span= project.cta
+                  code= project.path_label
+                  span.vexpaer-project-card__cta-arrow(aria-hidden='true') ↗

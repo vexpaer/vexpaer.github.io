@@ -23,6 +23,9 @@
 #vexpaer-home-canvas,
 #vexpaer-home-webgl,
 #vexpaer-home-turing,
+#vexpaer-home-seaside,
+#vexpaer-home-cosmos,
+#vexpaer-home-ink,
 .vexpaer-home__shade {
   position: absolute;
   inset: 0;
@@ -66,7 +69,10 @@
 
 #vexpaer-home-canvas,
 #vexpaer-home-webgl,
-#vexpaer-home-turing {
+#vexpaer-home-turing,
+#vexpaer-home-seaside,
+#vexpaer-home-cosmos,
+#vexpaer-home-ink {
   transform: scale(1);
   filter: blur(0);
   opacity: 1;
@@ -76,10 +82,21 @@
     transform 520ms cubic-bezier(0.22, 1, 0.36, 1);
 }
 
-#vexpaer-home-turing {
+#vexpaer-home-turing,
+#vexpaer-home-seaside,
+#vexpaer-home-cosmos,
+#vexpaer-home-ink {
+  z-index: 1;
+  display: block;
+  border: 0;
   opacity: 0;
   visibility: hidden;
+  pointer-events: none;
 }
+
+#vexpaer-home-seaside { background: #060f18; }
+#vexpaer-home-cosmos { background: #01020a; }
+#vexpaer-home-ink { background: #efe7d7; }
 
 #vexpaer-home[data-scene='turing'] {
   background: #05070b;
@@ -107,9 +124,130 @@
   visibility: hidden;
 }
 
+/* ------------------------------------------------------- 海畔巨构 */
+
+#vexpaer-home[data-scene='seaside'] {
+  --vexpaer-title-x: 71%;
+  --vexpaer-title-y: 36%;
+  background: #060f18;
+}
+
+#vexpaer-home[data-scene='seaside'] #vexpaer-home-canvas,
+#vexpaer-home[data-scene='seaside'] #vexpaer-home-webgl,
+#vexpaer-home[data-scene='cosmos'] #vexpaer-home-canvas,
+#vexpaer-home[data-scene='cosmos'] #vexpaer-home-webgl,
+#vexpaer-home[data-scene='ink'] #vexpaer-home-canvas,
+#vexpaer-home[data-scene='ink'] #vexpaer-home-webgl {
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+}
+
+#vexpaer-home[data-scene='seaside'] #vexpaer-home-seaside,
+#vexpaer-home[data-scene='cosmos'] #vexpaer-home-cosmos,
+#vexpaer-home[data-scene='ink'] #vexpaer-home-ink {
+  opacity: 1;
+  visibility: visible;
+  pointer-events: auto;
+}
+
+/* 三个 iframe 场景都自带压暗层，宿主的通用 shade 退场。 */
+#vexpaer-home[data-scene='seaside'] .vexpaer-home__shade,
+#vexpaer-home[data-scene='cosmos'] .vexpaer-home__shade,
+#vexpaer-home[data-scene='ink'] .vexpaer-home__shade {
+  background: transparent;
+}
+
+#vexpaer-home[data-scene='seaside'] #vexpaer-home-title {
+  color: #ffeed8;
+  font-family: "Iowan Old Style", Baskerville, "Palatino Linotype", "Noto Serif SC", "Songti SC", serif;
+  font-style: italic;
+  font-weight: 400;
+  letter-spacing: -0.03em;
+  text-shadow:
+    0 1px 0 rgba(255, 226, 190, 0.2),
+    0 12px 40px rgba(4, 10, 18, 0.55);
+}
+
+/* ------------------------------------------------------- 寰宇巨构 */
+
+#vexpaer-home[data-scene='cosmos'] {
+  --vexpaer-title-x: 50%;
+  --vexpaer-title-y: 16%;
+  background: #01020a;
+  cursor: grab;
+}
+
+#vexpaer-home[data-scene='cosmos']:active {
+  cursor: grabbing;
+}
+
+#vexpaer-home[data-scene='cosmos'] #vexpaer-home-title {
+  color: #e8f1ff;
+  font-family: "Century Gothic", CenturyGothic, "Segoe UI", "PingFang SC", "Microsoft YaHei", sans-serif !important;
+  font-weight: 400;
+  letter-spacing: 0.16em;
+  text-shadow: 0 4px 32px rgba(0, 0, 0, 0.85);
+}
+
+/* ------------------------------------------------------- 钢笔帆船 */
+
+#vexpaer-home[data-scene='ink'] {
+  --vexpaer-title-x: 26%;
+  --vexpaer-title-y: 24%;
+  background: #efe7d7;
+}
+
+#vexpaer-home[data-scene='ink'] #vexpaer-home-title {
+  color: #2e261e;
+  font-family: "Iowan Old Style", Baskerville, "Palatino Linotype", "Noto Serif SC", "Songti SC", serif;
+  font-style: italic;
+  font-weight: 400;
+  letter-spacing: 0;
+  /* 纸面上的字要"印"上去而不是"照"上去：浅色晕替代深色投影。 */
+  text-shadow:
+    0 0 18px rgba(239, 231, 215, 0.9),
+    0 1px 0 rgba(255, 252, 244, 0.6);
+}
+
+#vexpaer-home[data-scene='ink'] #vexpaer-scene-toggle {
+  border-color: rgba(56, 44, 30, 0.32);
+  background: rgba(244, 237, 221, 0.72);
+  box-shadow: 0 10px 30px rgba(88, 70, 44, 0.22);
+  color: #3a2f22;
+}
+
+#vexpaer-home[data-scene='ink'] #vexpaer-scene-toggle:hover:not(:disabled) {
+  border-color: rgba(56, 44, 30, 0.5);
+  background: rgba(250, 245, 232, 0.88);
+}
+
+#vexpaer-home[data-scene='ink'] #vexpaer-scene-toggle:focus-visible {
+  outline-color: #6b543a;
+}
+
+@media (max-width: 768px) {
+  #vexpaer-home[data-scene='seaside'] {
+    --vexpaer-title-x: 50%;
+    --vexpaer-title-y: 27%;
+  }
+
+  #vexpaer-home[data-scene='cosmos'] {
+    --vexpaer-title-y: 13%;
+  }
+
+  #vexpaer-home[data-scene='ink'] {
+    --vexpaer-title-x: 50%;
+    --vexpaer-title-y: 19%;
+  }
+}
+
 #vexpaer-home.is-switching #vexpaer-home-canvas,
 #vexpaer-home.is-switching #vexpaer-home-webgl,
-#vexpaer-home.is-switching #vexpaer-home-turing {
+#vexpaer-home.is-switching #vexpaer-home-turing,
+#vexpaer-home.is-switching #vexpaer-home-seaside,
+#vexpaer-home.is-switching #vexpaer-home-cosmos,
+#vexpaer-home.is-switching #vexpaer-home-ink {
   transform: scale(1.025);
   filter: blur(3px);
   opacity: 0.08;

@@ -1,0 +1,889 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>钢笔画帆船</title>
+  <style>
+    :root { color-scheme: light; }
+
+    * { box-sizing: border-box; }
+
+    html, body {
+      margin: 0;
+      width: 100%;
+      height: 100%;
+      overflow: hidden;
+      background: #efe7d7;
+    }
+
+    #scene {
+      position: fixed;
+      inset: 0;
+      display: block;
+      width: 100%;
+      height: 100%;
+      background: #efe7d7;
+      cursor: crosshair;
+    }
+
+    /* 纸面场景需要的是压角而不是压暗，否则会失掉版画的通透。 */
+    .shade {
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      background:
+        radial-gradient(ellipse 92% 86% at 50% 46%, transparent 0 52%, rgba(108, 88, 58, 0.07) 78%, rgba(88, 70, 44, 0.16) 100%);
+    }
+  </style>
+</head>
+<body>
+<canvas id="scene"></canvas>
+<div class="shade" aria-hidden="true"></div>
+<script>
+(function () {
+  'use strict';
+
+  var canvas = document.getElementById('scene');
+  var ctx = canvas.getContext('2d', { alpha: false });
+  if (!ctx) return;
+
+  var W = 1;
+  var H = 1;
+  var DPR = 1;
+  var horizon = 1;
+  var running = true;
+  var reduced = window.matchMedia('(prefers-reduced-motion: reduce)');
+  var lastTime = 0;
+  var clock = 0;
+
+  // 手绘"沸腾"：线条的抖动只在每一档 boil 帧变化一次，
+  // 于是笔触像逐帧手绘那样轻微跳动，而船的运动仍然是 60fps 平滑的。
+  var boilFrame = 0;
+  var boilInterval = 0.1;
+  var boilTimer = 0;
+
+  // 纸张 + 天空排线是静态的，只在 boil 帧翻页时重绘，省下大量描边。
+  var paperLayer = document.createElement('canvas');
+  var pctx = paperLayer.getContext('2d');
+  var paperBoil = -1;
+
+  var fiberCanvas = document.createElement('canvas');
+
+  var INK = '38, 30, 24';
+
+  var ship = null;
+  var sun = { x: 0, y: 0, r: 0 };
+  var skyHatch = [];
+  var seaBands = [];
+  var washClouds = [];
+  var gulls = [];
+  var specks = [];
+  var blots = [];
+
+  var pointerX = 0.5;
+  var pointerY = 0.5;
+
+  // ---------------------------------------------------------------- 工具
+
+  function mulberry32 (seed) {
+    return function () {
+      seed |= 0;
+      seed = seed + 0x6D2B79F5 | 0;
+      var value = Math.imul(seed ^ seed >>> 15, 1 | seed);
+      value = value + Math.imul(value ^ value >>> 7, 61 | value) ^ value;
+      return ((value ^ value >>> 14) >>> 0) / 4294967296;
+    };
+  }
+
+  function lerp (a, b, t) { return a + (b - a) * t; }
+  function clamp (value, low, high) { return value < low ? low : value > high ? high : value; }
+
+  // 由 (笔画编号, 顶点序号, boil 帧) 决定的确定性噪声。
+  // 同一帧内反复调用结果一致，因此笔触是"抖"而不是"闪"。
+  function wobble (id, index, salt) {
+    var n = Math.sin(id * 127.1 + index * 311.7 + boilFrame * 74.7 + (salt || 0) * 57.3) * 43758.5453;
+    return (n - Math.floor(n)) - 0.5;
+  }
+
+  // 核心笔刷：把一串点画成一条带手抖的墨线，可叠多道模拟压感。
+  function inkStroke (target, points, options) {
+    if (points.length < 2) return;
+    var id = options.id || 1;
+    var amp = options.amp === undefined ? 0.9 : options.amp;
+    var width = options.width === undefined ? 1 : options.width;
+    var alpha = options.alpha === undefined ? 0.8 : options.alpha;
+    var passes = options.passes === undefined ? 1 : options.passes;
+
+    for (var pass = 0; pass < passes; pass++) {
+      target.beginPath();
+      for (var index = 0; index < points.length; index++) {
+        var point = points[index];
+        var jx = wobble(id + pass * 977, index, 0) * amp;
+        var jy = wobble(id + pass * 977, index, 1) * amp;
+        var x = point.x + jx;
+        var y = point.y + jy;
+        if (index === 0) target.moveTo(x, y);
+        else {
+          // 用上一点做二次控制点，让折线读起来像连笔。
+          var previous = points[index - 1];
+          var cx = (previous.x + point.x) * 0.5 + wobble(id + pass * 977, index, 2) * amp * 1.4;
+          var cy = (previous.y + point.y) * 0.5 + wobble(id + pass * 977, index, 3) * amp * 1.4;
+          target.quadraticCurveTo(cx, cy, x, y);
+        }
+      }
+      if (options.close) target.closePath();
+      target.strokeStyle = 'rgba(' + INK + ',' + (alpha * (pass === 0 ? 1 : 0.5)).toFixed(3) + ')';
+      target.lineWidth = width * (pass === 0 ? 1 : 0.72);
+      target.lineCap = 'round';
+      target.lineJoin = 'round';
+      target.stroke();
+    }
+  }
+
+  function line (target, x0, y0, x1, y1, options) {
+    // 长直线切成几段再抖，才不会看出是数学直线。
+    var steps = Math.max(2, Math.round(Math.hypot(x1 - x0, y1 - y0) / 26));
+    var points = [];
+    for (var index = 0; index <= steps; index++) {
+      var t = index / steps;
+      points.push({ x: lerp(x0, x1, t), y: lerp(y0, y1, t) });
+    }
+    inkStroke(target, points, options);
+  }
+
+  // ---------------------------------------------------------- 场景构建
+
+  function buildFiber () {
+    // 纸纤维：一层很淡的定向噪点，铺满整个背景。
+    var size = 160;
+    fiberCanvas.width = size;
+    fiberCanvas.height = size;
+    var fctx = fiberCanvas.getContext('2d');
+    fctx.fillStyle = 'rgba(0,0,0,0)';
+    fctx.fillRect(0, 0, size, size);
+    var random = mulberry32(0xFABE12);
+    for (var index = 0; index < 900; index++) {
+      var x = random() * size;
+      var y = random() * size;
+      var length = 1 + random() * 4;
+      var angle = random() * Math.PI;
+      fctx.strokeStyle = 'rgba(120, 100, 70, ' + (0.02 + random() * 0.05).toFixed(3) + ')';
+      fctx.lineWidth = 0.6;
+      fctx.beginPath();
+      fctx.moveTo(x, y);
+      fctx.lineTo(x + Math.cos(angle) * length, y + Math.sin(angle) * length);
+      fctx.stroke();
+    }
+  }
+
+  function buildShip () {
+    // 船体在自己的局部坐标里定义：原点在水线中心，x 向右，y 向上。
+    // 之后统一用 translate/rotate 放到画面里，摇晃就只是改两个数。
+    var length = clamp(W * 0.34, 260, 620);
+    var unit = length / 100;
+
+    var hullTop = 13 * unit;
+    var hull = {
+      // 舷侧上缘：从艉楼到船首，中段略微下凹。
+      deck: [
+        { x: -50, y: 11 }, { x: -44, y: 13.4 }, { x: -34, y: 11.2 }, { x: -18, y: 9.6 },
+        { x: 0, y: 9.2 }, { x: 18, y: 9.8 }, { x: 34, y: 11.4 }, { x: 45, y: 14.6 }, { x: 51, y: 17.5 }
+      ],
+      // 水线：船体没入水中的那条线。
+      waterline: [
+        { x: -47, y: 0 }, { x: -30, y: 0 }, { x: 0, y: 0 }, { x: 30, y: 0 }, { x: 49, y: 0 }
+      ],
+      // 艉部与首部的封闭轮廓。
+      stern: [
+        { x: -50, y: 11 }, { x: -52, y: 6 }, { x: -50.5, y: 2 }, { x: -47, y: 0 }
+      ],
+      bow: [
+        { x: 49, y: 0 }, { x: 52, y: 6 }, { x: 51, y: 17.5 }
+      ]
+    };
+
+    var masts = [
+      { x: -26, height: 74, yards: [0.36, 0.56, 0.74, 0.88], spread: 21 },
+      { x: 2, height: 88, yards: [0.34, 0.54, 0.72, 0.87], spread: 25 },
+      { x: 27, height: 66, yards: [0.38, 0.6, 0.79], spread: 18 }
+    ];
+
+    var random = mulberry32(0x5A11);
+
+    return {
+      unit: unit,
+      length: length,
+      hullTop: hullTop,
+      hull: hull,
+      masts: masts,
+      random: random,
+      // 每片帆的鼓胀相位错开，风才像是有层次地穿过帆阵。
+      sailPhase: [0.0, 0.7, 1.4, 2.1, 2.8, 3.5, 4.2, 4.9, 5.6, 6.3, 7.0]
+    };
+  }
+
+  function buildSky () {
+    var random = mulberry32(0x5217);
+
+    // 天空排线：左上密、右下疏的斜向排线，是版画天空的标准做法。
+    skyHatch = [];
+    var spacing = clamp(W / 96, 7, 15);
+    var count = Math.ceil((W + horizon) / spacing);
+    for (var index = 0; index < count; index++) {
+      var offset = index * spacing;
+      // 越靠右下越可能被跳过，形成自然的密度梯度。
+      var density = 1 - offset / (W + horizon);
+      if (random() > density * 1.15 + 0.12) continue;
+      skyHatch.push({
+        offset: offset,
+        alpha: 0.06 + random() * 0.13 * density,
+        width: 0.5 + random() * 0.5,
+        id: 1000 + index
+      });
+    }
+
+    washClouds = [];
+    var cloudCount = W < 720 ? 4 : 7;
+    for (var cloud = 0; cloud < cloudCount; cloud++) {
+      washClouds.push({
+        x: random() * W,
+        y: horizon * (0.12 + random() * 0.52),
+        w: W * (0.1 + random() * 0.22),
+        h: horizon * (0.04 + random() * 0.08),
+        speed: 2 + random() * 6,
+        alpha: 0.05 + random() * 0.07,
+        // 每朵云用几道叠加的弧线排线来做"墨晕"。
+        strokes: 4 + Math.round(random() * 5),
+        id: 2000 + cloud * 13
+      });
+    }
+
+    gulls = [];
+    var gullCount = W < 720 ? 4 : 7;
+    for (var gull = 0; gull < gullCount; gull++) {
+      gulls.push({
+        x: random(),
+        y: 0.12 + random() * 0.32,
+        scale: 0.55 + random() * 0.9,
+        speed: 0.01 + random() * 0.022,
+        flap: random() * Math.PI * 2,
+        flapSpeed: 4.5 + random() * 4,
+        id: 3000 + gull * 17
+      });
+    }
+
+    // 零散的墨点，让画面有"手工"的不完美感。
+    specks = [];
+    for (var speck = 0; speck < 90; speck++) {
+      specks.push({
+        x: random(),
+        y: random(),
+        r: 0.4 + random() * 1.5,
+        alpha: 0.04 + random() * 0.12
+      });
+    }
+  }
+
+  function buildSea () {
+    var random = mulberry32(0x5EA0);
+    seaBands = [];
+    var depth = H - horizon;
+    var bandCount = Math.round(clamp(depth / 14, 14, 44));
+    for (var index = 0; index < bandCount; index++) {
+      var t = index / (bandCount - 1);
+      var eased = Math.pow(t, 1.7);
+      seaBands.push({
+        t: t,
+        y: horizon + eased * depth,
+        amplitude: lerp(1.2, 13, eased),
+        wavelength: lerp(70, 420, eased),
+        speed: lerp(0.3, 1.1, eased),
+        phase: random() * Math.PI * 2,
+        alpha: lerp(0.16, 0.42, t),
+        width: lerp(0.6, 1.9, eased),
+        // 每条浪带上挂几道短排线做暗部。
+        hatches: Math.round(lerp(4, 16, eased)),
+        id: 4000 + index * 29
+      });
+    }
+  }
+
+  function build () {
+    horizon = H * (H < 520 ? 0.6 : 0.65);
+    sun.x = W * 0.76;
+    sun.y = horizon * 0.3;
+    sun.r = clamp(Math.min(W, H) * 0.062, 28, 78);
+
+    paperLayer.width = Math.max(1, Math.round(W * DPR));
+    paperLayer.height = Math.max(1, Math.round(H * DPR));
+    pctx.setTransform(DPR, 0, 0, DPR, 0, 0);
+    paperBoil = -1;
+
+    ship = buildShip();
+    buildSky();
+    buildSea();
+    blots = [];
+  }
+
+  function fit () {
+    DPR = clamp(window.devicePixelRatio || 1, 1, 2);
+    W = Math.max(1, canvas.clientWidth || window.innerWidth);
+    H = Math.max(1, canvas.clientHeight || window.innerHeight);
+    canvas.width = Math.round(W * DPR);
+    canvas.height = Math.round(H * DPR);
+    ctx.setTransform(DPR, 0, 0, DPR, 0, 0);
+    build();
+  }
+
+  // -------------------------------------------------- 绘制：纸张与天空层
+
+  function drawPaperLayer () {
+    pctx.setTransform(DPR, 0, 0, DPR, 0, 0);
+
+    // 底色带一点不均匀，像是旧纸受过潮。
+    var base = pctx.createLinearGradient(0, 0, W, H);
+    base.addColorStop(0, '#f4eddd');
+    base.addColorStop(0.5, '#efe7d5');
+    base.addColorStop(1, '#e8dcc6');
+    pctx.fillStyle = base;
+    pctx.fillRect(0, 0, W, H);
+
+    var foxing = pctx.createRadialGradient(W * 0.82, H * 0.14, 0, W * 0.82, H * 0.14, Math.max(W, H) * 0.5);
+    foxing.addColorStop(0, 'rgba(198, 166, 110, 0.09)');
+    foxing.addColorStop(1, 'rgba(198, 166, 110, 0)');
+    pctx.fillStyle = foxing;
+    pctx.fillRect(0, 0, W, H);
+
+    // 纸纤维平铺
+    for (var x = 0; x < W; x += fiberCanvas.width) {
+      for (var y = 0; y < H; y += fiberCanvas.height) {
+        pctx.drawImage(fiberCanvas, x, y);
+      }
+    }
+
+    // 天空斜排线，只画到地平线以上。
+    pctx.save();
+    pctx.beginPath();
+    pctx.rect(0, 0, W, horizon);
+    pctx.clip();
+    for (var index = 0; index < skyHatch.length; index++) {
+      var hatch = skyHatch[index];
+      // 45° 斜线，用 offset 沿对角线铺开。
+      line(pctx, hatch.offset, 0, hatch.offset - horizon * 1.25, horizon * 1.25, {
+        id: hatch.id,
+        alpha: hatch.alpha,
+        width: hatch.width,
+        amp: 1.3
+      });
+    }
+    pctx.restore();
+
+    // 太阳：圆盘留白 + 放射排线。
+    pctx.save();
+    var rays = 26;
+    for (var ray = 0; ray < rays; ray++) {
+      var angle = ray / rays * Math.PI * 2;
+      var inner = sun.r * 1.22;
+      var outer = sun.r * (1.5 + (ray % 3) * 0.42);
+      line(
+        pctx,
+        sun.x + Math.cos(angle) * inner, sun.y + Math.sin(angle) * inner,
+        sun.x + Math.cos(angle) * outer, sun.y + Math.sin(angle) * outer,
+        { id: 5000 + ray, alpha: 0.3, width: 0.9, amp: 1 }
+      );
+    }
+    var circle = [];
+    for (var step = 0; step <= 30; step++) {
+      var a = step / 30 * Math.PI * 2;
+      circle.push({ x: sun.x + Math.cos(a) * sun.r, y: sun.y + Math.sin(a) * sun.r });
+    }
+    inkStroke(pctx, circle, { id: 5100, alpha: 0.62, width: 1.5, amp: 0.8, passes: 2 });
+    pctx.restore();
+
+    // 墨点
+    for (var speck = 0; speck < specks.length; speck++) {
+      var dot = specks[speck];
+      pctx.fillStyle = 'rgba(' + INK + ',' + dot.alpha.toFixed(3) + ')';
+      pctx.beginPath();
+      pctx.arc(dot.x * W, dot.y * H, dot.r, 0, Math.PI * 2);
+      pctx.fill();
+    }
+  }
+
+  function drawWashClouds (delta) {
+    for (var index = 0; index < washClouds.length; index++) {
+      var cloud = washClouds[index];
+      cloud.x += cloud.speed * delta;
+      if (cloud.x - cloud.w > W) cloud.x = -cloud.w;
+
+      for (var stroke = 0; stroke < cloud.strokes; stroke++) {
+        var t = stroke / Math.max(1, cloud.strokes - 1);
+        var points = [];
+        var segments = 8;
+        for (var seg = 0; seg <= segments; seg++) {
+          var st = seg / segments;
+          points.push({
+            x: cloud.x + st * cloud.w,
+            // 弧形排线，中间鼓、两头收。
+            y: cloud.y + t * cloud.h - Math.sin(st * Math.PI) * cloud.h * 0.6
+          });
+        }
+        inkStroke(ctx, points, {
+          id: cloud.id + stroke,
+          alpha: cloud.alpha * (1 - t * 0.4),
+          width: 0.8,
+          amp: 1.6
+        });
+      }
+    }
+  }
+
+  // ------------------------------------------------------------ 绘制：海
+
+  function seaHeightAt (x) {
+    // 船必须坐在真正的浪面上，所以水线高度由同一组正弦给出。
+    return Math.sin(x / 230 + clock * 0.62) * 5.5
+      + Math.sin(x / 97 - clock * 0.44) * 2.6;
+  }
+
+  function drawSea () {
+    for (var index = 0; index < seaBands.length; index++) {
+      var band = seaBands[index];
+      var points = [];
+      var step = Math.max(14, band.wavelength / 9);
+      for (var x = -step; x <= W + step; x += step) {
+        var y = band.y
+          + Math.sin((x / band.wavelength) * Math.PI * 2 + clock * band.speed + band.phase) * band.amplitude
+          + Math.sin((x / (band.wavelength * 0.41)) * Math.PI * 2 - clock * band.speed * 1.4) * band.amplitude * 0.3;
+        points.push({ x: x, y: y });
+      }
+      inkStroke(ctx, points, {
+        id: band.id,
+        alpha: band.alpha,
+        width: band.width,
+        amp: lerp(0.6, 1.8, band.t),
+        passes: band.t > 0.55 ? 2 : 1
+      });
+
+      // 浪谷的短排线，给海面做出体积。
+      for (var hatch = 0; hatch < band.hatches; hatch++) {
+        var hx = (hatch + 0.5) / band.hatches * W + Math.sin(clock * band.speed * 0.6 + hatch) * 18;
+        var hy = band.y
+          + Math.sin((hx / band.wavelength) * Math.PI * 2 + clock * band.speed + band.phase) * band.amplitude;
+        var hLength = lerp(5, 22, band.t);
+        line(ctx, hx, hy + 1.5, hx + hLength * 0.6, hy + hLength * 0.5, {
+          id: band.id + 500 + hatch,
+          alpha: band.alpha * 0.7,
+          width: band.width * 0.7,
+          amp: 1.1
+        });
+      }
+    }
+  }
+
+  // ---------------------------------------------------------- 绘制：帆船
+
+  function drawShip () {
+    if (!ship) return;
+
+    var unit = ship.unit;
+    var shipX = W * 0.5;
+    // 船跟着自己所在位置的浪面起伏，并有独立的横摇。
+    var swell = seaHeightAt(shipX);
+    var waterY = horizon + (H - horizon) * 0.42 + swell;
+    var roll = Math.sin(clock * 0.62 + 0.5) * 0.045 + Math.sin(clock * 0.38) * 0.022;
+
+    ctx.save();
+    ctx.translate(shipX, waterY);
+    ctx.rotate(roll);
+    // 局部坐标是 y 向上，这里翻过来并按 unit 放大。
+    ctx.scale(unit, -unit);
+    // 线宽要除掉缩放，否则细节全糊成一团。
+    var lineScale = 1 / unit;
+
+    // 因为已经 scale 过，所有笔画都在局部坐标里走，
+    // 用一个包装把线宽和抖动幅度换算回屏幕尺度。
+    function localStroke (points, options) {
+      inkStroke(ctx, points, {
+        id: options.id,
+        alpha: options.alpha,
+        width: (options.width || 1) * lineScale,
+        amp: (options.amp === undefined ? 0.9 : options.amp) * lineScale,
+        passes: options.passes,
+        close: options.close
+      });
+    }
+
+    function localLine (x0, y0, x1, y1, options) {
+      var steps = Math.max(2, Math.round(Math.hypot(x1 - x0, y1 - y0) / 12));
+      var points = [];
+      for (var index = 0; index <= steps; index++) {
+        var t = index / steps;
+        points.push({ x: lerp(x0, x1, t), y: lerp(y0, y1, t) });
+      }
+      localStroke(points, options);
+    }
+
+    var hull = ship.hull;
+
+    // 船体轮廓
+    localStroke(hull.deck, { id: 6000, alpha: 0.85, width: 1.9, amp: 0.7, passes: 2 });
+    localStroke(hull.stern, { id: 6010, alpha: 0.8, width: 1.7, amp: 0.7 });
+    localStroke(hull.bow, { id: 6020, alpha: 0.8, width: 1.7, amp: 0.7 });
+    localStroke(hull.waterline, { id: 6030, alpha: 0.55, width: 1.2, amp: 0.9 });
+
+    // 船体的交叉排线：越靠水线越暗。
+    var hullHatches = 26;
+    for (var hatch = 0; hatch < hullHatches; hatch++) {
+      var t = hatch / (hullHatches - 1);
+      var hx = lerp(-49, 50, t);
+      // 甲板线在这个 x 上的高度，线性插值就够了。
+      var deckY = 9.2;
+      for (var seg = 0; seg < hull.deck.length - 1; seg++) {
+        var a = hull.deck[seg];
+        var b = hull.deck[seg + 1];
+        if (hx >= a.x && hx <= b.x) {
+          deckY = lerp(a.y, b.y, (hx - a.x) / (b.x - a.x));
+          break;
+        }
+      }
+      localLine(hx, 0.4, hx - 2.2, deckY * 0.62, {
+        id: 6100 + hatch,
+        alpha: 0.16,
+        width: 0.9,
+        amp: 1
+      });
+    }
+    // 第二组反向排线，形成交叉网。
+    for (var cross = 0; cross < 14; cross++) {
+      var ct = cross / 13;
+      localLine(lerp(-46, 46, ct), 1.2, lerp(-40, 52, ct), 5.5, {
+        id: 6200 + cross,
+        alpha: 0.11,
+        width: 0.8,
+        amp: 1.1
+      });
+    }
+
+    // 艉楼窗与舷侧线
+    localLine(-50, 6.5, -47.5, 6.5, { id: 6300, alpha: 0.4, width: 0.9, amp: 0.6 });
+    localLine(-34, 6.2, 34, 5.4, { id: 6310, alpha: 0.3, width: 1, amp: 1.2 });
+
+    // 首斜桁
+    localLine(50, 13, 74, 22, { id: 6400, alpha: 0.72, width: 1.5, amp: 0.8 });
+    localLine(50, 11, 70, 17.5, { id: 6410, alpha: 0.4, width: 1, amp: 0.8 });
+
+    // 桅、横桁、帆、索具
+    for (var mastIndex = 0; mastIndex < ship.masts.length; mastIndex++) {
+      var mast = ship.masts[mastIndex];
+      var baseY = 9.6;
+      var topY = baseY + mast.height;
+
+      localLine(mast.x, baseY, mast.x, topY, {
+        id: 6500 + mastIndex * 100,
+        alpha: 0.88,
+        width: 2,
+        amp: 0.5,
+        passes: 2
+      });
+
+      for (var yardIndex = 0; yardIndex < mast.yards.length; yardIndex++) {
+        var yardT = mast.yards[yardIndex];
+        var yardY = lerp(baseY, topY, yardT);
+        var spread = mast.spread * lerp(1, 0.52, yardT);
+
+        // 横桁
+        localLine(mast.x - spread, yardY, mast.x + spread, yardY, {
+          id: 6520 + mastIndex * 100 + yardIndex,
+          alpha: 0.8,
+          width: 1.5,
+          amp: 0.6
+        });
+
+        // 帆：挂在这根横桁与下一根之间。
+        if (yardIndex < mast.yards.length - 1) {
+          var nextT = mast.yards[yardIndex + 1];
+          var nextY = lerp(baseY, topY, nextT);
+          var nextSpread = mast.spread * lerp(1, 0.52, nextT);
+          var phase = ship.sailPhase[(mastIndex * 4 + yardIndex) % ship.sailPhase.length];
+
+          var sailPoints = [];
+          var segments = 9;
+          var billow = spread * (0.36 + 0.2 * Math.sin(clock * 0.9 + phase));
+          for (var s = 0; s <= segments; s++) {
+            var st = s / segments;
+            sailPoints.push({
+              x: lerp(mast.x - spread, mast.x - nextSpread, st) + Math.sin(st * Math.PI) * billow * 0.2,
+              y: lerp(yardY, nextY, st)
+            });
+          }
+          localStroke(sailPoints, { id: 6600 + mastIndex * 100 + yardIndex, alpha: 0.6, width: 1.2, amp: 0.8 });
+
+          var sailPoints2 = [];
+          for (var s2 = 0; s2 <= segments; s2++) {
+            var st2 = s2 / segments;
+            sailPoints2.push({
+              x: lerp(mast.x + spread, mast.x + nextSpread, st2) + Math.sin(st2 * Math.PI) * billow,
+              y: lerp(yardY, nextY, st2)
+            });
+          }
+          localStroke(sailPoints2, { id: 6650 + mastIndex * 100 + yardIndex, alpha: 0.6, width: 1.2, amp: 0.8 });
+
+          // 帆脚：下缘随风摆动。
+          var footPoints = [];
+          for (var f = 0; f <= 6; f++) {
+            var ft = f / 6;
+            footPoints.push({
+              x: lerp(mast.x - nextSpread, mast.x + nextSpread, ft),
+              y: nextY + Math.sin(ft * Math.PI) * (1.2 + Math.sin(clock * 1.3 + phase) * 0.8)
+            });
+          }
+          localStroke(footPoints, { id: 6700 + mastIndex * 100 + yardIndex, alpha: 0.5, width: 1, amp: 0.9 });
+
+          // 帆面排线
+          for (var shade = 1; shade <= 4; shade++) {
+            var sh = shade / 5;
+            var shy = lerp(yardY, nextY, sh);
+            var shSpreadA = lerp(spread, nextSpread, sh);
+            localLine(
+              mast.x - shSpreadA * 0.75, shy,
+              mast.x + shSpreadA * (0.5 + Math.sin(clock * 0.9 + phase) * 0.16), shy,
+              { id: 6750 + mastIndex * 100 + yardIndex * 10 + shade, alpha: 0.1, width: 0.8, amp: 1.1 }
+            );
+          }
+        }
+      }
+
+      // 桅顶三角旗，向风飘。
+      var flagWave = Math.sin(clock * 2.4 + mastIndex) * 2.2;
+      localStroke([
+        { x: mast.x, y: topY },
+        { x: mast.x + 6, y: topY - 1 + flagWave * 0.4 },
+        { x: mast.x + 13, y: topY - 2.4 + flagWave },
+        { x: mast.x + 6, y: topY - 4 + flagWave * 0.5 },
+        { x: mast.x, y: topY - 3.4 }
+      ], { id: 6800 + mastIndex, alpha: 0.6, width: 1.1, amp: 0.7, close: true });
+
+      // 侧支索
+      localLine(mast.x, topY - mast.height * 0.12, mast.x - mast.spread * 1.5, 10.4, {
+        id: 6850 + mastIndex * 10,
+        alpha: 0.3,
+        width: 0.8,
+        amp: 0.7
+      });
+      localLine(mast.x, topY - mast.height * 0.12, mast.x + mast.spread * 1.5, 10.6, {
+        id: 6860 + mastIndex * 10,
+        alpha: 0.3,
+        width: 0.8,
+        amp: 0.7
+      });
+    }
+
+    // 前后桅之间的纵向支索
+    localLine(ship.masts[0].x, 9.6 + ship.masts[0].height * 0.94, ship.masts[1].x, 9.6 + ship.masts[1].height * 0.62, {
+      id: 6900, alpha: 0.26, width: 0.8, amp: 0.7
+    });
+    localLine(ship.masts[1].x, 9.6 + ship.masts[1].height * 0.94, ship.masts[2].x, 9.6 + ship.masts[2].height * 0.66, {
+      id: 6910, alpha: 0.26, width: 0.8, amp: 0.7
+    });
+    localLine(ship.masts[2].x, 9.6 + ship.masts[2].height * 0.9, 72, 21, {
+      id: 6920, alpha: 0.26, width: 0.8, amp: 0.7
+    });
+
+    ctx.restore();
+
+    // 船首的碎浪：跟着船一起起伏，把船"焊"在水面上。
+    var foamX = shipX + ship.length * 0.46;
+    for (var foam = 0; foam < 7; foam++) {
+      var fx = foamX - foam * ship.length * 0.06;
+      var fy = waterY + Math.sin(clock * 2.2 + foam) * 2 + foam * 0.8;
+      var fLength = ship.length * 0.05 * (1 - foam * 0.1);
+      line(ctx, fx, fy, fx - fLength, fy + fLength * 0.35, {
+        id: 7000 + foam,
+        alpha: 0.34 - foam * 0.035,
+        width: 1.3,
+        amp: 1.5
+      });
+    }
+
+    // 水线下的倒影：几道被浪打断的短横线。
+    for (var reflect = 0; reflect < 12; reflect++) {
+      var rt = reflect / 11;
+      var ry = waterY + 4 + reflect * (H - horizon) * 0.014;
+      var halfWidth = ship.length * 0.42 * (1 - rt * 0.5);
+      var breakUp = Math.sin(clock * 1.4 + reflect * 0.9);
+      line(ctx, shipX - halfWidth + breakUp * 6, ry, shipX + halfWidth * 0.6 + breakUp * 4, ry, {
+        id: 7100 + reflect,
+        alpha: (0.2 - rt * 0.14),
+        width: 1.1,
+        amp: 1.8
+      });
+    }
+  }
+
+  // ---------------------------------------------------------- 绘制：海鸥
+
+  function drawGulls (delta) {
+    for (var index = 0; index < gulls.length; index++) {
+      var gull = gulls[index];
+      gull.x += gull.speed * delta * 0.1;
+      gull.flap += gull.flapSpeed * delta;
+      if (gull.x > 1.15) gull.x = -0.15;
+
+      var x = gull.x * W;
+      var y = gull.y * horizon + Math.sin(clock * 0.6 + index) * 8;
+      var span = 6 + gull.scale * 10;
+      var lift = Math.sin(gull.flap) * span * 0.5;
+
+      // 一只鸥就是两笔：左翼一笔、右翼一笔。
+      inkStroke(ctx, [
+        { x: x - span, y: y + lift },
+        { x: x - span * 0.45, y: y - lift * 0.35 },
+        { x: x, y: y }
+      ], { id: gull.id, alpha: 0.55, width: 1.2 * gull.scale, amp: 0.8 });
+      inkStroke(ctx, [
+        { x: x, y: y },
+        { x: x + span * 0.45, y: y - lift * 0.35 },
+        { x: x + span, y: y + lift }
+      ], { id: gull.id + 1, alpha: 0.55, width: 1.2 * gull.scale, amp: 0.8 });
+    }
+  }
+
+  function drawBlots (delta) {
+    for (var index = blots.length - 1; index >= 0; index--) {
+      var blot = blots[index];
+      blot.life += delta;
+      if (blot.life >= blot.duration) {
+        blots.splice(index, 1);
+        continue;
+      }
+      // 墨点先迅速铺开再慢慢淡入纸里。
+      var t = blot.life / blot.duration;
+      var radius = blot.radius * Math.min(1, t * 6);
+      var alpha = (1 - t) * 0.5;
+
+      var points = [];
+      for (var step = 0; step <= 22; step++) {
+        var a = step / 22 * Math.PI * 2;
+        var wobbleR = radius * (0.78 + 0.22 * Math.sin(a * blot.lobes + blot.seed));
+        points.push({ x: blot.x + Math.cos(a) * wobbleR, y: blot.y + Math.sin(a) * wobbleR * 0.9 });
+      }
+      ctx.beginPath();
+      for (var p = 0; p < points.length; p++) {
+        if (p === 0) ctx.moveTo(points[p].x, points[p].y);
+        else ctx.lineTo(points[p].x, points[p].y);
+      }
+      ctx.closePath();
+      ctx.fillStyle = 'rgba(' + INK + ',' + (alpha * 0.55).toFixed(3) + ')';
+      ctx.fill();
+      inkStroke(ctx, points, { id: blot.id, alpha: alpha, width: 1.2, amp: 1, close: true });
+
+      // 几点飞溅
+      for (var splash = 0; splash < blot.splashes.length; splash++) {
+        var drop = blot.splashes[splash];
+        ctx.fillStyle = 'rgba(' + INK + ',' + (alpha * 0.7).toFixed(3) + ')';
+        ctx.beginPath();
+        ctx.arc(
+          blot.x + drop.dx * Math.min(1, t * 3),
+          blot.y + drop.dy * Math.min(1, t * 3),
+          drop.r,
+          0, Math.PI * 2
+        );
+        ctx.fill();
+      }
+    }
+  }
+
+  // ------------------------------------------------------------------ 主循环
+
+  function render (delta) {
+    boilTimer += delta;
+    if (boilTimer >= boilInterval) {
+      boilTimer = 0;
+      boilFrame++;
+    }
+
+    // 纸与天空排线只在 boil 翻页时重绘。
+    if (paperBoil !== boilFrame) {
+      drawPaperLayer();
+      paperBoil = boilFrame;
+    }
+    ctx.drawImage(paperLayer, 0, 0, W, H);
+
+    drawWashClouds(delta);
+    drawSea();
+    drawShip();
+    drawGulls(delta);
+    drawBlots(delta);
+  }
+
+  function frame (now) {
+    var delta = Math.min(0.05, (now - lastTime) / 1000 || 0);
+    lastTime = now;
+
+    if (running && !reduced.matches) {
+      clock += delta;
+      render(delta);
+    }
+    window.requestAnimationFrame(frame);
+  }
+
+  // -------------------------------------------------------------- 交互
+
+  canvas.addEventListener('pointermove', function (event) {
+    var bounds = canvas.getBoundingClientRect();
+    pointerX = (event.clientX - bounds.left) / Math.max(1, bounds.width);
+    pointerY = (event.clientY - bounds.top) / Math.max(1, bounds.height);
+  }, { passive: true });
+
+  canvas.addEventListener('pointerdown', function (event) {
+    var bounds = canvas.getBoundingClientRect();
+    var x = event.clientX - bounds.left;
+    var y = event.clientY - bounds.top;
+    if (blots.length > 6) blots.shift();
+    var splashes = [];
+    var count = 3 + Math.floor(Math.random() * 4);
+    for (var index = 0; index < count; index++) {
+      var angle = Math.random() * Math.PI * 2;
+      var distance = 10 + Math.random() * 34;
+      splashes.push({
+        dx: Math.cos(angle) * distance,
+        dy: Math.sin(angle) * distance,
+        r: 0.7 + Math.random() * 1.8
+      });
+    }
+    blots.push({
+      x: x,
+      y: y,
+      radius: 7 + Math.random() * 13,
+      life: 0,
+      duration: 2.4,
+      lobes: 3 + Math.floor(Math.random() * 4),
+      seed: Math.random() * 6.28,
+      splashes: splashes,
+      id: 8000 + Math.floor(Math.random() * 500)
+    });
+  });
+
+  window.addEventListener('message', function (event) {
+    if (event.origin !== window.location.origin) return;
+    if (!event.data || event.data.type !== 'vexpaer-scene-visibility') return;
+    running = Boolean(event.data.visible);
+    if (running) lastTime = performance.now();
+  });
+
+  var resizeTimer;
+  window.addEventListener('resize', function () {
+    window.clearTimeout(resizeTimer);
+    resizeTimer = window.setTimeout(fit, 180);
+  });
+
+  buildFiber();
+  fit();
+  render(0);
+  window.requestAnimationFrame(frame);
+})();
+</script>
+</body>
+</html>

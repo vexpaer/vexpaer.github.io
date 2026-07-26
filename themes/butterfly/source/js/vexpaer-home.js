@@ -11,12 +11,26 @@
   var context = canvas.getContext('2d', { alpha: false })
   if (!context) return
 
-  var themes = ['dusk', 'space', 'life', 'turing']
+  var themes = ['dusk', 'space', 'life', 'turing', 'seaside', 'cosmos', 'ink']
   var themeMeta = {
     dusk: { label: '暮野', icon: '◒', browserColor: '#17182d' },
     space: { label: '深空', icon: '✦', browserColor: '#000002' },
     life: { label: '生命游戏', icon: '▦', browserColor: '#000000' },
-    turing: { label: '图灵斑纹', icon: '◉', browserColor: '#05070b' }
+    turing: { label: '图灵斑纹', icon: '◉', browserColor: '#05070b' },
+    seaside: { label: '海畔巨构', icon: '≋', browserColor: '#060f18' },
+    cosmos: { label: '寰宇巨构', icon: '❍', browserColor: '#01020a' },
+    ink: { label: '钢笔帆船', icon: '✎', browserColor: '#efe7d7' }
+  }
+  // 以独立 iframe 承载的场景：懒加载，用 postMessage 控制启停。
+  var sceneFrames = {
+    turing: { element: turingFrame, message: 'vexpaer-turing-visibility' },
+    seaside: { element: document.getElementById('vexpaer-home-seaside'), message: 'vexpaer-scene-visibility' },
+    cosmos: { element: document.getElementById('vexpaer-home-cosmos'), message: 'vexpaer-scene-visibility' },
+    ink: { element: document.getElementById('vexpaer-home-ink'), message: 'vexpaer-scene-visibility' }
+  }
+
+  function isFrameScene (theme) {
+    return Boolean(sceneFrames[theme] && sceneFrames[theme].element)
   }
   var storageKey = 'immersive-scene-theme'
   var width = 1
@@ -95,17 +109,21 @@
     if (browserTheme) browserTheme.setAttribute('content', current.browserColor)
   }
 
-  function syncTuringTheme () {
-    if (!turingFrame) return
-    var shouldRun = activeTheme === 'turing' && visible && !document.hidden
-    if (activeTheme === 'turing' && !turingFrame.getAttribute('src')) {
-      turingFrame.setAttribute('src', turingFrame.dataset.src)
-    }
-    if (turingFrame.getAttribute('src') && turingFrame.contentWindow) {
-      turingFrame.contentWindow.postMessage({
-        type: 'vexpaer-turing-visibility',
-        visible: shouldRun
-      }, window.location.origin)
+  function syncSceneFrames () {
+    for (var name in sceneFrames) {
+      var scene = sceneFrames[name]
+      var frameElement = scene.element
+      if (!frameElement) continue
+      var shouldRun = activeTheme === name && visible && !document.hidden
+      if (activeTheme === name && !frameElement.getAttribute('src')) {
+        frameElement.setAttribute('src', frameElement.dataset.src)
+      }
+      if (frameElement.getAttribute('src') && frameElement.contentWindow) {
+        frameElement.contentWindow.postMessage({
+          type: scene.message,
+          visible: shouldRun
+        }, window.location.origin)
+      }
     }
   }
 
@@ -121,7 +139,7 @@
       window.localStorage.setItem(storageKey, theme)
     } catch (error) {}
     updateButton()
-    syncTuringTheme()
+    syncSceneFrames()
     if (threeLayer) threeLayer.setTheme(theme, previousTheme)
     draw(performance.now())
   }
@@ -2789,7 +2807,7 @@
         spacePointerNdc.set(normalizedX, normalizedY)
       },
       setTheme: function (theme, previousTheme) {
-        if (theme === 'turing') {
+        if (isFrameScene(theme)) {
           points.visible = false
           galaxyGroup.visible = false
           meteorGroup.visible = false
@@ -2888,7 +2906,7 @@
   }
 
   function draw (time) {
-    if (activeTheme === 'turing') return
+    if (isFrameScene(activeTheme)) return
     context.setTransform(pixelRatio, 0, 0, pixelRatio, 0, 0)
     if (activeTheme === 'space') drawSpace(time)
     else if (activeTheme === 'life') drawLife(time)
@@ -2970,11 +2988,13 @@
     setTheme(nextTheme())
   })
 
-  if (turingFrame) {
-    turingFrame.addEventListener('load', syncTuringTheme)
+  for (var frameSceneName in sceneFrames) {
+    if (sceneFrames[frameSceneName].element) {
+      sceneFrames[frameSceneName].element.addEventListener('load', syncSceneFrames)
+    }
   }
 
-  document.addEventListener('visibilitychange', syncTuringTheme)
+  document.addEventListener('visibilitychange', syncSceneFrames)
 
   function initHomeMotion () {
     var gsap = window.gsap
@@ -3338,7 +3358,7 @@
   if ('IntersectionObserver' in window) {
     new IntersectionObserver(function (entries) {
       visible = Boolean(entries[0] && entries[0].isIntersecting)
-      syncTuringTheme()
+      syncSceneFrames()
     }, { threshold: 0.01 }).observe(root)
   }
 
@@ -3347,7 +3367,7 @@
   })
 
   updateButton()
-  syncTuringTheme()
+  syncSceneFrames()
   resize()
   if (activeTheme === 'dusk') applyDuskTitleLayout()
   loadThreeLayer()

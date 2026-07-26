@@ -1,0 +1,892 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>海边巨构</title>
+  <style>
+    :root { color-scheme: dark; }
+
+    * { box-sizing: border-box; }
+
+    html, body {
+      margin: 0;
+      width: 100%;
+      height: 100%;
+      overflow: hidden;
+      background: #060f18;
+    }
+
+    #scene {
+      position: fixed;
+      inset: 0;
+      display: block;
+      width: 100%;
+      height: 100%;
+      background: #060f18;
+      cursor: crosshair;
+    }
+
+    /* 画布之上的静态压暗层，让主页标题在任何时刻都有足够对比度。 */
+    .shade {
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      background:
+        linear-gradient(180deg, rgba(4, 10, 18, 0.46) 0%, rgba(4, 10, 18, 0.08) 22%, transparent 42%),
+        radial-gradient(ellipse 88% 76% at 50% 52%, transparent 0 46%, rgba(4, 10, 16, 0.1) 74%, rgba(3, 8, 14, 0.34) 100%);
+    }
+  </style>
+</head>
+<body>
+<canvas id="scene"></canvas>
+<div class="shade" aria-hidden="true"></div>
+<script>
+(function () {
+  'use strict';
+
+  var canvas = document.getElementById('scene');
+  var ctx = canvas.getContext('2d', { alpha: false });
+  if (!ctx) return;
+
+  var W = 1;
+  var H = 1;
+  var DPR = 1;
+  var horizon = 1;
+  var running = true;
+  var reduced = window.matchMedia('(prefers-reduced-motion: reduce)');
+  var lastTime = 0;
+  var clock = 0;
+
+  // 结构层离屏画布：水面之上的全部剪影都画在这里，主画布合成一次，
+  // 再整体镜像成倒影。倒影因此天然与建筑、窗光、信标保持同步。
+  var structCanvas = document.createElement('canvas');
+  var sctx = structCanvas.getContext('2d');
+
+  var grainCanvas = document.createElement('canvas');
+  var cloudSprites = [];
+
+  var sun = { x: 0, y: 0, r: 0 };
+  var blocks = [];
+  var farTowers = [];
+  var windows = [];
+  var beacons = [];
+  var masts = [];
+  var clouds = [];
+  var waves = [];
+  var glitter = [];
+  var birds = [];
+  var ripples = [];
+  var aircraft = null;
+  var searchlight = null;
+
+  var pointerX = 0.5;
+  var pointerY = 0.5;
+  var parallaxX = 0;
+  var parallaxY = 0;
+
+  // ---------------------------------------------------------------- 工具
+
+  function mulberry32 (seed) {
+    return function () {
+      seed |= 0;
+      seed = seed + 0x6D2B79F5 | 0;
+      var value = Math.imul(seed ^ seed >>> 15, 1 | seed);
+      value = value + Math.imul(value ^ value >>> 7, 61 | value) ^ value;
+      return ((value ^ value >>> 14) >>> 0) / 4294967296;
+    };
+  }
+
+  function lerp (a, b, t) { return a + (b - a) * t; }
+  function clamp (value, low, high) { return value < low ? low : value > high ? high : value; }
+  function easeOut (t) { return 1 - Math.pow(1 - t, 3); }
+
+  // ---------------------------------------------------------- 场景构建
+
+  function buildGrain () {
+    var size = 128;
+    grainCanvas.width = size;
+    grainCanvas.height = size;
+    var gctx = grainCanvas.getContext('2d');
+    var image = gctx.createImageData(size, size);
+    var random = mulberry32(0x5EA51DE);
+    for (var index = 0; index < image.data.length; index += 4) {
+      var value = 128 + (random() - 0.5) * 96;
+      image.data[index] = value;
+      image.data[index + 1] = value;
+      image.data[index + 2] = value;
+      image.data[index + 3] = 255;
+    }
+    gctx.putImageData(image, 0, 0);
+  }
+
+  // 云是整个场景里最贵的绘制。预渲染成精灵后每帧只做 drawImage，
+  // 避免每帧重复构造 radial-gradient。
+  function buildCloudSprites () {
+    cloudSprites = [];
+    for (var variant = 0; variant < 4; variant++) {
+      var sprite = document.createElement('canvas');
+      var size = 256;
+      sprite.width = size * 2;
+      sprite.height = size;
+      var cctx = sprite.getContext('2d');
+      var random = mulberry32(0xC10D + variant * 977);
+      var puffs = 16 + Math.round(random() * 10);
+      for (var puff = 0; puff < puffs; puff++) {
+        var px = size * 0.12 + random() * size * 1.76;
+        var edge = Math.abs(px / size - 1);
+        var py = size * (0.42 + (random() - 0.5) * 0.36 + edge * 0.12);
+        var pr = size * (0.06 + random() * 0.2) * (1 - edge * 0.4);
+        var gradient = cctx.createRadialGradient(px, py, 0, px, py, pr);
+        var alpha = 0.1 + random() * 0.16;
+        gradient.addColorStop(0, 'rgba(255, 232, 208, ' + alpha.toFixed(3) + ')');
+        gradient.addColorStop(0.55, 'rgba(190, 176, 186, ' + (alpha * 0.5).toFixed(3) + ')');
+        gradient.addColorStop(1, 'rgba(120, 122, 148, 0)');
+        cctx.fillStyle = gradient;
+        cctx.beginPath();
+        cctx.arc(px, py, pr, 0, Math.PI * 2);
+        cctx.fill();
+      }
+      cloudSprites.push(sprite);
+    }
+  }
+
+  function pushWindows (block, random, density, warmth) {
+    // 窗格按块的实际尺寸铺，太窄或太矮的块直接跳过，避免出现糊成一片的噪点。
+    var cellW = clamp(block.w / Math.max(3, Math.round(block.w / 9)), 3.5, 11);
+    var cellH = clamp(block.h / Math.max(3, Math.round(block.h / 13)), 4.5, 15);
+    var columns = Math.floor((block.w - cellW * 0.9) / cellW);
+    var rows = Math.floor((block.h - cellH * 0.9) / cellH);
+    if (columns < 2 || rows < 2) return;
+
+    var padX = (block.w - columns * cellW) * 0.5;
+    var padY = (block.h - rows * cellH) * 0.5;
+
+    for (var row = 0; row < rows; row++) {
+      for (var column = 0; column < columns; column++) {
+        if (random() > density) continue;
+        var cool = random() > warmth;
+        windows.push({
+          x: block.x + padX + column * cellW,
+          y: block.y + padY + row * cellH,
+          w: Math.max(1.2, cellW * (0.44 + random() * 0.26)),
+          h: Math.max(1.2, cellH * (0.4 + random() * 0.24)),
+          base: 0.3 + Math.pow(random(), 1.6) * 0.7,
+          phase: random() * Math.PI * 2,
+          speed: 0.4 + random() * 1.5,
+          // 少量窗户会长时间熄灭再亮起，让立面不至于像固定贴图。
+          blinkPhase: random() * Math.PI * 2,
+          blinkSpeed: 0.05 + random() * 0.16,
+          blinks: random() > 0.82,
+          cool: cool
+        });
+      }
+    }
+  }
+
+  function addBlock (x, y, w, h, shade) {
+    var block = { x: x, y: y, w: w, h: h, shade: shade };
+    blocks.push(block);
+    return block;
+  }
+
+  function buildMegastructure () {
+    blocks = [];
+    windows = [];
+    beacons = [];
+    masts = [];
+
+    var random = mulberry32(0x5EA9);
+    // 主体锚在左三分点上，标题在右侧配平——与 dusk 场景相同的构图逻辑。
+    var centerX = W * (W < 720 ? 0.44 : 0.37);
+    var baseWidth = clamp(W * 0.3, 220, 620);
+    var totalHeight = horizon * (W < 720 ? 0.74 : 0.68);
+
+    // 水下基座：宽阔的防浪平台，把巨构"坐"在海里而不是漂着。
+    var plinth = addBlock(
+      centerX - baseWidth * 0.72,
+      horizon - totalHeight * 0.1,
+      baseWidth * 1.44,
+      totalHeight * 0.1 + 6,
+      0.34
+    );
+    pushWindows(plinth, random, 0.16, 0.9);
+
+    // 主塔：逐级内收的塔体，每一级都有独立的窗格密度。
+    var tiers = 6;
+    var tierBottom = horizon - totalHeight * 0.1;
+    for (var tier = 0; tier < tiers; tier++) {
+      var t = tier / (tiers - 1);
+      var tierWidth = baseWidth * lerp(1, 0.34, Math.pow(t, 0.82));
+      var tierHeight = totalHeight * lerp(0.2, 0.1, t);
+      var offset = (random() - 0.5) * baseWidth * 0.06;
+      var block = addBlock(
+        centerX - tierWidth * 0.5 + offset,
+        tierBottom - tierHeight,
+        tierWidth,
+        tierHeight,
+        lerp(0.3, 0.52, t)
+      );
+      pushWindows(block, random, lerp(0.5, 0.34, t), 0.86);
+
+      // 侧向扶壁，打断纯粹的矩形轮廓。
+      if (tier < 4) {
+        var finWidth = tierWidth * (0.1 + random() * 0.08);
+        var finHeight = tierHeight * (0.6 + random() * 0.5);
+        addBlock(block.x - finWidth * 0.72, block.y + tierHeight * 0.2, finWidth, finHeight, block.shade * 0.82);
+        addBlock(block.x + tierWidth - finWidth * 0.28, block.y + tierHeight * 0.3, finWidth, finHeight, block.shade * 0.82);
+      }
+
+      tierBottom = block.y + tierHeight * 0.06;
+    }
+
+    var crown = blocks[blocks.length - 1];
+    var apexX = centerX;
+    var apexY = tierBottom;
+
+    // 顶部桅杆与航空障碍灯。
+    masts.push({ x: apexX, y: apexY, height: totalHeight * 0.16, width: Math.max(1.4, W * 0.0016) });
+    masts.push({ x: apexX - baseWidth * 0.1, y: apexY + totalHeight * 0.03, height: totalHeight * 0.1, width: Math.max(1, W * 0.001) });
+
+    beacons.push({ x: apexX, y: apexY - totalHeight * 0.16, r: Math.max(1.8, W * 0.0024), color: [255, 96, 92], period: 2.4, offset: 0 });
+    beacons.push({ x: apexX - baseWidth * 0.1, y: apexY + totalHeight * 0.03 - totalHeight * 0.1, r: Math.max(1.4, W * 0.0019), color: [255, 120, 96], period: 2.4, offset: 1.2 });
+    beacons.push({ x: crown.x + 2, y: crown.y + 3, r: Math.max(1.2, W * 0.0016), color: [180, 226, 255], period: 3.6, offset: 0.6 });
+    beacons.push({ x: crown.x + crown.w - 2, y: crown.y + 3, r: Math.max(1.2, W * 0.0016), color: [180, 226, 255], period: 3.6, offset: 2.4 });
+
+    // 缓慢扫掠的探照灯，是画面里最明显的"这是活的"信号。
+    searchlight = {
+      x: apexX,
+      y: apexY + totalHeight * 0.02,
+      length: Math.max(W, H) * 1.1,
+      spread: 0.052,
+      speed: 0.085,
+      phase: random() * Math.PI * 2
+    };
+
+    // 副塔群：两侧的卫星塔，靠远近与色调差建立纵深。
+    var satellites = W < 720 ? 3 : 5;
+    for (var satellite = 0; satellite < satellites; satellite++) {
+      var side = satellite % 2 === 0 ? -1 : 1;
+      var rank = Math.floor(satellite / 2) + 1;
+      var distance = baseWidth * (0.62 + rank * 0.46 + random() * 0.2);
+      var satWidth = baseWidth * (0.2 + random() * 0.16) / (1 + rank * 0.16);
+      var satHeight = totalHeight * (0.3 + random() * 0.34) / (1 + rank * 0.2);
+      var satX = centerX + side * distance;
+      var satBlock = addBlock(satX - satWidth * 0.5, horizon - satHeight, satWidth, satHeight, 0.26 + rank * 0.07);
+      pushWindows(satBlock, random, 0.3 - rank * 0.04, 0.82);
+
+      // 每座副塔顶上一盏灯，节奏各自错开。
+      beacons.push({
+        x: satX,
+        y: horizon - satHeight - 2,
+        r: Math.max(1, W * 0.0014),
+        color: [255, 138, 110],
+        period: 2 + random() * 2.4,
+        offset: random() * 4
+      });
+    }
+
+    // 天际线最远处的雾中剪影，只有轮廓、没有窗光。
+    farTowers = [];
+    var farRandom = mulberry32(0x0FA2);
+    var farCount = Math.round(W / 34);
+    for (var far = 0; far < farCount; far++) {
+      var fw = W * (0.006 + farRandom() * 0.026);
+      var fh = horizon * (0.02 + Math.pow(farRandom(), 2) * 0.16);
+      farTowers.push({
+        x: farRandom() * W,
+        y: horizon - fh,
+        w: fw,
+        h: fh,
+        alpha: 0.1 + farRandom() * 0.2
+      });
+    }
+  }
+
+  function buildAtmosphere () {
+    var random = mulberry32(0x0C10D);
+
+    clouds = [];
+    var cloudCount = W < 720 ? 9 : 16;
+    for (var cloud = 0; cloud < cloudCount; cloud++) {
+      var band = random();
+      clouds.push({
+        sprite: Math.floor(random() * cloudSprites.length),
+        x: random() * (W + 900) - 450,
+        y: horizon * (0.06 + band * 0.72),
+        scale: (0.4 + random() * 1.5) * (W / 1280) * lerp(1.5, 0.6, band),
+        // 越低的云带越慢，形成大气透视上的速度差。
+        speed: lerp(11, 2.2, band) * (random() > 0.5 ? 1 : 0.72),
+        alpha: lerp(0.5, 1, band) * (0.4 + random() * 0.5)
+      });
+    }
+
+    waves = [];
+    var waveCount = Math.round(clamp(H * 0.16, 46, 104));
+    for (var wave = 0; wave < waveCount; wave++) {
+      var t = wave / (waveCount - 1);
+      // 近处波纹更疏、振幅更大，模拟透视压缩。
+      var depth = Math.pow(t, 2.15);
+      waves.push({
+        depth: depth,
+        y: horizon + depth * (H - horizon),
+        amplitude: lerp(0.3, 7.5, depth),
+        wavelength: lerp(46, 340, depth),
+        speed: lerp(0.16, 0.85, depth),
+        phase: random() * Math.PI * 2,
+        alpha: lerp(0.06, 0.3, Math.pow(t, 0.6)),
+        thickness: lerp(0.6, 2.4, depth)
+      });
+    }
+
+    glitter = [];
+    var glitterCount = W < 720 ? 120 : 260;
+    for (var spark = 0; spark < glitterCount; spark++) {
+      var sparkDepth = Math.pow(random(), 1.5);
+      glitter.push({
+        // 集中在太阳的镜面反射柱里，柱宽随距离展开。
+        offset: (random() - 0.5) * 2,
+        depth: sparkDepth,
+        size: lerp(0.5, 2.6, sparkDepth) * (0.5 + random()),
+        phase: random() * Math.PI * 2,
+        speed: 1.6 + random() * 5.5
+      });
+    }
+
+    birds = [];
+    var flockCount = W < 720 ? 5 : 9;
+    for (var bird = 0; bird < flockCount; bird++) {
+      birds.push({
+        x: random(),
+        y: 0.1 + random() * 0.34,
+        scale: 0.5 + random() * 0.8,
+        speed: 0.008 + random() * 0.018,
+        flap: random() * Math.PI * 2,
+        flapSpeed: 5 + random() * 4
+      });
+    }
+
+    aircraft = {
+      x: -0.2,
+      y: 0.14 + random() * 0.1,
+      speed: 0.013,
+      scale: 0.6 + random() * 0.5,
+      blink: 0
+    };
+
+    ripples = [];
+  }
+
+  function build () {
+    horizon = H * (H < 520 ? 0.58 : 0.62);
+    sun.x = W * (W < 720 ? 0.3 : 0.24);
+    sun.y = horizon - H * 0.012;
+    sun.r = clamp(Math.min(W, H) * 0.05, 26, 82);
+
+    structCanvas.width = Math.max(1, Math.round(W * DPR));
+    structCanvas.height = Math.max(1, Math.round(horizon * DPR));
+    sctx.setTransform(DPR, 0, 0, DPR, 0, 0);
+
+    buildMegastructure();
+    buildAtmosphere();
+  }
+
+  function fit () {
+    DPR = clamp(window.devicePixelRatio || 1, 1, 2);
+    W = Math.max(1, canvas.clientWidth || window.innerWidth);
+    H = Math.max(1, canvas.clientHeight || window.innerHeight);
+    canvas.width = Math.round(W * DPR);
+    canvas.height = Math.round(H * DPR);
+    ctx.setTransform(DPR, 0, 0, DPR, 0, 0);
+    build();
+  }
+
+  // ------------------------------------------------------------ 绘制：天空
+
+  function drawSky () {
+    var gradient = ctx.createLinearGradient(0, 0, 0, horizon);
+    gradient.addColorStop(0, '#050d17');
+    gradient.addColorStop(0.24, '#0c2133');
+    gradient.addColorStop(0.52, '#1d4356');
+    gradient.addColorStop(0.78, '#4a6f74');
+    gradient.addColorStop(0.94, '#a9795e');
+    gradient.addColorStop(1, '#e0a06c');
+    ctx.fillStyle = gradient;
+    ctx.fillRect(0, 0, W, horizon + 1);
+
+    // 地平线附近的暖色辉光，锚定光源方向。
+    var glow = ctx.createRadialGradient(sun.x, sun.y, 0, sun.x, sun.y, Math.max(W, H) * 0.52);
+    glow.addColorStop(0, 'rgba(255, 214, 160, 0.5)');
+    glow.addColorStop(0.16, 'rgba(255, 176, 116, 0.26)');
+    glow.addColorStop(0.45, 'rgba(196, 122, 96, 0.1)');
+    glow.addColorStop(1, 'rgba(120, 96, 120, 0)');
+    ctx.globalCompositeOperation = 'lighter';
+    ctx.fillStyle = glow;
+    ctx.fillRect(0, 0, W, horizon + 1);
+    ctx.globalCompositeOperation = 'source-over';
+  }
+
+  function drawSun () {
+    ctx.globalCompositeOperation = 'lighter';
+
+    var disc = ctx.createRadialGradient(sun.x, sun.y, 0, sun.x, sun.y, sun.r);
+    disc.addColorStop(0, 'rgba(255, 246, 226, 0.96)');
+    disc.addColorStop(0.42, 'rgba(255, 214, 158, 0.72)');
+    disc.addColorStop(1, 'rgba(255, 158, 104, 0)');
+    ctx.fillStyle = disc;
+    ctx.beginPath();
+    ctx.arc(sun.x, sun.y, sun.r, 0, Math.PI * 2);
+    ctx.fill();
+
+    // 缓慢转动的霞光条，避免辉光看起来是静态贴图。
+    var rays = 11;
+    ctx.save();
+    ctx.translate(sun.x, sun.y);
+    ctx.rotate(clock * 0.012);
+    for (var ray = 0; ray < rays; ray++) {
+      var angle = ray / rays * Math.PI * 2;
+      var length = Math.max(W, H) * (0.2 + 0.14 * Math.sin(clock * 0.3 + ray * 1.7));
+      var width = sun.r * (0.1 + 0.07 * Math.sin(clock * 0.45 + ray));
+      var rayGradient = ctx.createLinearGradient(0, 0, Math.cos(angle) * length, Math.sin(angle) * length);
+      rayGradient.addColorStop(0, 'rgba(255, 208, 152, 0.1)');
+      rayGradient.addColorStop(1, 'rgba(255, 190, 130, 0)');
+      ctx.fillStyle = rayGradient;
+      ctx.beginPath();
+      ctx.moveTo(0, 0);
+      ctx.lineTo(Math.cos(angle) * length - Math.sin(angle) * width, Math.sin(angle) * length + Math.cos(angle) * width);
+      ctx.lineTo(Math.cos(angle) * length + Math.sin(angle) * width, Math.sin(angle) * length - Math.cos(angle) * width);
+      ctx.closePath();
+      ctx.fill();
+    }
+    ctx.restore();
+
+    ctx.globalCompositeOperation = 'source-over';
+  }
+
+  function drawClouds (delta) {
+    for (var index = 0; index < clouds.length; index++) {
+      var cloud = clouds[index];
+      cloud.x += cloud.speed * delta;
+      var sprite = cloudSprites[cloud.sprite];
+      var drawWidth = sprite.width * cloud.scale;
+      var drawHeight = sprite.height * cloud.scale;
+      if (cloud.x - drawWidth * 0.5 > W + 40) cloud.x = -drawWidth * 0.5 - 40;
+
+      ctx.globalAlpha = cloud.alpha;
+      ctx.drawImage(
+        sprite,
+        cloud.x - drawWidth * 0.5 + parallaxX * (0.4 + cloud.speed * 0.05),
+        cloud.y - drawHeight * 0.5 + parallaxY * 0.3,
+        drawWidth,
+        drawHeight
+      );
+      ctx.globalAlpha = 1;
+    }
+  }
+
+  // ------------------------------------------------- 绘制：巨构（离屏层）
+
+  function shadeColor (shade) {
+    // 越靠上的体块越亮一点，等价于一层很淡的大气透视。
+    var r = Math.round(lerp(9, 34, shade));
+    var g = Math.round(lerp(17, 48, shade));
+    var b = Math.round(lerp(26, 62, shade));
+    return 'rgb(' + r + ',' + g + ',' + b + ')';
+  }
+
+  function drawStructureLayer () {
+    sctx.clearRect(0, 0, W, horizon);
+
+    // 远景塔群
+    for (var far = 0; far < farTowers.length; far++) {
+      var tower = farTowers[far];
+      sctx.fillStyle = 'rgba(38, 62, 78, ' + tower.alpha.toFixed(3) + ')';
+      sctx.fillRect(tower.x, tower.y, tower.w, tower.h);
+    }
+
+    // 主体块面
+    for (var index = 0; index < blocks.length; index++) {
+      var block = blocks[index];
+      sctx.fillStyle = shadeColor(block.shade);
+      sctx.fillRect(block.x, block.y, block.w, block.h);
+
+      // 朝阳一侧的边缘光，让剪影不至于死板。
+      var rim = sctx.createLinearGradient(block.x, 0, block.x + Math.min(block.w, 14), 0);
+      rim.addColorStop(0, 'rgba(255, 186, 132, 0.2)');
+      rim.addColorStop(1, 'rgba(255, 186, 132, 0)');
+      sctx.fillStyle = rim;
+      sctx.fillRect(block.x, block.y, Math.min(block.w, 14), block.h);
+
+      // 顶面高光
+      sctx.fillStyle = 'rgba(190, 214, 232, 0.09)';
+      sctx.fillRect(block.x, block.y, block.w, 1.4);
+    }
+
+    // 桅杆
+    for (var mast = 0; mast < masts.length; mast++) {
+      var pole = masts[mast];
+      sctx.fillStyle = 'rgba(24, 38, 50, 0.94)';
+      sctx.fillRect(pole.x - pole.width * 0.5, pole.y - pole.height, pole.width, pole.height);
+    }
+
+    // 窗光
+    sctx.globalCompositeOperation = 'lighter';
+    for (var light = 0; light < windows.length; light++) {
+      var cell = windows[light];
+      var alpha = cell.base * (0.76 + 0.24 * Math.sin(clock * cell.speed + cell.phase));
+      if (cell.blinks) {
+        // 平滑的长周期明暗，而不是硬切开关。
+        alpha *= clamp(0.12 + Math.sin(clock * cell.blinkSpeed + cell.blinkPhase) * 1.5, 0, 1);
+      }
+      if (alpha <= 0.02) continue;
+      sctx.fillStyle = cell.cool
+        ? 'rgba(158, 210, 255, ' + (alpha * 0.7).toFixed(3) + ')'
+        : 'rgba(255, 206, 138, ' + alpha.toFixed(3) + ')';
+      sctx.fillRect(cell.x, cell.y, cell.w, cell.h);
+    }
+
+    // 信标
+    for (var beacon = 0; beacon < beacons.length; beacon++) {
+      var light2 = beacons[beacon];
+      var cycle = (clock + light2.offset) % light2.period / light2.period;
+      var pulse = Math.pow(Math.max(0, Math.sin(cycle * Math.PI)), 6);
+      if (pulse <= 0.01) continue;
+      var color = light2.color;
+      var halo = sctx.createRadialGradient(light2.x, light2.y, 0, light2.x, light2.y, light2.r * 7);
+      halo.addColorStop(0, 'rgba(' + color[0] + ',' + color[1] + ',' + color[2] + ',' + (0.9 * pulse).toFixed(3) + ')');
+      halo.addColorStop(0.3, 'rgba(' + color[0] + ',' + color[1] + ',' + color[2] + ',' + (0.34 * pulse).toFixed(3) + ')');
+      halo.addColorStop(1, 'rgba(' + color[0] + ',' + color[1] + ',' + color[2] + ',0)');
+      sctx.fillStyle = halo;
+      sctx.beginPath();
+      sctx.arc(light2.x, light2.y, light2.r * 7, 0, Math.PI * 2);
+      sctx.fill();
+    }
+    sctx.globalCompositeOperation = 'source-over';
+  }
+
+  function drawSearchlight () {
+    if (!searchlight) return;
+    var angle = -Math.PI * 0.5 + Math.sin(clock * searchlight.speed + searchlight.phase) * 1.15;
+    ctx.save();
+    ctx.globalCompositeOperation = 'lighter';
+    ctx.translate(searchlight.x + parallaxX, searchlight.y + parallaxY);
+    ctx.rotate(angle);
+    var beam = ctx.createLinearGradient(0, 0, 0, -searchlight.length);
+    beam.addColorStop(0, 'rgba(206, 232, 255, 0.17)');
+    beam.addColorStop(0.35, 'rgba(184, 216, 246, 0.075)');
+    beam.addColorStop(1, 'rgba(160, 196, 236, 0)');
+    ctx.fillStyle = beam;
+    ctx.beginPath();
+    ctx.moveTo(0, 0);
+    ctx.lineTo(-searchlight.length * searchlight.spread, -searchlight.length);
+    ctx.lineTo(searchlight.length * searchlight.spread, -searchlight.length);
+    ctx.closePath();
+    ctx.fill();
+    ctx.restore();
+  }
+
+  // -------------------------------------------------------- 绘制：海与倒影
+
+  function drawOcean () {
+    var gradient = ctx.createLinearGradient(0, horizon, 0, H);
+    gradient.addColorStop(0, '#3c5a5e');
+    gradient.addColorStop(0.1, '#1b333e');
+    gradient.addColorStop(0.45, '#0c1e2a');
+    gradient.addColorStop(1, '#050d15');
+    ctx.fillStyle = gradient;
+    ctx.fillRect(0, horizon, W, H - horizon + 1);
+
+    // 太阳的镜面反射柱。
+    var column = ctx.createLinearGradient(0, horizon, 0, H);
+    column.addColorStop(0, 'rgba(255, 198, 140, 0.34)');
+    column.addColorStop(0.35, 'rgba(255, 168, 112, 0.13)');
+    column.addColorStop(1, 'rgba(220, 140, 100, 0)');
+    ctx.globalCompositeOperation = 'lighter';
+    ctx.fillStyle = column;
+    ctx.beginPath();
+    ctx.moveTo(sun.x - sun.r * 0.5, horizon);
+    ctx.lineTo(sun.x + sun.r * 0.5, horizon);
+    ctx.lineTo(sun.x + W * 0.3, H);
+    ctx.lineTo(sun.x - W * 0.3, H);
+    ctx.closePath();
+    ctx.fill();
+    ctx.globalCompositeOperation = 'source-over';
+  }
+
+  function drawReflection () {
+    // 逐条水平切片地镜像结构层，每条按当地波形做横向位移，
+    // 于是倒影随浪整体"抖"起来，而不是一张翻转的贴图。
+    var depth = H - horizon;
+    var slice = 3;
+    var reflectionHeight = Math.min(horizon, depth * 1.05);
+
+    ctx.save();
+    ctx.globalCompositeOperation = 'lighter';
+    for (var offset = 0; offset < reflectionHeight; offset += slice) {
+      var t = offset / reflectionHeight;
+      var destY = horizon + offset;
+      if (destY > H) break;
+      var wobble = Math.sin(clock * 1.15 + offset * 0.05) * lerp(0.6, 9, t)
+        + Math.sin(clock * 0.52 + offset * 0.021) * lerp(0.4, 6, t);
+      var alpha = lerp(0.42, 0.02, Math.pow(t, 0.62));
+      ctx.globalAlpha = alpha;
+      ctx.drawImage(
+        structCanvas,
+        0, Math.round((horizon - offset - slice) * DPR), Math.round(W * DPR), Math.round(slice * DPR),
+        wobble + parallaxX, destY, W, slice + 0.6
+      );
+    }
+    ctx.restore();
+  }
+
+  function drawWaves () {
+    for (var index = 0; index < waves.length; index++) {
+      var wave = waves[index];
+      var y = wave.y + parallaxY * lerp(0.1, 0.6, wave.depth);
+      if (y < horizon || y > H + 4) continue;
+
+      ctx.beginPath();
+      var step = Math.max(6, wave.wavelength / 12);
+      for (var x = -step; x <= W + step; x += step) {
+        var value = y
+          + Math.sin((x / wave.wavelength) * Math.PI * 2 + clock * wave.speed + wave.phase) * wave.amplitude
+          + Math.sin((x / (wave.wavelength * 0.43)) * Math.PI * 2 - clock * wave.speed * 1.5) * wave.amplitude * 0.32;
+        if (x <= -step) ctx.moveTo(x, value);
+        else ctx.lineTo(x, value);
+      }
+      // 近处的浪线偏暖，因为接住了地平线的霞光。
+      var warmth = clamp((wave.depth - 0.3) * 1.4, 0, 1);
+      ctx.strokeStyle = 'rgba(' +
+        Math.round(lerp(150, 214, warmth)) + ',' +
+        Math.round(lerp(186, 190, warmth)) + ',' +
+        Math.round(lerp(200, 176, warmth)) + ',' +
+        wave.alpha.toFixed(3) + ')';
+      ctx.lineWidth = wave.thickness;
+      ctx.stroke();
+    }
+  }
+
+  function drawGlitter () {
+    ctx.globalCompositeOperation = 'lighter';
+    for (var index = 0; index < glitter.length; index++) {
+      var spark = glitter[index];
+      var y = horizon + spark.depth * (H - horizon);
+      var spread = lerp(sun.r * 0.6, W * 0.3, spark.depth);
+      var x = sun.x + spark.offset * spread + Math.sin(clock * 0.4 + spark.phase) * spread * 0.08;
+      var twinkle = Math.pow(Math.max(0, Math.sin(clock * spark.speed + spark.phase)), 3);
+      if (twinkle <= 0.02) continue;
+      ctx.fillStyle = 'rgba(255, 226, 178, ' + (twinkle * 0.75).toFixed(3) + ')';
+      ctx.fillRect(x - spark.size, y, spark.size * 2, Math.max(0.7, spark.size * 0.45));
+    }
+    ctx.globalCompositeOperation = 'source-over';
+  }
+
+  function drawRipples (delta) {
+    for (var index = ripples.length - 1; index >= 0; index--) {
+      var ripple = ripples[index];
+      ripple.life += delta;
+      var t = ripple.life / ripple.duration;
+      if (t >= 1) {
+        ripples.splice(index, 1);
+        continue;
+      }
+      var radius = easeOut(t) * ripple.maxRadius;
+      var alpha = (1 - t) * 0.42;
+      ctx.save();
+      ctx.translate(ripple.x, ripple.y);
+      // 压扁成椭圆，符合俯视水面的透视。
+      ctx.scale(1, 0.26);
+      for (var ring = 0; ring < 3; ring++) {
+        var ringRadius = radius * (1 - ring * 0.26);
+        if (ringRadius <= 0) continue;
+        ctx.beginPath();
+        ctx.arc(0, 0, ringRadius, 0, Math.PI * 2);
+        ctx.strokeStyle = 'rgba(206, 228, 238, ' + (alpha * (1 - ring * 0.3)).toFixed(3) + ')';
+        ctx.lineWidth = lerp(2.4, 0.8, t) / 0.26 * 0.26;
+        ctx.stroke();
+      }
+      ctx.restore();
+    }
+  }
+
+  // ---------------------------------------------------------- 绘制：飞行物
+
+  function drawBirds (delta) {
+    ctx.strokeStyle = 'rgba(16, 26, 34, 0.5)';
+    ctx.lineCap = 'round';
+    for (var index = 0; index < birds.length; index++) {
+      var bird = birds[index];
+      bird.x += bird.speed * delta * 0.1;
+      bird.flap += bird.flapSpeed * delta;
+      if (bird.x > 1.15) bird.x = -0.15;
+
+      var x = bird.x * W;
+      var y = bird.y * horizon + Math.sin(clock * 0.5 + index) * 6 + parallaxY * 0.5;
+      var span = 5 + bird.scale * 7;
+      var lift = Math.sin(bird.flap) * span * 0.42;
+
+      ctx.lineWidth = Math.max(0.8, bird.scale * 1.2);
+      ctx.beginPath();
+      ctx.moveTo(x - span, y + lift);
+      ctx.quadraticCurveTo(x - span * 0.4, y - lift * 0.5, x, y);
+      ctx.quadraticCurveTo(x + span * 0.4, y - lift * 0.5, x + span, y + lift);
+      ctx.stroke();
+    }
+  }
+
+  function drawAircraft (delta) {
+    if (!aircraft) return;
+    aircraft.x += aircraft.speed * delta * 0.1;
+    if (aircraft.x > 1.25) {
+      aircraft.x = -0.25;
+      aircraft.y = 0.1 + Math.random() * 0.16;
+    }
+    var x = aircraft.x * W;
+    var y = aircraft.y * horizon + parallaxY * 0.4;
+    var size = 5 + aircraft.scale * 6;
+
+    ctx.fillStyle = 'rgba(14, 24, 32, 0.66)';
+    ctx.beginPath();
+    ctx.ellipse(x, y, size, size * 0.24, 0, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.fillRect(x - size * 0.18, y - size * 0.42, size * 0.36, size * 0.42);
+
+    // 航行灯，左红右绿，闪烁频率不同。
+    ctx.globalCompositeOperation = 'lighter';
+    var strobe = Math.pow(Math.max(0, Math.sin(clock * 3.2)), 8);
+    ctx.fillStyle = 'rgba(255, 110, 96, ' + (0.35 + strobe * 0.65).toFixed(3) + ')';
+    ctx.fillRect(x - size, y, 1.8, 1.8);
+    ctx.fillStyle = 'rgba(140, 255, 168, ' + (0.35 + strobe * 0.65).toFixed(3) + ')';
+    ctx.fillRect(x + size - 1.8, y, 1.8, 1.8);
+    ctx.globalCompositeOperation = 'source-over';
+  }
+
+  // -------------------------------------------------------------- 后处理
+
+  function drawHaze () {
+    // 建筑底部与水面交界处的水汽，把两个图层"焊"在一起。
+    var haze = ctx.createLinearGradient(0, horizon - H * 0.12, 0, horizon + H * 0.03);
+    haze.addColorStop(0, 'rgba(176, 158, 156, 0)');
+    haze.addColorStop(0.7, 'rgba(186, 156, 142, 0.2)');
+    haze.addColorStop(1, 'rgba(196, 160, 138, 0.34)');
+    ctx.fillStyle = haze;
+    ctx.fillRect(0, horizon - H * 0.12, W, H * 0.15);
+  }
+
+  function drawGrain () {
+    ctx.globalCompositeOperation = 'overlay';
+    ctx.globalAlpha = 0.045;
+    var size = grainCanvas.width;
+    // 每帧位移一次噪点图，避免出现固定的脏点。
+    var shiftX = -Math.floor(Math.random() * size);
+    var shiftY = -Math.floor(Math.random() * size);
+    for (var x = shiftX; x < W; x += size) {
+      for (var y = shiftY; y < H; y += size) {
+        ctx.drawImage(grainCanvas, x, y);
+      }
+    }
+    ctx.globalAlpha = 1;
+    ctx.globalCompositeOperation = 'source-over';
+  }
+
+  function drawVignette () {
+    var vignette = ctx.createRadialGradient(W * 0.5, H * 0.5, Math.min(W, H) * 0.34, W * 0.5, H * 0.5, Math.max(W, H) * 0.78);
+    vignette.addColorStop(0, 'rgba(0, 0, 0, 0)');
+    vignette.addColorStop(1, 'rgba(3, 8, 14, 0.5)');
+    ctx.fillStyle = vignette;
+    ctx.fillRect(0, 0, W, H);
+  }
+
+  // ------------------------------------------------------------------ 主循环
+
+  function render (delta) {
+    // 指针视差：极小的位移，只为让画面有呼吸感。
+    var targetX = (pointerX - 0.5) * (W < 720 ? 8 : 20);
+    var targetY = (pointerY - 0.5) * 8;
+    parallaxX += (targetX - parallaxX) * 0.05;
+    parallaxY += (targetY - parallaxY) * 0.05;
+
+    drawSky();
+    drawSun();
+    drawClouds(delta);
+
+    drawStructureLayer();
+    ctx.drawImage(structCanvas, parallaxX, parallaxY, W, horizon);
+
+    drawSearchlight();
+    drawHaze();
+    drawOcean();
+    drawReflection();
+    drawWaves();
+    drawGlitter();
+    drawRipples(delta);
+    drawBirds(delta);
+    drawAircraft(delta);
+    drawVignette();
+    drawGrain();
+  }
+
+  function frame (now) {
+    var delta = Math.min(0.05, (now - lastTime) / 1000 || 0);
+    lastTime = now;
+
+    if (running && !reduced.matches) {
+      clock += delta;
+      render(delta);
+    }
+    window.requestAnimationFrame(frame);
+  }
+
+  // -------------------------------------------------------------- 交互
+
+  canvas.addEventListener('pointermove', function (event) {
+    var bounds = canvas.getBoundingClientRect();
+    pointerX = (event.clientX - bounds.left) / Math.max(1, bounds.width);
+    pointerY = (event.clientY - bounds.top) / Math.max(1, bounds.height);
+  }, { passive: true });
+
+  canvas.addEventListener('pointerdown', function (event) {
+    var bounds = canvas.getBoundingClientRect();
+    var x = event.clientX - bounds.left;
+    var y = event.clientY - bounds.top;
+    // 只有点在水面上才起涟漪。
+    if (y < horizon) return;
+    if (ripples.length > 7) ripples.shift();
+    ripples.push({
+      x: x,
+      y: y,
+      life: 0,
+      duration: 2.6,
+      maxRadius: clamp((y - horizon) / Math.max(1, H - horizon), 0.1, 1) * W * 0.22 + 40
+    });
+  });
+
+  // 与主页的可见性协议：不可见时彻底停帧，避免后台耗电。
+  window.addEventListener('message', function (event) {
+    if (event.origin !== window.location.origin) return;
+    if (!event.data || event.data.type !== 'vexpaer-scene-visibility') return;
+    running = Boolean(event.data.visible);
+    if (running) lastTime = performance.now();
+  });
+
+  var resizeTimer;
+  window.addEventListener('resize', function () {
+    window.clearTimeout(resizeTimer);
+    resizeTimer = window.setTimeout(fit, 180);
+  });
+
+  if (reduced.addEventListener) {
+    reduced.addEventListener('change', function () {
+      if (reduced.matches) render(0);
+    });
+  }
+
+  buildGrain();
+  buildCloudSprites();
+  fit();
+  render(0);
+  window.requestAnimationFrame(frame);
+})();
+</script>
+</body>
+</html>

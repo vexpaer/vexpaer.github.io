@@ -1,0 +1,121 @@
+/* 移动端阅读增强。
+ * 只调整展示方式,不改动任何内容;所有规则要么是"内容过宽时才生效"的
+ * 溢出保护(桌面同样受益),要么锁在 768px 以下的小屏媒体查询里。 */
+
+/* ---------------------------------------------- 溢出保护(全尺寸生效) */
+
+/* 行间公式:MathJax v2 与 v3 的展示容器都允许横向滚动,
+ * 长公式不再撑破版面(数学/化学笔记的主要痛点)。 */
+#article-container mjx-container[display],
+#article-container mjx-container[jax] {
+  display: block;
+  max-width: 100%;
+  padding: 2px 0;
+  overflow-x: auto;
+  overflow-y: hidden;
+}
+
+#article-container .MathJax_Display,
+#article-container .MathJax_SVG_Display,
+#article-container .MathJax_Preview + .MathJax_Display {
+  max-width: 100%;
+  overflow-x: auto;
+  overflow-y: hidden;
+}
+
+/* Mermaid 图表:容器滚动、图形保持原始尺寸不压缩。 */
+#article-container .mermaid {
+  max-width: 100%;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+}
+
+/* 嵌入的 iframe(视频等)不越界。 */
+#article-container iframe {
+  max-width: 100%;
+}
+
+/* ---------------------------------------------- 小屏适配(≤768px) */
+
+@media (max-width: 768px) {
+  /* 阻止 iOS 横屏时自动放大字号造成的版式跳动。 */
+  html {
+    -webkit-text-size-adjust: 100%;
+    text-size-adjust: 100%;
+  }
+
+  /* 正文从 14px 提到 16px、行距放宽——手机上的长文阅读核心改善。
+   * 标题都是 em 单位,会随之等比协调放大。 */
+  #article-container {
+    font-size: 16px;
+    line-height: 1.85;
+  }
+
+  /* 表格改为容器内横向滚动,不再挤压换行或撑破屏幕。 */
+  #article-container table {
+    display: block;
+    max-width: 100%;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  /* 长英文术语与长链接可断行(生化/细胞生物学笔记里的长词)。 */
+  #article-container p,
+  #article-container li,
+  #article-container a {
+    word-break: break-word;
+  }
+
+  /* 代码块在小屏稍收字号,一行能多放几个字符。 */
+  #article-container figure.highlight,
+  #article-container pre {
+    font-size: 13px;
+  }
+
+  /* 引用块与列表左缩进略收,窄屏少浪费横向空间。 */
+  #article-container blockquote {
+    padding: 0.5rem 0.8rem;
+    margin: 0 0 1rem;
+  }
+
+  #article-container ul,
+  #article-container ol {
+    padding-left: 1.2rem;
+  }
+
+  /* 图片之间留出呼吸感,连续贴图的笔记(解剖学/生理学)更好翻。 */
+  #article-container img {
+    margin: 0.4rem auto;
+    border-radius: 4px;
+  }
+}
+
+/* 液态玻璃设置面板:固定 400px 宽,小屏上收进视口并让面板体可滚动。 */
+@media (max-width: 768px) {
+  .lg-panel {
+    width: min(92vw, 400px) !important;
+    max-height: 78vh;
+    display: flex;
+    flex-direction: column;
+  }
+
+  .lg-panel-body {
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+}
+
+/* 超小屏(≤480px):再收一点边距,把宽度留给正文。 */
+@media (max-width: 480px) {
+  #article-container {
+    font-size: 15.5px;
+  }
+
+  #article-container h1 {
+    font-size: 1.55em;
+  }
+
+  #article-container h2 {
+    font-size: 1.35em;
+  }
+}

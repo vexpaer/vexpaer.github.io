@@ -851,6 +851,7 @@ css_prefix: true
 inject:
   head:
     - <link rel="stylesheet" href="/css/vexpaer.css">
+    - <link rel="stylesheet" href="/css/vexpaer-mobile.css">
     - <link rel="stylesheet" href="/css/loading_wizard.css"/>
   bottom:
     - <script src="/js/snow3.js"></script>

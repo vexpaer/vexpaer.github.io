@@ -854,6 +854,7 @@ inject:
     - <link rel="stylesheet" href="/css/loading_wizard.css"/>
   bottom:
     - <script src="/js/snow3.js"></script>
+    - <script src="/js/vexpaer-liquid-glass.js"></script>
 
 snow3: true
 

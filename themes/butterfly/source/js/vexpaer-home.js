@@ -854,7 +854,7 @@
     // Endless sunset highway. Road chunks are recycled ahead of the moving car,
     // so the route keeps changing without allowing the scene graph to grow forever.
     var duskScene = new THREE.Scene()
-    duskScene.fog = new THREE.Fog('#986b67', 76, 292)
+    duskScene.fog = new THREE.Fog('#b07176', 76, 292)
     var duskCamera = new THREE.PerspectiveCamera(47, aspect, 0.1, 360)
     var duskRandom = randomFactory(0x6475736b)
     var duskTravel = 0
@@ -869,20 +869,32 @@
       depthWrite: false,
       fog: false,
       uniforms: {
-        uZenith: { value: new THREE.Color('#11182d') },
-        uUpper: { value: new THREE.Color('#37405b') },
-        uHorizon: { value: new THREE.Color('#a85f55') },
-        uGlow: { value: new THREE.Color('#e3a972') },
-        uSunDir: { value: new THREE.Vector3(-0.2, 0.075, -0.98).normalize() }
+        uZenith: { value: new THREE.Color('#191a3c') },
+        uUpper: { value: new THREE.Color('#4b3f74') },
+        uBand: { value: new THREE.Color('#d1608a') },
+        uHorizon: { value: new THREE.Color('#c25f63') },
+        uGlow: { value: new THREE.Color('#ffb469') },
+        uSunDir: { value: new THREE.Vector3(-0.2, 0.075, -0.98).normalize() },
+        uTime: { value: 0 }
       },
       vertexShader: ['varying vec3 vLocal;', 'void main(){vLocal=position;gl_Position=projectionMatrix*modelViewMatrix*vec4(position,1.0);}'].join('\n'),
       fragmentShader: [
-        'uniform vec3 uZenith;uniform vec3 uUpper;uniform vec3 uHorizon;uniform vec3 uGlow;uniform vec3 uSunDir;varying vec3 vLocal;',
+        'uniform vec3 uZenith;uniform vec3 uUpper;uniform vec3 uBand;uniform vec3 uHorizon;uniform vec3 uGlow;uniform vec3 uSunDir;uniform float uTime;varying vec3 vLocal;',
+        'float hash(vec3 p){p=fract(p*.3183099+.1);p*=17.0;return fract(p.x*p.y*p.z*(p.x+p.y+p.z));}',
         'void main(){vec3 dir=normalize(vLocal);float h=dir.y;',
-        'vec3 low=mix(uGlow,uHorizon,smoothstep(-.16,.035,h));',
-        'vec3 color=mix(low,uUpper,smoothstep(-.035,.28,h));color=mix(color,uZenith,smoothstep(.22,.72,h));',
-        'float halo=pow(max(dot(dir,normalize(uSunDir)),0.0),18.0);color+=uGlow*halo*.2;',
-        'float horizonHaze=1.0-smoothstep(.0,.16,abs(h));color=mix(color,uGlow,horizonHaze*.055);',
+        'vec3 low=mix(uGlow,uHorizon,smoothstep(-.16,.05,h));',
+        // 玫瑰色霞带：夹在地平线橙红与高空紫罗兰之间的一条软带。
+        'low=mix(low,uBand,smoothstep(.02,.13,h)*(1.0-smoothstep(.13,.3,h))*.85);',
+        'vec3 color=mix(low,uUpper,smoothstep(.05,.3,h));color=mix(color,uZenith,smoothstep(.24,.72,h));',
+        'float halo=pow(max(dot(dir,normalize(uSunDir)),0.0),16.0);color+=uGlow*halo*.26;',
+        'float horizonHaze=1.0-smoothstep(.0,.16,abs(h));color=mix(color,uGlow,horizonHaze*.06);',
+        // 天顶星星：格点内的圆形亮斑，只在高处淡入，带轻微闪烁。
+        'vec3 cell=floor(dir*90.0);float star=hash(cell);',
+        'vec3 cellCenter=fract(dir*90.0)-.5;',
+        'float sparkle=smoothstep(.2,.03,length(cellCenter))*step(.992,star);',
+        'float starVisibility=smoothstep(.26,.55,h);',
+        'float twinkle=.7+.3*sin(uTime*(1.2+star*2.6)+star*41.0);',
+        'color+=vec3(1.0,.95,.88)*sparkle*starVisibility*twinkle*.8;',
         'gl_FragColor=vec4(color,1.0);}'
       ].join('\n')
     }))
@@ -907,28 +919,41 @@
     }
 
     var duskGlowTexture = createDuskGlowTexture()
-    var duskSun = new THREE.Mesh(new THREE.SphereGeometry(8.4, 32, 20), new THREE.MeshBasicMaterial({ color: '#ffd9a4', fog: false }))
+    var duskSun = new THREE.Mesh(new THREE.SphereGeometry(9.6, 32, 20), new THREE.MeshBasicMaterial({ color: '#ffddab', fog: false }))
     duskScene.add(duskSun)
     var duskSunHalo = new THREE.Sprite(new THREE.SpriteMaterial({
       map: duskGlowTexture,
-      color: '#ffd0a0',
+      color: '#ffcf9c',
       transparent: true,
-      opacity: 0.72,
+      opacity: 0.8,
       blending: THREE.AdditiveBlending,
       depthWrite: false,
       depthTest: true,
       fog: false
     }))
-    duskSunHalo.scale.set(58, 58, 1)
+    duskSunHalo.scale.set(70, 70, 1)
     duskScene.add(duskSunHalo)
+    // 第二层更大更淡的光晕，把整片西天都染暖。
+    var duskSunHaloWide = new THREE.Sprite(new THREE.SpriteMaterial({
+      map: duskGlowTexture,
+      color: '#ff9a66',
+      transparent: true,
+      opacity: 0.3,
+      blending: THREE.AdditiveBlending,
+      depthWrite: false,
+      depthTest: true,
+      fog: false
+    }))
+    duskSunHaloWide.scale.set(150, 150, 1)
+    duskScene.add(duskSunHaloWide)
 
     var duskGroundGroup = new THREE.Group()
     var duskTerrainWidth = 250
     var duskTerrainLength = 104
     var duskTerrainChunks = []
-    var duskSandLow = new THREE.Color('#4d3637')
-    var duskSandMid = new THREE.Color('#765044')
-    var duskSandHigh = new THREE.Color('#b57956')
+    var duskSandLow = new THREE.Color('#57383f')
+    var duskSandMid = new THREE.Color('#8a5749')
+    var duskSandHigh = new THREE.Color('#d28a5c')
     var duskSandColor = new THREE.Color()
     var duskGroundMaterial = new THREE.MeshStandardMaterial({ vertexColors: true, roughness: 0.98, metalness: 0, side: THREE.DoubleSide })
 
@@ -980,9 +1005,9 @@
     duskScene.add(duskGroundGroup)
     root.dataset.duskTerrainChunks = String(duskTerrainChunks.length)
 
-    var duskHemisphereLight = new THREE.HemisphereLight('#8792b2', '#4d302d', 0.98)
+    var duskHemisphereLight = new THREE.HemisphereLight('#9a8fc4', '#5a352f', 0.98)
     duskScene.add(duskHemisphereLight)
-    var duskSunLight = new THREE.DirectionalLight('#ffd3a8', 2.1)
+    var duskSunLight = new THREE.DirectionalLight('#ffc898', 2.2)
     duskSunLight.position.set(-42, 44, -70)
     duskScene.add(duskSunLight.target)
     duskScene.add(duskSunLight)
@@ -1051,9 +1076,10 @@
       return new THREE.Mesh(ridgeGeometry, new THREE.MeshStandardMaterial({ vertexColors: true, roughness: 1, metalness: 0, flatShading: true, side: THREE.DoubleSide }))
     }
 
-    duskMountainGroup.add(createDuskMountainRidge({ seed: 311, points: 53, peaks: 8, width: 340, height: 18, baseHeight: 4.5, jitter: 2.8, wave: 3, depth: 3.5, z: -210, topColor: '#70626f', baseColor: '#454451' }))
-    duskMountainGroup.add(createDuskMountainRidge({ seed: 557, points: 47, peaks: 8, width: 320, height: 25, baseHeight: 2.8, jitter: 3.4, wave: 4, depth: 5.5, z: -182, topColor: '#765756', baseColor: '#41373f' }))
-    duskMountainGroup.add(createDuskMountainRidge({ seed: 911, points: 43, peaks: 7, width: 300, height: 21, baseHeight: 1.2, jitter: 4.2, wave: 3, depth: 7, z: -152, topColor: '#5a4342', baseColor: '#292a31' }))
+    // 三层山脊从远到近由薰衣草雾色过渡到深紫，做出大气透视。
+    duskMountainGroup.add(createDuskMountainRidge({ seed: 311, points: 53, peaks: 8, width: 340, height: 18, baseHeight: 4.5, jitter: 2.8, wave: 3, depth: 3.5, z: -210, topColor: '#94789e', baseColor: '#5e5378' }))
+    duskMountainGroup.add(createDuskMountainRidge({ seed: 557, points: 47, peaks: 8, width: 320, height: 25, baseHeight: 2.8, jitter: 3.4, wave: 4, depth: 5.5, z: -182, topColor: '#82606f', baseColor: '#4c3f58' }))
+    duskMountainGroup.add(createDuskMountainRidge({ seed: 911, points: 43, peaks: 7, width: 300, height: 21, baseHeight: 1.2, jitter: 4.2, wave: 3, depth: 7, z: -152, topColor: '#63444d', baseColor: '#2e2838' }))
     duskScene.add(duskMountainGroup)
 
     function duskRoadCenter (z) {
@@ -1087,6 +1113,14 @@
     ]
     var gravelGeometry = new THREE.DodecahedronGeometry(0.12, 0)
     var cactusMaterial = new THREE.MeshStandardMaterial({ color: '#3f654f', roughness: 0.92, flatShading: true })
+    var flowerStemGeometry = new THREE.CylinderGeometry(0.028, 0.042, 0.55, 5)
+    var flowerBloomGeometry = new THREE.IcosahedronGeometry(0.16, 0)
+    var flowerStemMaterial = new THREE.MeshStandardMaterial({ color: '#4a7a52', roughness: 0.85, flatShading: true })
+    var flowerBloomMaterials = [
+      new THREE.MeshStandardMaterial({ color: '#ff8fb2', roughness: 0.6, emissive: '#ff8fb2', emissiveIntensity: 0.22, flatShading: true }),
+      new THREE.MeshStandardMaterial({ color: '#ffd166', roughness: 0.6, emissive: '#ffd166', emissiveIntensity: 0.22, flatShading: true }),
+      new THREE.MeshStandardMaterial({ color: '#ff9e6b', roughness: 0.6, emissive: '#ff9e6b', emissiveIntensity: 0.22, flatShading: true })
+    ]
     var cactusTrunkGeometry = new THREE.CylinderGeometry(0.2, 0.28, 2.8, 7)
     var cactusArmGeometry = new THREE.CylinderGeometry(0.13, 0.17, 1.25, 7)
     var cactusTipGeometry = new THREE.CylinderGeometry(0.12, 0.14, 0.65, 7)
@@ -1136,6 +1170,26 @@
       }
       cactus.rotation.y = random() * Math.PI
       return cactus
+    }
+
+    function createFlowerPatch (random) {
+      // 一小丛沙漠野花：三五株不同高矮和颜色，给路边一点惊喜。
+      var patch = new THREE.Group()
+      var flowerCount = 3 + Math.floor(random() * 3)
+      for (var flowerIndex = 0; flowerIndex < flowerCount; flowerIndex++) {
+        var stem = new THREE.Mesh(flowerStemGeometry, flowerStemMaterial)
+        var flowerScale = 0.7 + random() * 0.8
+        var flowerX = (random() - 0.5) * 1.6
+        var flowerZ = (random() - 0.5) * 1.6
+        stem.scale.setScalar(flowerScale)
+        stem.position.set(flowerX, 0.27 * flowerScale, flowerZ)
+        patch.add(stem)
+        var bloom = new THREE.Mesh(flowerBloomGeometry, flowerBloomMaterials[Math.floor(random() * flowerBloomMaterials.length)])
+        bloom.scale.setScalar(flowerScale)
+        bloom.position.set(flowerX, 0.6 * flowerScale, flowerZ)
+        patch.add(bloom)
+      }
+      return patch
     }
 
     function createSignMaterial (textValue, background, foreground) {
@@ -1244,11 +1298,12 @@
           var side = random() > 0.5 ? 1 : -1
           var roll = random()
           var prop
-          if (roll < 0.52) prop = createRock(random, 0.55 + random() * 2.6)
-          else if (roll < 0.91) {
+          if (roll < 0.44) prop = createRock(random, 0.55 + random() * 2.6)
+          else if (roll < 0.78) {
             prop = createCactus(random)
             prop.scale.setScalar(0.7 + random() * 1.15)
-          } else if (roll < 0.98) prop = createRoadSign(random)
+          } else if (roll < 0.92) prop = createFlowerPatch(random)
+          else if (roll < 0.98) prop = createRoadSign(random)
           else prop = createCampfire()
           prop.position.set(side * (5.4 + random() * 19), 0.12, (random() - 0.5) * 7.5)
           propRoot.add(prop)
@@ -1305,134 +1360,177 @@
     }
     root.dataset.duskRoadSegments = String(roadCount)
 
-    function createTaperedBoxGeometry (frontWidth, rearWidth, geometryHeight, geometryLength) {
-      var halfHeight = geometryHeight * 0.5
-      var halfLength = geometryLength * 0.5
-      var vertices = new Float32Array([
-        -frontWidth * 0.5, -halfHeight, -halfLength,
-        frontWidth * 0.5, -halfHeight, -halfLength,
-        frontWidth * 0.5, halfHeight, -halfLength,
-        -frontWidth * 0.5, halfHeight, -halfLength,
-        -rearWidth * 0.5, -halfHeight, halfLength,
-        rearWidth * 0.5, -halfHeight, halfLength,
-        rearWidth * 0.5, halfHeight, halfLength,
-        -rearWidth * 0.5, halfHeight, halfLength
-      ])
-      var geometry = new THREE.BufferGeometry()
-      geometry.setAttribute('position', new THREE.BufferAttribute(vertices, 3))
-      geometry.setIndex([
-        0, 1, 2, 0, 2, 3,
-        4, 6, 5, 4, 7, 6,
-        0, 4, 5, 0, 5, 1,
-        3, 2, 6, 3, 6, 7,
-        1, 5, 6, 1, 6, 2,
-        0, 3, 7, 0, 7, 4
-      ])
-      geometry.computeVertexNormals()
-      return geometry
-    }
-
-    function createCabinGeometry (bottomWidth, topWidth, bottomLength, topLength, cabinHeight, topOffset) {
-      var bottomZ = bottomLength * 0.5
-      var topZ = topLength * 0.5
-      var halfHeight = cabinHeight * 0.5
-      var vertices = new Float32Array([
-        -bottomWidth * 0.5, -halfHeight, -bottomZ,
-        bottomWidth * 0.5, -halfHeight, -bottomZ,
-        bottomWidth * 0.5, -halfHeight, bottomZ,
-        -bottomWidth * 0.5, -halfHeight, bottomZ,
-        -topWidth * 0.5, halfHeight, topOffset - topZ,
-        topWidth * 0.5, halfHeight, topOffset - topZ,
-        topWidth * 0.5, halfHeight, topOffset + topZ,
-        -topWidth * 0.5, halfHeight, topOffset + topZ
-      ])
-      var geometry = new THREE.BufferGeometry()
-      geometry.setAttribute('position', new THREE.BufferAttribute(vertices, 3))
-      geometry.setIndex([
-        0, 1, 5, 0, 5, 4,
-        1, 2, 6, 1, 6, 5,
-        2, 3, 7, 2, 7, 6,
-        3, 0, 4, 3, 4, 7,
-        4, 5, 6, 4, 6, 7,
-        0, 3, 2, 0, 2, 1
-      ])
-      geometry.computeVertexNormals()
-      return geometry
-    }
-
     var car = new THREE.Group()
     var carBodyRig = new THREE.Group()
     car.add(carBodyRig)
-    var carScale = 0.91
-    var carRedMaterial = new THREE.MeshPhysicalMaterial({ color: '#c42d35', roughness: 0.31, metalness: 0.07, clearcoat: 0.76, clearcoatRoughness: 0.22 })
-    var carDarkRedMaterial = new THREE.MeshStandardMaterial({ color: '#641f29', roughness: 0.48, metalness: 0.04 })
-    var carGlassMaterial = new THREE.MeshStandardMaterial({ color: '#202338', roughness: 0.16, metalness: 0, transparent: true, opacity: 0.76, depthWrite: false, side: THREE.DoubleSide })
-    var carInteriorMaterial = new THREE.MeshStandardMaterial({ color: '#231c25', roughness: 0.88 })
-    var tireMaterial = new THREE.MeshStandardMaterial({ color: '#111116', roughness: 0.96 })
-    var chromeMaterial = new THREE.MeshStandardMaterial({ color: '#d1c0ab', roughness: 0.28, metalness: 0.28 })
-    var hubMaterial = new THREE.MeshStandardMaterial({ color: '#d9c3a4', roughness: 0.36, metalness: 0.18 })
+    var carScale = 0.8
+    // 「汽车总动员」麦大叔式的长鼻红色半挂卡车。
+    // 哑光红漆、高粗糙度、零清漆层——不要汽车广告式的油亮反光。
+    var carPaintMaterial = new THREE.MeshStandardMaterial({ color: '#c9372e', roughness: 0.86, metalness: 0 })
+    var carDarkMaterial = new THREE.MeshStandardMaterial({ color: '#5c2320', roughness: 0.9 })
+    var carGlassMaterial = new THREE.MeshStandardMaterial({ color: '#31435e', roughness: 0.42, metalness: 0 })
+    var chromeMaterial = new THREE.MeshStandardMaterial({ color: '#cfd2d6', roughness: 0.55, metalness: 0.22 })
+    var trailerMaterial = new THREE.MeshStandardMaterial({ color: '#e8e2d4', roughness: 0.88, metalness: 0 })
+    var chassisMaterial = new THREE.MeshStandardMaterial({ color: '#2a2626', roughness: 0.95 })
+    var tireMaterial = new THREE.MeshStandardMaterial({ color: '#23222c', roughness: 0.95 })
+    var hubMaterial = new THREE.MeshStandardMaterial({ color: '#d8dade', roughness: 0.5, metalness: 0.18 })
+    var markerMaterial = new THREE.MeshBasicMaterial({ color: '#ffb84d' })
 
-    var carSill = new THREE.Mesh(new THREE.BoxGeometry(2.22, 0.17, 3.62), carDarkRedMaterial)
-    carSill.position.y = 0.56
-    carBodyRig.add(carSill)
-    var carBody = new THREE.Mesh(createTaperedBoxGeometry(1.98, 2.18, 0.62, 4.18), carRedMaterial)
-    carBody.position.y = 0.86
-    carBodyRig.add(carBody)
-    var carHood = new THREE.Mesh(createTaperedBoxGeometry(1.82, 2.01, 0.28, 1.5), carDarkRedMaterial)
-    carHood.position.set(0, 1.14, -1.28)
-    carHood.rotation.x = -0.025
-    carBodyRig.add(carHood)
-    var carTrunk = new THREE.Mesh(createTaperedBoxGeometry(1.91, 2.08, 0.22, 0.94), carRedMaterial)
-    carTrunk.position.set(0, 1.13, 1.61)
-    carTrunk.rotation.x = 0.035
-    carBodyRig.add(carTrunk)
-    var carCabin = new THREE.Mesh(createCabinGeometry(1.76, 1.44, 1.94, 1.26, 0.82, 0.04), carGlassMaterial)
-    carCabin.position.set(0, 1.4, 0.12)
-    carBodyRig.add(carCabin)
-    var carRoof = new THREE.Mesh(createTaperedBoxGeometry(1.42, 1.5, 0.13, 1.25), carRedMaterial)
-    carRoof.position.set(0, 1.86, 0.16)
-    carBodyRig.add(carRoof)
+    // 底盘大梁
+    var chassis = new THREE.Mesh(new THREE.BoxGeometry(1.9, 0.3, 6.6), chassisMaterial)
+    chassis.position.set(0, 0.6, 0.2)
+    carBodyRig.add(chassis)
 
-    var pillarGeometry = new THREE.BoxGeometry(0.105, 0.76, 0.12)
-    for (var pillarSide = -1; pillarSide <= 1; pillarSide += 2) {
-      for (var pillarEnd = -1; pillarEnd <= 1; pillarEnd += 2) {
-        var pillar = new THREE.Mesh(pillarGeometry, carDarkRedMaterial)
-        pillar.position.set(pillarSide * 0.77, 1.43, pillarEnd < 0 ? -0.67 : 0.77)
-        pillar.rotation.x = pillarEnd * 0.18
-        pillar.rotation.z = -pillarSide * 0.08
-        carBodyRig.add(pillar)
-      }
-      var mirror = new THREE.Mesh(new THREE.BoxGeometry(0.31, 0.16, 0.34), carRedMaterial)
-      mirror.position.set(pillarSide * 1.08, 1.37, -0.28)
-      mirror.rotation.y = pillarSide * 0.08
+    // 长鼻引擎盖
+    var hood = new THREE.Mesh(new THREE.BoxGeometry(1.7, 1.05, 1.5), carPaintMaterial)
+    hood.position.set(0, 1.55, -2.85)
+    carBodyRig.add(hood)
+    // 引擎盖上的窄脊线,长头卡车的特征
+    var hoodRidge = new THREE.Mesh(new THREE.BoxGeometry(0.5, 0.1, 1.45), carDarkMaterial)
+    hoodRidge.position.set(0, 2.12, -2.85)
+    carBodyRig.add(hoodRidge)
+    // 车头小雕饰(致敬斗牛犬立标)
+    var hoodOrnament = new THREE.Mesh(new THREE.SphereGeometry(0.07, 8, 6), chromeMaterial)
+    hoodOrnament.position.set(0, 2.16, -3.48)
+    carBodyRig.add(hoodOrnament)
+
+    // 前脸:铬格栅 + 格栅肋条 + 大保险杠
+    var grille = new THREE.Mesh(new THREE.BoxGeometry(1.5, 0.95, 0.1), chromeMaterial)
+    grille.position.set(0, 1.42, -3.62)
+    carBodyRig.add(grille)
+    for (var ribIndex = 0; ribIndex < 3; ribIndex++) {
+      var grilleRib = new THREE.Mesh(new THREE.BoxGeometry(1.36, 0.06, 0.03), chassisMaterial)
+      grilleRib.position.set(0, 1.16 + ribIndex * 0.26, -3.67)
+      carBodyRig.add(grilleRib)
+    }
+    var frontBumper = new THREE.Mesh(new THREE.BoxGeometry(2.3, 0.4, 0.24), chromeMaterial)
+    frontBumper.position.set(0, 0.68, -3.66)
+    carBodyRig.add(frontBumper)
+    var headLightMaterial = new THREE.MeshBasicMaterial({ color: '#fff0c2' })
+    for (var lightSide = -1; lightSide <= 1; lightSide += 2) {
+      var headLight = new THREE.Mesh(new THREE.SphereGeometry(0.13, 10, 8), headLightMaterial)
+      headLight.position.set(lightSide * 0.72, 1.5, -3.6)
+      carBodyRig.add(headLight)
+    }
+
+    // 前轮眉:鼓出的红色半球盖
+    var fenderGeometry = new THREE.SphereGeometry(0.52, 14, 10, 0, Math.PI * 2, 0, Math.PI * 0.55)
+    for (var fenderSide = -1; fenderSide <= 1; fenderSide += 2) {
+      var fender = new THREE.Mesh(fenderGeometry, carPaintMaterial)
+      fender.scale.set(0.85, 0.85, 1.05)
+      fender.position.set(fenderSide * 0.98, 0.72, -2.6)
+      carBodyRig.add(fender)
+    }
+
+    // 驾驶室:比引擎盖高出一头
+    var cab = new THREE.Mesh(new THREE.BoxGeometry(2.3, 1.9, 1.5), carPaintMaterial)
+    cab.position.set(0, 2.0, -1.55)
+    carBodyRig.add(cab)
+    var cabRoof = new THREE.Mesh(new THREE.BoxGeometry(2.1, 0.16, 1.3), carDarkMaterial)
+    cabRoof.position.set(0, 3.02, -1.55)
+    carBodyRig.add(cabRoof)
+    // 挡风玻璃(带遮阳檐)与侧窗
+    var windshield = new THREE.Mesh(new THREE.BoxGeometry(1.9, 0.78, 0.07), carGlassMaterial)
+    windshield.position.set(0, 2.56, -2.32)
+    windshield.rotation.x = 0.1
+    carBodyRig.add(windshield)
+    var sunVisor = new THREE.Mesh(new THREE.BoxGeometry(1.98, 0.07, 0.46), carDarkMaterial)
+    sunVisor.position.set(0, 2.98, -2.42)
+    sunVisor.rotation.x = 0.18
+    carBodyRig.add(sunVisor)
+    for (var windowSide = -1; windowSide <= 1; windowSide += 2) {
+      var sideWindow = new THREE.Mesh(new THREE.BoxGeometry(0.06, 0.62, 1.02), carGlassMaterial)
+      sideWindow.position.set(windowSide * 1.16, 2.52, -1.6)
+      carBodyRig.add(sideWindow)
+      // 西海岸式大后视镜
+      var mirrorArm = new THREE.Mesh(new THREE.BoxGeometry(0.3, 0.05, 0.05), chassisMaterial)
+      mirrorArm.position.set(windowSide * 1.32, 2.62, -2.24)
+      carBodyRig.add(mirrorArm)
+      var mirror = new THREE.Mesh(new THREE.BoxGeometry(0.09, 0.5, 0.2), chromeMaterial)
+      mirror.position.set(windowSide * 1.46, 2.5, -2.24)
       carBodyRig.add(mirror)
-      var seat = new THREE.Mesh(new THREE.SphereGeometry(0.2, 8, 6), carInteriorMaterial)
-      seat.scale.set(0.85, 1.05, 0.7)
-      seat.position.set(pillarSide * 0.37, 1.32, 0.34)
-      carBodyRig.add(seat)
+      // 油箱
+      var fuelTank = new THREE.Mesh(new THREE.CylinderGeometry(0.22, 0.22, 0.95, 12), chromeMaterial)
+      fuelTank.rotation.x = Math.PI / 2
+      fuelTank.position.set(windowSide * 1.1, 0.78, -0.35)
+      carBodyRig.add(fuelTank)
+    }
+    // 车顶三颗琥珀色示廓灯
+    for (var markerIndex = -1; markerIndex <= 1; markerIndex++) {
+      var markerLight = new THREE.Mesh(new THREE.SphereGeometry(0.06, 8, 6), markerMaterial)
+      markerLight.position.set(markerIndex * 0.55, 3.14, -2.02)
+      carBodyRig.add(markerLight)
     }
 
-    var archGeometry = new THREE.TorusGeometry(0.5, 0.065, 5, 18, Math.PI)
-    for (var archSide = -1; archSide <= 1; archSide += 2) {
-      for (var archEnd = -1; archEnd <= 1; archEnd += 2) {
-        var wheelArch = new THREE.Mesh(archGeometry, carRedMaterial)
-        wheelArch.rotation.y = Math.PI / 2
-        wheelArch.position.set(archSide * 1.065, 0.58, archEnd * 1.35)
-        carBodyRig.add(wheelArch)
-      }
+    // 双烟囱排气管:漫画烟从右烟囱顶冒出
+    for (var stackSide = -1; stackSide <= 1; stackSide += 2) {
+      var stack = new THREE.Mesh(new THREE.CylinderGeometry(0.09, 0.1, 1.8, 10), chromeMaterial)
+      stack.position.set(stackSide * 1.0, 2.6, -0.68)
+      carBodyRig.add(stack)
+      var stackCap = new THREE.Mesh(new THREE.CylinderGeometry(0.11, 0.11, 0.08, 10), chassisMaterial)
+      stackCap.position.set(stackSide * 1.0, 3.52, -0.68)
+      carBodyRig.add(stackCap)
     }
 
-    var wheelRadius = 0.44
-    var wheelGeometry = new THREE.CylinderGeometry(wheelRadius, wheelRadius, 0.36, 18)
-    var wheelSidewallGeometry = new THREE.TorusGeometry(0.29, 0.055, 7, 18)
-    var hubGeometry = new THREE.CylinderGeometry(0.225, 0.225, 0.39, 14)
-    var spokeGeometry = new THREE.BoxGeometry(0.045, 0.31, 0.055)
+    // 平板半挂:低栏板货台,只装两只木箱和一只油桶——轻装上路。
+    var flatbed = new THREE.Mesh(new THREE.BoxGeometry(2.4, 0.16, 3.6), trailerMaterial)
+    flatbed.position.set(0, 1.12, 1.9)
+    carBodyRig.add(flatbed)
+    var bedStripe = new THREE.Mesh(new THREE.BoxGeometry(2.44, 0.18, 3.6), carPaintMaterial)
+    bedStripe.position.set(0, 0.98, 1.9)
+    carBodyRig.add(bedStripe)
+    for (var railSide = -1; railSide <= 1; railSide += 2) {
+      var sideRail = new THREE.Mesh(new THREE.BoxGeometry(0.06, 0.3, 3.6), trailerMaterial)
+      sideRail.position.set(railSide * 1.17, 1.34, 1.9)
+      carBodyRig.add(sideRail)
+    }
+    var tailRail = new THREE.Mesh(new THREE.BoxGeometry(2.4, 0.3, 0.06), trailerMaterial)
+    tailRail.position.set(0, 1.34, 3.67)
+    carBodyRig.add(tailRail)
+    var headRail = new THREE.Mesh(new THREE.BoxGeometry(2.4, 0.5, 0.08), trailerMaterial)
+    headRail.position.set(0, 1.44, 0.14)
+    carBodyRig.add(headRail)
+    // 货物:两只木箱(一只捆着货带) + 一只油桶
+    var crateMaterial = new THREE.MeshStandardMaterial({ color: '#a9814f', roughness: 0.9 })
+    var crateA = new THREE.Mesh(new THREE.BoxGeometry(0.95, 0.85, 0.95), crateMaterial)
+    crateA.position.set(-0.35, 1.64, 0.85)
+    crateA.rotation.y = 0.08
+    carBodyRig.add(crateA)
+    var crateStrap = new THREE.Mesh(new THREE.BoxGeometry(0.99, 0.88, 0.07), chassisMaterial)
+    crateStrap.position.set(-0.35, 1.64, 0.85)
+    crateStrap.rotation.y = 0.08
+    carBodyRig.add(crateStrap)
+    var crateB = new THREE.Mesh(new THREE.BoxGeometry(0.7, 0.6, 0.7), crateMaterial)
+    crateB.position.set(0.5, 1.52, 1.75)
+    crateB.rotation.y = -0.16
+    carBodyRig.add(crateB)
+    var barrel = new THREE.Mesh(new THREE.CylinderGeometry(0.32, 0.32, 0.72, 12), carDarkMaterial)
+    barrel.position.set(-0.2, 1.58, 2.9)
+    carBodyRig.add(barrel)
+    var barrelBand = new THREE.Mesh(new THREE.CylinderGeometry(0.33, 0.33, 0.08, 12), chromeMaterial)
+    barrelBand.position.set(-0.2, 1.6, 2.9)
+    carBodyRig.add(barrelBand)
+    // 后防钻梁与挡泥板
+    var underrunBar = new THREE.Mesh(new THREE.BoxGeometry(1.8, 0.14, 0.12), chassisMaterial)
+    underrunBar.position.set(0, 0.5, 3.74)
+    carBodyRig.add(underrunBar)
+    for (var flapSide = -1; flapSide <= 1; flapSide += 2) {
+      var mudFlap = new THREE.Mesh(new THREE.BoxGeometry(0.52, 0.58, 0.05), chassisMaterial)
+      mudFlap.position.set(flapSide * 0.85, 0.42, 3.42)
+      carBodyRig.add(mudFlap)
+    }
+
+    // 卡车轮组：四根车轴八只轮，前轴转向。
+    var wheelRadius = 0.5
+    var wheelGeometry = new THREE.CylinderGeometry(wheelRadius, wheelRadius, 0.42, 18)
+    var hubGeometry = new THREE.CylinderGeometry(0.24, 0.24, 0.46, 14)
+    var hubDomeGeometry = new THREE.SphereGeometry(0.09, 10, 8)
     var wheelRolls = []
     var frontWheelSteers = []
 
     function createCarWheel (side, wheelZ, isFront) {
       var steeringRig = new THREE.Group()
-      steeringRig.position.set(side * 1.08, 0.5, wheelZ)
+      steeringRig.position.set(side * 1.06, 0.5, wheelZ)
       var rollingRig = new THREE.Group()
       steeringRig.add(rollingRig)
       var tire = new THREE.Mesh(wheelGeometry, tireMaterial)
@@ -1441,67 +1539,42 @@
       var hub = new THREE.Mesh(hubGeometry, hubMaterial)
       hub.rotation.z = Math.PI / 2
       rollingRig.add(hub)
-      var sidewall = new THREE.Mesh(wheelSidewallGeometry, tireMaterial)
-      sidewall.rotation.y = Math.PI / 2
-      sidewall.position.x = side * 0.205
-      rollingRig.add(sidewall)
-      for (var spokeIndex = 0; spokeIndex < 5; spokeIndex++) {
-        var spoke = new THREE.Mesh(spokeGeometry, chromeMaterial)
-        spoke.position.x = side * 0.205
-        spoke.rotation.x = spokeIndex / 5 * Math.PI * 2
-        rollingRig.add(spoke)
-      }
+      var hubDome = new THREE.Mesh(hubDomeGeometry, hubMaterial)
+      hubDome.position.x = side * 0.23
+      hubDome.scale.set(0.6, 1, 1)
+      rollingRig.add(hubDome)
       wheelRolls.push(rollingRig)
       if (isFront) frontWheelSteers.push(steeringRig)
       car.add(steeringRig)
     }
 
     for (var wheelSide = -1; wheelSide <= 1; wheelSide += 2) {
-      createCarWheel(wheelSide, -1.35, true)
-      createCarWheel(wheelSide, 1.35, false)
+      createCarWheel(wheelSide, -2.6, true)
+      createCarWheel(wheelSide, -0.2, false)
+      createCarWheel(wheelSide, 2.35, false)
+      createCarWheel(wheelSide, 3.2, false)
     }
 
-    var tailLightMaterial = new THREE.MeshBasicMaterial({ color: '#ff3b32' })
-    var headLightMaterial = new THREE.MeshBasicMaterial({ color: '#ffe7aa' })
-    var lightHousingMaterial = new THREE.MeshStandardMaterial({ color: '#2a1d22', roughness: 0.62 })
-    for (var tailSide = -1; tailSide <= 1; tailSide += 2) {
-      var lightHousing = new THREE.Mesh(new THREE.BoxGeometry(0.52, 0.27, 0.09), lightHousingMaterial)
-      lightHousing.position.set(tailSide * 0.7, 0.91, 2.105)
-      carBodyRig.add(lightHousing)
-      var tailLight = new THREE.Mesh(new THREE.BoxGeometry(0.42, 0.18, 0.08), tailLightMaterial)
-      tailLight.position.set(tailSide * 0.7, 0.91, 2.16)
+    var tailLightMaterial = new THREE.MeshBasicMaterial({ color: '#ff4a3c' })
+    for (var lampSide = -1; lampSide <= 1; lampSide += 2) {
+      var tailLight = new THREE.Mesh(new THREE.BoxGeometry(0.18, 0.3, 0.06), tailLightMaterial)
+      tailLight.position.set(lampSide * 1.04, 0.78, 3.73)
       carBodyRig.add(tailLight)
-      var tailGlow = new THREE.Sprite(new THREE.SpriteMaterial({ map: duskGlowTexture, color: '#ff3b2e', transparent: true, opacity: 0.38, blending: THREE.AdditiveBlending, depthWrite: false }))
-      tailGlow.position.set(tailSide * 0.7, 0.91, 2.24)
-      tailGlow.scale.set(0.82, 0.82, 1)
+      var tailGlow = new THREE.Sprite(new THREE.SpriteMaterial({ map: duskGlowTexture, color: '#ff4a34', transparent: true, opacity: 0.38, blending: THREE.AdditiveBlending, depthWrite: false }))
+      tailGlow.position.set(lampSide * 1.04, 0.78, 3.84)
+      tailGlow.scale.set(0.8, 0.8, 1)
       carBodyRig.add(tailGlow)
-      var headLight = new THREE.Mesh(new THREE.BoxGeometry(0.42, 0.19, 0.08), headLightMaterial)
-      headLight.position.set(tailSide * 0.67, 0.91, -2.12)
-      carBodyRig.add(headLight)
     }
     var rearGlow = new THREE.PointLight('#ff493a', 0.9, 6.5, 2)
-    rearGlow.position.set(0, 0.82, 2.48)
+    rearGlow.position.set(0, 0.9, 3.9)
     carBodyRig.add(rearGlow)
 
-    var rearBumper = new THREE.Mesh(new THREE.BoxGeometry(2.13, 0.15, 0.17), chromeMaterial)
-    rearBumper.position.set(0, 0.55, 2.17)
-    carBodyRig.add(rearBumper)
-    var frontBumper = rearBumper.clone()
-    frontBumper.position.z = -2.17
-    carBodyRig.add(frontBumper)
-    var licensePlate = new THREE.Mesh(new THREE.BoxGeometry(0.64, 0.27, 0.055), new THREE.MeshBasicMaterial({ color: '#f1daa1' }))
-    licensePlate.position.set(0, 0.73, 2.27)
+    var licensePlate = new THREE.Mesh(new THREE.BoxGeometry(0.52, 0.24, 0.05), new THREE.MeshBasicMaterial({ color: '#f1daa1' }))
+    licensePlate.position.set(0, 1.02, 3.72)
     carBodyRig.add(licensePlate)
-    var exhaustPipe = new THREE.Mesh(new THREE.CylinderGeometry(0.075, 0.075, 0.56, 10), chromeMaterial)
-    exhaustPipe.rotation.x = Math.PI / 2
-    exhaustPipe.position.set(0.58, 0.47, 2.34)
-    carBodyRig.add(exhaustPipe)
-    var exhaustMouth = new THREE.Mesh(new THREE.CylinderGeometry(0.048, 0.048, 0.035, 10), carInteriorMaterial)
-    exhaustMouth.rotation.x = Math.PI / 2
-    exhaustMouth.position.set(0.58, 0.47, 2.63)
-    carBodyRig.add(exhaustMouth)
+    // 漫画排气从右烟囱顶部冒出。
     var exhaustSocket = new THREE.Object3D()
-    exhaustSocket.position.set(0.58, 0.47, 2.68)
+    exhaustSocket.position.set(1.0, 3.6, -0.68)
     carBodyRig.add(exhaustSocket)
     car.scale.setScalar(carScale)
     duskScene.add(car)
@@ -1520,7 +1593,7 @@
       return new THREE.CanvasTexture(shadowCanvas)
     }
 
-    var carShadow = new THREE.Mesh(new THREE.PlaneGeometry(3.15, 5.1), new THREE.MeshBasicMaterial({ map: createCarShadowTexture(), transparent: true, opacity: 0.42, depthWrite: false, polygonOffset: true, polygonOffsetFactor: -2 }))
+    var carShadow = new THREE.Mesh(new THREE.PlaneGeometry(3.3, 7.6), new THREE.MeshBasicMaterial({ map: createCarShadowTexture(), transparent: true, opacity: 0.42, depthWrite: false, polygonOffset: true, polygonOffsetFactor: -2 }))
     carShadow.rotation.x = -Math.PI / 2
     carShadow.renderOrder = 2
     duskScene.add(carShadow)
@@ -1723,20 +1796,51 @@
     }
 
     var cloudTexture = createDuskCloudTexture()
+    // 三种云色：玫瑰粉、薰衣草紫、暖杏色，随高度和深度交错。
     var cloudMaterials = [
-      new THREE.SpriteMaterial({ map: cloudTexture, color: '#bca5b0', transparent: true, opacity: 0.32, depthWrite: false, fog: true }),
-      new THREE.SpriteMaterial({ map: cloudTexture, color: '#c6a697', transparent: true, opacity: 0.25, depthWrite: false, fog: true })
+      new THREE.SpriteMaterial({ map: cloudTexture, color: '#e8a4b8', transparent: true, opacity: 0.36, depthWrite: false, fog: true }),
+      new THREE.SpriteMaterial({ map: cloudTexture, color: '#b795c8', transparent: true, opacity: 0.3, depthWrite: false, fog: true }),
+      new THREE.SpriteMaterial({ map: cloudTexture, color: '#f0b490', transparent: true, opacity: 0.3, depthWrite: false, fog: true })
     ]
     var duskClouds = []
-    for (var cloudIndex = 0; cloudIndex < 10; cloudIndex++) {
+    for (var cloudIndex = 0; cloudIndex < 14; cloudIndex++) {
       var cloud = new THREE.Sprite(cloudMaterials[cloudIndex % cloudMaterials.length])
-      cloud.position.set((duskRandom() - 0.5) * 125, 15 + duskRandom() * 13, -35 - duskRandom() * 225)
-      var cloudScale = 12 + duskRandom() * 17
+      cloud.position.set((duskRandom() - 0.5) * 135, 14 + duskRandom() * 16, -35 - duskRandom() * 225)
+      var cloudScale = 12 + duskRandom() * 19
       cloud.scale.set(cloudScale, cloudScale * (0.27 + duskRandom() * 0.08), 1)
       cloud.userData.speed = 0.08 + duskRandom() * 0.16
       duskClouds.push(cloud)
       duskScene.add(cloud)
     }
+
+    // 掠过晚霞的鸟群：几只极简的双翼剪影，扇动翅膀缓缓横穿画面。
+    var duskBirdGroup = new THREE.Group()
+    var duskBirdWingGeometry = new THREE.BoxGeometry(0.14, 0.03, 0.62)
+    var duskBirdBodyGeometry = new THREE.SphereGeometry(0.11, 8, 6)
+    var duskBirdMaterial = new THREE.MeshBasicMaterial({ color: '#2c2337', fog: true })
+    var duskBirds = []
+    for (var birdIndex = 0; birdIndex < 6; birdIndex++) {
+      var bird = new THREE.Group()
+      var birdBody = new THREE.Mesh(duskBirdBodyGeometry, duskBirdMaterial)
+      birdBody.scale.set(1.5, 0.8, 1)
+      bird.add(birdBody)
+      var wings = []
+      for (var wingSide = -1; wingSide <= 1; wingSide += 2) {
+        var wing = new THREE.Mesh(duskBirdWingGeometry, duskBirdMaterial)
+        wing.position.z = wingSide * 0.32
+        bird.add(wing)
+        wings.push(wing)
+      }
+      // 松散的人字队形。
+      bird.position.set(birdIndex * 2.6, Math.abs(birdIndex - 2.5) * -0.9, (birdIndex % 2 ? 1 : -1) * (1 + birdIndex * 0.8))
+      bird.userData = { wings: wings, flapPhase: duskRandom() * Math.PI * 2, flapSpeed: 6 + duskRandom() * 3 }
+      duskBirds.push(bird)
+      duskBirdGroup.add(bird)
+    }
+    var duskFlockProgress = -60 - duskRandom() * 40
+    var duskFlockHeight = 17 + duskRandom() * 8
+    var duskFlockDepth = -95 - duskRandom() * 60
+    duskScene.add(duskBirdGroup)
 
     function configureDuskCamera () {
       duskCamera.aspect = aspect
@@ -1769,7 +1873,8 @@
         bumpTriggered = true
       }
       duskBumpAge += delta
-      var regularBounce = Math.sin(duskTravel * 2.8) * 0.035 + Math.sin(duskTravel * 5.1) * 0.012
+      // 卡通车的弹跳比写实车更夸张一点。
+      var regularBounce = Math.sin(duskTravel * 2.8) * 0.055 + Math.sin(duskTravel * 5.1) * 0.018
       var largeBounce = duskBumpStrength * Math.exp(-duskBumpAge * 2.8) * Math.abs(Math.sin(duskBumpAge * 11.5))
       car.position.set(carX, 0.2, carZ)
       car.rotation.set(0, heading, -steering * 0.055)
@@ -1847,9 +1952,27 @@
       }
 
       duskSky.position.set(carX, 4, carZ)
+      duskSky.material.uniforms.uTime.value = motionTime * 0.001
       duskSun.position.set(carX - 45, 16.5, carZ - 224)
       duskSunHalo.position.copy(duskSun.position)
+      duskSunHaloWide.position.copy(duskSun.position)
       duskMountainGroup.position.set(carX, 0, carZ)
+
+      // 鸟群缓慢横穿天际，飞出视野后换一个高度和深度重新进场。
+      duskFlockProgress += delta * 3.1
+      if (duskFlockProgress > 90) {
+        duskFlockProgress = -90 - duskRandom() * 50
+        duskFlockHeight = 15 + duskRandom() * 10
+        duskFlockDepth = -85 - duskRandom() * 80
+      }
+      duskBirdGroup.position.set(carX + duskFlockProgress, duskFlockHeight, carZ + duskFlockDepth)
+      for (var birdUpdateIndex = 0; birdUpdateIndex < duskBirds.length; birdUpdateIndex++) {
+        var flockBird = duskBirds[birdUpdateIndex]
+        var flap = Math.sin(motionTime * 0.001 * flockBird.userData.flapSpeed + flockBird.userData.flapPhase)
+        flockBird.userData.wings[0].rotation.x = -flap * 0.65
+        flockBird.userData.wings[1].rotation.x = flap * 0.65
+        flockBird.position.y += Math.sin(motionTime * 0.0008 + birdUpdateIndex) * 0.004
+      }
       duskSunLight.position.set(carX - 44, 46, carZ - 78)
       duskSunLight.target.position.set(carX, 0.5, carZ - 18)
       duskRimLight.position.set(carX + 36, 20, carZ + 12)
@@ -3349,6 +3472,100 @@
     }
   }
 
+  // 整屏翻页：桌面端滚轮每滚一档就对齐翻到下一个版块，
+  // 不再出现慢慢蹭、停在版块中间对不齐的情况。
+  function initSectionPaging () {
+    var pagingMedia = window.matchMedia('(min-width: 769px) and (pointer: fine)')
+    var animating = false
+    var cooldownUntil = 0
+
+    function sectionStops () {
+      var elements = [document.getElementById('page-header'), document.getElementById('vexpaer-blog-gateway')]
+      var explores = document.querySelectorAll('[data-explore-root]')
+      for (var index = 0; index < explores.length; index++) elements.push(explores[index])
+      var maxScroll = Math.max(0, Math.round(document.documentElement.scrollHeight - window.innerHeight))
+      var stops = []
+      for (var section = 0; section < elements.length; section++) {
+        if (!elements[section]) continue
+        var top = Math.round(elements[section].getBoundingClientRect().top + window.scrollY)
+        stops.push(Math.min(Math.max(0, top), maxScroll))
+      }
+      // 最后一档滚到底，让页脚可达。
+      stops.push(maxScroll)
+      stops.sort(function (a, b) { return a - b })
+      var unique = []
+      for (var stop = 0; stop < stops.length; stop++) {
+        if (!unique.length || stops[stop] - unique[unique.length - 1] > 8) unique.push(stops[stop])
+      }
+      return unique
+    }
+
+    function animateTo (target) {
+      animating = true
+      // CSS 的 scroll-behavior: smooth 会和这里的手动补间打架，动画期间临时关掉。
+      var previousBehavior = document.documentElement.style.scrollBehavior
+      document.documentElement.style.scrollBehavior = 'auto'
+      var start = window.scrollY
+      var distance = target - start
+      var duration = Math.min(760, 420 + Math.abs(distance) * 0.16)
+      var startTime = performance.now()
+
+      function step (now) {
+        var t = Math.min(1, (now - startTime) / duration)
+        var eased = t < 0.5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2
+        window.scrollTo(0, Math.round(start + distance * eased))
+        if (t < 1) {
+          window.requestAnimationFrame(step)
+        } else {
+          document.documentElement.style.scrollBehavior = previousBehavior
+          animating = false
+          cooldownUntil = performance.now() + 300
+        }
+      }
+      window.requestAnimationFrame(step)
+    }
+
+    function page (direction) {
+      var stops = sectionStops()
+      var current = window.scrollY
+      var index = 0
+      for (var stop = 0; stop < stops.length; stop++) {
+        if (current >= stops[stop] - 4) index = stop
+      }
+      var misaligned = current > stops[index] + 4
+      var targetIndex = direction > 0
+        ? Math.min(stops.length - 1, index + 1)
+        : Math.max(0, misaligned ? index : index - 1)
+      var target = stops[targetIndex]
+      if (target === undefined || Math.abs(target - current) < 2) return
+      animateTo(target)
+    }
+
+    window.addEventListener('wheel', function (event) {
+      if (!pagingMedia.matches || reducedMotion.matches) return
+      if (event.ctrlKey || event.defaultPrevented) return
+      event.preventDefault()
+      var now = performance.now()
+      if (animating || now < cooldownUntil) return
+      if (Math.abs(event.deltaY) < 8) return
+      page(event.deltaY > 0 ? 1 : -1)
+    }, { passive: false })
+
+    window.addEventListener('keydown', function (event) {
+      if (!pagingMedia.matches || reducedMotion.matches) return
+      if (event.defaultPrevented || event.altKey || event.ctrlKey || event.metaKey) return
+      var active = document.activeElement
+      if (active && (active.tagName === 'INPUT' || active.tagName === 'TEXTAREA' || active.isContentEditable)) return
+      var direction = 0
+      if (event.key === 'ArrowDown' || event.key === 'PageDown' || (event.key === ' ' && !event.shiftKey)) direction = 1
+      else if (event.key === 'ArrowUp' || event.key === 'PageUp' || (event.key === ' ' && event.shiftKey)) direction = -1
+      else return
+      event.preventDefault()
+      if (animating) return
+      page(direction)
+    })
+  }
+
   if ('ResizeObserver' in window) {
     new ResizeObserver(resize).observe(root)
   } else {
@@ -3372,5 +3589,6 @@
   if (activeTheme === 'dusk') applyDuskTitleLayout()
   loadThreeLayer()
   initHomeMotion()
+  initSectionPaging()
   window.requestAnimationFrame(frame)
 })()

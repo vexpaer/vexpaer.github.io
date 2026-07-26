@@ -580,6 +580,41 @@
   box-shadow: 0.9rem 0.62rem 0 var(--project-glow), 0 0 0.9rem color-mix(in srgb, var(--project-accent) 50%, transparent);
 }
 
+.vexpaer-project-card[data-art='music'] .vexpaer-project-card__visual-mark {
+  width: 7.8rem;
+  height: 7.8rem;
+  border-radius: 50%;
+  background:
+    repeating-radial-gradient(circle, transparent 0 0.42rem, color-mix(in srgb, var(--project-accent) 26%, transparent) 0.42rem 0.52rem),
+    color-mix(in srgb, var(--project-glow) 15%, rgba(7, 8, 18, 0.92));
+}
+
+.vexpaer-project-card[data-art='music'] .vexpaer-project-card__visual-mark::before {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 2.1rem;
+  height: 2.1rem;
+  border-radius: 50%;
+  background: radial-gradient(circle at 50% 50%, var(--project-glow) 0 0.22rem, var(--project-accent) 0.24rem);
+  box-shadow: 0 0 0.9rem color-mix(in srgb, var(--project-accent) 55%, transparent);
+  transform: translate(-50%, -50%);
+}
+
+.vexpaer-project-card[data-art='music'] .vexpaer-project-card__visual-mark::after {
+  content: '';
+  position: absolute;
+  top: -0.3rem;
+  right: -1.6rem;
+  width: 0.28rem;
+  height: 4.6rem;
+  border-radius: 999px;
+  background: linear-gradient(180deg, var(--project-accent), transparent);
+  transform: rotate(24deg);
+  transform-origin: top center;
+}
+
 .vexpaer-project-card[data-art='browser'] .vexpaer-project-card__visual-mark {
   width: min(13rem, 58%);
   height: 7.8rem;
@@ -754,6 +789,17 @@
 
 .vexpaer-explore[data-group='start'] .vexpaer-explore-projects__grid {
   grid-template-columns: minmax(0, 1fr);
+}
+
+/* 影游组三面墙强制一行（窄屏仍回退到单列堆叠）。 */
+.vexpaer-explore[data-group='media'] .vexpaer-explore-projects__grid {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+
+@media (max-width: 900px) {
+  .vexpaer-explore[data-group='media'] .vexpaer-explore-projects__grid {
+    grid-template-columns: 1fr;
+  }
 }
 
 .vexpaer-explore[data-group='start'] .vexpaer-project-card {

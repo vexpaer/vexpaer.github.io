@@ -14,7 +14,7 @@
       width: 100%;
       height: 100%;
       overflow: hidden;
-      background: #01020a;
+      background: #070b12;
     }
 
     #scene {
@@ -23,19 +23,17 @@
       display: block;
       width: 100%;
       height: 100%;
-      background: #01020a;
-      cursor: grab;
+      background: #070b12;
+      cursor: pointer;
     }
-
-    #scene:active { cursor: grabbing; }
 
     .shade {
       position: fixed;
       inset: 0;
       pointer-events: none;
       background:
-        linear-gradient(180deg, rgba(1, 2, 10, 0.42) 0%, rgba(1, 2, 10, 0.06) 24%, transparent 46%),
-        radial-gradient(ellipse 90% 80% at 50% 50%, transparent 0 44%, rgba(1, 2, 10, 0.14) 72%, rgba(0, 1, 6, 0.42) 100%);
+        linear-gradient(180deg, rgba(5, 8, 14, 0.42) 0%, rgba(5, 8, 14, 0.06) 24%, transparent 46%),
+        radial-gradient(ellipse 90% 80% at 50% 50%, transparent 0 46%, rgba(4, 7, 12, 0.12) 74%, rgba(3, 5, 10, 0.38) 100%);
     }
   </style>
 </head>
@@ -45,6 +43,15 @@
 <script>
 (function () {
   'use strict';
+
+  // 参考构图：云海之上的巨型碟状轨道城——
+  // 画面上方悬着一只倾斜的巨碟，亮色的舷缘布满结构细节，
+  // 碟底是层层旋涡状的暗色机械面；一根塔柱从碟心垂入云层，
+  // 塔柱基座处一座尖塔之城从云海中拔起；左侧远方是行星弧线与大气辉光。
+  // 全部为冷蓝灰的电影质感。三层画布只在加载时绘制一次（天空/巨构/云海），
+  // 每帧合成 + 视差；粒子层：星光、碟缘航灯、塔柱天梯光点、绕碟飞行器、
+  // 云涛漂移；点击可从城中放出一班穿梭机升往巨碟。
+  // 若站点提供 /img/scene-cosmos.jpg，将自动用照片替换手绘背景。
 
   var canvas = document.getElementById('scene');
   var ctx = canvas.getContext('2d', { alpha: false });
@@ -58,37 +65,33 @@
   var lastTime = 0;
   var clock = 0;
 
-  // 辉光层：所有自发光的东西额外画一份到降采样画布，模糊后叠加。
-  // 比逐个元素画 radial-gradient 便宜得多，观感也更接近真实的镜头光晕。
-  var bloomCanvas = document.createElement('canvas');
-  var bctx = bloomCanvas.getContext('2d');
-  var bloomScale = 0.3;
-  var bloomSupported = false;
+  var skyLayer = document.createElement('canvas');
+  var structLayer = document.createElement('canvas');
+  var cloudLayer = document.createElement('canvas');
 
-  var nebulaSprites = [];
-  var grainCanvas = document.createElement('canvas');
+  var photo = null;
+  var photoReady = false;
 
-  var centerX = 0;
-  var centerY = 0;
-  var focal = 1200;
-  var tilt = 0.34;
-  var tiltTarget = 0.34;
-  var starRadius = 40;
+  // 巨碟与塔柱的几何参数，粒子层沿它们运动。
+  var disc = { x: 0, y: 0, rx: 1, ry: 1, tilt: -0.1 };
+  var stalk = { topX: 0, topY: 0, bottomX: 0, bottomY: 0 };
+  var cloudTop = 0;
 
-  var starLayers = [];
-  var nebulae = [];
-  var rings = [];
-  var swarm = [];
-  var truss = null;
-  var comets = [];
-  var prominences = [];
+  var twinkles = [];
+  var beacons = [];
+  var rimShips = [];
+  var elevators = [];
+  var wisps = [];
+  var shuttles = [];
 
   var pointerX = 0.5;
   var pointerY = 0.5;
-  var dragging = false;
-  var dragLastX = 0;
-  var spinOffset = 0;
-  var spinVelocity = 0;
+  var parallaxX = 0;
+  var parallaxY = 0;
+
+  var glowCoolSprite = null;
+  var glowWarmSprite = null;
+  var wispSprite = null;
 
   // ---------------------------------------------------------------- 工具
 
@@ -104,251 +107,612 @@
 
   function lerp (a, b, t) { return a + (b - a) * t; }
   function clamp (value, low, high) { return value < low ? low : value > high ? high : value; }
-  function smoothstep (edge0, edge1, x) {
-    var t = clamp((x - edge0) / (edge1 - edge0), 0, 1);
-    return t * t * (3 - 2 * t);
+
+  function makeGlowSprite (r, g, b) {
+    var sprite = document.createElement('canvas');
+    sprite.width = 64;
+    sprite.height = 64;
+    var sctx = sprite.getContext('2d');
+    var gradient = sctx.createRadialGradient(32, 32, 0, 32, 32, 32);
+    gradient.addColorStop(0, 'rgba(' + r + ',' + g + ',' + b + ',1)');
+    gradient.addColorStop(0.25, 'rgba(' + r + ',' + g + ',' + b + ',0.5)');
+    gradient.addColorStop(1, 'rgba(' + r + ',' + g + ',' + b + ',0)');
+    sctx.fillStyle = gradient;
+    sctx.fillRect(0, 0, 64, 64);
+    return sprite;
   }
 
-  // 极简 3D：绕 X 轴倾斜后做一次透视投影。环世界只需要这些。
-  function project (x, y, z, out) {
-    var cos = Math.cos(tilt);
-    var sin = Math.sin(tilt);
-    var ty = y * cos - z * sin;
-    var tz = y * sin + z * cos;
-    var scale = focal / Math.max(120, focal + tz);
-    out.x = centerX + x * scale;
-    out.y = centerY + ty * scale;
-    out.z = tz;
-    out.s = scale;
+  function makeWispSprite () {
+    var sprite = document.createElement('canvas');
+    sprite.width = 320;
+    sprite.height = 120;
+    var sctx = sprite.getContext('2d');
+    var random = mulberry32(0x3159);
+    for (var puff = 0; puff < 22; puff++) {
+      var px = 30 + random() * 260;
+      var py = 34 + random() * 52;
+      var pr = 18 + random() * 42;
+      var alpha = 0.05 + random() * 0.1;
+      var gradient = sctx.createRadialGradient(px, py, 0, px, py, pr);
+      gradient.addColorStop(0, 'rgba(224, 234, 244, ' + alpha.toFixed(3) + ')');
+      gradient.addColorStop(1, 'rgba(200, 214, 230, 0)');
+      sctx.fillStyle = gradient;
+      sctx.beginPath();
+      sctx.arc(px, py, pr, 0, Math.PI * 2);
+      sctx.fill();
+    }
+    return sprite;
+  }
+
+  // 碟缘上角度 angle 处的屏幕坐标（考虑碟的倾斜）。
+  function discRimPoint (angle, out) {
+    var cosT = Math.cos(disc.tilt);
+    var sinT = Math.sin(disc.tilt);
+    var ex = Math.cos(angle) * disc.rx;
+    var ey = Math.sin(angle) * disc.ry;
+    out.x = disc.x + ex * cosT - ey * sinT;
+    out.y = disc.y + ex * sinT + ey * cosT;
     return out;
   }
 
-  var pointA = { x: 0, y: 0, z: 0, s: 1 };
-  var pointB = { x: 0, y: 0, z: 0, s: 1 };
-  var pointC = { x: 0, y: 0, z: 0, s: 1 };
-  var pointD = { x: 0, y: 0, z: 0, s: 1 };
+  // ------------------------------------------------------ 画卷：天空层
 
-  // ---------------------------------------------------------- 场景构建
+  function paintSky (target) {
+    var sctx = target.getContext('2d');
+    sctx.setTransform(DPR, 0, 0, DPR, 0, 0);
 
-  function buildGrain () {
-    var size = 128;
-    grainCanvas.width = size;
-    grainCanvas.height = size;
-    var gctx = grainCanvas.getContext('2d');
-    var image = gctx.createImageData(size, size);
-    var random = mulberry32(0xC0501C);
-    for (var index = 0; index < image.data.length; index += 4) {
-      var value = 128 + (random() - 0.5) * 86;
-      image.data[index] = value;
-      image.data[index + 1] = value;
-      image.data[index + 2] = value;
-      image.data[index + 3] = 255;
+    // 深空底色：顶部近黑，向下渐蓝。
+    var gradient = sctx.createLinearGradient(0, 0, 0, H);
+    gradient.addColorStop(0, '#04060c');
+    gradient.addColorStop(0.35, '#0a1220');
+    gradient.addColorStop(0.62, '#1b2c42');
+    gradient.addColorStop(0.8, '#3c5570');
+    gradient.addColorStop(1, '#6c8299');
+    sctx.fillStyle = gradient;
+    sctx.fillRect(0, 0, W, H);
+
+    var random = mulberry32(0x51CE);
+
+    // 星场：只铺在上半部深空区。
+    for (var star = 0; star < 1500; star++) {
+      var sy = Math.pow(random(), 1.5) * H * 0.5;
+      var sx = random() * W;
+      var roll = random();
+      var size = roll > 0.96 ? 1.8 : roll > 0.78 ? 1.2 : 0.7;
+      var alpha = (0.12 + Math.pow(random(), 2) * 0.6) * (1 - sy / (H * 0.56));
+      sctx.fillStyle = random() > 0.86
+        ? 'rgba(178, 204, 244, ' + alpha.toFixed(3) + ')'
+        : 'rgba(236, 242, 250, ' + alpha.toFixed(3) + ')';
+      sctx.fillRect(sx, sy, size, size);
     }
-    gctx.putImageData(image, 0, 0);
+
+    // 行星弧线与大气辉光：一条微倾的亮带横过画面中部，左端最亮。
+    sctx.save();
+    sctx.translate(W * 0.3, H * 0.46);
+    sctx.rotate(0.05);
+    var limbGlow = sctx.createLinearGradient(0, -H * 0.1, 0, H * 0.05);
+    limbGlow.addColorStop(0, 'rgba(120, 160, 205, 0)');
+    limbGlow.addColorStop(0.62, 'rgba(158, 198, 236, 0.2)');
+    limbGlow.addColorStop(0.8, 'rgba(214, 236, 252, 0.55)');
+    limbGlow.addColorStop(0.87, 'rgba(244, 250, 255, 0.8)');
+    limbGlow.addColorStop(1, 'rgba(170, 198, 226, 0.24)');
+    sctx.fillStyle = limbGlow;
+    sctx.fillRect(-W, -H * 0.1, W * 2.2, H * 0.15);
+    sctx.restore();
+
+    // 左端的太阳辉光：地平线上最亮的一点。
+    var sunGlow = sctx.createRadialGradient(W * 0.02, H * 0.44, 0, W * 0.02, H * 0.44, W * 0.5);
+    sunGlow.addColorStop(0, 'rgba(255, 252, 244, 0.75)');
+    sunGlow.addColorStop(0.12, 'rgba(230, 240, 252, 0.36)');
+    sunGlow.addColorStop(0.45, 'rgba(190, 212, 236, 0.1)');
+    sunGlow.addColorStop(1, 'rgba(170, 196, 224, 0)');
+    sctx.fillStyle = sunGlow;
+    sctx.fillRect(0, 0, W, H);
+
+    // 大气高层的薄卷云
+    for (var cirrus = 0; cirrus < 14; cirrus++) {
+      var cy = H * (0.4 + random() * 0.16);
+      var cw = W * (0.1 + random() * 0.26);
+      var cx = random() * W;
+      var cloudGradient = sctx.createRadialGradient(cx, cy, 0, cx, cy, cw * 0.5);
+      cloudGradient.addColorStop(0, 'rgba(206, 222, 240, ' + (0.05 + random() * 0.08).toFixed(3) + ')');
+      cloudGradient.addColorStop(1, 'rgba(206, 222, 240, 0)');
+      sctx.fillStyle = cloudGradient;
+      sctx.save();
+      sctx.translate(cx, cy);
+      sctx.scale(1, 0.16 + random() * 0.1);
+      sctx.beginPath();
+      sctx.arc(0, 0, cw * 0.5, 0, Math.PI * 2);
+      sctx.fill();
+      sctx.restore();
+    }
   }
 
-  function buildNebulaSprites () {
-    nebulaSprites = [];
-    var palettes = [
-      [[92, 62, 168], [46, 112, 196]],
-      [[168, 66, 132], [86, 46, 156]],
-      [[38, 118, 160], [26, 66, 130]]
-    ];
-    for (var variant = 0; variant < palettes.length; variant++) {
-      var sprite = document.createElement('canvas');
-      var size = 320;
-      sprite.width = size;
-      sprite.height = size;
-      var nctx = sprite.getContext('2d');
-      var random = mulberry32(0x0EB0 + variant * 613);
-      var palette = palettes[variant];
-      for (var puff = 0; puff < 34; puff++) {
-        var px = size * (0.5 + (random() - 0.5) * 0.9);
-        var py = size * (0.5 + (random() - 0.5) * 0.9);
-        var pr = size * (0.08 + random() * 0.3);
-        var mix = random();
-        var color = [
-          Math.round(lerp(palette[0][0], palette[1][0], mix)),
-          Math.round(lerp(palette[0][1], palette[1][1], mix)),
-          Math.round(lerp(palette[0][2], palette[1][2], mix))
-        ];
-        var alpha = 0.03 + random() * 0.07;
-        var gradient = nctx.createRadialGradient(px, py, 0, px, py, pr);
-        gradient.addColorStop(0, 'rgba(' + color[0] + ',' + color[1] + ',' + color[2] + ',' + alpha.toFixed(3) + ')');
-        gradient.addColorStop(1, 'rgba(' + color[0] + ',' + color[1] + ',' + color[2] + ',0)');
-        nctx.fillStyle = gradient;
-        nctx.beginPath();
-        nctx.arc(px, py, pr, 0, Math.PI * 2);
-        nctx.fill();
+  // ------------------------------------------------------ 画卷：巨构层
+
+  function paintStructure (target) {
+    var sctx = target.getContext('2d');
+    sctx.setTransform(DPR, 0, 0, DPR, 0, 0);
+    sctx.clearRect(0, 0, W, H);
+
+    var random = mulberry32(0xD15C);
+    beacons = [];
+
+    var cosT = Math.cos(disc.tilt);
+    var sinT = Math.sin(disc.tilt);
+
+    // ============ 巨碟 ============
+    sctx.save();
+    sctx.translate(disc.x, disc.y);
+    sctx.rotate(disc.tilt);
+
+    // 碟底：暗色机械面，层层同心环带出旋涡质感。
+    sctx.fillStyle = '#141c2a';
+    sctx.beginPath();
+    sctx.ellipse(0, 0, disc.rx, disc.ry, 0, 0, Math.PI * 2);
+    sctx.fill();
+
+    var ringCount = 26;
+    for (var ring = 0; ring < ringCount; ring++) {
+      var rt = ring / (ringCount - 1);
+      var ringRx = disc.rx * (1 - Math.pow(rt, 1.35) * 0.94);
+      var ringRy = disc.ry * (1 - Math.pow(rt, 1.35) * 0.94);
+      // 越靠碟心越暗，偶尔一圈亮的结构缝。
+      var bright = random() > 0.72;
+      sctx.strokeStyle = bright
+        ? 'rgba(120, 148, 182, ' + (0.14 + random() * 0.14).toFixed(3) + ')'
+        : 'rgba(10, 14, 22, ' + (0.3 + rt * 0.4).toFixed(3) + ')';
+      sctx.lineWidth = bright ? 0.9 : 2 + rt * 8;
+      sctx.beginPath();
+      sctx.ellipse(0, disc.ry * rt * 0.06, ringRx, ringRy, 0, 0, Math.PI * 2);
+      sctx.stroke();
+    }
+
+    // 碟底的旋涡流线：沿椭圆的弧段虚线。
+    for (var swirl = 0; swirl < 60; swirl++) {
+      var swirlT = random();
+      var swirlRx = disc.rx * (0.16 + swirlT * 0.8);
+      var swirlRy = disc.ry * (0.16 + swirlT * 0.8);
+      var start = random() * Math.PI * 2;
+      var span = 0.2 + random() * 0.9;
+      sctx.strokeStyle = 'rgba(' + (random() > 0.5 ? '96, 120, 152' : '58, 74, 100') + ', ' + (0.14 + random() * 0.2).toFixed(3) + ')';
+      sctx.lineWidth = 0.6 + random() * 1;
+      sctx.beginPath();
+      sctx.ellipse(0, 0, swirlRx, swirlRy, 0, start, start + span);
+      sctx.stroke();
+    }
+
+    // 碟底的稀疏灯点
+    for (var discLight = 0; discLight < 240; discLight++) {
+      var lightAngle = random() * Math.PI * 2;
+      var lightRadius = Math.pow(random(), 0.7);
+      var lx = Math.cos(lightAngle) * disc.rx * lightRadius * 0.94;
+      var ly = Math.sin(lightAngle) * disc.ry * lightRadius * 0.94;
+      var coolLight = random() > 0.3;
+      sctx.fillStyle = coolLight
+        ? 'rgba(150, 196, 240, ' + (0.1 + random() * 0.4).toFixed(3) + ')'
+        : 'rgba(255, 214, 160, ' + (0.1 + random() * 0.34).toFixed(3) + ')';
+      sctx.fillRect(lx, ly, 1 + (random() > 0.92 ? 1 : 0), 1);
+    }
+
+    // 舷缘：面向观者的一段亮色带，布满结构细节（贴装、天线、舱窗）。
+    var rimStart = Math.PI * 0.06;
+    var rimEnd = Math.PI * 1.04;
+    sctx.strokeStyle = 'rgba(214, 228, 242, 0.9)';
+    sctx.lineWidth = Math.max(5, disc.ry * 0.16);
+    sctx.beginPath();
+    sctx.ellipse(0, 0, disc.rx * 0.995, disc.ry * 0.995, 0, rimStart, rimEnd);
+    sctx.stroke();
+    sctx.strokeStyle = 'rgba(150, 172, 196, 0.7)';
+    sctx.lineWidth = Math.max(2.4, disc.ry * 0.07);
+    sctx.beginPath();
+    sctx.ellipse(0, disc.ry * 0.05, disc.rx * 0.99, disc.ry * 0.99, 0, rimStart, rimEnd);
+    sctx.stroke();
+
+    // 舷缘细节：垂直短刻线与凸起舱体。
+    for (var greeble = 0; greeble < 150; greeble++) {
+      var gAngle = lerp(rimStart, rimEnd, random());
+      var gx = Math.cos(gAngle) * disc.rx;
+      var gy = Math.sin(gAngle) * disc.ry;
+      var inward = 0.94 + random() * 0.045;
+      var gDark = random() > 0.55;
+      sctx.strokeStyle = gDark
+        ? 'rgba(64, 80, 102, ' + (0.4 + random() * 0.3).toFixed(3) + ')'
+        : 'rgba(240, 246, 252, ' + (0.3 + random() * 0.4).toFixed(3) + ')';
+      sctx.lineWidth = 0.7 + random() * 1.2;
+      sctx.beginPath();
+      sctx.moveTo(gx * inward, gy * inward);
+      sctx.lineTo(gx * (inward + 0.05 + random() * 0.03), gy * (inward + 0.05 + random() * 0.03));
+      sctx.stroke();
+    }
+    // 缘顶的天线塔与凸台
+    for (var mast = 0; mast < 12; mast++) {
+      var mAngle = lerp(rimStart, rimEnd, (mast + 0.5) / 12 + (random() - 0.5) * 0.04);
+      var mx = Math.cos(mAngle) * disc.rx * 0.985;
+      var my = Math.sin(mAngle) * disc.ry * 0.985;
+      var mHeight = 4 + random() * 12;
+      sctx.strokeStyle = 'rgba(212, 224, 238, 0.7)';
+      sctx.lineWidth = 1 + random();
+      sctx.beginPath();
+      sctx.moveTo(mx, my);
+      sctx.lineTo(mx * 1.01, my * 1.01 + mHeight * (my > 0 ? 1 : -1) * 0.24 + mHeight * 0.5);
+      sctx.stroke();
+    }
+    sctx.restore();
+
+    // 舷缘信标（世界坐标）。
+    var rimBeaconAngles = [0.3, 0.85, 1.6, 2.4, 3.0];
+    var rimPoint = { x: 0, y: 0 };
+    for (var rb = 0; rb < rimBeaconAngles.length; rb++) {
+      discRimPoint(rimBeaconAngles[rb], rimPoint);
+      beacons.push({ x: rimPoint.x, y: rimPoint.y, r: 1.9, warm: rb % 3 === 2, period: 2.4 + rb * 0.4, offset: rb * 0.9 });
+    }
+
+    // ============ 塔柱：从碟心垂入云层 ============
+    var topW = W * 0.1;
+    var bottomW = W * 0.066;
+    var stalkGradient = sctx.createLinearGradient(stalk.topX, stalk.topY, stalk.bottomX, stalk.bottomY);
+    stalkGradient.addColorStop(0, '#101826');
+    stalkGradient.addColorStop(0.55, '#1c2736');
+    stalkGradient.addColorStop(1, '#2c3a4c');
+    sctx.fillStyle = stalkGradient;
+    sctx.beginPath();
+    sctx.moveTo(stalk.topX - topW, stalk.topY);
+    sctx.lineTo(stalk.topX + topW, stalk.topY);
+    sctx.lineTo(stalk.bottomX + bottomW, stalk.bottomY);
+    sctx.lineTo(stalk.bottomX - bottomW, stalk.bottomY);
+    sctx.closePath();
+    sctx.fill();
+
+    // 柱身的垂直结构流线
+    for (var streak = 0; streak < 60; streak++) {
+      var streakT = random();
+      var sx0 = lerp(stalk.topX - topW, stalk.topX + topW, streakT);
+      var sx1 = lerp(stalk.bottomX - bottomW, stalk.bottomX + bottomW, streakT);
+      var partial0 = random() * 0.5;
+      var partial1 = partial0 + 0.2 + random() * 0.5;
+      sctx.strokeStyle = 'rgba(' + (random() > 0.6 ? '124, 148, 178' : '46, 60, 80') + ', ' + (0.16 + random() * 0.24).toFixed(3) + ')';
+      sctx.lineWidth = 0.6 + random() * 1.4;
+      sctx.beginPath();
+      sctx.moveTo(lerp(sx0, sx1, partial0), lerp(stalk.topY, stalk.bottomY, partial0));
+      sctx.lineTo(lerp(sx0, sx1, Math.min(1, partial1)), lerp(stalk.topY, stalk.bottomY, Math.min(1, partial1)));
+      sctx.stroke();
+    }
+    // 柱身横向环箍
+    for (var hoop = 0; hoop < 7; hoop++) {
+      var hoopT = 0.1 + hoop * 0.13;
+      var hoopY = lerp(stalk.topY, stalk.bottomY, hoopT);
+      var hoopX = lerp(stalk.topX, stalk.bottomX, hoopT);
+      var hoopW = lerp(topW, bottomW, hoopT);
+      sctx.strokeStyle = 'rgba(140, 164, 192, 0.3)';
+      sctx.lineWidth = 1.2;
+      sctx.beginPath();
+      sctx.moveTo(hoopX - hoopW, hoopY);
+      sctx.lineTo(hoopX + hoopW, hoopY);
+      sctx.stroke();
+    }
+    // 柱身窗光
+    for (var stalkLight = 0; stalkLight < 320; stalkLight++) {
+      var slT = random();
+      var slY = lerp(stalk.topY, stalk.bottomY, slT);
+      var slX = lerp(stalk.topX, stalk.bottomX, slT) + (random() - 0.5) * 2 * lerp(topW, bottomW, slT) * 0.92;
+      sctx.fillStyle = random() > 0.26
+        ? 'rgba(150, 198, 240, ' + (0.12 + random() * 0.4).toFixed(3) + ')'
+        : 'rgba(255, 216, 164, ' + (0.1 + random() * 0.3).toFixed(3) + ')';
+      sctx.fillRect(slX, slY, 1, 1 + (random() > 0.9 ? 1 : 0));
+    }
+    // 被大气光照亮的柱身左缘
+    sctx.strokeStyle = 'rgba(184, 208, 232, 0.5)';
+    sctx.lineWidth = 1.6;
+    sctx.beginPath();
+    sctx.moveTo(stalk.topX - topW, stalk.topY);
+    sctx.lineTo(stalk.bottomX - bottomW, stalk.bottomY);
+    sctx.stroke();
+
+    // 塔柱与碟底交接处的伞状过渡
+    sctx.fillStyle = 'rgba(16, 22, 34, 0.96)';
+    sctx.beginPath();
+    sctx.moveTo(stalk.topX - topW * 2.1, stalk.topY - H * 0.015);
+    sctx.quadraticCurveTo(stalk.topX, stalk.topY - H * 0.075, stalk.topX + topW * 2.1, stalk.topY - H * 0.015);
+    sctx.lineTo(stalk.topX + topW, stalk.topY + H * 0.02);
+    sctx.lineTo(stalk.topX - topW, stalk.topY + H * 0.02);
+    sctx.closePath();
+    sctx.fill();
+
+    // ============ 云层之上的尖塔之城 ============
+    var cityCenterX = stalk.bottomX;
+    var spireCount = W < 720 ? 20 : 30;
+    for (var spire = 0; spire < spireCount; spire++) {
+      var spread = Math.pow(random(), 1.4) * (random() > 0.5 ? 1 : -1);
+      var spireX = cityCenterX + spread * W * 0.17;
+      var spireH = (0.05 + Math.pow(random(), 1.7) * 0.2) * H;
+      var spireW = 2 + random() * 7 * (1 - Math.abs(spread) * 0.6);
+      var spireBase = cloudTop + H * 0.03 + random() * H * 0.02;
+      var lit = 1 - Math.abs(spread) * 0.4;
+
+      // 塔身（锥形）
+      var spireGradient = sctx.createLinearGradient(spireX, spireBase - spireH, spireX, spireBase);
+      spireGradient.addColorStop(0, 'rgba(' + Math.round(176 * lit + 40) + ', ' + Math.round(190 * lit + 44) + ', ' + Math.round(206 * lit + 48) + ', 0.95)');
+      spireGradient.addColorStop(1, 'rgba(' + Math.round(96 * lit + 30) + ', ' + Math.round(110 * lit + 34) + ', ' + Math.round(128 * lit + 40) + ', 0.95)');
+      sctx.fillStyle = spireGradient;
+      sctx.beginPath();
+      sctx.moveTo(spireX - spireW * 0.5, spireBase);
+      sctx.lineTo(spireX - spireW * 0.16, spireBase - spireH);
+      sctx.lineTo(spireX + spireW * 0.16, spireBase - spireH);
+      sctx.lineTo(spireX + spireW * 0.5, spireBase);
+      sctx.closePath();
+      sctx.fill();
+
+      // 阴影侧
+      sctx.fillStyle = 'rgba(40, 52, 68, 0.5)';
+      sctx.beginPath();
+      sctx.moveTo(spireX + spireW * 0.1, spireBase);
+      sctx.lineTo(spireX + spireW * 0.1, spireBase - spireH * 0.94);
+      sctx.lineTo(spireX + spireW * 0.5, spireBase);
+      sctx.closePath();
+      sctx.fill();
+
+      // 塔尖细针与窗点
+      if (spireW > 4) {
+        sctx.strokeStyle = 'rgba(216, 228, 240, 0.7)';
+        sctx.lineWidth = 0.8;
+        sctx.beginPath();
+        sctx.moveTo(spireX, spireBase - spireH);
+        sctx.lineTo(spireX, spireBase - spireH - 6 - random() * 10);
+        sctx.stroke();
+        if (random() > 0.5) {
+          beacons.push({ x: spireX, y: spireBase - spireH - 8, r: 1.3, warm: false, period: 3.2 + random() * 1.4, offset: random() * 3 });
+        }
       }
-      nebulaSprites.push(sprite);
-    }
-  }
-
-  function buildStars () {
-    starLayers = [];
-    var random = mulberry32(0x57A25);
-    var layerSpecs = [
-      { count: Math.round(W * H / 5200), size: [0.3, 0.9], alpha: [0.14, 0.5], parallax: 0.15 },
-      { count: Math.round(W * H / 12000), size: [0.6, 1.5], alpha: [0.3, 0.8], parallax: 0.4 },
-      { count: Math.round(W * H / 42000), size: [1.1, 2.6], alpha: [0.5, 1], parallax: 0.85 }
-    ];
-
-    for (var layer = 0; layer < layerSpecs.length; layer++) {
-      var spec = layerSpecs[layer];
-      var list = [];
-      var count = clamp(spec.count, 20, 900);
-      for (var index = 0; index < count; index++) {
-        // 少量恒星带一点色温偏移，纯白星场会显得很塑料。
-        var temperature = random();
-        list.push({
-          x: random(),
-          y: random(),
-          size: lerp(spec.size[0], spec.size[1], random()),
-          alpha: lerp(spec.alpha[0], spec.alpha[1], random()),
-          phase: random() * Math.PI * 2,
-          speed: 0.3 + random() * 1.9,
-          tint: temperature > 0.86 ? [176, 206, 255] : temperature < 0.12 ? [255, 200, 172] : [255, 250, 244]
-        });
+      var windowCount = Math.floor(spireH / 9);
+      for (var spireWindow = 0; spireWindow < windowCount; spireWindow++) {
+        if (random() > 0.6) continue;
+        sctx.fillStyle = 'rgba(170, 210, 244, ' + (0.2 + random() * 0.4).toFixed(3) + ')';
+        sctx.fillRect(spireX - 1 + (random() - 0.5) * spireW * 0.4, spireBase - (spireWindow + 0.5) / windowCount * spireH, 1.2, 1);
       }
-      starLayers.push({ stars: list, parallax: spec.parallax });
+    }
+
+    // 城市中的穹顶平台
+    for (var dome = 0; dome < 4; dome++) {
+      var domeX = cityCenterX + (random() - 0.5) * W * 0.24;
+      var domeR = 8 + random() * 22;
+      var domeBase = cloudTop + H * 0.045;
+      sctx.fillStyle = 'rgba(150, 166, 184, 0.85)';
+      sctx.beginPath();
+      sctx.arc(domeX, domeBase, domeR, Math.PI, 0);
+      sctx.closePath();
+      sctx.fill();
+      sctx.strokeStyle = 'rgba(220, 232, 242, 0.5)';
+      sctx.lineWidth = 1;
+      sctx.beginPath();
+      sctx.arc(domeX, domeBase, domeR, Math.PI, 0);
+      sctx.stroke();
     }
   }
 
-  function buildNebulae () {
-    nebulae = [];
-    var random = mulberry32(0x0EB1A);
-    var count = W < 720 ? 4 : 7;
-    for (var index = 0; index < count; index++) {
-      nebulae.push({
-        sprite: Math.floor(random() * nebulaSprites.length),
+  // ------------------------------------------------------ 画卷：云海层
+
+  function paintClouds (target) {
+    var sctx = target.getContext('2d');
+    sctx.setTransform(DPR, 0, 0, DPR, 0, 0);
+    sctx.clearRect(0, 0, W, H);
+
+    var random = mulberry32(0xC10D);
+
+    // 云海：从 cloudTop 往下铺满，靠左（近太阳）亮、右下渐入阴影。
+    var rows = 16;
+    for (var row = 0; row < rows; row++) {
+      var rowT = row / (rows - 1);
+      var rowY = cloudTop + rowT * (H - cloudTop) * 1.04;
+      var blobCount = Math.round(lerp(18, 8, rowT) * (W / 1280)) + 6;
+      for (var blob = 0; blob < blobCount; blob++) {
+        var bx = random() * W * 1.1 - W * 0.05;
+        var by = rowY + (random() - 0.5) * (H - cloudTop) * 0.09;
+        var br = lerp(14, 90, rowT) * (0.5 + random());
+        // 亮度：靠左亮、靠下暗，顶行被大气光染亮。
+        var sunness = clamp(1 - bx / (W * 0.9), 0, 1) * 0.5 + (1 - rowT) * 0.5;
+        var rCol = Math.round(lerp(96, 236, sunness));
+        var gCol = Math.round(lerp(110, 242, sunness));
+        var bCol = Math.round(lerp(128, 248, sunness));
+        var alpha = 0.16 + random() * 0.2;
+        var cloudGradient = sctx.createRadialGradient(bx, by, 0, bx, by, br);
+        cloudGradient.addColorStop(0, 'rgba(' + rCol + ',' + gCol + ',' + bCol + ',' + alpha.toFixed(3) + ')');
+        cloudGradient.addColorStop(0.7, 'rgba(' + rCol + ',' + gCol + ',' + bCol + ',' + (alpha * 0.5).toFixed(3) + ')');
+        cloudGradient.addColorStop(1, 'rgba(' + rCol + ',' + gCol + ',' + bCol + ',0)');
+        sctx.fillStyle = cloudGradient;
+        sctx.save();
+        sctx.translate(bx, by);
+        sctx.scale(1, 0.42 + random() * 0.2);
+        sctx.beginPath();
+        sctx.arc(0, 0, br, 0, Math.PI * 2);
+        sctx.fill();
+        sctx.restore();
+      }
+    }
+
+    // 云顶接大气的雾带
+    var hazeGradient = sctx.createLinearGradient(0, cloudTop - H * 0.06, 0, cloudTop + H * 0.05);
+    hazeGradient.addColorStop(0, 'rgba(150, 178, 208, 0)');
+    hazeGradient.addColorStop(1, 'rgba(170, 196, 222, 0.22)');
+    sctx.fillStyle = hazeGradient;
+    sctx.fillRect(0, cloudTop - H * 0.06, W, H * 0.11);
+  }
+
+  // ---------------------------------------------------------- 粒子层
+
+  function buildParticles () {
+    var random = mulberry32(0x9E77);
+
+    twinkles = [];
+    var twinkleCount = W < 720 ? 90 : 170;
+    for (var index = 0; index < twinkleCount; index++) {
+      twinkles.push({
         x: random() * W,
-        y: random() * H,
-        scale: (1.2 + random() * 2.6) * (Math.max(W, H) / 1100),
-        rotation: random() * Math.PI * 2,
-        spin: (random() - 0.5) * 0.014,
-        drift: (random() - 0.5) * 2.4,
-        alpha: 0.5 + random() * 0.5
+        y: Math.pow(random(), 1.5) * H * 0.4,
+        size: random() > 0.85 ? 1.7 : 1.1,
+        phase: random() * Math.PI * 2,
+        speed: 0.4 + random() * 1.6
       });
     }
+
+    rimShips = [];
+    var shipCount = W < 720 ? 4 : 7;
+    for (var ship = 0; ship < shipCount; ship++) {
+      rimShips.push({
+        angle: random() * Math.PI * 2,
+        speed: (0.03 + random() * 0.05) * (random() > 0.4 ? 1 : -1),
+        drift: 6 + random() * 26,
+        phase: random() * Math.PI * 2
+      });
+    }
+
+    elevators = [];
+    var elevatorCount = W < 720 ? 3 : 5;
+    for (var elevator = 0; elevator < elevatorCount; elevator++) {
+      elevators.push({
+        t: random(),
+        speed: (0.026 + random() * 0.03) * (random() > 0.5 ? 1 : -1),
+        lane: (random() - 0.5) * 1.3
+      });
+    }
+
+    wisps = [];
+    for (var wisp = 0; wisp < 6; wisp++) {
+      wisps.push({
+        x: random() * W,
+        y: cloudTop + random() * (H - cloudTop) * 0.7,
+        scale: (0.7 + random() * 1.7) * (W / 1280),
+        speed: (2.5 + random() * 5) * (random() > 0.5 ? 1 : -1),
+        alpha: 0.3 + random() * 0.4
+      });
+    }
+
+    shuttles = [];
   }
 
-  function buildRings () {
-    var unit = Math.min(W, H);
-    starRadius = clamp(unit * 0.058, 22, 66);
+  var particlePoint = { x: 0, y: 0 };
 
-    rings = [];
-
-    // 主环世界：可见内壁上有海陆分带，是画面的主角。
-    var main = {
-      radius: unit * 0.72,
-      width: unit * 0.062,
-      segments: W < 720 ? 132 : 208,
-      spin: 0.055,
-      phase: 0,
-      inclination: 0,
-      kind: 'world',
-      bands: []
-    };
-    var bandRandom = mulberry32(0x9012D);
-    for (var band = 0; band < 42; band++) {
-      main.bands.push({
-        start: bandRandom(),
-        length: 0.008 + bandRandom() * 0.05,
-        // 0 = 海，1 = 陆
-        land: bandRandom() > 0.42 ? 1 : 0,
-        shade: 0.5 + bandRandom() * 0.5
-      });
-    }
-    rings.push(main);
-
-    // 更大更薄的轨道环，倾角不同，制造交叉。
-    rings.push({
-      radius: unit * 1.12,
-      width: unit * 0.012,
-      segments: W < 720 ? 96 : 152,
-      spin: -0.032,
-      phase: 1.1,
-      inclination: 0.5,
-      kind: 'orbital',
-      bands: []
-    });
-
-    // 遮阳方阵：贴近恒星的一圈独立方板，会在环世界上投出昼夜。
-    rings.push({
-      radius: unit * 0.3,
-      width: unit * 0.05,
-      segments: 48,
-      spin: 0.2,
-      phase: 0.4,
-      inclination: -0.18,
-      kind: 'squares',
-      bands: []
-    });
-
-    // 戴森集群：大量独立采光板，各自轨道半径与倾角。
-    swarm = [];
-    var swarmRandom = mulberry32(0x50A12);
-    var swarmCount = W < 720 ? 130 : 320;
-    for (var collector = 0; collector < swarmCount; collector++) {
-      swarm.push({
-        radius: unit * (0.16 + Math.pow(swarmRandom(), 0.7) * 0.95),
-        angle: swarmRandom() * Math.PI * 2,
-        speed: (0.06 + swarmRandom() * 0.3) * (swarmRandom() > 0.5 ? 1 : -1),
-        inclination: (swarmRandom() - 0.5) * 1.5,
-        size: unit * (0.0026 + swarmRandom() * 0.0075),
-        flash: swarmRandom() * Math.PI * 2
-      });
+  function drawParticles (delta) {
+    // 星光闪烁
+    for (var star = 0; star < twinkles.length; star++) {
+      var twinkle = twinkles[star];
+      var brightness = 0.5 + 0.5 * Math.sin(clock * twinkle.speed + twinkle.phase);
+      if (brightness < 0.3) continue;
+      ctx.fillStyle = 'rgba(226, 236, 250, ' + (brightness * 0.75).toFixed(3) + ')';
+      ctx.fillRect(twinkle.x + parallaxX * 0.25, twinkle.y + parallaxY * 0.25, twinkle.size, twinkle.size);
     }
 
-    // 前景桁架：一段擦着镜头掠过的巨构桁架，负责给出尺度感。
-    truss = {
-      radius: unit * 1.9,
-      centerY: H * 1.06,
-      thickness: unit * 0.075,
-      spin: 0.014,
-      phase: 0,
-      lights: []
-    };
-    var trussRandom = mulberry32(0x71255);
-    for (var light = 0; light < 90; light++) {
-      truss.lights.push({
-        t: trussRandom(),
-        phase: trussRandom() * Math.PI * 2,
-        speed: 0.6 + trussRandom() * 2.4,
-        cool: trussRandom() > 0.65
-      });
+    // 信标脉冲
+    for (var beacon = 0; beacon < beacons.length; beacon++) {
+      var light = beacons[beacon];
+      var cycle = (clock + light.offset) % light.period / light.period;
+      var pulse = Math.pow(Math.max(0, Math.sin(cycle * Math.PI)), 5);
+      if (pulse <= 0.02) continue;
+      var sprite = light.warm ? glowWarmSprite : glowCoolSprite;
+      var size = light.r * 12 * (0.7 + pulse * 0.5);
+      ctx.globalAlpha = pulse * 0.8;
+      ctx.drawImage(sprite, light.x + parallaxX * 0.55 - size * 0.5, light.y + parallaxY * 0.55 - size * 0.5, size, size);
+    }
+    ctx.globalAlpha = 1;
+
+    // 绕碟飞行器：沿舷缘缓慢巡航的光点。
+    ctx.globalCompositeOperation = 'lighter';
+    for (var ship = 0; ship < rimShips.length; ship++) {
+      var cruiser = rimShips[ship];
+      cruiser.angle += cruiser.speed * delta;
+      discRimPoint(cruiser.angle, particlePoint);
+      var sx = particlePoint.x + parallaxX * 0.55;
+      var sy = particlePoint.y + cruiser.drift + parallaxY * 0.55;
+      // 只画在碟外沿视觉合理的一侧（下半圈附近更常见）。
+      var strobe = 0.5 + 0.5 * Math.sin(clock * 2.2 + cruiser.phase);
+      ctx.fillStyle = 'rgba(210, 230, 252, ' + (0.4 + strobe * 0.5).toFixed(3) + ')';
+      ctx.fillRect(sx - 1, sy - 1, 2, 2);
+      ctx.fillStyle = 'rgba(150, 190, 236, ' + (0.16 + strobe * 0.16).toFixed(3) + ')';
+      ctx.fillRect(sx - 3 * Math.sign(cruiser.speed) - 1, sy - 0.5, 3, 1);
     }
 
-    // 恒星表面的日珥。
-    prominences = [];
-    var promRandom = mulberry32(0x9209);
-    for (var prom = 0; prom < 7; prom++) {
-      prominences.push({
-        angle: promRandom() * Math.PI * 2,
-        drift: (promRandom() - 0.5) * 0.1,
-        height: 0.2 + promRandom() * 0.7,
-        width: 0.16 + promRandom() * 0.3,
-        phase: promRandom() * Math.PI * 2,
-        speed: 0.3 + promRandom() * 0.7
-      });
+    // 塔柱天梯：沿柱身上上下下的光点。
+    for (var elevator = 0; elevator < elevators.length; elevator++) {
+      var cab = elevators[elevator];
+      cab.t += cab.speed * delta;
+      if (cab.t > 1.04) cab.t = -0.04;
+      if (cab.t < -0.04) cab.t = 1.04;
+      var et = clamp(cab.t, 0, 1);
+      var ex = lerp(stalk.topX, stalk.bottomX, et) + cab.lane * W * 0.036;
+      var ey = lerp(stalk.topY, stalk.bottomY, et);
+      ctx.fillStyle = 'rgba(190, 222, 252, 0.85)';
+      ctx.fillRect(ex + parallaxX * 0.55 - 1, ey + parallaxY * 0.55 - 1.6, 1.8, 3.2);
+    }
+    ctx.globalCompositeOperation = 'source-over';
+
+    // 点击放出的穿梭机：从城里升到碟底，留一条淡尾迹。
+    for (var shuttle = shuttles.length - 1; shuttle >= 0; shuttle--) {
+      var craft = shuttles[shuttle];
+      craft.progress += delta / craft.duration;
+      if (craft.progress >= 1) {
+        shuttles.splice(shuttle, 1);
+        continue;
+      }
+      var pt = craft.progress;
+      var eased = pt * pt * (3 - 2 * pt);
+      var cx = lerp(craft.x0, craft.x1, eased) + Math.sin(pt * 9 + craft.sway) * 3 * (1 - pt);
+      var cy = lerp(craft.y0, craft.y1, eased);
+      ctx.globalCompositeOperation = 'lighter';
+      var trail = ctx.createLinearGradient(cx, cy, cx, cy + 40);
+      trail.addColorStop(0, 'rgba(214, 234, 252, ' + (0.8 * (1 - pt * 0.5)).toFixed(3) + ')');
+      trail.addColorStop(1, 'rgba(170, 206, 244, 0)');
+      ctx.strokeStyle = trail;
+      ctx.lineWidth = 1.6;
+      ctx.beginPath();
+      ctx.moveTo(cx, cy);
+      ctx.lineTo(cx, cy + 40 * (1 - pt * 0.4));
+      ctx.stroke();
+      ctx.fillStyle = 'rgba(240, 248, 255, 0.95)';
+      ctx.fillRect(cx - 1.2, cy - 1.2, 2.4, 2.4);
+      ctx.globalCompositeOperation = 'source-over';
     }
 
-    comets = [];
+    // 云涛漂移：贴着云海缓慢平移的柔雾。
+    for (var wisp = 0; wisp < wisps.length; wisp++) {
+      var fog = wisps[wisp];
+      fog.x += fog.speed * delta;
+      var wispW = wispSprite.width * fog.scale;
+      if (fog.speed > 0 && fog.x - wispW * 0.5 > W) fog.x = -wispW * 0.5;
+      if (fog.speed < 0 && fog.x + wispW * 0.5 < 0) fog.x = W + wispW * 0.5;
+      ctx.globalAlpha = fog.alpha;
+      ctx.drawImage(wispSprite, fog.x - wispW * 0.5 + parallaxX * 0.9, fog.y - wispSprite.height * fog.scale * 0.5 + parallaxY * 0.9, wispW, wispSprite.height * fog.scale);
+    }
+    ctx.globalAlpha = 1;
   }
+
+  // ------------------------------------------------------------------ 合成
 
   function build () {
-    centerX = W * (W < 720 ? 0.5 : 0.42);
-    centerY = H * 0.46;
-    focal = Math.max(W, H) * 1.05;
+    var unit = Math.min(W, H);
+    disc.x = W * 0.66;
+    disc.y = -H * 0.08;
+    disc.rx = Math.max(W * 0.52, unit * 0.6);
+    disc.ry = disc.rx * 0.36;
+    disc.tilt = 0.1;
 
-    bloomCanvas.width = Math.max(1, Math.round(W * bloomScale));
-    bloomCanvas.height = Math.max(1, Math.round(H * bloomScale));
-    bloomSupported = typeof bctx.filter === 'string';
+    stalk.topX = W * 0.78;
+    stalk.topY = H * 0.2;
+    stalk.bottomX = W * 0.72;
+    stalk.bottomY = H * 0.72;
+    cloudTop = H * 0.64;
 
-    buildStars();
-    buildNebulae();
-    buildRings();
+    var layers = [skyLayer, structLayer, cloudLayer];
+    for (var layer = 0; layer < layers.length; layer++) {
+      layers[layer].width = Math.max(1, Math.round(W * DPR));
+      layers[layer].height = Math.max(1, Math.round(H * DPR));
+    }
+
+    if (!photoReady) {
+      paintSky(skyLayer);
+      paintStructure(structLayer);
+      paintClouds(cloudLayer);
+    }
+    buildParticles();
   }
 
   function fit () {
@@ -361,407 +725,34 @@
     build();
   }
 
-  // ------------------------------------------------------------ 绘制：背景
-
-  function drawBackground () {
-    var gradient = ctx.createRadialGradient(centerX, centerY, 0, centerX, centerY, Math.max(W, H) * 0.9);
-    gradient.addColorStop(0, '#0a1030');
-    gradient.addColorStop(0.34, '#050a1e');
-    gradient.addColorStop(1, '#01020a');
-    ctx.fillStyle = gradient;
-    ctx.fillRect(0, 0, W, H);
-  }
-
-  function drawNebulae (delta) {
-    ctx.globalCompositeOperation = 'lighter';
-    for (var index = 0; index < nebulae.length; index++) {
-      var cloud = nebulae[index];
-      cloud.rotation += cloud.spin * delta;
-      cloud.x += cloud.drift * delta;
-      if (cloud.x > W + 400) cloud.x = -400;
-      if (cloud.x < -400) cloud.x = W + 400;
-
-      var sprite = nebulaSprites[cloud.sprite];
-      ctx.save();
-      ctx.globalAlpha = cloud.alpha;
-      ctx.translate(cloud.x + (pointerX - 0.5) * 14, cloud.y + (pointerY - 0.5) * 10);
-      ctx.rotate(cloud.rotation);
-      ctx.scale(cloud.scale, cloud.scale);
-      ctx.drawImage(sprite, -sprite.width * 0.5, -sprite.height * 0.5);
-      ctx.restore();
+  function drawBackdrop () {
+    if (photoReady && photo) {
+      var scale = Math.max(W / photo.naturalWidth, H / photo.naturalHeight) * 1.045;
+      var drawW = photo.naturalWidth * scale;
+      var drawH = photo.naturalHeight * scale;
+      ctx.drawImage(photo, (W - drawW) * 0.5 + parallaxX, (H - drawH) * 0.5 + parallaxY, drawW, drawH);
+      return;
     }
-    ctx.globalAlpha = 1;
-    ctx.globalCompositeOperation = 'source-over';
+    ctx.drawImage(skyLayer, parallaxX * 0.25, parallaxY * 0.25, W, H);
+    ctx.drawImage(structLayer, parallaxX * 0.55, parallaxY * 0.55, W, H);
+    ctx.drawImage(cloudLayer, parallaxX * 0.9, parallaxY * 0.9, W, H);
   }
-
-  function drawStarfield () {
-    for (var layer = 0; layer < starLayers.length; layer++) {
-      var group = starLayers[layer];
-      var shiftX = (pointerX - 0.5) * group.parallax * 26;
-      var shiftY = (pointerY - 0.5) * group.parallax * 18;
-      for (var index = 0; index < group.stars.length; index++) {
-        var star = group.stars[index];
-        var twinkle = 0.68 + 0.32 * Math.sin(clock * star.speed + star.phase);
-        var alpha = star.alpha * twinkle;
-        if (alpha <= 0.02) continue;
-        ctx.fillStyle = 'rgba(' + star.tint[0] + ',' + star.tint[1] + ',' + star.tint[2] + ',' + alpha.toFixed(3) + ')';
-        var x = star.x * W + shiftX;
-        var y = star.y * H + shiftY;
-        var size = star.size;
-        if (size < 1) ctx.fillRect(x, y, size + 0.5, size + 0.5);
-        else {
-          ctx.beginPath();
-          ctx.arc(x, y, size * 0.5, 0, Math.PI * 2);
-          ctx.fill();
-        }
-      }
-    }
-  }
-
-  // ------------------------------------------------------------ 绘制：恒星
-
-  function drawStar (target) {
-    var pulse = 1 + Math.sin(clock * 0.7) * 0.03 + Math.sin(clock * 1.9) * 0.014;
-    var radius = starRadius * pulse;
-
-    var core = target.createRadialGradient(centerX, centerY, 0, centerX, centerY, radius * 3.4);
-    core.addColorStop(0, 'rgba(255, 253, 246, 1)');
-    core.addColorStop(0.16, 'rgba(255, 240, 206, 0.96)');
-    core.addColorStop(0.3, 'rgba(255, 206, 142, 0.6)');
-    core.addColorStop(0.56, 'rgba(255, 156, 96, 0.2)');
-    core.addColorStop(1, 'rgba(255, 128, 80, 0)');
-    target.fillStyle = core;
-    target.beginPath();
-    target.arc(centerX, centerY, radius * 3.4, 0, Math.PI * 2);
-    target.fill();
-
-    // 日珥：贴着星面往外抛的弧形火舌。
-    target.save();
-    target.translate(centerX, centerY);
-    for (var index = 0; index < prominences.length; index++) {
-      var prom = prominences[index];
-      var angle = prom.angle + clock * prom.drift;
-      var breathe = 0.6 + 0.4 * Math.sin(clock * prom.speed + prom.phase);
-      var height = radius * prom.height * breathe;
-      if (height <= 1) continue;
-      target.save();
-      target.rotate(angle);
-      var flame = target.createLinearGradient(0, -radius * 0.9, 0, -radius - height);
-      flame.addColorStop(0, 'rgba(255, 198, 128, ' + (0.5 * breathe).toFixed(3) + ')');
-      flame.addColorStop(0.5, 'rgba(255, 142, 88, ' + (0.22 * breathe).toFixed(3) + ')');
-      flame.addColorStop(1, 'rgba(255, 110, 76, 0)');
-      target.fillStyle = flame;
-      target.beginPath();
-      target.moveTo(-radius * prom.width, -radius * 0.9);
-      target.quadraticCurveTo(0, -radius - height * 1.25, radius * prom.width, -radius * 0.9);
-      target.closePath();
-      target.fill();
-      target.restore();
-    }
-    target.restore();
-  }
-
-  // ------------------------------------------------------ 绘制：环形巨构
-
-  // 一段一段地画带宽的环。z 值决定它在恒星前还是后，
-  // 因此调用方按 side 分两次绘制，恒星夹在中间。
-  function drawRing (target, ring, side) {
-    var segments = ring.segments;
-    var inner = ring.radius - ring.width * 0.5;
-    var outer = ring.radius + ring.width * 0.5;
-    var incl = ring.inclination;
-    var cosI = Math.cos(incl);
-    var sinI = Math.sin(incl);
-
-    for (var index = 0; index < segments; index++) {
-      var a0 = (index / segments) * Math.PI * 2 + ring.phase + spinOffset * (ring.kind === 'world' ? 1 : 0.4);
-      var a1 = ((index + 1) / segments) * Math.PI * 2 + ring.phase + spinOffset * (ring.kind === 'world' ? 1 : 0.4);
-
-      // 环面先绕 Z 轴倾一个倾角，再交给统一的投影。
-      var s0 = Math.sin(a0);
-      var c0 = Math.cos(a0);
-      var s1 = Math.sin(a1);
-      var c1 = Math.cos(a1);
-
-      project(c0 * inner, s0 * inner * sinI, s0 * inner * cosI, pointA);
-      project(c1 * inner, s1 * inner * sinI, s1 * inner * cosI, pointB);
-      project(c1 * outer, s1 * outer * sinI, s1 * outer * cosI, pointC);
-      project(c0 * outer, s0 * outer * sinI, s0 * outer * cosI, pointD);
-
-      var depth = (pointA.z + pointB.z) * 0.5;
-      var isFar = depth > 0;
-      if (side === 'far' && !isFar) continue;
-      if (side === 'near' && isFar) continue;
-
-      // 遮阳方阵是离散的板，隔一段留一段空。
-      if (ring.kind === 'squares' && index % 3 !== 0) continue;
-
-      var facing = clamp((depth / ring.radius + 1) * 0.5, 0, 1);
-      var fill;
-
-      if (ring.kind === 'world') {
-        // 远半环看到的是被恒星照亮的内壁；近半环是背光的外壳。
-        var litness = smoothstep(-0.15, 0.55, depth / ring.radius);
-        if (litness > 0.05) {
-          var t = index / segments;
-          var band = null;
-          for (var b = 0; b < ring.bands.length; b++) {
-            var candidate = ring.bands[b];
-            var localT = ((t + ring.phase / (Math.PI * 2) + spinOffset / (Math.PI * 2)) % 1 + 1) % 1;
-            if (localT >= candidate.start && localT < candidate.start + candidate.length) {
-              band = candidate;
-              break;
-            }
-          }
-          var seaColor = [22, 74, 128];
-          var landColor = [96, 116, 78];
-          var base = band && band.land ? landColor : seaColor;
-          var shade = band ? band.shade : 0.7;
-
-          // 遮阳方阵扫过的位置压暗，形成缓慢移动的"夜"。
-          var night = 0.55 + 0.45 * Math.sin(a0 * 6 - clock * 0.55);
-          var brightness = litness * shade * lerp(0.45, 1, night);
-          fill = 'rgb(' +
-            Math.round(base[0] * brightness + 176 * brightness * 0.5) + ',' +
-            Math.round(base[1] * brightness + 168 * brightness * 0.5) + ',' +
-            Math.round(base[2] * brightness + 150 * brightness * 0.5) + ')';
-        } else {
-          var dark = lerp(10, 34, facing);
-          fill = 'rgb(' + Math.round(dark) + ',' + Math.round(dark * 1.08) + ',' + Math.round(dark * 1.32) + ')';
-        }
-      } else if (ring.kind === 'orbital') {
-        var glow = smoothstep(-0.4, 0.7, depth / ring.radius);
-        var value = lerp(26, 148, glow);
-        fill = 'rgba(' + Math.round(value * 0.66) + ',' + Math.round(value * 0.86) + ',' + Math.round(value) + ',0.85)';
-      } else {
-        var facingSun = smoothstep(-0.2, 0.6, -depth / ring.radius);
-        var panel = lerp(18, 120, facingSun);
-        fill = 'rgba(' + Math.round(panel) + ',' + Math.round(panel * 0.92) + ',' + Math.round(panel * 0.7) + ',0.9)';
-      }
-
-      target.fillStyle = fill;
-      target.beginPath();
-      target.moveTo(pointA.x, pointA.y);
-      target.lineTo(pointB.x, pointB.y);
-      target.lineTo(pointC.x, pointC.y);
-      target.lineTo(pointD.x, pointD.y);
-      target.closePath();
-      target.fill();
-
-      // 环世界边缘的挡墙轮廓线，是整个结构最"人造"的细节。
-      if (ring.kind === 'world') {
-        target.strokeStyle = isFar
-          ? 'rgba(198, 226, 255, 0.16)'
-          : 'rgba(150, 186, 230, 0.08)';
-        target.lineWidth = 0.7;
-        target.beginPath();
-        target.moveTo(pointA.x, pointA.y);
-        target.lineTo(pointB.x, pointB.y);
-        target.stroke();
-        target.beginPath();
-        target.moveTo(pointD.x, pointD.y);
-        target.lineTo(pointC.x, pointC.y);
-        target.stroke();
-      }
-    }
-  }
-
-  function drawSwarm (target, side, delta) {
-    for (var index = 0; index < swarm.length; index++) {
-      var panel = swarm[index];
-      if (delta) panel.angle += panel.speed * delta;
-
-      var cosI = Math.cos(panel.inclination);
-      var sinI = Math.sin(panel.inclination);
-      var s = Math.sin(panel.angle);
-      var c = Math.cos(panel.angle);
-      project(c * panel.radius, s * panel.radius * sinI, s * panel.radius * cosI, pointA);
-
-      var isFar = pointA.z > 0;
-      if (side === 'far' && !isFar) continue;
-      if (side === 'near' && isFar) continue;
-
-      // 板面周期性地正对恒星，反光一闪。
-      var flash = Math.pow(Math.max(0, Math.sin(panel.angle * 2 + panel.flash)), 12);
-      var size = Math.max(0.6, panel.size * pointA.s);
-      var alpha = (isFar ? 0.34 : 0.6) + flash * 0.4;
-
-      target.fillStyle = flash > 0.3
-        ? 'rgba(255, 238, 198, ' + alpha.toFixed(3) + ')'
-        : 'rgba(146, 172, 208, ' + (alpha * 0.6).toFixed(3) + ')';
-      target.fillRect(pointA.x - size * 0.5, pointA.y - size * 0.5, size, size * 0.62);
-    }
-  }
-
-  function drawTruss (target) {
-    if (!truss) return;
-    var cx = centerX * 0.4 + W * 0.3;
-    var cy = truss.centerY;
-    var radius = truss.radius;
-    var inner = radius - truss.thickness;
-
-    // 主桁架：一条掠过画面下缘的暗色巨弧。
-    target.fillStyle = '#04060f';
-    target.beginPath();
-    target.arc(cx, cy, radius, Math.PI * 1.12, Math.PI * 1.88, false);
-    target.arc(cx, cy, inner, Math.PI * 1.88, Math.PI * 1.12, true);
-    target.closePath();
-    target.fill();
-
-    target.strokeStyle = 'rgba(122, 156, 200, 0.3)';
-    target.lineWidth = 1;
-    target.beginPath();
-    target.arc(cx, cy, radius, Math.PI * 1.12, Math.PI * 1.88, false);
-    target.stroke();
-    target.strokeStyle = 'rgba(96, 126, 168, 0.18)';
-    target.beginPath();
-    target.arc(cx, cy, inner, Math.PI * 1.12, Math.PI * 1.88, false);
-    target.stroke();
-
-    // 桁架肋条
-    target.strokeStyle = 'rgba(88, 116, 156, 0.22)';
-    for (var rib = 0; rib <= 46; rib++) {
-      var angle = Math.PI * 1.12 + (rib / 46) * Math.PI * 0.76;
-      target.beginPath();
-      target.moveTo(cx + Math.cos(angle) * inner, cy + Math.sin(angle) * inner);
-      target.lineTo(cx + Math.cos(angle) * radius, cy + Math.sin(angle) * radius);
-      target.stroke();
-    }
-
-    // 沿桁架流动的工作灯。
-    target.globalCompositeOperation = 'lighter';
-    for (var light = 0; light < truss.lights.length; light++) {
-      var lamp = truss.lights[light];
-      var t = (lamp.t + clock * 0.014 * (lamp.cool ? 1 : -1)) % 1;
-      if (t < 0) t += 1;
-      var lampAngle = Math.PI * 1.12 + t * Math.PI * 0.76;
-      var lampRadius = inner + truss.thickness * (0.2 + 0.6 * Math.abs(Math.sin(lamp.phase)));
-      var pulse = 0.45 + 0.55 * Math.pow(Math.max(0, Math.sin(clock * lamp.speed + lamp.phase)), 3);
-      target.fillStyle = lamp.cool
-        ? 'rgba(168, 214, 255, ' + (pulse * 0.8).toFixed(3) + ')'
-        : 'rgba(255, 196, 132, ' + (pulse * 0.8).toFixed(3) + ')';
-      target.beginPath();
-      target.arc(cx + Math.cos(lampAngle) * lampRadius, cy + Math.sin(lampAngle) * lampRadius, 1.5, 0, Math.PI * 2);
-      target.fill();
-    }
-    target.globalCompositeOperation = 'source-over';
-  }
-
-  function drawComets (target, delta) {
-    for (var index = comets.length - 1; index >= 0; index--) {
-      var comet = comets[index];
-      comet.life += delta;
-      if (comet.life >= comet.duration) {
-        comets.splice(index, 1);
-        continue;
-      }
-      var t = comet.life / comet.duration;
-      comet.x += comet.vx * delta;
-      comet.y += comet.vy * delta;
-      var fade = Math.sin(t * Math.PI);
-      var tailX = comet.x - comet.vx * 0.22;
-      var tailY = comet.y - comet.vy * 0.22;
-
-      var tail = target.createLinearGradient(comet.x, comet.y, tailX, tailY);
-      tail.addColorStop(0, 'rgba(226, 240, 255, ' + (0.85 * fade).toFixed(3) + ')');
-      tail.addColorStop(1, 'rgba(150, 190, 255, 0)');
-      target.strokeStyle = tail;
-      target.lineWidth = 1.8;
-      target.lineCap = 'round';
-      target.beginPath();
-      target.moveTo(comet.x, comet.y);
-      target.lineTo(tailX, tailY);
-      target.stroke();
-    }
-  }
-
-  // -------------------------------------------------------------- 辉光
-
-  function drawBloomSources (target) {
-    target.save();
-    target.scale(bloomScale, bloomScale);
-    drawStar(target);
-    drawSwarm(target, 'far', 0);
-    drawSwarm(target, 'near', 0);
-    drawComets(target, 0);
-    target.restore();
-  }
-
-  function applyBloom () {
-    if (!bloomSupported) return;
-    bctx.setTransform(1, 0, 0, 1, 0, 0);
-    bctx.clearRect(0, 0, bloomCanvas.width, bloomCanvas.height);
-    drawBloomSources(bctx);
-
-    ctx.save();
-    ctx.globalCompositeOperation = 'lighter';
-    ctx.globalAlpha = 0.72;
-    ctx.filter = 'blur(' + (Math.max(W, H) * 0.006).toFixed(2) + 'px)';
-    ctx.drawImage(bloomCanvas, 0, 0, W, H);
-    ctx.filter = 'none';
-    ctx.restore();
-  }
-
-  function drawGrain () {
-    ctx.globalCompositeOperation = 'overlay';
-    ctx.globalAlpha = 0.038;
-    var size = grainCanvas.width;
-    var shiftX = -Math.floor(Math.random() * size);
-    var shiftY = -Math.floor(Math.random() * size);
-    for (var x = shiftX; x < W; x += size) {
-      for (var y = shiftY; y < H; y += size) {
-        ctx.drawImage(grainCanvas, x, y);
-      }
-    }
-    ctx.globalAlpha = 1;
-    ctx.globalCompositeOperation = 'source-over';
-  }
-
-  function drawVignette () {
-    var vignette = ctx.createRadialGradient(W * 0.5, H * 0.5, Math.min(W, H) * 0.3, W * 0.5, H * 0.5, Math.max(W, H) * 0.76);
-    vignette.addColorStop(0, 'rgba(0, 0, 0, 0)');
-    vignette.addColorStop(1, 'rgba(0, 1, 6, 0.56)');
-    ctx.fillStyle = vignette;
-    ctx.fillRect(0, 0, W, H);
-  }
-
-  // ------------------------------------------------------------------ 主循环
 
   function render (delta) {
-    // 拖拽的角动量慢慢衰减，松手后环还会继续转一小会儿。
-    spinOffset += spinVelocity * delta;
-    spinVelocity *= Math.pow(0.02, delta);
+    var targetX = (pointerX - 0.5) * (W < 720 ? -8 : -18);
+    var targetY = (pointerY - 0.5) * -10;
+    parallaxX += (targetX - parallaxX) * 0.05;
+    parallaxY += (targetY - parallaxY) * 0.05;
 
-    tilt += (tiltTarget - tilt) * Math.min(1, delta * 3);
-
-    for (var index = 0; index < rings.length; index++) {
-      rings[index].phase += rings[index].spin * delta;
-    }
-
-    drawBackground();
-    drawNebulae(delta);
-    drawStarfield();
-
-    // 远侧结构 → 恒星 → 近侧结构，遮挡关系自然成立。
-    for (var far = 0; far < rings.length; far++) drawRing(ctx, rings[far], 'far');
-    drawSwarm(ctx, 'far', delta);
-
-    drawStar(ctx);
-
-    for (var near = 0; near < rings.length; near++) drawRing(ctx, rings[near], 'near');
-    drawSwarm(ctx, 'near', 0);
-
-    drawComets(ctx, delta);
-    drawTruss(ctx);
-    applyBloom();
-    drawVignette();
-    drawGrain();
+    ctx.fillStyle = '#070b12';
+    ctx.fillRect(0, 0, W, H);
+    drawBackdrop();
+    drawParticles(delta);
   }
 
   function frame (now) {
     var delta = Math.min(0.05, (now - lastTime) / 1000 || 0);
     lastTime = now;
-
     if (running && !reduced.matches) {
       clock += delta;
       render(delta);
@@ -775,39 +766,22 @@
     var bounds = canvas.getBoundingClientRect();
     pointerX = (event.clientX - bounds.left) / Math.max(1, bounds.width);
     pointerY = (event.clientY - bounds.top) / Math.max(1, bounds.height);
-    // 纵向拖拽改变观察倾角，横向拖拽给环加转速。
-    tiltTarget = clamp(0.14 + pointerY * 0.55, 0.08, 0.78);
-    if (dragging) {
-      var deltaX = event.clientX - dragLastX;
-      dragLastX = event.clientX;
-      spinVelocity = clamp(spinVelocity + deltaX * 0.0022, -1.6, 1.6);
-    }
   }, { passive: true });
 
   canvas.addEventListener('pointerdown', function (event) {
-    dragging = true;
-    dragLastX = event.clientX;
-    if (canvas.setPointerCapture) canvas.setPointerCapture(event.pointerId);
-  });
-
-  function endDrag () { dragging = false; }
-  canvas.addEventListener('pointerup', endDrag);
-  canvas.addEventListener('pointercancel', endDrag);
-
-  canvas.addEventListener('click', function (event) {
     var bounds = canvas.getBoundingClientRect();
     var x = event.clientX - bounds.left;
-    var y = event.clientY - bounds.top;
-    if (comets.length > 5) comets.shift();
-    var angle = Math.random() * Math.PI * 2;
-    var speed = Math.max(W, H) * (0.28 + Math.random() * 0.3);
-    comets.push({
-      x: x,
-      y: y,
-      vx: Math.cos(angle) * speed,
-      vy: Math.sin(angle) * speed,
-      life: 0,
-      duration: 1.5 + Math.random() * 0.9
+    // 从点击位置附近的云海放出一班穿梭机，升往碟底。
+    if (shuttles.length > 4) shuttles.shift();
+    var x0 = clamp(x, W * 0.1, W * 0.95);
+    shuttles.push({
+      x0: x0,
+      y0: cloudTop + H * 0.02,
+      x1: lerp(x0, stalk.topX, 0.6),
+      y1: H * 0.16,
+      progress: 0,
+      duration: 4.5 + Math.random() * 2,
+      sway: Math.random() * Math.PI * 2
     });
   });
 
@@ -824,8 +798,23 @@
     resizeTimer = window.setTimeout(fit, 180);
   });
 
-  buildGrain();
-  buildNebulaSprites();
+  if (reduced.addEventListener) {
+    reduced.addEventListener('change', function () {
+      if (reduced.matches) render(0);
+    });
+  }
+
+  // 可选照片背景：存在 /img/scene-cosmos.jpg 时自动替换手绘画卷。
+  photo = new Image();
+  photo.addEventListener('load', function () {
+    photoReady = true;
+    render(0);
+  });
+  photo.src = '../img/scene-cosmos.jpg';
+
+  glowCoolSprite = makeGlowSprite(170, 210, 255);
+  glowWarmSprite = makeGlowSprite(255, 208, 150);
+  wispSprite = makeWispSprite();
   fit();
   render(0);
   window.requestAnimationFrame(frame);

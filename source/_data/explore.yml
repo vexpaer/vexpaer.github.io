@@ -4,10 +4,10 @@ groups:
     order: "01"
     nav_label: 影游陈列
     journey_label: 影游
-    eyebrow: SCREEN & PLAY
-    title: 光影与游艺陈列室
-    lead: 把看过的电影与玩过的游戏收进两面可漫游的数字展墙，在熟悉的作品之间发现新的连接。
-    description: 从银幕收藏到游戏记忆，这里汇集两个以视觉浏览为核心的个人项目。
+    eyebrow: SCREEN & PLAY & SOUND
+    title: 光影、游艺与声音陈列室
+    lead: 把看过的电影、玩过的游戏与听过的音乐收进三面可漫游的数字展墙，在熟悉的作品之间发现新的连接。
+    description: 从银幕收藏、游戏记忆到旋律典藏，这里汇集三个以视觉浏览为核心的个人项目。
     accent: "#ff8a65"
     glow: "#ff4f81"
     surface: "#24131e"
@@ -43,6 +43,21 @@ groups:
           - 游戏收藏
           - 封面陈列
           - 灵感漫游
+      - id: music-wall
+        name: Music Wall
+        kicker: SOUND COLLECTION
+        href: https://vexpaer.github.io/music_wall/
+        path_label: /music_wall/
+        summary: 把常听的专辑与旋律铺成一面可以随时驻足的声音展墙。
+        description: 一面面向音乐记忆的陈列墙，让每张封面都成为再次按下播放的理由。
+        cta: 走进音乐墙
+        accent: "#ffd37a"
+        glow: "#b478ff"
+        art: music
+        tags:
+          - 音乐收藏
+          - 专辑陈列
+          - 旋律漫游
 
   - id: start
     anchor: vexpaer-explore-start

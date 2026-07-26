@@ -107,10 +107,10 @@ deploy:
   repo: https://github.com/vexpaer/vexpaer.github.io.git
   branch: master
 
-# 侧边栏时钟
+# 侧边栏时钟（插件依赖的搜狐 IP 接口已停服，组件只会永远转圈，故停用）
 electric_clock:
   priority: 5
-  enable: true
+  enable: false
   enable_page: all
   exclude: /mindmap/
   layout:

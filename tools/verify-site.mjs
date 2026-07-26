@@ -78,6 +78,7 @@ const incrementalSection = landingHtml.slice(sectionIndices.incremental);
 
 assertIncludes(mediaSection, 'https://vexpaer.github.io/film_wall/', 'Media exploration section');
 assertIncludes(mediaSection, 'https://vexpaer.github.io/game_wall/', 'Media exploration section');
+assertIncludes(mediaSection, 'https://vexpaer.github.io/music_wall/', 'Media exploration section');
 assertIncludes(startSection, 'https://vexpaer.github.io/vexpaer_go', 'Start exploration section');
 assertIncludes(incrementalSection, 'https://vexpaer.github.io/ZhenHuanTree/', 'Incremental exploration section');
 assertIncludes(incrementalSection, 'https://vexpaer.github.io/ZhenHuanCompany/', 'Incremental exploration section');

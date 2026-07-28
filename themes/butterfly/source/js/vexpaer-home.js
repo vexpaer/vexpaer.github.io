@@ -11,7 +11,7 @@
   var context = canvas.getContext('2d', { alpha: false })
   if (!context) return
 
-  var themes = ['dusk', 'space', 'life', 'turing', 'seaside', 'cosmos', 'ink']
+  var themes = ['dusk', 'space', 'life', 'turing', 'seaside', 'cosmos', 'ink', 'contours']
   var themeMeta = {
     dusk: { label: '暮野', icon: '◒', browserColor: '#17182d' },
     space: { label: '深空', icon: '✦', browserColor: '#000002' },
@@ -19,14 +19,16 @@
     turing: { label: '图灵斑纹', icon: '◉', browserColor: '#05070b' },
     seaside: { label: '海畔巨构', icon: '≋', browserColor: '#060f18' },
     cosmos: { label: '寰宇巨构', icon: '❍', browserColor: '#01020a' },
-    ink: { label: '钢笔帆船', icon: '✎', browserColor: '#efe7d7' }
+    ink: { label: '钢笔帆船', icon: '✎', browserColor: '#efe7d7' },
+    contours: { label: '等高山脉', icon: '⌁', browserColor: '#242424' }
   }
   // 以独立 iframe 承载的场景：懒加载，用 postMessage 控制启停。
   var sceneFrames = {
     turing: { element: turingFrame, message: 'vexpaer-turing-visibility' },
     seaside: { element: document.getElementById('vexpaer-home-seaside'), message: 'vexpaer-scene-visibility' },
     cosmos: { element: document.getElementById('vexpaer-home-cosmos'), message: 'vexpaer-scene-visibility' },
-    ink: { element: document.getElementById('vexpaer-home-ink'), message: 'vexpaer-scene-visibility' }
+    ink: { element: document.getElementById('vexpaer-home-ink'), message: 'vexpaer-scene-visibility' },
+    contours: { element: document.getElementById('vexpaer-home-contours'), message: 'vexpaer-scene-visibility' }
   }
 
   function isFrameScene (theme) {

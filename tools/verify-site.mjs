@@ -23,7 +23,8 @@ const required = [
   'html/turing-theme.html',
   'html/seaside-megastructure.html',
   'html/cosmic-megastructure.html',
-  'html/ink-sailing-ship.html'
+  'html/ink-sailing-ship.html',
+  'html/contour-mountains.html'
 ];
 
 for (const path of required) {
@@ -49,9 +50,11 @@ assertIncludes(landingHtml, 'id="vexpaer-home"', 'Landing page');
 assertIncludes(landingHtml, 'id="vexpaer-home-seaside"', 'Landing page');
 assertIncludes(landingHtml, 'id="vexpaer-home-cosmos"', 'Landing page');
 assertIncludes(landingHtml, 'id="vexpaer-home-ink"', 'Landing page');
+assertIncludes(landingHtml, 'id="vexpaer-home-contours"', 'Landing page');
 assertIncludes(landingHtml, '/html/seaside-megastructure.html', 'Landing page');
 assertIncludes(landingHtml, '/html/cosmic-megastructure.html', 'Landing page');
 assertIncludes(landingHtml, '/html/ink-sailing-ship.html', 'Landing page');
+assertIncludes(landingHtml, '/html/contour-mountains.html', 'Landing page');
 assertIncludes(landingHtml, 'id="vexpaer-blog-gateway"', 'Landing page');
 assertIncludes(landingHtml, 'id="vexpaer-quick-access"', 'Landing page');
 assertIncludes(landingHtml, 'id="vexpaer-explore-media"', 'Landing page');

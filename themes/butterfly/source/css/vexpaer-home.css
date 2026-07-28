@@ -26,6 +26,7 @@
 #vexpaer-home-seaside,
 #vexpaer-home-cosmos,
 #vexpaer-home-ink,
+#vexpaer-home-contours,
 .vexpaer-home__shade {
   position: absolute;
   inset: 0;
@@ -72,7 +73,8 @@
 #vexpaer-home-turing,
 #vexpaer-home-seaside,
 #vexpaer-home-cosmos,
-#vexpaer-home-ink {
+#vexpaer-home-ink,
+#vexpaer-home-contours {
   transform: scale(1);
   filter: blur(0);
   opacity: 1;
@@ -85,7 +87,8 @@
 #vexpaer-home-turing,
 #vexpaer-home-seaside,
 #vexpaer-home-cosmos,
-#vexpaer-home-ink {
+#vexpaer-home-ink,
+#vexpaer-home-contours {
   z-index: 1;
   display: block;
   border: 0;
@@ -97,6 +100,7 @@
 #vexpaer-home-seaside { background: #060f18; }
 #vexpaer-home-cosmos { background: #01020a; }
 #vexpaer-home-ink { background: #efe7d7; }
+#vexpaer-home-contours { background: #242424; }
 
 #vexpaer-home[data-scene='turing'] {
   background: #05070b;
@@ -137,7 +141,9 @@
 #vexpaer-home[data-scene='cosmos'] #vexpaer-home-canvas,
 #vexpaer-home[data-scene='cosmos'] #vexpaer-home-webgl,
 #vexpaer-home[data-scene='ink'] #vexpaer-home-canvas,
-#vexpaer-home[data-scene='ink'] #vexpaer-home-webgl {
+#vexpaer-home[data-scene='ink'] #vexpaer-home-webgl,
+#vexpaer-home[data-scene='contours'] #vexpaer-home-canvas,
+#vexpaer-home[data-scene='contours'] #vexpaer-home-webgl {
   opacity: 0;
   visibility: hidden;
   pointer-events: none;
@@ -145,16 +151,18 @@
 
 #vexpaer-home[data-scene='seaside'] #vexpaer-home-seaside,
 #vexpaer-home[data-scene='cosmos'] #vexpaer-home-cosmos,
-#vexpaer-home[data-scene='ink'] #vexpaer-home-ink {
+#vexpaer-home[data-scene='ink'] #vexpaer-home-ink,
+#vexpaer-home[data-scene='contours'] #vexpaer-home-contours {
   opacity: 1;
   visibility: visible;
   pointer-events: auto;
 }
 
-/* 三个 iframe 场景都自带压暗层，宿主的通用 shade 退场。 */
+/* 四个 iframe 场景都自带压暗层，宿主的通用 shade 退场。 */
 #vexpaer-home[data-scene='seaside'] .vexpaer-home__shade,
 #vexpaer-home[data-scene='cosmos'] .vexpaer-home__shade,
-#vexpaer-home[data-scene='ink'] .vexpaer-home__shade {
+#vexpaer-home[data-scene='ink'] .vexpaer-home__shade,
+#vexpaer-home[data-scene='contours'] .vexpaer-home__shade {
   background: transparent;
 }
 
@@ -226,6 +234,28 @@
   outline-color: #6b543a;
 }
 
+/* ------------------------------------------------------- 等高山脉 */
+
+#vexpaer-home[data-scene='contours'] {
+  --vexpaer-title-x: 22%;
+  --vexpaer-title-y: 18%;
+  background: #242424;
+}
+
+#vexpaer-home[data-scene='contours'] #vexpaer-home-contours {
+  pointer-events: none;
+}
+
+#vexpaer-home[data-scene='contours'] #vexpaer-home-title {
+  color: rgba(255, 255, 255, 0.94);
+  font-family: "Arial Narrow", "Roboto Condensed", "Segoe UI", "PingFang SC", "Microsoft YaHei", sans-serif;
+  font-size: clamp(2rem, 4.5vw, 4rem);
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  line-height: 0.9;
+  text-shadow: 0 2px 16px rgba(0, 0, 0, 0.45);
+}
+
 @media (max-width: 768px) {
   #vexpaer-home[data-scene='seaside'] {
     --vexpaer-title-x: 50%;
@@ -240,6 +270,15 @@
     --vexpaer-title-x: 50%;
     --vexpaer-title-y: 19%;
   }
+
+  #vexpaer-home[data-scene='contours'] {
+    --vexpaer-title-x: 28%;
+    --vexpaer-title-y: 17%;
+  }
+
+  #vexpaer-home[data-scene='contours'] #vexpaer-home-title {
+    font-size: clamp(1.8rem, 9vw, 3rem);
+  }
 }
 
 #vexpaer-home.is-switching #vexpaer-home-canvas,
@@ -247,7 +286,8 @@
 #vexpaer-home.is-switching #vexpaer-home-turing,
 #vexpaer-home.is-switching #vexpaer-home-seaside,
 #vexpaer-home.is-switching #vexpaer-home-cosmos,
-#vexpaer-home.is-switching #vexpaer-home-ink {
+#vexpaer-home.is-switching #vexpaer-home-ink,
+#vexpaer-home.is-switching #vexpaer-home-contours {
   transform: scale(1.025);
   filter: blur(3px);
   opacity: 0.08;
@@ -1106,6 +1146,7 @@
   #vexpaer-home-canvas,
   #vexpaer-home-webgl,
   #vexpaer-home-turing,
+  #vexpaer-home-contours,
   #vexpaer-home-title,
   .vexpaer-home__shade,
   #vexpaer-scene-toggle,
@@ -1123,7 +1164,8 @@
 
   #vexpaer-home.is-switching #vexpaer-home-canvas,
   #vexpaer-home.is-switching #vexpaer-home-webgl,
-  #vexpaer-home.is-switching #vexpaer-home-turing {
+  #vexpaer-home.is-switching #vexpaer-home-turing,
+  #vexpaer-home.is-switching #vexpaer-home-contours {
     opacity: 1;
     filter: none;
     transform: none;

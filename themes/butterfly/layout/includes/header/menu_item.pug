@@ -1,6 +1,8 @@
 if theme.menu
   //- for mobile sidebar
   - let sidebarChildHide = theme.hide_sidebar_menu_child ? 'hide' : ''
+  //- 主页是纯英文的，菜单在主页上换成英文
+  - let menuLabel = page.landing === true ? vexpaer_en_menu : function (text) { return text }
 
   .menus_items
     each value, label in theme.menu
@@ -9,13 +11,13 @@ if theme.menu
           a.site-page(href=url_for(trim(value.split('||')[0])))
             if value.split('||')[1]
               i.fa-fw(class=trim(value.split('||')[1]))
-            span=' '+label
+            span=' '+menuLabel(label)
       else
         .menus_item
           a.site-page(href='javascript:void(0);')
             if label.split('||')[1]
               i.fa-fw(class=trim(label.split('||')[1]))
-            span=' '+ trim(label.split('||')[0])
+            span=' '+ menuLabel(trim(label.split('||')[0]))
             i.fas.fa-chevron-down.expand(class=sidebarChildHide)
           ul.menus_item_child
             each val,lab in value 
@@ -23,4 +25,4 @@ if theme.menu
                 a.site-page.child(href=url_for(trim(val.split('||')[0])))
                   if val.split('||')[1]
                     i.fa-fw(class=trim(val.split('||')[1]))
-                  span=' '+ lab
+                  span=' '+ menuLabel(lab)

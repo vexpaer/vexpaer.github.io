@@ -6,7 +6,7 @@
 - var bodyClass = isLanding ? 'vexpaer-home-page' : (isBlogIndex ? 'vexpaer-blog-index' : '')
 
 doctype html
-html(lang=config.language data-theme=theme.display_mode class=htmlClassHideAside)
+html(lang=isLanding ? 'en' : config.language data-theme=theme.display_mode class=htmlClassHideAside)
   head
     include ./head.pug
   body(class=bodyClass)
@@ -16,7 +16,7 @@ html(lang=config.language data-theme=theme.display_mode class=htmlClassHideAside
     if theme.background
       #web_bg
       
-    !=partial('includes/sidebar', {}, {cache: true})
+    !=partial('includes/sidebar', {}, {cache: !isLanding})
 
     if page.type !== '404'
       #body-wrap(class=pageType)

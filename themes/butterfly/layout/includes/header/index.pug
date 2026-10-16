@@ -35,7 +35,7 @@ if isLanding
   - isHomeClass += ' vexpaer-home-header'
 
 header#page-header(class=isHomeClass style=bg_img)
-  !=partial('includes/header/nav', {}, {cache: true})
+  !=partial('includes/header/nav', {}, {cache: !isLanding})
   if top_img !== false
     if is_post()
       include ./post-info.pug

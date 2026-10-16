@@ -2,7 +2,7 @@
   var exploreData = site.data && site.data.explore ? site.data.explore : {}
   var exploreGroups = exploreData.groups || []
 
-section#vexpaer-quick-access.vexpaer-explore-stack(aria-label='继续探索')
+section#vexpaer-quick-access.vexpaer-explore-stack(aria-label='Keep exploring')
   each group in exploreGroups
     -
       var groupAnchor = group.anchor || ('vexpaer-explore-' + group.id)
@@ -31,7 +31,7 @@ section#vexpaer-quick-access.vexpaer-explore-stack(aria-label='继续探索')
                 href=project.href
                 target='_blank'
                 rel='noopener noreferrer'
-                aria-label=project.name + '，' + project.medium + '：' + project.summary + '（在新窗口打开）'
+                aria-label=project.name + ', ' + project.medium + ': ' + project.summary + ' (opens in a new window)'
               )
                 span.vexpaer-explore__index= projectNumber < 10 ? '0' + projectNumber : projectNumber
                 span.vexpaer-explore__name= project.name

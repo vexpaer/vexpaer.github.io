@@ -10,37 +10,37 @@ section#vexpaer-blog-gateway.vexpaer-journal(aria-labelledby='vexpaer-blog-gatew
       p.vexpaer-journal__label(data-reveal)
         span 01
         span Journal
-      h2#vexpaer-blog-gateway-title(data-reveal) 博客
-      p.vexpaer-journal__lead(data-reveal) 学习笔记、论文阅读与课程整理，按时间慢慢累积。
+      h2#vexpaer-blog-gateway-title(data-reveal) Blog
+      p.vexpaer-journal__lead(data-reveal) Study notes, paper readings and course write-ups, gathered slowly over time.
 
       dl.vexpaer-journal__stats(data-reveal)
         div
-          dt 文章
+          dt Posts
           dd= site.posts.length
         div
-          dt 标签
+          dt Tags
           dd= site.tags.length
         if sinceYear
           div
-            dt 始于
+            dt Since
             dd= sinceYear
 
-      nav.vexpaer-journal__links(data-reveal aria-label='博客入口')
+      nav.vexpaer-journal__links(data-reveal aria-label='Blog links')
         a.vexpaer-journal__cta(href=url_for('/blog/'))
-          span 全部文章
+          span All posts
           i(aria-hidden='true') →
-        a(href=url_for('/archives/')) 归档
-        a(href=url_for('/tags/')) 标签
+        a(href=url_for('/archives/')) Archives
+        a(href=url_for('/tags/')) Tags
 
     section.vexpaer-journal__recent(aria-labelledby='vexpaer-journal-recent-title')
-      h3#vexpaer-journal-recent-title.vexpaer-journal__caption(data-reveal) 最近更新
+      h3#vexpaer-journal-recent-title.vexpaer-journal__caption(data-reveal) Latest
       ol.vexpaer-journal__list
         each post in recentPosts
-          - var firstTag = post.tags && post.tags.length ? post.tags.toArray()[0].name : ''
+          - var firstTag = post.tags && post.tags.length ? vexpaer_en_tag(post.tags.toArray()[0].name) : ''
           li(data-reveal)
             a(href=url_for(post.path))
               time(datetime=date(post.date, 'YYYY-MM-DD'))= date(post.date, 'YYYY.MM.DD')
-              span.vexpaer-journal__title= post.title || '无标题'
+              span.vexpaer-journal__title= vexpaer_en_title(post)
               if firstTag
                 span.vexpaer-journal__tag= firstTag
               i(aria-hidden='true') →

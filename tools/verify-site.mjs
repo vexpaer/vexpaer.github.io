@@ -44,6 +44,14 @@ assertIncludes(homeScript, 'gsap.registerPlugin(ScrollTrigger)', 'Homepage scrip
 assertIncludes(homeScript, 'gsap.matchMedia()', 'Homepage script');
 assertIncludes(homeScript, "document.querySelectorAll('[data-explore-root]')", 'Homepage script');
 assertIncludes(landingHtml, 'id="vexpaer-home"', 'Landing page');
+assertIncludes(landingHtml, '<html lang="en"', 'Landing page');
+{
+  const landingText = landingHtml.replace(/<script[\s\S]*?<\/script>|<style[\s\S]*?<\/style>|<!--[\s\S]*?-->/g, '');
+  const chinese = landingText.match(/[㐀-鿿]+/);
+  if (chinese) throw new Error(`Landing page should be English-only but contains "${chinese[0]}".`);
+}
+// 菜单在主页上是英文，其余页面仍是中文：确认片段缓存没有串页。
+assertIncludes(blogHtml, '> 关于</span>', 'Blog index');
 assertIncludes(landingHtml, 'id="vexpaer-home-ink"', 'Landing page');
 assertIncludes(landingHtml, 'id="vexpaer-home-contours"', 'Landing page');
 assertIncludes(landingHtml, '/html/ink-sailing-ship.html', 'Landing page');

@@ -2,30 +2,30 @@ groups:
   - id: media
     anchor: vexpaer-explore-media
     order: "02"
-    nav_label: 影游陈列
-    journey_label: 影游
+    nav_label: Screen & Play
+    journey_label: Screen
     eyebrow: Screen · Play · Sound
-    title: 光影、游艺与声音
-    lead: 看过的电影、玩过的游戏、听过的音乐，各自收进一面可以漫游的墙。
+    title: Light, Play & Sound
+    lead: Films watched, games played, music on repeat — each gathered into a wall you can wander.
     projects:
       - id: film-wall
         name: Film Wall
-        medium: 电影
+        medium: Film
         href: https://vexpaer.github.io/film_wall/
         path_label: /film_wall
-        summary: 海报铺成的私人银幕，重访片单，也寻找下一部。
+        summary: A private screen tiled with posters — revisit the list, find the next one.
         accent: "#e8826a"
       - id: game-wall
         name: Game Wall
-        medium: 游戏
+        medium: Games
         href: https://vexpaer.github.io/game_wall/
         path_label: /game_wall
-        summary: 封面与时长排列起来的游戏记忆。
+        summary: Game memories, laid out by cover art and hours played.
         accent: "#7fb8d6"
       - id: music-wall
         name: Music Wall
-        medium: 音乐
+        medium: Music
         href: https://vexpaer.github.io/music_wall/
         path_label: /music_wall
-        summary: 常听的专辑与旋律，随时可以按下播放。
+        summary: The albums and melodies on rotation, ready to press play.
         accent: "#d8b56a"

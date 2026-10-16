@@ -13,12 +13,12 @@
 
   var themes = ['dusk', 'space', 'life', 'turing', 'ink', 'contours']
   var themeMeta = {
-    dusk: { label: '暮野', icon: '◒', browserColor: '#17182d' },
-    space: { label: '深空', icon: '✦', browserColor: '#000002' },
-    life: { label: '生命游戏', icon: '▦', browserColor: '#000000' },
-    turing: { label: '图灵斑纹', icon: '◉', browserColor: '#05070b' },
-    ink: { label: '钢笔帆船', icon: '✎', browserColor: '#efe7d7' },
-    contours: { label: '等高山脉', icon: '⌁', browserColor: '#242424' }
+    dusk: { label: 'Dusk', icon: '◒', browserColor: '#17182d' },
+    space: { label: 'Deep Space', icon: '✦', browserColor: '#000002' },
+    life: { label: 'Game of Life', icon: '▦', browserColor: '#000000' },
+    turing: { label: 'Turing Patterns', icon: '◉', browserColor: '#05070b' },
+    ink: { label: 'Ink & Sail', icon: '✎', browserColor: '#efe7d7' },
+    contours: { label: 'Contours', icon: '⌁', browserColor: '#242424' }
   }
   // 以独立 iframe 承载的场景：懒加载，用 postMessage 控制启停。
   var sceneFrames = {
@@ -100,7 +100,7 @@
     var next = themeMeta[nextTheme()]
     var icon = button.querySelector('.vexpaer-scene-toggle__icon')
     if (icon) icon.textContent = current.icon
-    button.setAttribute('aria-label', '当前背景：' + current.label + '。点击切换到' + next.label)
+    button.setAttribute('aria-label', 'Background: ' + current.label + '. Click to switch to ' + next.label)
     root.setAttribute('data-scene', activeTheme)
     // 钢笔帆船是浅色纸面：首屏的章节导航改用墨色。
     var header = document.getElementById('page-header')

@@ -3,7 +3,7 @@
 const path = require('node:path');
 const sanitizeHtml = require('sanitize-html');
 const { Transformer } = require('markmap-lib');
-const { escapeHTML, full_url_for } = require('hexo-util');
+const { escapeHTML, full_url_for, url_for } = require('hexo-util');
 
 const MATHML_TAGS = [
   'math', 'semantics', 'annotation', 'mrow', 'mi', 'mn', 'mo', 'ms', 'mtext', 'mspace',
@@ -191,6 +191,48 @@ function registerMindmap(hexoInstance) {
 
   hexoInstance.extend.helper.register('mindmap_page_url', function (page) {
     return this.url_for(mindmapDirectory(page.mindmap_source_path || page.path));
+  });
+
+  // /mindmap/：所有导图汇成一棵树。这里只放“vexpaer → 学科 → 章节”的骨架，
+  // 每章的内容由浏览器从该章已有的导图页读取，笔记和图片不再复制一份。
+  hexoInstance.extend.generator.register('mindmap-hub', locals => {
+    const subjects = new Map();
+    for (const post of locals.posts.toArray().filter(isMindmapEnabled)) {
+      const title = String(post.title || '');
+      const split = title.match(/^(.+?)_(.+)$/);
+      const subject = split ? split[1] : (post.tags.toArray()[0] || {}).name || '其他';
+      if (!subjects.has(subject)) subjects.set(subject, []);
+      subjects.get(subject).push({
+        name: split ? split[2] : title,
+        title,
+        url: url_for.call(hexoInstance, post.path),
+        src: url_for.call(hexoInstance, mindmapDirectory(post.path))
+      });
+    }
+    const byName = (a, b) => a.name.localeCompare(b.name, 'zh-CN', { numeric: true, sensitivity: 'base' });
+    const tree = {
+      name: 'vexpaer',
+      children: [...subjects].sort((a, b) => b[1].length - a[1].length).map(([name, chapters]) => ({
+        name,
+        children: chapters.sort(byName)
+      }))
+    };
+    const count = tree.children.reduce((sum, subject) => sum + subject.children.length, 0);
+    return {
+      path: 'mindmap/index.html',
+      layout: ['mindmap-hub', 'page', 'index'],
+      data: {
+        title: '思维导图',
+        description: `全部 ${count} 章笔记的思维导图`,
+        type: 'mindmap-hub',
+        mindmap_hub: true,
+        mindmap_hub_data: safeJson(tree),
+        top_img: false,
+        aside: false,
+        comments: false,
+        content: ''
+      }
+    };
   });
 
   hexoInstance.extend.generator.register('mindmap', locals => {

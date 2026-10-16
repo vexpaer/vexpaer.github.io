@@ -1,0 +1,32 @@
+extends includes/layout.pug
+
+block content
+  section.mh(data-mindmap-hub)
+    .mh-map
+      .mh-bar
+        h1.mh-title 思维导图
+        p.mh-status(data-mh-status role='status') 正在载入…
+        .mh-tools(role='group' aria-label='思维导图工具')
+          button.mh-tool(type='button' data-mh-action='zoom-out' title='缩小' aria-label='缩小') −
+          button.mh-tool(type='button' data-mh-action='zoom-in' title='放大' aria-label='放大') +
+          button.mh-tool(type='button' data-mh-action='fit' title='适应窗口') 适应
+      svg.mh-svg.markmap(data-mh-svg role='img' aria-label='全部笔记的思维导图')
+
+    aside.mh-side
+      section.mh-panel.mh-outline-panel(aria-label='大纲')
+        header.mh-panel-head
+          h2 大纲
+          button.mh-link(type='button' data-mh-action='collapse-outline') 全部收起
+        .mh-outline(data-mh-outline role='tree')
+
+      section.mh-panel.mh-graph-panel(aria-label='连接图')
+        header.mh-panel-head
+          h2 连接图
+          span.mh-count(data-mh-count)
+        .mh-graph(data-mh-graph)
+          canvas(data-mh-canvas aria-hidden='true')
+          .mh-tip(data-mh-tip hidden)
+
+    script(type='application/json' data-mh-data)!=page.mindmap_hub_data
+    noscript
+      p.mh-noscript 需要启用 JavaScript 才能显示思维导图。

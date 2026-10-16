@@ -15,15 +15,15 @@ await rm(outputDirectory, { recursive: true, force: true });
 await mkdir(outputDirectory, { recursive: true });
 
 await Promise.all([
-  build({
-    entryPoints: [resolve(projectRoot, 'assets/mindmap/client.js')],
-    outfile: resolve(outputDirectory, 'mindmap.min.js'),
+  ...[['client.js', 'mindmap.min.js'], ['hub.js', 'hub.min.js']].map(([entry, output]) => build({
+    entryPoints: [resolve(projectRoot, 'assets/mindmap', entry)],
+    outfile: resolve(outputDirectory, output),
     bundle: true,
     format: 'iife',
     minify: true,
     target: ['es2018'],
     legalComments: 'none'
-  }),
+  })),
   cp(resolve(katexDirectory, 'dist/katex.min.css'), resolve(outputDirectory, 'katex.min.css')),
   cp(resolve(katexDirectory, 'dist/fonts'), resolve(outputDirectory, 'fonts'), { recursive: true })
 ]);

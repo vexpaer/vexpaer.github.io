@@ -155,7 +155,7 @@ var snow = new snowFall({
     maxFlake: 60
 });
 /* 首页和博客索引页不下雪，其余页面按用户开关决定。 */
-var isHomepage = document.body.classList.contains('vexpaer-home-page') || document.body.classList.contains('vexpaer-blog-index');
+var isHomepage = document.body.classList.contains('vexpaer-home-page') || document.body.classList.contains('vexpaer-blog-index') || document.body.classList.contains('vexpaer-mindmap-hub');
 var snowEnabled = !isHomepage && localStorage.getItem('snowfall-enabled') !== 'false';
 if (snowEnabled) snow.start();
 

@@ -1,0 +1,316 @@
+/* /mindmap/ 汇总页：配色与博客索引页一致——亮色是纸色，暗色是首页的深灰。 */
+body.vexpaer-mindmap-hub {
+  --mh-bg: #f1eadc;
+  --mh-panel: #f7f2e8;
+  --mh-ink: #2b241b;
+  --mh-ink-2: #54493b;
+  --mh-mute: #8d8170;
+  --mh-line: rgba(43, 36, 27, .1);
+  --mh-line-2: rgba(43, 36, 27, .2);
+  --mh-accent: #b5652d;
+  --mh-accent-soft: rgba(181, 101, 45, .12);
+  --mh-dot: #9a8f80;
+  --mh-edge: rgba(43, 36, 27, .16);
+  --mh-shadow: 0 18px 50px rgba(60, 44, 20, .12), 0 2px 6px rgba(60, 44, 20, .06);
+  --mh-sans: "Segoe UI", "PingFang SC", "Microsoft YaHei UI", "Microsoft YaHei", system-ui, sans-serif;
+  --mh-thin: "Segoe UI Light", "Segoe UI", "PingFang SC", "Microsoft YaHei UI Light", sans-serif;
+  --mh-mono: "Cascadia Mono", "SF Mono", Consolas, monospace;
+  background: var(--mh-bg);
+  color: var(--mh-ink);
+}
+[data-theme="dark"] body.vexpaer-mindmap-hub {
+  --mh-bg: #1d1d1d;
+  --mh-panel: #252524;
+  --mh-ink: #e9e5dd;
+  --mh-ink-2: #b9b3a8;
+  --mh-mute: #7d786f;
+  --mh-line: rgba(233, 229, 221, .08);
+  --mh-line-2: rgba(233, 229, 221, .16);
+  --mh-accent: #ea9e60;
+  --mh-accent-soft: rgba(234, 158, 96, .14);
+  --mh-dot: #8f8a82;
+  --mh-edge: rgba(233, 229, 221, .14);
+  --mh-shadow: 0 18px 50px rgba(0, 0, 0, .45), 0 2px 6px rgba(0, 0, 0, .3);
+}
+
+/* 页头只留导航条，页面本身不滚动。 */
+.vexpaer-mindmap-hub #web_bg,
+.vexpaer-mindmap-hub #footer { display: none; }
+.vexpaer-mindmap-hub #body-wrap { background: var(--mh-bg); min-height: 100vh; }
+.vexpaer-mindmap-hub #page-header,
+.vexpaer-mindmap-hub #page-header.nav-fixed {
+  position: sticky;
+  top: 0;
+  z-index: 90;
+  margin: 0;
+  height: 60px;
+  background: none;
+}
+.vexpaer-mindmap-hub #page-header #nav,
+.vexpaer-mindmap-hub #page-header.nav-fixed #nav {
+  position: relative;
+  top: 0;
+  height: 60px;
+  padding: 0 clamp(16px, 3vw, 36px);
+  transform: none !important;
+  background: var(--mh-bg);
+  border-bottom: 1px solid var(--mh-line);
+  box-shadow: none;
+}
+/* 主题按站点名宽度判断要不要折叠菜单，flex:1 会让桌面上也只剩汉堡按钮。 */
+.vexpaer-mindmap-hub #nav #blog_name { flex: 0 0 auto; margin-right: auto; }
+.vexpaer-mindmap-hub #nav a,
+.vexpaer-mindmap-hub #nav #site-name,
+.vexpaer-mindmap-hub #nav #toggle-menu { color: var(--mh-ink-2); text-shadow: none; }
+.vexpaer-mindmap-hub #nav .menus_items .menus_item > a:hover { color: var(--mh-ink); }
+.vexpaer-mindmap-hub #nav .menus_items .menus_item > a::after { background: var(--mh-accent); }
+.vexpaer-mindmap-hub #nav .menus_item_child {
+  background: var(--mh-panel);
+  border: 1px solid var(--mh-line-2);
+  box-shadow: var(--mh-shadow);
+}
+.vexpaer-mindmap-hub #nav .menus_item_child li:hover { background: var(--mh-accent-soft); }
+.vexpaer-mindmap-hub #nav .menus_item_child a { color: var(--mh-ink-2); }
+
+.vexpaer-mindmap-hub #content-inner.layout {
+  display: block;
+  width: 100%;
+  max-width: none;
+  margin: 0;
+  padding: 0;
+}
+
+.mh {
+  --gap: clamp(10px, 1.4vw, 18px);
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) clamp(280px, 24vw, 360px);
+  gap: var(--gap);
+  height: calc(100vh - 60px);
+  height: calc(100dvh - 60px);
+  padding: var(--gap);
+  font: 14px/1.55 var(--mh-sans);
+  color: var(--mh-ink);
+  -webkit-font-smoothing: antialiased;
+}
+.mh button { font: inherit; color: inherit; background: none; border: 0; padding: 0; cursor: pointer; }
+
+.mh-map,
+.mh-panel {
+  position: relative;
+  min-height: 0;
+  border: 1px solid var(--mh-line-2);
+  border-radius: 14px;
+  background: var(--mh-panel);
+  box-shadow: var(--mh-shadow);
+  overflow: hidden;
+}
+
+/* ---- 导图 ---- */
+.mh-bar {
+  position: absolute;
+  inset: 0 0 auto;
+  z-index: 2;
+  display: flex;
+  align-items: center;
+  gap: 18px;
+  padding: 14px 18px 22px;
+  background: linear-gradient(var(--mh-panel) 55%, transparent);
+  pointer-events: none;
+}
+.mh-bar > * { pointer-events: auto; }
+.mh-title {
+  margin: 0;
+  font: 300 15px/1 var(--mh-thin);
+  letter-spacing: .32em;
+  color: var(--mh-ink);
+}
+.mh-status { margin: 0; font: 11px/1 var(--mh-mono); color: var(--mh-mute); letter-spacing: .03em; }
+.mh-tools { display: flex; gap: 6px; margin-left: auto; }
+.mh .mh-tool {
+  min-width: 30px;
+  height: 30px;
+  padding: 0 10px;
+  border: 1px solid var(--mh-line-2);
+  border-radius: 8px;
+  background: var(--mh-panel);
+  color: var(--mh-ink-2);
+  font-size: 13px;
+  transition: border-color .2s, color .2s;
+}
+.mh .mh-tool:hover { border-color: var(--mh-accent); color: var(--mh-accent); }
+
+/* Markmap 会注入一份 .markmap 的默认变量，这里提高优先级盖过它。 */
+.mh svg.mh-svg.markmap {
+  display: block;
+  width: 100%;
+  height: 100%;
+  cursor: grab;
+  touch-action: none;
+  opacity: 0;
+  transition: opacity .4s;
+  --markmap-text-color: var(--mh-ink);
+  --markmap-a-color: var(--mh-accent);
+  --markmap-a-hover-color: var(--mh-accent);
+  --markmap-code-bg: var(--mh-accent-soft);
+  --markmap-code-color: var(--mh-ink);
+  --markmap-circle-open-bg: var(--mh-panel);
+  --markmap-highlight-bg: var(--mh-accent-soft);
+  --markmap-font: 400 14px/1.5 var(--mh-sans);
+}
+.mh.is-ready svg.mh-svg.markmap { opacity: 1; }
+.mh-svg:active { cursor: grabbing; }
+.mh-svg .markmap-foreign,
+.mh-svg .markmap-foreign > div,
+.mh-svg .markmap-foreign > div > div {
+  max-width: 300px;
+  white-space: normal;
+  overflow-wrap: anywhere;
+}
+.mh-svg .markmap-foreign img {
+  display: block;
+  max-width: 220px;
+  max-height: 160px;
+  margin-top: 4px;
+  object-fit: contain;
+}
+
+/* ---- 右侧两块面板 ---- */
+.mh-side {
+  display: grid;
+  grid-template-rows: minmax(0, 1fr) clamp(240px, 34vh, 340px);
+  gap: var(--gap);
+  min-height: 0;
+}
+.mh-panel { display: flex; flex-direction: column; }
+.mh-panel-head {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  padding: 12px 16px 10px;
+  border-bottom: 1px solid var(--mh-line);
+}
+.mh-panel-head h2 {
+  margin: 0;
+  font: 300 12px/1 var(--mh-thin);
+  letter-spacing: .3em;
+  color: var(--mh-ink-2);
+}
+.mh .mh-link,
+.mh-count { font: 11px/1 var(--mh-mono); color: var(--mh-mute); }
+.mh .mh-link:hover { color: var(--mh-accent); }
+
+/* 大纲：一行一个节点，按层级缩进。 */
+.mh-outline {
+  flex: 1;
+  min-height: 0;
+  overflow: auto;
+  padding: 6px 0 10px;
+  scrollbar-width: thin;
+  scrollbar-color: var(--mh-line-2) transparent;
+}
+.mh-line {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 2px;
+  height: 26px;
+  padding: 0 10px 0 calc(8px + var(--d) * 16px);
+  cursor: pointer;
+  color: var(--mh-ink-2);
+}
+.mh-line:hover { background: var(--mh-accent-soft); }
+.mh-row.is-active > .mh-line { background: var(--mh-accent-soft); color: var(--mh-ink); box-shadow: inset 2px 0 var(--mh-accent); }
+/* 缩进参考线 */
+.mh-children { position: relative; }
+.mh-children::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  bottom: 6px;
+  left: calc(15px + var(--d, 0) * 16px);
+  border-left: 1px solid var(--mh-line);
+}
+.mh .mh-caret {
+  flex: 0 0 14px;
+  width: 14px;
+  height: 14px;
+  position: relative;
+  color: var(--mh-mute);
+}
+.mh-line.has-children .mh-caret::before {
+  content: "";
+  position: absolute;
+  left: 4px;
+  top: 3px;
+  border: 4px solid transparent;
+  border-left: 5px solid currentColor;
+  transition: transform .15s;
+  transform-origin: 2px 4px;
+}
+.mh-row[aria-expanded="true"] > .mh-line .mh-caret::before { transform: rotate(90deg); }
+.mh-text {
+  flex: 1;
+  min-width: 0;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  font-size: 13px;
+}
+.mh-text :is(p, ul, ol, li, div, blockquote, pre, table, tbody, tr, td, th) { display: inline; margin: 0; padding: 0; }
+.mh-text br { display: none; }
+.mh-text .katex { font-size: 1em; }
+.mh-root > .mh-line .mh-text { font: 300 13px/1 var(--mh-thin); letter-spacing: .24em; color: var(--mh-ink); }
+.mh-subject > .mh-line .mh-text { color: var(--mh-ink); font-weight: 600; }
+.mh-chapter > .mh-line .mh-text { color: var(--mh-ink); }
+.mh-muted { color: var(--mh-mute); }
+.mh-open {
+  flex: 0 0 auto;
+  padding: 0 4px;
+  color: var(--mh-mute) !important;
+  font-size: 12px;
+  opacity: 0;
+  text-decoration: none !important;
+}
+.mh-line:hover .mh-open { opacity: 1; }
+.mh-open:hover { color: var(--mh-accent) !important; }
+
+/* 连接图 */
+.mh-graph { position: relative; flex: 1; min-height: 0; }
+.mh-graph canvas { display: block; width: 100%; height: 100%; cursor: grab; touch-action: none; }
+.mh-graph canvas:active { cursor: grabbing; }
+.mh-tip {
+  position: absolute;
+  z-index: 3;
+  max-width: min(280px, 90%);
+  max-height: 220px;
+  overflow: hidden;
+  padding: 8px 10px;
+  border: 1px solid var(--mh-line-2);
+  border-radius: 8px;
+  background: var(--mh-bg);
+  box-shadow: var(--mh-shadow);
+  font-size: 12.5px;
+  line-height: 1.5;
+  color: var(--mh-ink);
+  pointer-events: none;
+}
+.mh-tip[hidden] { display: none; }
+.mh-tip-path { margin-bottom: 4px; font: 10.5px/1.4 var(--mh-mono); color: var(--mh-mute); }
+.mh-tip-body p,
+.mh-tip-body ul,
+.mh-tip-body ol { margin: 0; padding: 0; }
+.mh-tip-body img { display: block; max-width: 100%; max-height: 120px; margin-top: 4px; object-fit: contain; }
+.mh-tip-body .katex-mathml { display: none; }
+
+/* 主题的右下角按钮挪到导图区的右下角，不压住连接图。 */
+.vexpaer-mindmap-hub #rightside { right: calc(clamp(10px, 1.4vw, 18px) * 2 + clamp(280px, 24vw, 360px) + 10px); bottom: calc(clamp(10px, 1.4vw, 18px) + 10px); }
+
+.mh-noscript { grid-column: 1 / -1; color: var(--mh-mute); }
+
+@media (max-width: 900px) {
+  .mh { grid-template-columns: 1fr; height: auto; }
+  .mh-map { height: 68vh; }
+  .mh-side { grid-template-rows: 380px 320px; }
+  .mh-bar { flex-wrap: wrap; gap: 8px 14px; }
+  .vexpaer-mindmap-hub #rightside { right: 20px; bottom: 20px; }
+}

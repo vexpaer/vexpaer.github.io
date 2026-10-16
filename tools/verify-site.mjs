@@ -71,6 +71,28 @@ assertIncludes(blogHtml, 'id="vexpaer-blog-data"', 'Blog index');
 assertIncludes(blogHtml, '/css/vexpaer-blog.css', 'Blog index');
 assertIncludes(blogHtml, 'card-webinfo', 'Blog index');
 
+let hubChapterCount = 0;
+// /mindmap/ 汇总页只带骨架：每章的 src 必须指向一个真实存在的章节导图页，且页面里不含笔记正文。
+{
+  const hubHtml = await readFile(resolve(root, 'mindmap/index.html'), 'utf8');
+  assertIncludes(hubHtml, 'data-mindmap-hub', 'Mindmap hub');
+  assertIncludes(hubHtml, '/vendor/mindmap/hub.min.js', 'Mindmap hub');
+  assertIncludes(hubHtml, '/css/mindmap-hub.css', 'Mindmap hub');
+  await access(resolve(root, 'vendor/mindmap/hub.min.js'));
+  const hubData = hubHtml.match(/<script[^>]*data-mh-data[^>]*>([\s\S]*?)<\/script>/i);
+  if (!hubData) throw new Error('Mindmap hub does not contain its skeleton data.');
+  const hub = JSON.parse(hubData[1]);
+  const hubChapters = hub.children.flatMap(subject => subject.children);
+  if (hub.name !== 'vexpaer' || hub.children.length < 2 || !hubChapters.length) {
+    throw new Error(`Unexpected mindmap hub skeleton: ${hub.children.length} subjects, ${hubChapters.length} chapters.`);
+  }
+  for (const chapter of hubChapters) {
+    if (chapter.children) throw new Error(`Mindmap hub embeds note content for ${chapter.title}.`);
+    await access(resolve(root, ...decodeURI(chapter.src).split('/').filter(Boolean), 'index.html'));
+  }
+  hubChapterCount = hubChapters.length;
+}
+
 const exploreRootCount = (landingHtml.match(/\bdata-explore-root(?:[=\s>])/g) || []).length;
 if (exploreRootCount !== 1) {
   throw new Error(`Landing page must contain exactly 1 exploration section, found ${exploreRootCount}.`);
@@ -222,6 +244,10 @@ if (html < 40) {
 
 if (!mindmapOutlines || mindmapOutlines !== mindmapReaders) {
   throw new Error(`Mindmap page mismatch: ${mindmapOutlines} outlines and ${mindmapReaders} readers.`);
+}
+
+if (hubChapterCount !== mindmapReaders) {
+  throw new Error(`Mindmap hub lists ${hubChapterCount} chapters but the site has ${mindmapReaders} mindmaps.`);
 }
 
 if (brokenAssetPaths.length) {

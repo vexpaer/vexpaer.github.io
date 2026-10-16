@@ -1,0 +1,36 @@
+- var blog = vexpaer_blog_index()
+#vexpaer-blog.vb
+  header.vb-hero
+    h1 Blog
+    .vb-stats
+      span
+        b= blog.count
+        | 篇
+      span
+        b= blog.seriesCount
+        | 个系列
+      span
+        b= blog.subjectCount
+        | 个学科
+      span
+        | 最近更新
+        b.vb-latest= blog.latest
+
+  .vb-toolbar
+    .vb-toolbar-row
+      .vb-tabs(role="tablist" aria-label="板块")!= blog.tabs
+      label.vb-search
+        i.fas.fa-search
+        input#vb-q(type="search" placeholder="搜索标题" aria-label="搜索标题" autocomplete="off")
+        kbd /
+    .vb-chips!= blog.chips
+
+  .vb-layout
+    #recent-posts.vb-list!= blog.list
+    aside.vb-rail
+      !=partial('includes/widget/card_author', {}, {cache: true})
+      !=partial('includes/widget/card_tags', {}, {cache: true})
+      !=partial('includes/widget/card_archives', {}, {cache: true})
+      !=partial('includes/widget/card_webinfo', {}, {cache: true})
+
+  script#vexpaer-blog-data(type="application/json")!= blog.json

@@ -1,7 +1,10 @@
 extends includes/layout.pug
 
 block content
-  include ./includes/mixins/post-ui.pug
-  #recent-posts.recent-posts
-    +postUI
-    include includes/pagination.pug
+  if is_home() && page.landing !== true
+    include ./includes/blog-index.pug
+  else
+    include ./includes/mixins/post-ui.pug
+    #recent-posts.recent-posts
+      +postUI
+      include includes/pagination.pug

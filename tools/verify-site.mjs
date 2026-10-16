@@ -7,7 +7,6 @@ const maxBytes = 1_073_741_824;
 const required = [
   'index.html',
   'blog/index.html',
-  'blog/page/2/index.html',
   '2021/05/22/初中の英语笔记/index.html',
   '2026/01/18/组织工程_7.Artificial organ/index.html',
   '2026/01/18/组织工程_7.Artificial organ/mindmap/index.html',
@@ -59,6 +58,10 @@ assertIncludes(landingHtml, '/gsap@3.13.0/dist/gsap.min.js', 'Landing page');
 assertIncludes(landingHtml, '/gsap@3.13.0/dist/ScrollTrigger.min.js', 'Landing page');
 assertIncludes(landingHtml, '/css/vexpaer-explore.css', 'Landing page');
 assertIncludes(blogHtml, 'id="recent-posts"', 'Blog index');
+assertIncludes(blogHtml, 'id="vexpaer-blog"', 'Blog index');
+assertIncludes(blogHtml, 'id="vexpaer-blog-data"', 'Blog index');
+assertIncludes(blogHtml, '/css/vexpaer-blog.css', 'Blog index');
+assertIncludes(blogHtml, 'card-webinfo', 'Blog index');
 
 const exploreRootCount = (landingHtml.match(/\bdata-explore-root(?:[=\s>])/g) || []).length;
 if (exploreRootCount !== 1) {

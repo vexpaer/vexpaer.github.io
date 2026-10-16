@@ -2,7 +2,8 @@
 - var hideAside = !theme.aside.enable || page.aside === false ? 'hide-aside' : ''
 - var pageType = is_post() ? 'post' : 'page'
 - var isLanding = page.landing === true
-- var bodyClass = isLanding ? 'vexpaer-home-page' : ''
+- var isBlogIndex = is_home() && !isLanding
+- var bodyClass = isLanding ? 'vexpaer-home-page' : (isBlogIndex ? 'vexpaer-blog-index' : '')
 
 doctype html
 html(lang=config.language data-theme=theme.display_mode class=htmlClassHideAside)
@@ -26,12 +27,12 @@ html(lang=config.language data-theme=theme.display_mode class=htmlClassHideAside
           include ./header/quick-access.pug
           include ./header/home-journey.pug
         else
-          main#content-inner.layout(class=[hideAside, page.mindmap_page === true ? 'mindmap-layout' : ''])
+          main#content-inner.layout(class=[isBlogIndex ? 'hide-aside' : hideAside, page.mindmap_page === true ? 'mindmap-layout' : ''])
             if body
               div!= body
             else
               block content
-              if theme.aside.enable && page.aside !== false
+              if theme.aside.enable && page.aside !== false && !isBlogIndex
                 include widget/index.pug
 
         - var footerBg = theme.footer_bg

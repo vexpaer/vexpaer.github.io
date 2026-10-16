@@ -1,7 +1,7 @@
 - var isLanding = page.landing === true
 - var isBlogIndex = is_home() && !isLanding
 
-if !theme.disable_top_img && page.top_img !== false
+if !theme.disable_top_img && page.top_img !== false && !isBlogIndex
   if is_post()
     - var top_img = page.top_img || page.cover || page.randomcover
   else if isLanding

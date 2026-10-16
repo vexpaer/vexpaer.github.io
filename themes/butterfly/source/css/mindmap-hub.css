@@ -118,14 +118,49 @@ body.vexpaer-mindmap-hub {
   pointer-events: none;
 }
 .mh-bar > * { pointer-events: auto; }
-.mh-title {
+/* 标题即当前根节点的路径：思维导图 > vexpaer > …，前面的层级可以点回去。 */
+.mh-crumbs {
+  display: flex;
+  align-items: baseline;
+  flex-wrap: wrap;
+  gap: 4px 8px;
+  min-width: 0;
   margin: 0;
-  font: 300 15px/1 var(--mh-thin);
-  letter-spacing: .32em;
-  color: var(--mh-ink);
+  font: 400 14px/1.3 var(--mh-sans);
+  color: var(--mh-mute);
 }
-.mh-status { margin: 0; font: 11px/1 var(--mh-mono); color: var(--mh-mute); letter-spacing: .03em; }
-.mh-tools { display: flex; gap: 6px; margin-left: auto; }
+.mh-crumb-title { font: 300 15px/1 var(--mh-thin); letter-spacing: .32em; color: var(--mh-ink); }
+.mh-crumb-sep { color: var(--mh-line-2); font-family: var(--mh-mono); }
+.mh-crumbs .mh-crumb {
+  max-width: 16em;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  color: var(--mh-ink-2);
+}
+.mh-crumbs button.mh-crumb:hover { color: var(--mh-accent); }
+.mh-crumbs .mh-crumb.is-current { color: var(--mh-ink); font-weight: 600; }
+.mh-status { margin: 0; font: 11px/1 var(--mh-mono); color: var(--mh-mute); letter-spacing: .03em; white-space: nowrap; }
+.mh-status[hidden] { display: none; }
+.mh-tools { display: flex; gap: 6px; margin-left: auto; flex: 0 0 auto; }
+.mh-seg {
+  display: flex;
+  margin-right: 6px;
+  padding: 2px;
+  border: 1px solid var(--mh-line-2);
+  border-radius: 8px;
+  background: var(--mh-panel);
+}
+.mh .mh-seg-item {
+  height: 24px;
+  padding: 0 10px;
+  border-radius: 6px;
+  font-size: 12.5px;
+  color: var(--mh-mute);
+  transition: background .2s, color .2s;
+}
+.mh .mh-seg-item:hover { color: var(--mh-ink); }
+.mh .mh-seg-item[aria-pressed="true"] { background: var(--mh-accent-soft); color: var(--mh-accent); }
 .mh .mh-tool {
   min-width: 30px;
   height: 30px;
@@ -304,6 +339,61 @@ body.vexpaer-mindmap-hub {
 
 /* 主题的右下角按钮挪到导图区的右下角，不压住连接图。 */
 .vexpaer-mindmap-hub #rightside { right: calc(clamp(10px, 1.4vw, 18px) * 2 + clamp(280px, 24vw, 360px) + 10px); bottom: calc(clamp(10px, 1.4vw, 18px) + 10px); }
+
+/* 双向展开时左半边整组镜像，文字和图片翻回正向；左边那份根节点与右边重合，只留连线和圆点。 */
+.mh-svg .mh-left .markmap-foreign > div > div { transform: scaleX(-1); }
+.mh-svg .mh-left > g.markmap-node[data-depth="1"] > foreignObject,
+.mh-svg .mh-left > g.markmap-node[data-depth="1"] > line { visibility: hidden; }
+
+.mh-head-end { display: flex; align-items: baseline; gap: 12px; }
+
+/* 连接图全屏 */
+.mh-graph-panel:fullscreen,
+.mh-graph-panel.is-max { border-radius: 0; border: 0; background: var(--mh-panel); }
+.mh-graph-panel.is-max { position: fixed; inset: 0; z-index: 300; }
+.mh-graph-panel:fullscreen .mh-tip,
+.mh-graph-panel.is-max .mh-tip { max-width: 360px; max-height: 320px; font-size: 13.5px; }
+
+/* 右键菜单 */
+.mh-menu {
+  position: fixed;
+  z-index: 400;
+  min-width: 168px;
+  max-width: 260px;
+  padding: 6px;
+  border: 1px solid var(--mh-line-2);
+  border-radius: 10px;
+  background: var(--mh-bg);
+  box-shadow: var(--mh-shadow);
+  font: 13px/1.4 var(--mh-sans);
+  color: var(--mh-ink);
+}
+.mh-menu[hidden] { display: none; }
+.mh-menu-name {
+  padding: 4px 10px 6px;
+  margin-bottom: 4px;
+  border-bottom: 1px solid var(--mh-line);
+  font: 11px/1.4 var(--mh-mono);
+  color: var(--mh-mute);
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+.mh-menu button {
+  display: block;
+  width: 100%;
+  padding: 7px 10px;
+  border: 0;
+  border-radius: 6px;
+  background: none;
+  font: inherit;
+  color: inherit;
+  text-align: left;
+  cursor: pointer;
+}
+.mh-menu button:hover,
+.mh-menu button:focus-visible { background: var(--mh-accent-soft); color: var(--mh-accent); outline: none; }
+.mh-menu button:disabled { color: var(--mh-mute); cursor: default; background: none; }
 
 .mh-noscript { grid-column: 1 / -1; color: var(--mh-mute); }
 

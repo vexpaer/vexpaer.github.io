@@ -4,9 +4,12 @@ block content
   section.mh(data-mindmap-hub)
     .mh-map
       .mh-bar
-        h1.mh-title 思维导图
-        p.mh-status(data-mh-status role='status') 正在载入…
+        h1.mh-crumbs(data-mh-crumbs) 思维导图
+        p.mh-status(data-mh-status role='status') 载入中…
         .mh-tools(role='group' aria-label='思维导图工具')
+          .mh-seg(role='group' aria-label='展开方向')
+            button.mh-seg-item(type='button' data-mh-layout='both' aria-pressed='true' title='根节点向左右两侧展开') 双向
+            button.mh-seg-item(type='button' data-mh-layout='right' aria-pressed='false' title='根节点只向右展开') 单向
           button.mh-tool(type='button' data-mh-action='zoom-out' title='缩小' aria-label='缩小') −
           button.mh-tool(type='button' data-mh-action='zoom-in' title='放大' aria-label='放大') +
           button.mh-tool(type='button' data-mh-action='fit' title='适应窗口') 适应
@@ -19,13 +22,21 @@ block content
           button.mh-link(type='button' data-mh-action='collapse-outline') 全部收起
         .mh-outline(data-mh-outline role='tree')
 
-      section.mh-panel.mh-graph-panel(aria-label='连接图')
+      section.mh-panel.mh-graph-panel(data-mh-graph-panel aria-label='连接图')
         header.mh-panel-head
           h2 连接图
-          span.mh-count(data-mh-count)
+          span.mh-head-end
+            span.mh-count(data-mh-count)
+            button.mh-link(type='button' data-mh-action='graph-fullscreen' aria-pressed='false' title='连接图全屏显示') 全屏
         .mh-graph(data-mh-graph)
           canvas(data-mh-canvas aria-hidden='true')
           .mh-tip(data-mh-tip hidden)
+
+    .mh-menu(data-mh-menu role='menu' hidden)
+      .mh-menu-name(data-mh-menu-name)
+      button(type='button' role='menuitem' data-mh-menu-item='root') 设为根节点
+      button(type='button' role='menuitem' data-mh-menu-item='expand') 全部展开
+      button(type='button' role='menuitem' data-mh-menu-item='collapse') 全部收缩
 
     script(type='application/json' data-mh-data)!=page.mindmap_hub_data
     noscript

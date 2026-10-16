@@ -71,6 +71,13 @@
   var paperBoil = -1;
 
   var fiberCanvas = document.createElement('canvas');
+  var grainCanvas = document.createElement('canvas');
+  var paperBase = document.createElement('canvas');
+
+  // 描边动画：切到本主题时，按"纸面装饰 → 天与海 → 船体 → 桅帆 → 索具 → 飞鸟"的顺序一笔笔画出。
+  var REVEAL_DURATION = 4.4;
+  var revealClock = 0;
+  var revealing = !reduced.matches;
 
   var INK = '38, 30, 24';
 
@@ -103,13 +110,83 @@
     return (n - Math.floor(n)) - 0.5;
   }
 
+  // 每类笔画在总时长里占一个时间窗，窗内再按 id 错开起笔。
+  function stageWindow (id) {
+    if (id >= 9600) return [0.8, 1];
+    if (id >= 9500) return [0.3, 0.62];
+    if (id >= 9400) return [0.28, 0.5];
+    if (id >= 9290) return [0.86, 1];
+    if (id >= 9200) return [0.12, 0.4];
+    if (id >= 9100) return [0.02, 0.3];
+    if (id >= 9000) return [0, 0.2];
+    if (id >= 8000) return null;
+    if (id >= 7300 && id < 7500) return [0.64, 0.9];
+    if (id >= 7000) return [0.6, 0.85];
+    if (id >= 6900) return [0.66, 0.9];
+    if (id >= 6800) return [0.68, 0.92];
+    if (id >= 6500) {
+      var local = (id - 6500) % 100;
+      if (local < 5) return [0.46, 0.62];
+      if (local < 40) return [0.7, 0.94];
+      if (local < 50) return [0.54, 0.7];
+      if (local < 90) return [0.6, 0.86];
+      return [0.82, 0.98];
+    }
+    if (id >= 6400) return [0.5, 0.66];
+    if (id >= 6000) return [0.34, 0.6];
+    if (id >= 5300) return [0.04, 0.26];
+    if (id >= 5200) return [0, 0.24];
+    if (id >= 5000) return [0.1, 0.32];
+    if (id >= 4000) return [0.16, 0.5];
+    if (id >= 3000) return [0.86, 1];
+    if (id >= 2000) return [0.14, 0.44];
+    if (id >= 1000) return [0.02, 0.36];
+    return [0, 0.3];
+  }
+
+  function revealStage (id) {
+    if (!revealing) return 1;
+    var range = stageWindow(id);
+    if (!range) return 1;
+    var n = Math.sin(id * 12.9898) * 43758.5453;
+    var jitter = n - Math.floor(n);
+    var span = range[1] - range[0];
+    var start = range[0] + span * 0.55 * jitter;
+    return clamp((revealClock / REVEAL_DURATION - start) / (span * 0.45), 0, 1);
+  }
+
+  function inkColor (alpha, id) {
+    return 'rgba(' + INK + ',' + (alpha * revealStage(id)).toFixed(3) + ')';
+  }
+
   function inkStroke (target, points, options) {
     if (points.length < 2) return;
     var id = options.id || 1;
+    var stage = revealStage(id);
+    if (stage <= 0) return;
+    var close = options.close;
+    if (stage < 1) {
+      // 只画出前 stage 比例的笔画，末端插值，像笔尖正在走。
+      var total = (points.length - 1) * stage;
+      var whole = Math.floor(total);
+      var partial = points.slice(0, whole + 1);
+      var fraction = total - whole;
+      if (fraction > 0 && whole + 1 < points.length) {
+        partial.push({
+          x: lerp(points[whole].x, points[whole + 1].x, fraction),
+          y: lerp(points[whole].y, points[whole + 1].y, fraction)
+        });
+      }
+      if (partial.length < 2) return;
+      points = partial;
+      close = false;
+    }
     var amp = options.amp === undefined ? 0.9 : options.amp;
     var width = options.width === undefined ? 1 : options.width;
     var alpha = options.alpha === undefined ? 0.8 : options.alpha;
     var passes = options.passes === undefined ? 1 : options.passes;
+    // 较粗的笔画在纸上洇开一圈淡墨。
+    var bleed = options.bleed === undefined ? width >= 1.2 : options.bleed;
 
     for (var pass = 0; pass < passes; pass++) {
       target.beginPath();
@@ -127,11 +204,16 @@
           target.quadraticCurveTo(cx, cy, x, y);
         }
       }
-      if (options.close) target.closePath();
-      target.strokeStyle = 'rgba(' + INK + ',' + (alpha * (pass === 0 ? 1 : 0.5)).toFixed(3) + ')';
-      target.lineWidth = width * (pass === 0 ? 1 : 0.72);
+      if (close) target.closePath();
       target.lineCap = 'round';
       target.lineJoin = 'round';
+      if (pass === 0 && bleed) {
+        target.strokeStyle = 'rgba(' + INK + ',' + (alpha * 0.075).toFixed(3) + ')';
+        target.lineWidth = width * 3.4;
+        target.stroke();
+      }
+      target.strokeStyle = 'rgba(' + INK + ',' + (alpha * (pass === 0 ? 1 : 0.5)).toFixed(3) + ')';
+      target.lineWidth = width * (pass === 0 ? 1 : 0.72);
       target.stroke();
     }
   }
@@ -168,6 +250,66 @@
     }
   }
 
+  function buildGrain () {
+    var size = 256;
+    grainCanvas.width = size;
+    grainCanvas.height = size;
+    var gctx = grainCanvas.getContext('2d');
+    var image = gctx.createImageData(size, size);
+    var random = mulberry32(0x6a7a1);
+    for (var index = 0; index < size * size; index++) {
+      var value = random();
+      image.data[index * 4] = 92;
+      image.data[index * 4 + 1] = 72;
+      image.data[index * 4 + 2] = 48;
+      image.data[index * 4 + 3] = Math.round(Math.pow(value, 3) * 26);
+    }
+    gctx.putImageData(image, 0, 0);
+  }
+
+  // 底纸只在尺寸变化时重画：底色、几处泛黄、纤维、颗粒、帘纹与链线。
+  function buildPaperBase () {
+    paperBase.width = Math.max(1, Math.round(W * DPR));
+    paperBase.height = Math.max(1, Math.round(H * DPR));
+    var bctx = paperBase.getContext('2d');
+    bctx.setTransform(DPR, 0, 0, DPR, 0, 0);
+
+    var base = bctx.createLinearGradient(0, 0, W, H);
+    base.addColorStop(0, '#f4eddd');
+    base.addColorStop(0.5, '#efe7d5');
+    base.addColorStop(1, '#e8dcc6');
+    bctx.fillStyle = base;
+    bctx.fillRect(0, 0, W, H);
+
+    var spots = [[0.82, 0.14, 0.5, 0.09], [0.08, 0.86, 0.32, 0.07], [0.42, 0.04, 0.22, 0.05], [0.95, 0.72, 0.18, 0.05]];
+    for (var spot = 0; spot < spots.length; spot++) {
+      var fx = W * spots[spot][0];
+      var fy = H * spots[spot][1];
+      var fr = Math.max(W, H) * spots[spot][2];
+      var foxing = bctx.createRadialGradient(fx, fy, 0, fx, fy, fr);
+      foxing.addColorStop(0, 'rgba(198, 166, 110, ' + spots[spot][3] + ')');
+      foxing.addColorStop(1, 'rgba(198, 166, 110, 0)');
+      bctx.fillStyle = foxing;
+      bctx.fillRect(0, 0, W, H);
+    }
+
+    for (var x = 0; x < W; x += fiberCanvas.width) {
+      for (var y = 0; y < H; y += fiberCanvas.height) {
+        bctx.drawImage(fiberCanvas, x, y);
+      }
+    }
+    for (var gx = 0; gx < W; gx += grainCanvas.width) {
+      for (var gy = 0; gy < H; gy += grainCanvas.height) {
+        bctx.drawImage(grainCanvas, gx, gy);
+      }
+    }
+    // 帘纹（密的横线）与链线（稀的竖线），手工纸的透光纹理。
+    bctx.fillStyle = 'rgba(120, 96, 62, 0.022)';
+    for (var laid = 0; laid < H; laid += 2.6) bctx.fillRect(0, laid, W, 0.6);
+    bctx.fillStyle = 'rgba(120, 96, 62, 0.035)';
+    for (var chain = 14; chain < W; chain += 31) bctx.fillRect(chain, 0, 1.1, H);
+  }
+
   function buildSky () {
     var random = mulberry32(0x5217);
 
@@ -187,17 +329,26 @@
     }
 
     washClouds = [];
-    var cloudCount = W < 720 ? 4 : 7;
+    var cloudCount = W < 720 ? 3 : 5;
     for (var cloud = 0; cloud < cloudCount; cloud++) {
+      var lobeCount = 4 + Math.floor(random() * 3);
+      var lobes = [];
+      for (var lobe = 0; lobe < lobeCount; lobe++) {
+        var along = (lobe + 0.5) / lobeCount;
+        lobes.push({
+          x: along + (random() - 0.5) * 0.1,
+          r: (0.45 + Math.sin(along * Math.PI) * 0.55) * (0.8 + random() * 0.35),
+          y: -0.32 + random() * 0.18
+        });
+      }
       washClouds.push({
-        x: random() * W,
-        y: horizon * (0.12 + random() * 0.5),
-        w: W * (0.1 + random() * 0.22),
-        h: horizon * (0.04 + random() * 0.08),
-        speed: 2 + random() * 6,
-        alpha: 0.05 + random() * 0.07,
-        strokes: 4 + Math.round(random() * 5),
-        id: 2000 + cloud * 13
+        x: (cloud + random() * 0.6) / cloudCount * W,
+        y: horizon * (0.3 + random() * 0.4),
+        w: W * (0.09 + random() * 0.1),
+        h: horizon * (0.075 + random() * 0.05),
+        speed: 2 + random() * 4,
+        lobes: lobes,
+        id: 2000 + cloud * 20
       });
     }
 
@@ -266,6 +417,7 @@
     paperBoil = -1;
 
     ship = buildShip();
+    buildPaperBase();
     buildSky();
     buildSea();
     blots = [];
@@ -284,27 +436,67 @@
   // -------------------------------------------------- 版面：纸张与装饰
 
   function drawPlateBorder () {
-    // 雕版印刷的双线装饰框与四角饰。
+    // 雕版印刷的双线框，中间夹一条黑白相间的经纬刻度带，四角压实。
+    var stage = revealStage(9000);
+    if (stage <= 0) return;
     var m1 = 12;
-    var m2 = 18;
+    var m2 = 20;
+    pctx.save();
+    pctx.globalAlpha = stage;
     pctx.strokeStyle = 'rgba(' + INK + ', 0.5)';
     pctx.lineWidth = 1.4;
     pctx.strokeRect(m1, m1, W - m1 * 2, H - m1 * 2);
     pctx.lineWidth = 0.7;
     pctx.strokeRect(m2, m2, W - m2 * 2, H - m2 * 2);
-    var corners = [[m1, m1], [W - m1, m1], [m1, H - m1], [W - m1, H - m1]];
-    for (var corner = 0; corner < corners.length; corner++) {
-      pctx.fillStyle = 'rgba(' + INK + ', 0.55)';
-      pctx.fillRect(corners[corner][0] - 2.5, corners[corner][1] - 2.5, 5, 5);
+
+    var segment = 26;
+    var band = m2 - m1 - 2;
+    pctx.fillStyle = 'rgba(' + INK + ', 0.28)';
+    for (var x = m2, i = 0; x < W - m2; x += segment, i++) {
+      if (i % 2) continue;
+      var w = Math.min(segment, W - m2 - x);
+      pctx.fillRect(x, m1 + 1, w, band);
+      pctx.fillRect(x, H - m2 + 1, w, band);
     }
+    for (var y = m2, j = 0; y < H - m2; y += segment, j++) {
+      if (j % 2) continue;
+      var h = Math.min(segment, H - m2 - y);
+      pctx.fillRect(m1 + 1, y, band, h);
+      pctx.fillRect(W - m2 + 1, y, band, h);
+    }
+    pctx.strokeStyle = 'rgba(' + INK + ', 0.32)';
+    pctx.lineWidth = 0.6;
+    pctx.beginPath();
+    for (var tx = m2 + segment / 2; tx < W - m2; tx += segment / 2) {
+      var long = Math.round((tx - m2) / (segment / 2)) % 2 === 0;
+      pctx.moveTo(tx, m2);
+      pctx.lineTo(tx, m2 + (long ? 5 : 3));
+      pctx.moveTo(tx, H - m2);
+      pctx.lineTo(tx, H - m2 - (long ? 5 : 3));
+    }
+    for (var ty = m2 + segment / 2; ty < H - m2; ty += segment / 2) {
+      var longY = Math.round((ty - m2) / (segment / 2)) % 2 === 0;
+      pctx.moveTo(m2, ty);
+      pctx.lineTo(m2 + (longY ? 5 : 3), ty);
+      pctx.moveTo(W - m2, ty);
+      pctx.lineTo(W - m2 - (longY ? 5 : 3), ty);
+    }
+    pctx.stroke();
+
+    pctx.fillStyle = 'rgba(' + INK + ', 0.6)';
+    var corners = [[m1, m1], [W - m2, m1], [m1, H - m2], [W - m2, H - m2]];
+    for (var corner = 0; corner < corners.length; corner++) {
+      pctx.fillRect(corners[corner][0], corners[corner][1], m2 - m1, m2 - m1);
+    }
+    pctx.restore();
   }
 
   function drawCompassRose () {
     // 左上角的罗盘玫瑰：双圈 + 八芒星 + 北向标。
-    var cx = W * 0.12;
-    var cy = horizon * 0.3;
-    var radius = clamp(Math.min(W, H) * 0.045, 26, 52);
-    if (cx - radius < 26) cx = radius + 26;
+    var rose = compassCenter();
+    var cx = rose.x;
+    var cy = rose.y;
+    var radius = rose.r;
 
     var circle = [];
     for (var step = 0; step <= 28; step++) {
@@ -334,7 +526,7 @@
       ], { id: 5220 + ray, alpha: long ? 0.55 : 0.34, width: 0.9, amp: 0.5, close: true });
       // 长芒一半涂实,版画的经典画法。
       if (long) {
-        pctx.fillStyle = 'rgba(' + INK + ', 0.4)';
+        pctx.fillStyle = inkColor(0.4, 5220 + ray);
         pctx.beginPath();
         pctx.moveTo(cx + Math.cos(baseAngleA) * baseR, cy + Math.sin(baseAngleA) * baseR);
         pctx.lineTo(tipX, tipY);
@@ -343,7 +535,7 @@
         pctx.fill();
       }
     }
-    pctx.fillStyle = 'rgba(' + INK + ', 0.72)';
+    pctx.fillStyle = inkColor(0.72, 5228);
     pctx.font = '700 ' + Math.round(radius * 0.34) + 'px Georgia, "Times New Roman", serif';
     pctx.textAlign = 'center';
     pctx.textBaseline = 'alphabetic';
@@ -357,8 +549,11 @@
     var cx = W - cw - 34;
     var cy = H - chh - 34;
 
+    var cartoucheStage = revealStage(5300);
+    pctx.globalAlpha = cartoucheStage;
     pctx.fillStyle = 'rgba(244, 238, 224, 0.6)';
     pctx.fillRect(cx, cy, cw, chh);
+    pctx.globalAlpha = 1;
     inkStroke(pctx, [
       { x: cx, y: cy }, { x: cx + cw, y: cy }, { x: cx + cw, y: cy + chh }, { x: cx, y: cy + chh }
     ], { id: 5300, alpha: 0.55, width: 1.2, amp: 0.7, close: true });
@@ -366,6 +561,7 @@
       { x: cx + 5, y: cy + 5 }, { x: cx + cw - 5, y: cy + 5 }, { x: cx + cw - 5, y: cy + chh - 5 }, { x: cx + 5, y: cy + chh - 5 }
     ], { id: 5310, alpha: 0.4, width: 0.7, amp: 0.7, close: true });
 
+    pctx.globalAlpha = cartoucheStage;
     pctx.fillStyle = 'rgba(' + INK + ', 0.78)';
     pctx.textAlign = 'center';
     pctx.font = '600 ' + Math.round(chh * 0.3) + 'px Georgia, "Times New Roman", serif';
@@ -373,6 +569,7 @@
     pctx.font = 'italic 400 ' + Math.round(chh * 0.2) + 'px Georgia, "Times New Roman", serif';
     pctx.fillStyle = 'rgba(' + INK + ', 0.55)';
     pctx.fillText('a pen study · MMXXVI', cx + cw * 0.5, cy + chh * 0.74);
+    pctx.globalAlpha = 1;
     // 两侧小飘带线脚
     line(pctx, cx - 12, cy + chh * 0.5, cx, cy + chh * 0.5, { id: 5320, alpha: 0.4, width: 0.8, amp: 0.8 });
     line(pctx, cx + cw, cy + chh * 0.5, cx + cw + 12, cy + chh * 0.5, { id: 5321, alpha: 0.4, width: 0.8, amp: 0.8 });
@@ -381,24 +578,7 @@
   function drawPaperLayer () {
     pctx.setTransform(DPR, 0, 0, DPR, 0, 0);
 
-    var base = pctx.createLinearGradient(0, 0, W, H);
-    base.addColorStop(0, '#f4eddd');
-    base.addColorStop(0.5, '#efe7d5');
-    base.addColorStop(1, '#e8dcc6');
-    pctx.fillStyle = base;
-    pctx.fillRect(0, 0, W, H);
-
-    var foxing = pctx.createRadialGradient(W * 0.82, H * 0.14, 0, W * 0.82, H * 0.14, Math.max(W, H) * 0.5);
-    foxing.addColorStop(0, 'rgba(198, 166, 110, 0.09)');
-    foxing.addColorStop(1, 'rgba(198, 166, 110, 0)');
-    pctx.fillStyle = foxing;
-    pctx.fillRect(0, 0, W, H);
-
-    for (var x = 0; x < W; x += fiberCanvas.width) {
-      for (var y = 0; y < H; y += fiberCanvas.height) {
-        pctx.drawImage(fiberCanvas, x, y);
-      }
-    }
+    pctx.drawImage(paperBase, 0, 0, W, H);
 
     // 天空斜排线
     pctx.save();
@@ -411,10 +591,14 @@
         id: hatch.id,
         alpha: hatch.alpha,
         width: hatch.width,
-        amp: 1.3
+        amp: 1.3,
+        bleed: false
       });
     }
     pctx.restore();
+
+    drawRhumbLines();
+    drawCoast();
 
     // 太阳:留白圆盘 + 放射排线
     var rays = 26;
@@ -438,7 +622,7 @@
 
     for (var speck = 0; speck < specks.length; speck++) {
       var dot = specks[speck];
-      pctx.fillStyle = 'rgba(' + INK + ',' + dot.alpha.toFixed(3) + ')';
+      pctx.fillStyle = inkColor(dot.alpha, 9001);
       pctx.beginPath();
       pctx.arc(dot.x * W, dot.y * H, dot.r, 0, Math.PI * 2);
       pctx.fill();
@@ -449,29 +633,423 @@
     drawPlateBorder();
   }
 
-  function drawWashClouds (delta) {
+  // ------------------------------------------------------ 新增景物
+
+  function compassCenter () {
+    var radius = clamp(Math.min(W, H) * 0.045, 26, 52);
+    var cx = W * 0.12;
+    if (cx - radius < 26) cx = radius + 26;
+    return { x: cx, y: horizon * 0.3, r: radius };
+  }
+
+  // 波特兰海图的恒向线：从罗盘与画外一个隐形罗盘各放射一组细线，在天空交织成网。
+  function drawRhumbLines () {
+    var rose = compassCenter();
+    var reach = Math.hypot(W, H);
+    pctx.save();
+    pctx.beginPath();
+    pctx.rect(0, 0, W, horizon);
+    pctx.clip();
+    for (var ray = 0; ray < 16; ray++) {
+      var angle = ray / 16 * Math.PI * 2;
+      var start = rose.r * 1.3;
+      line(pctx,
+        rose.x + Math.cos(angle) * start, rose.y + Math.sin(angle) * start,
+        rose.x + Math.cos(angle) * reach, rose.y + Math.sin(angle) * reach,
+        { id: 9100 + ray, alpha: ray % 2 === 0 ? 0.075 : 0.045, width: 0.6, amp: 0.7, bleed: false });
+    }
+    var ghostX = W * 0.97;
+    var ghostY = horizon * 0.92;
+    for (var ghostRay = 0; ghostRay < 12; ghostRay++) {
+      var ghostAngle = Math.PI + (ghostRay / 11 - 0.5) * Math.PI * 0.9;
+      line(pctx, ghostX, ghostY, ghostX + Math.cos(ghostAngle) * reach, ghostY + Math.sin(ghostAngle) * reach,
+        { id: 9130 + ghostRay, alpha: 0.04, width: 0.55, amp: 0.7, bleed: false });
+    }
+    pctx.restore();
+  }
+
+  // 右侧地平线上的岬角与灯塔（静态部分画在纸面层）。
+  function coastProfile (x) {
+    var t = (x - W * 0.7) / (W * 0.3);
+    if (t <= 0) return 0;
+    var rise = clamp(t / 0.42, 0, 1);
+    var cliff = rise * rise * (3 - 2 * rise);
+    var hills = Math.sin(t * 9.4) * 0.12 + Math.sin(t * 23) * 0.05;
+    return horizon * 0.072 * (cliff * (0.92 + hills) + t * 0.18);
+  }
+
+  function lighthouseBase () {
+    var x = W * 0.885;
+    return { x: x, y: horizon - coastProfile(x), h: clamp(Math.min(horizon * 0.13, W * 0.07), 34, 96) };
+  }
+
+  function drawCoast () {
+    var top = [];
+    for (var x = W * 0.7; x <= W + 12; x += 8) top.push({ x: x, y: horizon - coastProfile(x) });
+    // 先用纸色压住身后的天空排线。
+    pctx.fillStyle = 'rgba(240, 232, 216, ' + (0.96 * revealStage(9200)).toFixed(3) + ')';
+    pctx.beginPath();
+    pctx.moveTo(W * 0.7, horizon);
+    for (var index = 0; index < top.length; index++) pctx.lineTo(top[index].x, top[index].y);
+    pctx.lineTo(W + 12, horizon);
+    pctx.closePath();
+    pctx.fill();
+    inkStroke(pctx, top, { id: 9200, alpha: 0.6, width: 1.1, amp: 0.7 });
+
+    // 崖面竖排线（迎光的一侧留白），岬背用稀疏斜线。
+    var cliffStart = W * 0.73;
+    var cliffEnd = W * 0.83;
+    var hatchCount = Math.round((cliffEnd - cliffStart) / 4.5);
+    for (var hatch = 0; hatch < hatchCount; hatch++) {
+      var hx = lerp(cliffStart, cliffEnd, hatch / Math.max(1, hatchCount - 1));
+      var topY = horizon - coastProfile(hx);
+      if (horizon - topY < 3) continue;
+      line(pctx, hx, topY + 1.5, hx + 0.8, horizon - 0.5, { id: 9210 + hatch, alpha: 0.2 + (hatch % 3) * 0.05, width: 0.6, amp: 0.4, bleed: false });
+    }
+    for (var back = 0; back < 16; back++) {
+      var bx = lerp(W * 0.84, W, back / 15);
+      var by = horizon - coastProfile(bx);
+      line(pctx, bx, by + 3, bx + 9, horizon - 1, { id: 9240 + back, alpha: 0.13, width: 0.55, amp: 0.6, bleed: false });
+    }
+
+    // 灯塔：锥形塔身、两道深色环带、灯室与穹顶。
+    var house = lighthouseBase();
+    var baseHalf = house.h * 0.11;
+    var topHalf = house.h * 0.072;
+    var topY2 = house.y - house.h;
+    pctx.fillStyle = 'rgba(240, 232, 216, ' + revealStage(9270).toFixed(3) + ')';
+    pctx.beginPath();
+    pctx.moveTo(house.x - baseHalf, house.y);
+    pctx.lineTo(house.x - topHalf, topY2);
+    pctx.lineTo(house.x + topHalf, topY2);
+    pctx.lineTo(house.x + baseHalf, house.y);
+    pctx.closePath();
+    pctx.fill();
+    inkStroke(pctx, [{ x: house.x - baseHalf, y: house.y }, { x: house.x - topHalf, y: topY2 }], { id: 9270, alpha: 0.7, width: 1, amp: 0.3 });
+    inkStroke(pctx, [{ x: house.x + baseHalf, y: house.y }, { x: house.x + topHalf, y: topY2 }], { id: 9271, alpha: 0.7, width: 1, amp: 0.3 });
+    for (var band = 0; band < 2; band++) {
+      var b0 = 0.28 + band * 0.32;
+      var b1 = b0 + 0.13;
+      var half0 = lerp(baseHalf, topHalf, b0);
+      var half1 = lerp(baseHalf, topHalf, b1);
+      pctx.fillStyle = inkColor(0.5, 9272 + band);
+      pctx.beginPath();
+      pctx.moveTo(house.x - half0, house.y - house.h * b0);
+      pctx.lineTo(house.x - half1, house.y - house.h * b1);
+      pctx.lineTo(house.x + half1, house.y - house.h * b1);
+      pctx.lineTo(house.x + half0, house.y - house.h * b0);
+      pctx.closePath();
+      pctx.fill();
+    }
+    // 塔身右侧阴影排线
+    for (var shade = 0; shade < 6; shade++) {
+      var st = (shade + 0.5) / 6;
+      var sy = house.y - house.h * st;
+      var sh = lerp(baseHalf, topHalf, st);
+      line(pctx, house.x + sh * 0.35, sy, house.x + sh, sy - 1.5, { id: 9275 + shade, alpha: 0.32, width: 0.5, amp: 0.2, bleed: false });
+    }
+    var lampY = topY2 - house.h * 0.1;
+    inkStroke(pctx, [
+      { x: house.x - topHalf * 1.35, y: topY2 }, { x: house.x + topHalf * 1.35, y: topY2 }
+    ], { id: 9282, alpha: 0.7, width: 1.1, amp: 0.2 });
+    inkStroke(pctx, [
+      { x: house.x - topHalf * 0.8, y: topY2 }, { x: house.x - topHalf * 0.8, y: lampY },
+      { x: house.x + topHalf * 0.8, y: lampY }, { x: house.x + topHalf * 0.8, y: topY2 }
+    ], { id: 9283, alpha: 0.62, width: 0.8, amp: 0.2 });
+    inkStroke(pctx, [
+      { x: house.x - topHalf * 1.05, y: lampY }, { x: house.x, y: lampY - house.h * 0.09 }, { x: house.x + topHalf * 1.05, y: lampY }
+    ], { id: 9284, alpha: 0.66, width: 0.9, amp: 0.2 });
+  }
+
+  // 灯塔的两束光：每帧慢慢扫过海面，用发散的细线表现。
+  function drawLighthouseBeams () {
+    var house = lighthouseBase();
+    var lampX = house.x;
+    var lampY = house.y - house.h * 1.05;
+    var sweep = clock * 0.55;
+    for (var beam = 0; beam < 2; beam++) {
+      var heading = sweep + beam * Math.PI;
+      var facing = Math.cos(heading);
+      var spread = 0.035 + Math.abs(Math.sin(heading)) * 0.02;
+      var length = W * (0.08 + Math.abs(facing) * 0.12);
+      var baseAngle = facing > 0 ? 0.02 : Math.PI - 0.02;
+      var alpha = 0.12 + Math.abs(facing) * 0.2;
+      for (var ray = 0; ray < 5; ray++) {
+        var angle = baseAngle + (ray / 4 - 0.5) * spread * 2 * (facing > 0 ? 1 : -1);
+        line(ctx, lampX, lampY, lampX + Math.cos(angle) * length, lampY + Math.sin(angle) * length * 0.6,
+          { id: 9290 + beam * 5 + ray, alpha: alpha * (ray === 2 ? 1 : 0.6), width: 0.6, amp: 0.5, bleed: false });
+      }
+    }
+  }
+
+  // 远处的一艘双桅船，在地平线上缓缓漂移。
+  function drawDistantShip () {
+    // 窄屏上主船几乎占满宽度，远船会叠进帆里，不画。
+    if (W < 720) return;
+    var length = clamp(W * 0.055, 44, 84);
+    // 只在船左侧的一段地平线上来回漂，不与主船交叠。
+    var x = Math.max(length * 0.7 + 24, W * 0.13) + Math.sin(clock * 0.025) * W * 0.06;
+    var y = horizon + 2.5 + Math.sin(clock * 0.8) * 0.8;
+    var u = length / 20;
+    var hull = [
+      { x: x - 10 * u, y: y - 1.6 * u }, { x: x - 8 * u, y: y }, { x: x + 7 * u, y: y }, { x: x + 10.5 * u, y: y - 2 * u }
+    ];
+    inkStroke(ctx, hull, { id: 9400, alpha: 0.5, width: 0.9, amp: 0.4 });
+    inkStroke(ctx, [{ x: x - 9.5 * u, y: y - 1.6 * u }, { x: x + 10.2 * u, y: y - 2 * u }], { id: 9401, alpha: 0.4, width: 0.7, amp: 0.3 });
+    var masts = [[-3.2, 15], [3.4, 17]];
+    for (var mast = 0; mast < masts.length; mast++) {
+      var mx = x + masts[mast][0] * u;
+      var top = y - masts[mast][1] * u;
+      inkStroke(ctx, [{ x: mx, y: y - 1.8 * u }, { x: mx - 0.4 * u, y: top }], { id: 9402 + mast, alpha: 0.5, width: 0.7, amp: 0.2 });
+      for (var sail = 0; sail < 3; sail++) {
+        var sy0 = top + (1.2 + sail * 4.2) * u;
+        var sy1 = sy0 + 3.6 * u;
+        var half = (2.4 + sail * 0.9) * u;
+        var billow = 0.6 * u;
+        inkStroke(ctx, [
+          { x: mx - half, y: sy0 }, { x: mx - half - billow, y: (sy0 + sy1) / 2 }, { x: mx - half, y: sy1 },
+          { x: mx + half, y: sy1 }, { x: mx + half + billow, y: (sy0 + sy1) / 2 }, { x: mx + half, y: sy0 }
+        ], { id: 9406 + mast * 3 + sail, alpha: 0.4, width: 0.6, amp: 0.3, close: true });
+        line(ctx, mx + half * 0.3, sy0 + 1.2 * u, mx + half * 0.9, sy1 - 0.6 * u, { id: 9416 + mast * 3 + sail, alpha: 0.18, width: 0.5, amp: 0.2, bleed: false });
+      }
+    }
+    inkStroke(ctx, [{ x: x + 3.2 * u, y: y - 16 * u }, { x: x + 13 * u, y: y - 2.4 * u }, { x: x + 4.6 * u, y: y - 4.6 * u }], { id: 9430, alpha: 0.35, width: 0.6, amp: 0.3, close: true });
+  }
+
+  // 中景的鲸：周期性地喷水、拱背、扬起尾鳍后潜下。
+  function drawWhale () {
+    if (W < 720) return;
+    var cycle = 17;
+    var t = clock % cycle;
+    var x = W * 0.86;
+    var y = horizon + (H - horizon) * 0.12;
+    var s = clamp(W / 1440, 0.6, 1.3);
+    // 喷水
+    if (t < 2.6) {
+      var spout = Math.sin(clamp(t / 2.6, 0, 1) * Math.PI);
+      for (var jet = 0; jet < 5; jet++) {
+        var lean = (jet - 2) * 0.22;
+        var points = [];
+        for (var step = 0; step <= 5; step++) {
+          var k = step / 5;
+          points.push({ x: x + 14 * s + lean * k * 26 * s * spout + lean * k * k * 10 * s, y: y - 4 * s - k * 30 * s * spout + k * k * 8 * s * spout });
+        }
+        inkStroke(ctx, points, { id: 9600 + jet, alpha: 0.35 * spout, width: 0.7, amp: 0.6, bleed: false });
+      }
+    }
+    // 拱背
+    if (t > 0.4 && t < 4.6) {
+      var arch = Math.sin((t - 0.4) / 4.2 * Math.PI);
+      inkStroke(ctx, [
+        { x: x - 20 * s, y: y }, { x: x - 6 * s, y: y - 6 * s * arch }, { x: x + 12 * s, y: y - 7 * s * arch }, { x: x + 26 * s, y: y }
+      ], { id: 9610, alpha: 0.55 * arch, width: 1.2, amp: 0.4 });
+      line(ctx, x - 4 * s, y - 4.2 * s * arch, x + 4 * s, y - 2 * s * arch, { id: 9611, alpha: 0.25 * arch, width: 0.6, amp: 0.3, bleed: false });
+    }
+    // 尾鳍
+    if (t > 4 && t < 8.2) {
+      var rise = Math.sin((t - 4) / 4.2 * Math.PI);
+      var tx = x - 26 * s;
+      var stemTop = y - 16 * s * rise;
+      inkStroke(ctx, [{ x: tx - 2.5 * s, y: y }, { x: tx - 1.2 * s, y: stemTop + 3 * s }], { id: 9620, alpha: 0.6 * rise, width: 1.1, amp: 0.3 });
+      inkStroke(ctx, [{ x: tx + 2.5 * s, y: y }, { x: tx + 1.2 * s, y: stemTop + 3 * s }], { id: 9621, alpha: 0.6 * rise, width: 1.1, amp: 0.3 });
+      inkStroke(ctx, [
+        { x: tx - 1.2 * s, y: stemTop + 3 * s }, { x: tx - 9 * s, y: stemTop - 1 * s }, { x: tx - 15 * s, y: stemTop - 5 * s },
+        { x: tx - 9 * s, y: stemTop + 0.6 * s }, { x: tx, y: stemTop + 1.6 * s }, { x: tx + 9 * s, y: stemTop + 0.6 * s },
+        { x: tx + 15 * s, y: stemTop - 5 * s }, { x: tx + 9 * s, y: stemTop - 1 * s }, { x: tx + 1.2 * s, y: stemTop + 3 * s }
+      ], { id: 9622, alpha: 0.62 * rise, width: 1, amp: 0.3 });
+      for (var drip = 0; drip < 4; drip++) {
+        var dx = tx + (drip - 1.5) * 7 * s;
+        line(ctx, dx, stemTop + 2 * s, dx + 0.5, stemTop + (5 + drip % 2 * 3) * s * (1 + (1 - rise)), { id: 9625 + drip, alpha: 0.3 * rise, width: 0.5, amp: 0.3, bleed: false });
+      }
+    }
+    // 水面涟漪
+    if (t > 0.2 && t < 9.5) {
+      var ring = clamp((t - 0.2) / 9.3, 0, 1);
+      for (var ripple = 0; ripple < 2; ripple++) {
+        var rr = (18 + ring * 40 + ripple * 12) * s;
+        var ra = 0.3 * (1 - ring);
+        var ellipse = [];
+        for (var seg = 0; seg <= 14; seg++) {
+          var a = Math.PI * (0.05 + seg / 14 * 0.9);
+          ellipse.push({ x: x - 4 * s + Math.cos(a) * rr, y: y + 1 + Math.sin(a) * rr * 0.14 });
+        }
+        inkStroke(ctx, ellipse, { id: 9630 + ripple, alpha: ra, width: 0.7, amp: 0.5, bleed: false });
+      }
+    }
+  }
+
+  // 左下角前景的碎浪：浪背隆起、浪唇前探卷回，浪腹是一道深色的暗槽。
+  function drawForegroundWave () {
+    var swell = 1 + Math.sin(clock * 0.55) * 0.05;
+    var baseY = H + 6;
+    var peakX = clamp(W * 0.24, 120, 380);
+    var curl = clamp((H - horizon) * 0.13, 26, 64) * swell;
+    var peakY = H - (H - horizon) * (W < 720 ? 0.34 : 0.5) * swell;
+    var heave = Math.sin(clock * 0.9) * 2;
+
+    // 浪背：从左下缓缓隆起到浪顶。
+    var back = [];
+    for (var step = 0; step <= 14; step++) {
+      var t = step / 14;
+      var x = lerp(-14, peakX, t);
+      var rise = Math.pow(t, 1.7);
+      back.push({ x: x, y: lerp(H - (H - horizon) * 0.1, peakY, rise) + Math.sin(t * 9 + clock * 0.8) * 2.2 * (1 - t) + heave * t });
+    }
+    // 浪唇：越过浪顶向前探出，再向下卷回。
+    var lip = [];
+    for (var lipStep = 0; lipStep <= 10; lipStep++) {
+      var k = lipStep / 10;
+      var angle = -Math.PI * 0.62 + k * Math.PI * 1.25;
+      var radius = curl * (1 - k * 0.45);
+      lip.push({ x: peakX + curl * 0.37 + Math.cos(angle) * radius, y: peakY + curl * 0.93 + Math.sin(angle) * radius + heave });
+    }
+    // 浪面：从浪唇下方凹着落到海里。
+    var face = [];
+    for (var faceStep = 0; faceStep <= 8; faceStep++) {
+      var f = faceStep / 8;
+      face.push({
+        x: lerp(peakX + curl * 1.05, peakX + curl * 3.1, Math.pow(f, 0.8)),
+        y: lerp(peakY + curl * 0.9 + heave, baseY, Math.pow(f, 1.6))
+      });
+    }
+
+    // 先用纸色铺满浪体，压住身后的海面线。
+    var stage = revealStage(9500);
+    ctx.fillStyle = 'rgba(240, 232, 216, ' + (0.97 * stage).toFixed(3) + ')';
+    ctx.beginPath();
+    ctx.moveTo(-14, baseY);
+    for (var b = 0; b < back.length; b++) ctx.lineTo(back[b].x, back[b].y);
+    for (var l = 0; l < 6; l++) ctx.lineTo(lip[l].x, lip[l].y);
+    for (var fc = 0; fc < face.length; fc++) ctx.lineTo(face[fc].x, face[fc].y);
+    ctx.closePath();
+    ctx.fill();
+
+    inkStroke(ctx, back.concat(lip.slice(1, 7)), { id: 9500, alpha: 0.78, width: 1.7, amp: 0.7, passes: 2 });
+    inkStroke(ctx, lip.slice(6), { id: 9501, alpha: 0.7, width: 1.3, amp: 0.4 });
+    inkStroke(ctx, face, { id: 9502, alpha: 0.55, width: 1.1, amp: 0.7 });
+
+    // 浪腹的暗槽：浪唇下方密集的弧形排线，越往里越深。
+    for (var hollow = 0; hollow < 12; hollow++) {
+      var h = hollow / 11;
+      var hx = peakX + curl * (0.35 + h * 0.75);
+      var hollowLine = [];
+      for (var hs = 0; hs <= 4; hs++) {
+        var ht = hs / 4;
+        hollowLine.push({
+          x: hx + Math.sin(ht * Math.PI) * curl * 0.12 + ht * curl * (0.3 + h * 0.5),
+          y: lerp(peakY + curl * (0.95 + h * 0.15), peakY + curl * (2 + h * 0.9), ht) + heave
+        });
+      }
+      inkStroke(ctx, hollowLine, { id: 9505 + hollow, alpha: 0.42 - h * 0.18, width: 0.7, amp: 0.4, bleed: false });
+    }
+
+    // 浪背：顺着浪形的平行流线，越靠下越密。
+    for (var layer = 1; layer <= 8; layer++) {
+      var drop = layer * layer * 2.4 + layer * 6;
+      var flow = [];
+      for (var fs = 0; fs < back.length; fs++) {
+        var point = back[fs];
+        var y = point.y + drop;
+        if (y > baseY) continue;
+        flow.push({ x: point.x, y: y });
+      }
+      var limitX = peakX + curl * (1.1 + layer * 0.22);
+      if (flow.length > 1) {
+        var lastPoint = flow[flow.length - 1];
+        flow.push({ x: Math.min(limitX, lastPoint.x + curl * 0.9), y: lastPoint.y + layer * 2 });
+        inkStroke(ctx, flow, { id: 9520 + layer, alpha: 0.14 + layer * 0.03, width: 0.6 + layer * 0.07, amp: 0.9, bleed: false });
+      }
+    }
+    for (var hatch = 0; hatch < 22; hatch++) {
+      var hatchT = hatch / 21;
+      var hatchX = lerp(10, peakX - curl * 0.2, hatchT);
+      var hatchY = lerp(H - (H - horizon) * 0.1, peakY, Math.pow(hatchT, 1.7)) + 7 + heave * hatchT;
+      var hatchLength = 9 + (hatch % 4) * 5;
+      line(ctx, hatchX, hatchY, hatchX - hatchLength * 0.35, hatchY + hatchLength, { id: 9535 + hatch, alpha: 0.2, width: 0.55, amp: 0.5, bleed: false });
+    }
+
+    // 浪顶的浪沫指与飞沫。
+    for (var finger = 0; finger < 6; finger++) {
+      var fingerT = finger / 5;
+      var fx = peakX - curl * 0.5 + fingerT * curl * 1.4;
+      var fy = peakY - curl * (0.08 + Math.sin(fingerT * Math.PI) * 0.18) + heave + Math.sin(clock * 1.7 + finger) * 1.2;
+      var fl = curl * (0.28 + (finger % 3) * 0.08);
+      inkStroke(ctx, [{ x: fx, y: fy }, { x: fx + fl * 0.4, y: fy - fl * 0.55 }, { x: fx + fl, y: fy - fl * 0.45 }, { x: fx + fl * 0.95, y: fy - fl * 0.1 }],
+        { id: 9560 + finger, alpha: 0.5, width: 0.8, amp: 0.3, bleed: false });
+    }
+    ctx.fillStyle = inkColor(0.4, 9570);
+    for (var spray = 0; spray < 16; spray++) {
+      var sx = peakX + curl * (0.2 + ((spray * 0.37) % 1) * 1.5);
+      var sy = peakY - curl * (0.25 + ((spray * 0.61) % 1) * 0.7) + heave + Math.sin(clock * 2 + spray) * 2;
+      ctx.beginPath();
+      ctx.arc(sx, sy, 0.6 + (spray % 3) * 0.45, 0, Math.PI * 2);
+      ctx.fill();
+    }
+  }
+
+  // 版画式积云：圆弧并集的扇贝形轮廓，底部平，下半部横排线表现阴影。
+  function cloudTop (cloud, x) {
+    var best = -Infinity;
+    for (var index = 0; index < cloud.lobes.length; index++) {
+      var lobe = cloud.lobes[index];
+      var dx = x - (cloud.x + lobe.x * cloud.w);
+      var r = lobe.r * cloud.h;
+      if (Math.abs(dx) >= r) continue;
+      var lift = Math.sqrt(r * r - dx * dx) + lobe.y * cloud.h;
+      if (lift > best) best = lift;
+    }
+    return best === -Infinity ? null : cloud.y - best;
+  }
+
+  function drawCumulus (delta) {
     for (var index = 0; index < washClouds.length; index++) {
       var cloud = washClouds[index];
       cloud.x += cloud.speed * delta;
-      if (cloud.x - cloud.w > W) cloud.x = -cloud.w;
+      if (cloud.x > W + 20) cloud.x = -cloud.w - 20;
 
-      for (var stroke = 0; stroke < cloud.strokes; stroke++) {
-        var t = stroke / Math.max(1, cloud.strokes - 1);
-        var points = [];
-        var segments = 8;
-        for (var seg = 0; seg <= segments; seg++) {
-          var st = seg / segments;
-          points.push({
-            x: cloud.x + st * cloud.w,
-            y: cloud.y + t * cloud.h - Math.sin(st * Math.PI) * cloud.h * 0.6
-          });
+      var outline = [];
+      var x0 = cloud.x - cloud.h * 0.4;
+      var x1 = cloud.x + cloud.w + cloud.h * 0.4;
+      var first = null;
+      var last = null;
+      for (var x = x0; x <= x1; x += 6) {
+        var top = cloudTop(cloud, x);
+        if (top === null || top > cloud.y - 1) continue;
+        if (first === null) first = x;
+        last = x;
+        outline.push({ x: x, y: top });
+      }
+      if (outline.length < 3) continue;
+
+      var stage = revealStage(cloud.id);
+      ctx.fillStyle = 'rgba(241, 234, 219, ' + (0.9 * stage).toFixed(3) + ')';
+      ctx.beginPath();
+      ctx.moveTo(first, cloud.y);
+      for (var p = 0; p < outline.length; p++) ctx.lineTo(outline[p].x, outline[p].y);
+      ctx.lineTo(last, cloud.y);
+      ctx.closePath();
+      ctx.fill();
+
+      inkStroke(ctx, outline, { id: cloud.id, alpha: 0.5, width: 1, amp: 0.7 });
+      line(ctx, first + 6, cloud.y, last - 6, cloud.y, { id: cloud.id + 1, alpha: 0.18, width: 0.7, amp: 0.9, bleed: false });
+
+      // 阴影排线：光从右上来，左下更密。
+      var rows = 6;
+      for (var row = 0; row < rows; row++) {
+        var ry = cloud.y - 2.5 - row * cloud.h * 0.09;
+        var left = null;
+        var right = null;
+        for (var sx = first; sx <= last; sx += 4) {
+          var st = cloudTop(cloud, sx);
+          if (st !== null && st < ry - 2) {
+            if (left === null) left = sx;
+            right = sx;
+          }
         }
-        inkStroke(ctx, points, {
-          id: cloud.id + stroke,
-          alpha: cloud.alpha * (1 - t * 0.4),
-          width: 0.8,
-          amp: 1.6
-        });
+        if (left === null) continue;
+        var cover = 1 - row / rows;
+        var end = lerp(left, right, 0.35 + cover * 0.55);
+        line(ctx, left + 3, ry, end, ry, { id: cloud.id + 2 + row, alpha: 0.1 + cover * 0.16, width: 0.6, amp: 0.8, bleed: false });
       }
     }
   }
@@ -557,7 +1135,8 @@
         width: (options.width || 1) * inv,
         amp: (options.amp === undefined ? 0.9 : options.amp) * inv,
         passes: options.passes,
-        close: options.close
+        close: options.close,
+        bleed: (options.width || 1) >= 1.2
       });
     }
 
@@ -617,14 +1196,14 @@
     for (var portUpper = 0; portUpper < 10; portUpper++) {
       var portX = -38 + portUpper * 8.4;
       var portY = sheerAt(portX) - 4.5;
-      ctx.fillStyle = 'rgba(' + INK + ', 0.68)';
+      ctx.fillStyle = inkColor(0.68, 6060 + portUpper);
       ctx.fillRect(portX - 0.85, portY - 0.7, 1.7, 1.5);
       localLine(portX - 0.95, portY + 0.95, portX + 0.95, portY + 0.95, { id: 6060 + portUpper, alpha: 0.4, width: 0.6, amp: 0.4 });
     }
     for (var portLower = 0; portLower < 8; portLower++) {
       var portX2 = -33 + portLower * 8.8;
       var portY2 = sheerAt(portX2) - 7.6;
-      ctx.fillStyle = 'rgba(' + INK + ', 0.6)';
+      ctx.fillStyle = inkColor(0.6, 6070 + portLower);
       ctx.fillRect(portX2 - 0.8, portY2 - 0.65, 1.6, 1.4);
     }
 
@@ -655,6 +1234,17 @@
     for (var rail = 0; rail < 6; rail++) {
       var railX = -50.2 + rail * 0.9;
       localLine(railX, 14.2, railX, 14.8, { id: 6182 + rail, alpha: 0.4, width: 0.5, amp: 0.3 });
+    }
+
+    // 艉灯：三盏挂在艉楼栏杆上的灯笼
+    for (var lantern = 0; lantern < 3; lantern++) {
+      var lanternX = -50.4 + lantern * 2.3;
+      var lanternY = 15.2 + (lantern === 1 ? 1 : 0);
+      localLine(lanternX, lanternY - 0.4, lanternX, lanternY + 0.3, { id: 6200 + lantern, alpha: 0.5, width: 0.5, amp: 0.2 });
+      localStroke([
+        { x: lanternX - 0.5, y: lanternY + 0.3 }, { x: lanternX - 0.65, y: lanternY + 1.2 },
+        { x: lanternX, y: lanternY + 1.8 }, { x: lanternX + 0.65, y: lanternY + 1.2 }, { x: lanternX + 0.5, y: lanternY + 0.3 }
+      ], { id: 6195 + lantern, alpha: 0.62, width: 0.6, amp: 0.15, close: true });
     }
 
     // 锚:挂在艏部侧舷
@@ -766,6 +1356,36 @@
         }
         localStroke(leftLeech, { id: mast.id + 50 + yardIndex, alpha: 0.62, width: 1.1, amp: 0.7 });
         localStroke(rightLeech, { id: mast.id + 55 + yardIndex, alpha: 0.62, width: 1.1, amp: 0.7 });
+
+        // 帆布接缝：几道竖缝，随帆面鼓胀弯曲。
+        var seamBase = 7300 + mastIndex * 60 + yardIndex * 15;
+        for (var seam = 1; seam <= 5; seam++) {
+          var seamU = seam / 6;
+          var seamPoints = [];
+          for (var seamSeg = 0; seamSeg <= 4; seamSeg++) {
+            var seamT = seamSeg / 4;
+            seamPoints.push({
+              x: lerp(lerp(upperX - upperHalf, upperX + upperHalf, seamU), lerp(footX - footHalf, footX + footHalf, seamU), seamT) + Math.sin(seamT * Math.PI) * billow * (seamU * 1.5 - 0.5),
+              y: lerp(upperY, footY, seamT)
+            });
+          }
+          localStroke(seamPoints, { id: seamBase + seam, alpha: 0.13, width: 0.5, amp: 0.5 });
+        }
+        // 背光一侧的竖排线阴影，越靠帆缘越密。
+        for (var shadeLine = 0; shadeLine < 6; shadeLine++) {
+          var shadeU = 0.7 + shadeLine * 0.052;
+          var shadeTop = 0.1 + (shadeLine % 2) * 0.08;
+          var shadeBottom = 0.9 - (shadeLine % 3) * 0.06;
+          var shadePoints = [];
+          for (var shadeSeg = 0; shadeSeg <= 2; shadeSeg++) {
+            var shadeT = lerp(shadeTop, shadeBottom, shadeSeg / 2);
+            shadePoints.push({
+              x: lerp(lerp(upperX - upperHalf, upperX + upperHalf, shadeU), lerp(footX - footHalf, footX + footHalf, shadeU), shadeT) + Math.sin(shadeT * Math.PI) * billow * (shadeU * 1.5 - 0.5),
+              y: lerp(upperY, footY, shadeT)
+            });
+          }
+          localStroke(shadePoints, { id: seamBase + 6 + shadeLine, alpha: 0.15 + shadeLine * 0.012, width: 0.5, amp: 0.4 });
+        }
 
         // 帆脚(飘动)
         var footPoints = [];
@@ -1057,15 +1677,28 @@
       boilFrame++;
     }
 
-    if (paperBoil !== boilFrame) {
+    if (revealing) {
+      revealClock += delta;
+      if (revealClock >= REVEAL_DURATION) {
+        revealing = false;
+        paperBoil = -1;
+      }
+    }
+
+    // 揭示期间纸面层每帧重画，笔画才能连续生长。
+    if (paperBoil !== boilFrame || revealing) {
       drawPaperLayer();
       paperBoil = boilFrame;
     }
     ctx.drawImage(paperLayer, 0, 0, W, H);
 
-    drawWashClouds(delta);
+    drawCumulus(delta);
+    drawLighthouseBeams();
+    drawDistantShip();
     drawSea();
+    drawWhale();
     drawShip();
+    drawForegroundWave();
     drawGulls(delta);
     drawBlots(delta);
   }
@@ -1115,7 +1748,14 @@
     if (event.origin !== window.location.origin) return;
     if (!event.data || event.data.type !== 'vexpaer-scene-visibility') return;
     running = Boolean(event.data.visible);
-    if (running) lastTime = performance.now();
+    if (running) {
+      lastTime = performance.now();
+      // 宿主在切换到本主题时带上 enter，重新播放描边动画。
+      if (event.data.enter && !reduced.matches) {
+        revealing = true;
+        revealClock = 0;
+      }
+    }
   });
 
   var resizeTimer;
@@ -1126,11 +1766,15 @@
 
   if (reduced.addEventListener) {
     reduced.addEventListener('change', function () {
-      if (reduced.matches) render(0);
+      if (reduced.matches) {
+        revealing = false;
+        render(0);
+      }
     });
   }
 
   buildFiber();
+  buildGrain();
   fit();
   render(0);
   window.requestAnimationFrame(frame);

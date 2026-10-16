@@ -53,6 +53,7 @@
   var lifePaintValue = 1
   var lastLifeCell = null
   var threeLayer = null
+  var spaceParallax = { x: 0, y: 0 }
 
   function randomFactory (seed) {
     return function () {
@@ -101,11 +102,27 @@
     if (icon) icon.textContent = current.icon
     button.setAttribute('aria-label', '当前背景：' + current.label + '。点击切换到' + next.label)
     root.setAttribute('data-scene', activeTheme)
+    // 钢笔帆船是浅色纸面：首屏的章节导航改用墨色。
+    var header = document.getElementById('page-header')
+    if (header) {
+      if (activeTheme === 'ink') header.dataset.tone = 'light'
+      else delete header.dataset.tone
+    }
+    var journeyNav = document.querySelector('.vexpaer-home-journey')
+    var activeJourney = journeyNav && journeyNav.querySelector('a.is-active')
+    if (journeyNav && (!activeJourney || activeJourney.dataset.journeyTarget === 'hero')) {
+      journeyNav.classList.toggle('is-light', activeTheme === 'ink')
+    }
     var browserTheme = document.querySelector('meta[name="theme-color"]')
     if (browserTheme) browserTheme.setAttribute('content', current.browserColor)
   }
 
+  var lastSyncedTheme = null
+
   function syncSceneFrames () {
+    // 刚切进来的那一次带上 enter，iframe 据此重播开场动画。
+    var entering = activeTheme !== lastSyncedTheme
+    lastSyncedTheme = activeTheme
     for (var name in sceneFrames) {
       var scene = sceneFrames[name]
       var frameElement = scene.element
@@ -117,7 +134,8 @@
       if (frameElement.getAttribute('src') && frameElement.contentWindow) {
         frameElement.contentWindow.postMessage({
           type: scene.message,
-          visible: shouldRun
+          visible: shouldRun,
+          enter: entering && activeTheme === name
         }, window.location.origin)
       }
     }
@@ -636,9 +654,22 @@
     context.fill()
   }
 
+  function updateSpaceParallax () {
+    var targetX = pointerActive ? pointerX / Math.max(1, width) * 2 - 1 : 0
+    var targetY = pointerActive ? 1 - pointerY / Math.max(1, height) * 2 : 0
+    var ease = reducedMotion.matches ? 1 : 0.045
+    spaceParallax.x += (targetX - spaceParallax.x) * ease
+    spaceParallax.y += (targetY - spaceParallax.y) * ease
+  }
+
   function drawSpace (time) {
     fillBackground('#000002', '#020108')
     var seconds = time * 0.001
+    updateSpaceParallax()
+    var nebulaShiftX = -spaceParallax.x * 6
+    var nebulaShiftY = spaceParallax.y * 4
+    context.save()
+    context.translate(nebulaShiftX, nebulaShiftY)
 
     // Primary nebula – warm violet-purple
     var nebula = context.createRadialGradient(width * 0.45, height * 0.42, 0, width * 0.45, height * 0.42, Math.max(width, height) * 0.68)
@@ -671,15 +702,18 @@
     distantCloud.addColorStop(0.5, 'rgba(35, 40, 68, .03)')
     distantCloud.addColorStop(1, 'rgba(0, 0, 2, 0)')
     context.fillStyle = distantCloud
-    context.fillRect(0, 0, width, height)
+    context.fillRect(-12, -12, width + 24, height + 24)
+    context.restore()
 
     // Background star field
     for (var index = 0; index < stars.length; index++) {
       var star = stars[index]
       var starTwinkle = 0.5 + Math.sin(seconds * star.speed + star.phase) * 0.5
       var alpha = Math.min(1, star.alpha * (0.12 + Math.pow(starTwinkle, 2.3) * 0.98))
-      var starX = star.x * width
-      var starY = star.y * height
+      // 由相位派生一个稳定的远近值，越近位移越大。
+      var starDepth = (star.phase * 5.31) % 1
+      var starX = star.x * width - spaceParallax.x * (3 + starDepth * 16)
+      var starY = star.y * height + spaceParallax.y * (2 + starDepth * 11)
       var starRadius = Math.max(0.35, star.radius * 0.72)
       if (pointerActive) {
         var starDx = starX - pointerX
@@ -2473,6 +2507,8 @@
       'uniform float uPointerStrength;',
       'uniform float uPointerResponse;',
       'uniform float uViewportAspect;',
+      'uniform float uFocus;',
+      'uniform float uDof;',
       'attribute float aPhase;',
       'attribute float aSize;',
       'attribute float aAlpha;',
@@ -2480,6 +2516,7 @@
       'varying vec3 vColor;',
       'varying float vAlpha;',
       'varying float vPointerLight;',
+      'varying float vBlur;',
       'void main() {',
       '  vec4 viewPosition = modelViewMatrix * vec4(position, 1.0);',
       '  float viewDepth = max(0.8, -viewPosition.z);',
@@ -2489,12 +2526,15 @@
       '  float twinkle = mix(0.28, 1.18, pow(twinkleWave, 1.7));',
       '  vec4 clipPosition = projectionMatrix * viewPosition;',
       '  gl_Position = clipPosition;',
-      '  gl_PointSize = clamp(aSize * uPointScale * perspectiveScale * uPixelRatio, 0.55 * uPixelRatio, uMaxPointSize * uPixelRatio);',
+      '  float coc = clamp(abs(viewDepth - uFocus) / max(uFocus, 0.001) * uDof, 0.0, 1.0);',
+      '  float blurScale = 1.0 + coc * 1.8;',
+      '  gl_PointSize = clamp(aSize * uPointScale * perspectiveScale * uPixelRatio * blurScale, 0.55 * uPixelRatio, uMaxPointSize * uPixelRatio * (1.0 + coc * 1.4));',
+      '  vBlur = coc;',
       '  vec2 screenPosition = clipPosition.xy / max(0.001, clipPosition.w);',
       '  vec2 pointerDelta = vec2((screenPosition.x - uPointer.x) * uViewportAspect, screenPosition.y - uPointer.y);',
       '  vPointerLight = (1.0 - smoothstep(0.035, 0.32, length(pointerDelta))) * uPointerStrength * uPointerResponse;',
       '  vColor = aColor;',
-      '  vAlpha = aAlpha * twinkle * depthFade;',
+      '  vAlpha = aAlpha * twinkle * depthFade / mix(1.0, blurScale * blurScale, 0.7);',
       '}'
     ].join('\n')
 
@@ -2506,9 +2546,10 @@
       'varying vec3 vColor;',
       'varying float vAlpha;',
       'varying float vPointerLight;',
+      'varying float vBlur;',
       'void main() {',
       '  float distanceToCenter = distance(gl_PointCoord, vec2(0.5));',
-      '  float glow = 1.0 - smoothstep(uInnerEdge, uSoftEdge, distanceToCenter);',
+      '  float glow = 1.0 - smoothstep(mix(uInnerEdge, 0.12, vBlur), mix(uSoftEdge, 0.5, vBlur), distanceToCenter);',
       '  float alpha = glow * vAlpha * uOpacity * (1.0 + vPointerLight * 0.28);',
       '  if (alpha < 0.002) discard;',
       '  vec3 litColor = mix(vColor, vec3(1.0, 0.97, 0.92), vPointerLight * 0.16);',
@@ -2516,7 +2557,7 @@
       '}'
     ].join('\n')
 
-    function createGalaxyMaterial (opacity, brightness, pointScale, maxPointSize, innerEdge, softEdge, blending, pointerResponse) {
+    function createGalaxyMaterial (opacity, brightness, pointScale, maxPointSize, innerEdge, softEdge, blending, pointerResponse, dof) {
       return new THREE.ShaderMaterial({
         uniforms: {
           uTime: { value: 0 },
@@ -2530,7 +2571,9 @@
           uPointer: { value: new THREE.Vector2(50, 50) },
           uPointerStrength: { value: 0 },
           uPointerResponse: { value: pointerResponse },
-          uViewportAspect: { value: aspect }
+          uViewportAspect: { value: aspect },
+          uFocus: { value: 12 },
+          uDof: { value: dof }
         },
         vertexShader: galaxyVertexShader,
         fragmentShader: galaxyFragmentShader,
@@ -2542,9 +2585,9 @@
       })
     }
 
-    var galaxyStarMaterial = createGalaxyMaterial(1.35, 1.72, 1.32, 9.5, 0.31, 0.39, THREE.AdditiveBlending, 1)
-    var galaxyHazeMaterial = createGalaxyMaterial(0.72, 0.86, 1.72, 32, 0.04, 0.5, THREE.AdditiveBlending, 0.65)
-    var galaxyDustMaterial = createGalaxyMaterial(0.2, 0.48, 0.75, 8, 0.18, 0.5, THREE.NormalBlending, 0)
+    var galaxyStarMaterial = createGalaxyMaterial(1.35, 1.72, 1.32, 9.5, 0.31, 0.39, THREE.AdditiveBlending, 1, 0.55)
+    var galaxyHazeMaterial = createGalaxyMaterial(0.72, 0.86, 1.72, 32, 0.04, 0.5, THREE.AdditiveBlending, 0.65, 0.35)
+    var galaxyDustMaterial = createGalaxyMaterial(0.2, 0.48, 0.75, 8, 0.18, 0.5, THREE.NormalBlending, 0, 0.6)
 
     // A separate screen-space Milky Way: a random curved stellar band behind the
     // spiral galaxy. Screen space keeps its composition stable on every viewport.
@@ -2589,11 +2632,11 @@
     milkyWayGeometry.setAttribute('aAlpha', new THREE.BufferAttribute(milkyWayAlphas, 1))
     milkyWayGeometry.setAttribute('aSoftness', new THREE.BufferAttribute(milkyWaySoftness, 1))
     var milkyWayMaterial = new THREE.ShaderMaterial({
-      uniforms: { uPixelRatio: { value: pixelRatio }, uTime: { value: 0 } },
+      uniforms: { uPixelRatio: { value: pixelRatio }, uTime: { value: 0 }, uParallax: { value: new THREE.Vector2() } },
       vertexShader: [
-        'uniform float uPixelRatio;', 'uniform float uTime;', 'attribute vec3 aColor;', 'attribute float aSize;', 'attribute float aAlpha;', 'attribute float aSoftness;',
+        'uniform float uPixelRatio;', 'uniform float uTime;', 'uniform vec2 uParallax;', 'attribute vec3 aColor;', 'attribute float aSize;', 'attribute float aAlpha;', 'attribute float aSoftness;',
         'varying vec3 vColor;', 'varying float vAlpha;', 'varying float vSoftness;',
-        'void main(){ gl_Position=vec4(position.xy,0.92,1.0); gl_PointSize=aSize*uPixelRatio; vColor=aColor; vAlpha=aAlpha*(.72+.28*sin(uTime*.55+position.x*37.0)); vSoftness=aSoftness; }'
+        'void main(){ gl_Position=vec4(position.xy-uParallax*.012,0.92,1.0); gl_PointSize=aSize*uPixelRatio; vColor=aColor; vAlpha=aAlpha*(.72+.28*sin(uTime*.55+position.x*37.0)); vSoftness=aSoftness; }'
       ].join('\n'),
       fragmentShader: [
         'varying vec3 vColor;', 'varying float vAlpha;', 'varying float vSoftness;',
@@ -2610,6 +2653,55 @@
     milkyWayBand.renderOrder = -2
     milkyWayBand.visible = false
     spaceScene.add(milkyWayBand)
+
+    var bokehRandom = randomFactory(galaxySeed ^ 0x626f6b65)
+    var bokehCount = width < 720 ? 7 : 13
+    var bokehPositions = new Float32Array(bokehCount * 3)
+    var bokehColors = new Float32Array(bokehCount * 3)
+    var bokehSizes = new Float32Array(bokehCount)
+    var bokehAlphas = new Float32Array(bokehCount)
+    var bokehCool = new THREE.Color('#9fb3d8')
+    var bokehWarm = new THREE.Color('#cdc3dc')
+    for (var bokehIndex = 0; bokehIndex < bokehCount; bokehIndex++) {
+      // 避开画面中央，散景只出现在四周。
+      var bokehAngle = bokehRandom() * Math.PI * 2
+      var bokehRadius = 0.62 + bokehRandom() * 0.6
+      bokehPositions[bokehIndex * 3] = Math.cos(bokehAngle) * bokehRadius * 1.15
+      bokehPositions[bokehIndex * 3 + 1] = Math.sin(bokehAngle) * bokehRadius
+      bokehColors[bokehIndex * 3] = bokehCool.r + (bokehWarm.r - bokehCool.r) * bokehRandom()
+      bokehColors[bokehIndex * 3 + 1] = bokehCool.g + (bokehWarm.g - bokehCool.g) * bokehRandom()
+      bokehColors[bokehIndex * 3 + 2] = bokehCool.b + (bokehWarm.b - bokehCool.b) * bokehRandom()
+      bokehSizes[bokehIndex] = 22 + Math.pow(bokehRandom(), 1.6) * 64
+      bokehAlphas[bokehIndex] = 0.02 + bokehRandom() * 0.035
+    }
+    var bokehGeometry = new THREE.BufferGeometry()
+    bokehGeometry.setAttribute('position', new THREE.BufferAttribute(bokehPositions, 3))
+    bokehGeometry.setAttribute('aColor', new THREE.BufferAttribute(bokehColors, 3))
+    bokehGeometry.setAttribute('aSize', new THREE.BufferAttribute(bokehSizes, 1))
+    bokehGeometry.setAttribute('aAlpha', new THREE.BufferAttribute(bokehAlphas, 1))
+    var bokehMaterial = new THREE.ShaderMaterial({
+      uniforms: { uPixelRatio: { value: pixelRatio }, uParallax: { value: new THREE.Vector2() } },
+      vertexShader: [
+        'uniform float uPixelRatio;', 'uniform vec2 uParallax;', 'attribute vec3 aColor;', 'attribute float aSize;', 'attribute float aAlpha;',
+        'varying vec3 vColor;', 'varying float vAlpha;',
+        'void main(){ gl_Position=vec4(position.xy-uParallax*.07,0.1,1.0); gl_PointSize=aSize*uPixelRatio; vColor=aColor; vAlpha=aAlpha; }'
+      ].join('\n'),
+      fragmentShader: [
+        'varying vec3 vColor;', 'varying float vAlpha;',
+        // 散景盘：边缘略亮的一圈，内部均匀。
+        'void main(){ float d=distance(gl_PointCoord,vec2(.5))*2.0; float disc=1.0-smoothstep(.86,1.0,d); float rim=smoothstep(.62,.94,d)*disc; float a=(disc*.75+rim*.5)*vAlpha; if(a<.002)discard; gl_FragColor=vec4(vColor,a); }'
+      ].join('\n'),
+      transparent: true,
+      depthTest: false,
+      depthWrite: false,
+      blending: THREE.AdditiveBlending,
+      toneMapped: false
+    })
+    var bokehLayer = new THREE.Points(bokehGeometry, bokehMaterial)
+    bokehLayer.frustumCulled = false
+    bokehLayer.renderOrder = 6
+    // 挂在银河带下面，跟它一起显隐。
+    milkyWayBand.add(bokehLayer)
     var warmWhite = new THREE.Color('#fff8e8')
     var warmGold = new THREE.Color('#e0c0a5')
     var steelBlue = new THREE.Color('#95a2b3')
@@ -2777,62 +2869,107 @@
       positionGalaxyForLayout(layout)
     }
 
-    // Simple FBM-like noise for irregular arm perturbation
-    function armNoiseFBM (random, radial, seed) {
-      var v = 0
-      var amp = 1
-      var freq = 1
-      for (var octave = 0; octave < 4; octave++) {
-        v += Math.sin(radial * freq * 2.8 + seed * 7.13 + octave * 3.71) * amp
-        v += Math.cos(radial * freq * 1.9 + seed * 11.37 + octave * 5.93) * amp * 0.6
-        amp *= 0.48
-        freq *= 2.15
-      }
-      return v
-    }
+    // 旋臂按密度波理论分布：恒星先按指数盘抽样，再用对数螺线旋臂的密度做拒绝采样。
+    // 臂上年轻恒星偏蓝、点缀粉色电离氢区，臂间是偏暖的老年星；尘埃带贴着旋臂内侧（凹侧）。
+    var hiiPink = new THREE.Color('#e3a6b8')
+    var youngBlue = new THREE.Color('#aebfe0')
 
     function createGalaxyConfig () {
       galaxySeed = (galaxySeed + 0x9e3779b9) >>> 0
       var random = randomFactory(galaxySeed)
-      var armTotal = 2 + Math.floor(random() * 4)
+      var armRoll = random()
+      var armTotal = armRoll < 0.55 ? 2 : armRoll < 0.78 ? 4 : 3
       var armProfiles = []
       for (var index = 0; index < armTotal; index++) {
         armProfiles.push({
-          phase: (random() - 0.5) * 0.9,
-          twist: 0.4 + random() * 0.8,
-          width: 0.7 + random() * 1.1,
-          length: 0.82 + random() * 0.35,
-          density: 0.7 + random() * 0.42,
-          drift: 0.22 + random() * 0.48,
-          branch: 0.5 + random() * 1.0,
-          // New: per-arm irregularity parameters
-          curveSeed: random() * 100,
-          curveAmplitude: 0.15 + random() * 0.35,
-          kinkCount: 1 + Math.floor(random() * 3),
-          kinkStrength: 0.08 + random() * 0.22,
-          twistVariation: (random() - 0.5) * 0.4,
-          widthVariation: 0.6 + random() * 0.8
+          phase: (random() - 0.5) * 0.3,
+          strength: 0.78 + random() * 0.22,
+          width: 0.85 + random() * 0.35,
+          length: 0.82 + random() * 0.22,
+          wobble: random() * 100,
+          clump: 2.4 + random() * 2.2
         })
       }
+      var radius = 8.5 + random() * 2.5
+      var pitch = (12 + random() * 10) * Math.PI / 180
       return {
         seed: galaxySeed,
         arms: armTotal,
         armProfiles: armProfiles,
-        radius: 8.5 + random() * 2.5,
-        twist: 0.25 + random() * 0.45,
-        xScale: 0.82 + random() * 0.35,
-        zScale: 0.78 + random() * 0.38,
+        radius: radius,
+        pitch: pitch,
+        twist: 1 / Math.tan(pitch),
+        scaleLength: radius * (0.26 + random() * 0.06),
+        armWidth: 0.55 + random() * 0.2,
+        interArm: 0.035 + random() * 0.03,
+        bar: armTotal === 2 && random() < 0.6 ? 1.1 + random() * 0.8 : 0,
+        xScale: 0.88 + random() * 0.24,
+        zScale: 0.84 + random() * 0.26,
         coreScale: 0.9 + random() * 0.4,
-        branchChance: 0.14 + random() * 0.28,
-        armNoise: 0.18 + random() * 0.28,
         rotation: random() * Math.PI * 2,
         spin: 0.003 + random() * 0.008,
         tiltX: (random() - 0.5) * 0.18,
         tiltZ: (random() - 0.5) * 0.52,
         warp: random() * Math.PI * 2,
-        asymmetry: 0.85 + random() * 0.3,
         layout: createSpaceLayout(random)
       }
+    }
+
+    function galaxyArmStart (config) {
+      return config.bar || 0.85
+    }
+
+    // 第 armIndex 条对数螺线在给定半径处的方位角，叠一点低频扰动避免过分规整。
+    function galaxyArmAngle (config, armIndex, radial) {
+      var profile = config.armProfiles[armIndex]
+      var start = galaxyArmStart(config)
+      return armIndex / config.arms * Math.PI * 2 + profile.phase +
+        Math.log(Math.max(radial, start) / start) * config.twist +
+        Math.sin(radial * 0.85 + profile.wobble) * 0.07 +
+        Math.sin(radial * 2.2 + profile.wobble * 1.7) * 0.03
+    }
+
+    function smoothRange (low, high, value) {
+      var t = Math.max(0, Math.min(1, (value - low) / (high - low)))
+      return t * t * (3 - 2 * t)
+    }
+
+    // 给定位置的旋臂强度 0–1。laneShift>0 时把峰值移到旋臂内侧，用于尘埃带。
+    function galaxyArmField (config, radial, angle, laneShift) {
+      var best = 0
+      var start = galaxyArmStart(config)
+      for (var armIndex = 0; armIndex < config.arms; armIndex++) {
+        var profile = config.armProfiles[armIndex]
+        var delta = angle - galaxyArmAngle(config, armIndex, radial)
+        delta -= Math.round(delta / (Math.PI * 2)) * Math.PI * 2
+        var width = config.armWidth * profile.width * (0.8 + radial * 0.15)
+        var offset = delta * radial / width - laneShift
+        var limit = config.radius * profile.length
+        var strength = Math.exp(-0.5 * offset * offset) * profile.strength *
+          (0.7 + 0.3 * Math.sin(radial * profile.clump + profile.wobble)) *
+          (1 - smoothRange(limit * 0.8, limit * 1.12, radial)) *
+          smoothRange(start * 0.75, start * 1.25, radial)
+        if (strength > best) best = strength
+      }
+      return best
+    }
+
+    var diskSample = { radial: 0, angle: 0, arm: 0 }
+
+    function sampleGalaxyDisk (random, config, armBias, laneShift) {
+      for (var attempt = 0; attempt < 48; attempt++) {
+        // Gamma(2) 半径：指数盘的面密度分布。
+        var radial = -config.scaleLength * Math.log(Math.max(1e-6, random() * random()))
+        if (radial < 0.3 || radial > config.radius * 1.18) continue
+        var angle = random() * Math.PI * 2
+        var arm = galaxyArmField(config, radial, angle, laneShift)
+        var density = Math.pow(config.interArm + (1 - config.interArm) * arm, armBias)
+        diskSample.radial = radial
+        diskSample.angle = angle
+        diskSample.arm = arm
+        if (random() <= density) return diskSample
+      }
+      return diskSample
     }
 
     function buildGalaxyGeometries (config, tier) {
@@ -2844,54 +2981,61 @@
       var dust = createParticleBuffer(dustCount)
       var random = randomFactory(config.seed ^ 0x51f15e)
       var twoPi = Math.PI * 2
-      var coreCount = Math.floor(luminousCount * 0.14)
-      var armCount = Math.floor(luminousCount * 0.62)
+      var bulgeCount = Math.floor(luminousCount * 0.16)
+      var barCount = config.bar ? Math.floor(luminousCount * 0.05) : 0
+      var diskCount = Math.floor(luminousCount * 0.61)
+      var barAngle = config.armProfiles[0].phase
+      var written = 0
 
-      for (var coreIndex = 0; coreIndex < coreCount; coreIndex++) {
-        var coreRadius = Math.pow(random(), 2.2) * 1.95 * config.coreScale
-        var coreAngle = random() * twoPi
-        var coreHeight = centeredNoise(random) * (0.38 * (1 - coreRadius / (2.3 * config.coreScale)) + 0.06)
-        writeParticle(luminous, coreIndex, Math.cos(coreAngle) * coreRadius * config.xScale, coreHeight, Math.sin(coreAngle) * coreRadius * 0.9 * config.zScale, 0.65 + random() * 1.75, random(), 0.62 + random() * 0.34, warmWhite, warmGold, Math.min(1, coreRadius / (1.95 * config.coreScale)))
+      // 核球：Hernquist 分布，略扁的椭球，颜色最暖。
+      var bulgeScale = 0.5 * config.coreScale
+      for (var bulgeIndex = 0; bulgeIndex < bulgeCount; bulgeIndex++) {
+        var s = Math.sqrt(random()) * 0.92
+        var bulgeRadius = Math.min(2.6 * config.coreScale, bulgeScale * s / (1 - s))
+        var theta = random() * twoPi
+        var cosPhi = random() * 2 - 1
+        var sinPhi = Math.sqrt(1 - cosPhi * cosPhi)
+        writeParticle(luminous, written++,
+          Math.cos(theta) * sinPhi * bulgeRadius * config.xScale,
+          cosPhi * bulgeRadius * 0.62,
+          Math.sin(theta) * sinPhi * bulgeRadius * config.zScale,
+          0.6 + random() * 1.7, random(), 0.6 + random() * 0.36, warmWhite, warmGold, Math.min(1, bulgeRadius / (2 * config.coreScale)))
       }
 
-      for (var armIndex = 0; armIndex < armCount; armIndex++) {
-        var arm = Math.floor(random() * config.arms)
-        var profile = config.armProfiles[arm]
-        var armLimit = Math.max(4.2, config.radius * profile.length)
-        var radial = 0.48 + Math.pow(random(), 0.62) * (armLimit - 0.48)
-        // Variable twist rate: twist changes along the arm for non-uniform curvature
-        var localTwist = config.twist * profile.twist + profile.twistVariation * Math.sin(radial * 1.8 + profile.curveSeed)
-        var armAngle = arm / config.arms * twoPi + profile.phase + radial * localTwist
-        // FBM noise perturbation for irregular Milky-Way-like curves
-        armAngle += armNoiseFBM(random, radial, profile.curveSeed) * profile.curveAmplitude
-        // Kinks: sudden angle shifts at specific radii
-        for (var kink = 0; kink < profile.kinkCount; kink++) {
-          var kinkRadius = (kink + 1) / (profile.kinkCount + 1) * armLimit
-          var kinkDist = Math.abs(radial - kinkRadius)
-          if (kinkDist < 0.8) {
-            armAngle += Math.sin(profile.curveSeed * (kink + 1) * 7.3) * profile.kinkStrength * (1 - kinkDist / 0.8)
-          }
+      // 棒：只在双臂星系中出现，旋臂从棒的两端发出。
+      for (var barIndex = 0; barIndex < barCount; barIndex++) {
+        var along = centeredNoise(random) * 0.95 * config.bar
+        var across = centeredNoise(random) * 0.2 * (1 - Math.abs(along) / (config.bar * 1.6))
+        writeParticle(luminous, written++,
+          (Math.cos(barAngle) * along - Math.sin(barAngle) * across) * config.xScale,
+          centeredNoise(random) * 0.08,
+          (Math.sin(barAngle) * along + Math.cos(barAngle) * across) * config.zScale,
+          0.55 + random() * 1.3, random(), 0.5 + random() * 0.4, warmWhite, warmGold, 0.3 + random() * 0.5)
+      }
+
+      // 盘：旋臂上的年轻星偏蓝，臂间偏暖；臂峰处点缀亮巨星与电离氢区。
+      for (var diskIndex = 0; diskIndex < diskCount; diskIndex++) {
+        var sample = sampleGalaxyDisk(random, config, 1, 0)
+        var radial = sample.radial
+        var angle = sample.angle
+        var arm = sample.arm
+        var thickness = centeredNoise(random) * (0.05 + radial * 0.022) * (1 - arm * 0.45)
+        var x = Math.cos(angle) * radial * config.xScale
+        var z = Math.sin(angle) * radial * config.zScale
+        var roll = random()
+        if (arm > 0.62 && roll > 0.986) {
+          writeParticle(luminous, written++, x, thickness, z, 1.5 + random() * 1.3, random(), 0.85 + random() * 0.15, hiiPink, warmSpark, random() * 0.4)
+        } else if (arm > 0.45 && roll > 0.972) {
+          writeParticle(luminous, written++, x, thickness, z, 1.4 + random() * 1.4, random(), 0.9, coolSpark, warmWhite, random() * 0.5)
+        } else {
+          var youth = Math.pow(arm, 0.75) * (0.55 + random() * 0.45)
+          var alpha = (0.3 + random() * 0.5) * (0.5 + arm * 0.5)
+          writeParticle(luminous, written++, x, thickness, z, (0.45 + random() * 1.15) * (0.85 + arm * 0.3), random(), alpha, youth > 0.5 ? mutedViolet : warmGold, youth > 0.5 ? youngBlue : steelBlue, youth)
         }
-        // Per-arm asymmetry
-        var armAsym = arm % 2 === 0 ? config.asymmetry : (2 - config.asymmetry)
-        armAngle += Math.sin(radial * profile.drift + config.warp + arm) * (0.1 + radial * 0.025) * armAsym
-        if (random() < config.branchChance * profile.branch) armAngle += (random() > 0.5 ? 1 : -1) * (0.12 + radial * (0.022 + random() * 0.03))
-        var interArm = random() < 0.18
-        if (interArm) armAngle += centeredNoise(random) * 0.75
-        armAngle += centeredNoise(random) * (config.armNoise + radial * 0.055) * profile.width
-        // Variable width along arm
-        var localWidth = profile.width * (0.7 + 0.3 * Math.sin(radial * profile.widthVariation + profile.curveSeed * 3.1))
-        var armWidth = centeredNoise(random) * (0.12 + radial * 0.07) * localWidth
-        var armX = (Math.cos(armAngle) * radial + Math.cos(armAngle + Math.PI / 2) * armWidth) * config.xScale
-        var armZ = (Math.sin(armAngle) * radial + Math.sin(armAngle + Math.PI / 2) * armWidth) * config.zScale
-        var armY = centeredNoise(random) * (0.08 + radial * 0.04) * localWidth + Math.sin(armAngle * 2 + config.warp) * radial * 0.022
-        var highlight = random()
-        var armSize = highlight > 0.985 ? 1.45 + random() * 1.35 : (0.5 + random() * 1.25) * (0.88 + profile.width * 0.12)
-        var armAlpha = Math.min(1, (highlight > 0.985 ? 0.94 : 0.4 + random() * 0.56) * profile.density * (interArm ? 0.48 : 1))
-        writeParticle(luminous, coreCount + armIndex, armX, armY, armZ, armSize, random(), armAlpha, highlight > 0.985 ? warmSpark : steelBlue, highlight > 0.985 ? coolSpark : mutedViolet, random())
       }
 
-      var haloStart = coreCount + armCount
+      // 外围：稀薄的晕与远场星，保留原来的层次。
+      var haloStart = written
       var haloCount = luminousCount - haloStart
       for (var haloIndex = haloStart; haloIndex < luminousCount; haloIndex++) {
         var haloProgress = (haloIndex - haloStart) / Math.max(1, haloCount)
@@ -2905,6 +3049,7 @@
         }
       }
 
+      // 弥散光：核心暖光、沿旋臂的冷色光带（比恒星更集中在臂上）、外围淡晕。
       var hazeCoreCount = Math.floor(hazeCount * 0.3)
       var hazeArmEnd = hazeCoreCount + Math.floor(hazeCount * 0.52)
       for (var hazeIndex = 0; hazeIndex < hazeCount; hazeIndex++) {
@@ -2913,24 +3058,8 @@
           var hazeAngle = random() * twoPi
           writeParticle(haze, hazeIndex, Math.cos(hazeAngle) * hazeRadius * config.xScale, centeredNoise(random) * Math.max(0.08, 0.42 - hazeRadius * 0.09), Math.sin(hazeAngle) * hazeRadius * 0.9 * config.zScale, 3.8 + random() * 6.2, random(), 0.06 + random() * 0.075, hazeWarm, warmGold, random())
         } else if (hazeIndex < hazeArmEnd) {
-          var hazeArm = Math.floor(random() * config.arms)
-          var hazeProfile = config.armProfiles[hazeArm]
-          var hazeLimit = Math.max(4.5, config.radius * hazeProfile.length)
-          var hazeRadial = 0.65 + Math.pow(random(), 0.62) * (hazeLimit - 0.65)
-          var hazeLocalTwist = config.twist * hazeProfile.twist + hazeProfile.twistVariation * Math.sin(hazeRadial * 1.8 + hazeProfile.curveSeed)
-          var hazeArmAngle = hazeArm / config.arms * twoPi + hazeProfile.phase + hazeRadial * hazeLocalTwist
-          hazeArmAngle += armNoiseFBM(random, hazeRadial, hazeProfile.curveSeed) * hazeProfile.curveAmplitude * 1.2
-          for (var hazeKink = 0; hazeKink < hazeProfile.kinkCount; hazeKink++) {
-            var hazeKinkR = (hazeKink + 1) / (hazeProfile.kinkCount + 1) * hazeLimit
-            var hazeKinkDist = Math.abs(hazeRadial - hazeKinkR)
-            if (hazeKinkDist < 1.0) hazeArmAngle += Math.sin(hazeProfile.curveSeed * (hazeKink + 1) * 7.3) * hazeProfile.kinkStrength * (1 - hazeKinkDist / 1.0)
-          }
-          hazeArmAngle += Math.sin(hazeRadial * hazeProfile.drift + config.warp + hazeArm) * (0.09 + hazeRadial * 0.022)
-          if (random() < config.branchChance * hazeProfile.branch) hazeArmAngle += (random() > 0.5 ? 1 : -1) * (0.12 + hazeRadial * 0.025)
-          hazeArmAngle += centeredNoise(random) * (config.armNoise * 1.45 + hazeRadial * 0.07) * hazeProfile.width
-          var hazeLocalWidth = hazeProfile.width * (0.7 + 0.3 * Math.sin(hazeRadial * hazeProfile.widthVariation + hazeProfile.curveSeed * 3.1))
-          var hazeWidth = centeredNoise(random) * (0.22 + hazeRadial * 0.12) * hazeLocalWidth
-          writeParticle(haze, hazeIndex, (Math.cos(hazeArmAngle) * hazeRadial + Math.cos(hazeArmAngle + Math.PI / 2) * hazeWidth) * config.xScale, centeredNoise(random) * (0.12 + hazeRadial * 0.07) * hazeLocalWidth, (Math.sin(hazeArmAngle) * hazeRadial + Math.sin(hazeArmAngle + Math.PI / 2) * hazeWidth) * config.zScale, 2.8 + random() * 4.7, random(), (0.035 + random() * 0.065) * hazeProfile.density, hazeCool, mutedViolet, random())
+          var hazeSample = sampleGalaxyDisk(random, config, 2.2, 0)
+          writeParticle(haze, hazeIndex, Math.cos(hazeSample.angle) * hazeSample.radial * config.xScale, centeredNoise(random) * (0.1 + hazeSample.radial * 0.04), Math.sin(hazeSample.angle) * hazeSample.radial * config.zScale, 2.6 + random() * 4.4, random(), (0.03 + random() * 0.06) * (0.4 + hazeSample.arm * 0.8), hazeCool, mutedViolet, random())
         } else {
           var outerHazeRadius = 4.5 + Math.pow(random(), 0.42) * 7.4
           var outerHazeAngle = random() * twoPi
@@ -2938,24 +3067,10 @@
         }
       }
 
+      // 尘埃带：只沿旋臂内侧的窄带分布，臂间几乎没有。
       for (var dustIndex = 0; dustIndex < dustCount; dustIndex++) {
-        var dustArm = Math.floor(random() * config.arms)
-        var dustProfile = config.armProfiles[dustArm]
-        var dustLimit = Math.max(4.2, config.radius * dustProfile.length)
-        var dustRadius = 0.7 + Math.pow(random(), 0.68) * (dustLimit - 0.7)
-        var dustLocalTwist = config.twist * dustProfile.twist + dustProfile.twistVariation * Math.sin(dustRadius * 1.8 + dustProfile.curveSeed)
-        var dustAngle = dustArm / config.arms * twoPi + dustProfile.phase + dustRadius * dustLocalTwist - 0.1
-        dustAngle += armNoiseFBM(random, dustRadius, dustProfile.curveSeed) * dustProfile.curveAmplitude * 0.8
-        for (var dustKink = 0; dustKink < dustProfile.kinkCount; dustKink++) {
-          var dustKinkR = (dustKink + 1) / (dustProfile.kinkCount + 1) * dustLimit
-          var dustKinkDist = Math.abs(dustRadius - dustKinkR)
-          if (dustKinkDist < 0.9) dustAngle += Math.sin(dustProfile.curveSeed * (dustKink + 1) * 7.3) * dustProfile.kinkStrength * 0.7 * (1 - dustKinkDist / 0.9)
-        }
-        dustAngle += Math.sin(dustRadius * dustProfile.drift + config.warp + dustArm) * (0.07 + dustRadius * 0.015)
-        dustAngle += centeredNoise(random) * (0.1 + dustRadius * 0.035) * dustProfile.width
-        var dustLocalWidth = dustProfile.width * (0.7 + 0.3 * Math.sin(dustRadius * dustProfile.widthVariation + dustProfile.curveSeed * 3.1))
-        var dustWidth = centeredNoise(random) * (0.09 + dustRadius * 0.05) * dustLocalWidth
-        writeParticle(dust, dustIndex, (Math.cos(dustAngle) * dustRadius + Math.cos(dustAngle + Math.PI / 2) * dustWidth) * config.xScale, centeredNoise(random) * (0.04 + dustRadius * 0.02) * dustLocalWidth, (Math.sin(dustAngle) * dustRadius + Math.sin(dustAngle + Math.PI / 2) * dustWidth) * config.zScale, 1.2 + random() * 2.4, random(), 0.03 + random() * 0.07, darkDust, liftedDust, random())
+        var dustSample = sampleGalaxyDisk(random, config, 3, 0.75)
+        writeParticle(dust, dustIndex, Math.cos(dustSample.angle) * dustSample.radial * config.xScale, centeredNoise(random) * (0.03 + dustSample.radial * 0.012), Math.sin(dustSample.angle) * dustSample.radial * config.zScale, 1.1 + random() * 2.2, random(), (0.04 + random() * 0.08) * (0.3 + dustSample.arm * 0.9), darkDust, liftedDust, random())
       }
 
       return { stars: finishParticleBuffer(luminous), haze: finishParticleBuffer(haze), dust: finishParticleBuffer(dust) }
@@ -3112,9 +3227,18 @@
     function updateGalaxy (time) {
       if (!galaxyConfig || activeTheme !== 'space') return
       var seconds = time * 0.001
+      // 鼠标视差：相机围绕注视点轻移，近处旋臂、远处晕、背景星场位移量各不相同。
       spaceCamera.position.copy(spaceCameraBase)
+      spaceCamera.position.x += spaceParallax.x * 0.75
+      spaceCamera.position.y += spaceParallax.y * 0.45
       spaceCameraLookAt.set(0, 0, 0)
       spaceCamera.lookAt(spaceCameraLookAt)
+      var focusDistance = spaceCamera.position.distanceTo(galaxyGroup.position)
+      galaxyStarMaterial.uniforms.uFocus.value = focusDistance
+      galaxyHazeMaterial.uniforms.uFocus.value = focusDistance
+      galaxyDustMaterial.uniforms.uFocus.value = focusDistance
+      milkyWayMaterial.uniforms.uParallax.value.set(spaceParallax.x, spaceParallax.y)
+      bokehMaterial.uniforms.uParallax.value.set(spaceParallax.x, spaceParallax.y)
       var pointerLightTarget = pointerActive ? 1 : 0
       galaxyStarMaterial.uniforms.uPointer.value.lerp(spacePointerNdc, 0.16)
       galaxyHazeMaterial.uniforms.uPointer.value.lerp(spacePointerNdc, 0.16)
@@ -3130,6 +3254,107 @@
       galaxyDustMaterial.uniforms.uTime.value = seconds
       milkyWayMaterial.uniforms.uTime.value = seconds
       root.dataset.galaxyRotation = galaxyGroup.rotation.y.toFixed(3)
+    }
+
+    // 引力透镜：鼠标停在标题上时，把整幅深空（2D 背景星场 + 星系）按点质量透镜方程重新采样，
+    // 标题四周弯出一圈爱因斯坦环。平时直接渲染，透镜强度归零后不产生任何额外开销。
+    var spaceLensTarget = 0
+    var spaceLens = null
+
+    function createSpaceLens () {
+      var lensSize = new THREE.Vector2(1, 1)
+      var sceneTarget = new THREE.WebGLRenderTarget(1, 1, { depthBuffer: false })
+      var backgroundTexture = new THREE.CanvasTexture(canvas)
+      backgroundTexture.generateMipmaps = false
+      backgroundTexture.minFilter = THREE.LinearFilter
+      backgroundTexture.magFilter = THREE.LinearFilter
+      var lensMaterial = new THREE.ShaderMaterial({
+        depthTest: false,
+        depthWrite: false,
+        toneMapped: false,
+        uniforms: {
+          tScene: { value: sceneTarget.texture },
+          tBackground: { value: backgroundTexture },
+          uCenter: { value: new THREE.Vector2(0.5, 0.5) },
+          uAspect: { value: 1 },
+          uSquash: { value: 0.5 },
+          uRadius: { value: 0.1 },
+          uStrength: { value: 0 }
+        },
+        vertexShader: duskPostQuadVertex,
+        fragmentShader: [
+          'uniform sampler2D tScene;uniform sampler2D tBackground;uniform vec2 uCenter;uniform float uAspect;uniform float uSquash;uniform float uRadius;uniform float uStrength;varying vec2 vUv;',
+          'vec2 metric(){return vec2(uAspect*uSquash,1.0);}',
+          // 点质量透镜：像平面上距中心 θ 的点，来自源平面 β = θ(1 - θE²/|θ|²)；远处用窗口收敛。
+          'vec2 lensed(vec2 uv,float radius){vec2 d=(uv-uCenter)*metric();float r2=dot(d,d)+radius*radius*.04+1e-6;',
+          'float window=1.0-smoothstep(radius*2.4,radius*5.5,sqrt(r2));',
+          'return uCenter+d*(1.0-radius*radius/r2*window)/metric();}',
+          'vec3 sky(vec2 uv){vec4 s=texture2D(tScene,uv);vec3 b=texture2D(tBackground,uv).rgb;return b*(1.0-s.a)+s.rgb;}',
+          'void main(){float radius=uRadius*uStrength;',
+          // 环上带一点色散，红蓝错开一线。
+          'vec3 color=vec3(sky(lensed(vUv,radius*1.006)).r,sky(lensed(vUv,radius)).g,sky(lensed(vUv,radius*.994)).b);',
+          'float r=length((vUv-uCenter)*metric());',
+          // 环内的透镜天体本身是暗的，压暗一些，标题也更清楚。
+          'color*=1.0-uStrength*.5*(1.0-smoothstep(radius*.45,radius*1.02,r));',
+          'gl_FragColor=vec4(color,1.0);}'
+        ].join('\n')
+      })
+      var lensCamera = new THREE.OrthographicCamera(-1, 1, 1, -1, 0, 1)
+      var lensQuad = new THREE.Mesh(new THREE.PlaneGeometry(2, 2), lensMaterial)
+      lensQuad.frustumCulled = false
+      var lensScene = new THREE.Scene()
+      lensScene.add(lensQuad)
+      var strength = 0
+
+      function updateGeometry () {
+        var title = document.getElementById('vexpaer-home-title')
+        if (!title) return
+        var rootRect = root.getBoundingClientRect()
+        var rect = title.getBoundingClientRect()
+        if (!rootRect.width || !rect.width) return
+        var uniforms = lensMaterial.uniforms
+        uniforms.uCenter.value.set((rect.left + rect.width / 2 - rootRect.left) / rootRect.width, 1 - (rect.top + rect.height / 2 - rootRect.top) / rootRect.height)
+        uniforms.uAspect.value = rootRect.width / rootRect.height
+        // 标题是宽条：把度量横向压扁，让环成为包住整行字的椭圆。
+        uniforms.uSquash.value = Math.max(0.28, Math.min(1, 1.9 * rect.height / rect.width))
+        uniforms.uRadius.value = rect.height / rootRect.height * 1.05
+      }
+
+      return {
+        resize: function () {
+          renderer.getDrawingBufferSize(lensSize)
+          sceneTarget.setSize(Math.max(1, Math.floor(lensSize.x)), Math.max(1, Math.floor(lensSize.y)))
+        },
+        active: function () {
+          strength += (spaceLensTarget - strength) * (reducedMotion.matches ? 1 : 0.075)
+          if (strength < 0.003 && !spaceLensTarget) strength = 0
+          root.dataset.spaceLens = strength > 0 ? strength.toFixed(2) : 'off'
+          return strength > 0
+        },
+        render: function () {
+          updateGeometry()
+          // 一个缓动的 S 形，让环“吸”出来而不是线性张开。
+          lensMaterial.uniforms.uStrength.value = strength * strength * (3 - 2 * strength)
+          backgroundTexture.needsUpdate = true
+          renderer.setRenderTarget(sceneTarget)
+          renderer.clear()
+          renderer.render(spaceScene, spaceCamera)
+          renderer.setRenderTarget(null)
+          renderer.render(lensScene, lensCamera)
+        }
+      }
+    }
+
+    try {
+      spaceLens = createSpaceLens()
+      spaceLens.resize()
+    } catch (error) {
+      spaceLens = null
+    }
+
+    function renderSpaceFrame () {
+      if (spaceLens && spaceLens.active()) spaceLens.render()
+      else renderer.render(spaceScene, spaceCamera)
     }
 
     var lifeCapacity = Math.max(20000, life.length)
@@ -3291,10 +3516,15 @@
         galaxyHazeMaterial.uniforms.uViewportAspect.value = aspect
         galaxyDustMaterial.uniforms.uViewportAspect.value = aspect
         milkyWayMaterial.uniforms.uPixelRatio.value = Math.min(nextPixelRatio || 1, 1.65)
+        bokehMaterial.uniforms.uPixelRatio.value = Math.min(nextPixelRatio || 1, 1.65)
+        if (spaceLens) spaceLens.resize()
         configureDuskCamera()
         configureSpaceCamera()
         if (galaxyConfig) rebuildGalaxy(false)
         rebuildLifeLayout()
+      },
+      setTitleLens: function (active) {
+        spaceLensTarget = active ? 1 : 0
       },
       setPointer: function (normalizedX, normalizedY) {
         pointerTarget.set(normalizedX * aspect, normalizedY)
@@ -3369,7 +3599,7 @@
         } else if (activeTheme === 'space') {
           updateGalaxy(time)
           updateMeteors(time)
-          renderer.render(spaceScene, spaceCamera)
+          renderSpaceFrame()
         } else {
           renderer.render(scene, camera)
         }
@@ -3409,15 +3639,32 @@
     if (threeLayer) threeLayer.render(time)
   }
 
+  // 等高山脉的 iframe 不接收指针事件，由宿主把鼠标位置转发进去。
+  function forwardFramePointer (active, x, y) {
+    var frameElement = sceneFrames.contours && sceneFrames.contours.element
+    if (!frameElement || activeTheme !== 'contours' || !frameElement.contentWindow) return
+    frameElement.contentWindow.postMessage({ type: 'vexpaer-scene-pointer', active: active, x: x, y: y }, window.location.origin)
+  }
+
   function syncPointer (event) {
     var bounds = root.getBoundingClientRect()
     pointerX = event.clientX - bounds.left
     pointerY = event.clientY - bounds.top
     pointerActive = pointerX >= 0 && pointerY >= 0 && pointerX <= bounds.width && pointerY <= bounds.height
     root.dataset.pointer = pointerActive ? 'active' : 'idle'
+    forwardFramePointer(pointerActive, pointerX / Math.max(1, bounds.width), pointerY / Math.max(1, bounds.height))
+    if (threeLayer) threeLayer.setTitleLens(pointerActive && activeTheme === 'space' && pointerOverTitle(event))
     if (threeLayer && pointerActive) {
       threeLayer.setPointer(pointerX / bounds.width * 2 - 1, 1 - pointerY / bounds.height * 2)
     }
+  }
+
+  function pointerOverTitle (event) {
+    var title = document.getElementById('vexpaer-home-title')
+    if (!title) return false
+    var rect = title.getBoundingClientRect()
+    var pad = 22
+    return event.clientX >= rect.left - pad && event.clientX <= rect.right + pad && event.clientY >= rect.top - pad && event.clientY <= rect.bottom + pad
   }
 
   function isToggleEvent (event) {
@@ -3458,6 +3705,8 @@
     if (lifePainting) return
     pointerActive = false
     root.dataset.pointer = 'idle'
+    forwardFramePointer(false, 0, 0)
+    if (threeLayer) threeLayer.setTitleLens(false)
   }, { passive: true })
 
   root.addEventListener('pointerup', function (event) {

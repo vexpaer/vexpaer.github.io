@@ -15,7 +15,7 @@
       width: 100%;
       height: 100%;
       overflow: hidden;
-      background: #242424;
+      background: #222222;
     }
 
     #scene {
@@ -24,7 +24,7 @@
       display: block;
       width: 100%;
       height: 100%;
-      background: #242424;
+      background: #222222;
       pointer-events: none;
     }
 
@@ -33,8 +33,8 @@
       inset: 0;
       pointer-events: none;
       background:
-        linear-gradient(180deg, rgba(0, 0, 0, 0.16), transparent 30%),
-        radial-gradient(ellipse 110% 92% at 50% 52%, transparent 45%, rgba(0, 0, 0, 0.3) 100%);
+        linear-gradient(180deg, rgba(0, 0, 0, 0.18), transparent 26%),
+        radial-gradient(ellipse 110% 92% at 50% 50%, transparent 52%, rgba(0, 0, 0, 0.34) 100%);
     }
   </style>
 </head>
@@ -44,6 +44,9 @@
 <script>
 (function () {
   'use strict';
+
+  // 等高线山脉：一块二维高度场，每条线是它在某个纵深上的一刀剖面。
+  // 由远及近逐条绘制，并用背景色填充线下区域，近处的山脊自然遮住远处的线。
 
   var canvas = document.getElementById('scene');
   var context = canvas.getContext('2d', { alpha: false });
@@ -57,10 +60,19 @@
   var random = randomFactory(271828);
   var clock = 0;
   var lastFrame = 0;
-  var nextPulseAt = 1.8;
+  var nextPulseAt = 2.4;
   var pulses = [];
+  var peaks = [];
   var background = null;
   var needsStaticFrame = true;
+  var lineCount = 36;
+  var pointCount = 240;
+  var horizon = 0;
+  var floorSpan = 0;
+  var relief = 0;
+  var accentDepth = 0.24;
+  var baseField = null;
+  var pointer = { x: 0.5, y: 0.5, depth: 0.5, active: false, strength: 0 };
 
   function randomFactory (seed) {
     return function () {
@@ -81,26 +93,123 @@
     return Math.exp(-0.5 * distance * distance);
   }
 
-  function terrainProfile (x) {
-    var mainPeak =
-      gaussian(x, 0.61, 0.043) * 0.205 +
-      gaussian(x, 0.585, 0.085) * 0.105;
-    var leftMass =
-      gaussian(x, 0.405, 0.066) * 0.145 +
-      gaussian(x, 0.315, 0.037) * 0.055;
-    var saddle = gaussian(x, 0.49, 0.06) * 0.075;
-    var rightMass =
-      gaussian(x, 0.715, 0.102) * 0.072 +
-      gaussian(x, 0.82, 0.085) * 0.035;
-    return mainPeak + leftMass + saddle + rightMass;
+  // ------------------------------------------------------------ 高度场
+
+  function hash2 (x, y) {
+    var n = Math.sin(x * 127.1 + y * 311.7) * 43758.5453;
+    return n - Math.floor(n);
   }
 
-  function staticRoughness (x, lineIndex, depth) {
-    var broad = Math.sin(x * 49 + lineIndex * 0.61) * 0.7;
-    var fine = Math.sin(x * 123 - lineIndex * 0.39) * 0.3;
-    var ridgeMask = clamp(terrainProfile(x) * 7.5, 0.08, 1);
-    return (broad + fine) * ridgeMask * (1 - depth * 0.42) * height * 0.0018;
+  function valueNoise (x, y) {
+    var ix = Math.floor(x);
+    var iy = Math.floor(y);
+    var fx = x - ix;
+    var fy = y - iy;
+    var ux = fx * fx * (3 - 2 * fx);
+    var uy = fy * fy * (3 - 2 * fy);
+    var a = hash2(ix, iy);
+    var b = hash2(ix + 1, iy);
+    var c = hash2(ix, iy + 1);
+    var d = hash2(ix + 1, iy + 1);
+    return (a + (b - a) * ux) + ((c + (d - c) * ux) - (a + (b - a) * ux)) * uy;
   }
+
+  // 脊状噪声：取 1-|n| 再平方，得到尖锐的山脊而不是圆包。
+  function ridged (x, y) {
+    var sum = 0;
+    var amp = 0.5;
+    var weight = 1;
+    for (var octave = 0; octave < 4; octave++) {
+      var n = 1 - Math.abs(valueNoise(x, y) * 2 - 1);
+      n *= n * weight;
+      weight = clamp(n * 1.6, 0, 1);
+      sum += n * amp;
+      x = x * 2.03 + 17.1;
+      y = y * 2.03 - 9.4;
+      amp *= 0.5;
+    }
+    return sum;
+  }
+
+  function fbm (x, y) {
+    var sum = 0;
+    var amp = 0.5;
+    for (var octave = 0; octave < 3; octave++) {
+      sum += (valueNoise(x, y) * 2 - 1) * amp;
+      x = x * 2.1 + 5.3;
+      y = y * 2.1 - 3.7;
+      amp *= 0.5;
+    }
+    return sum;
+  }
+
+  function buildPeaks () {
+    var peakRandom = randomFactory(0x4d6f756e);
+    function jitter (value, spread) { return value + (peakRandom() - 0.5) * spread; }
+    // x：横向位置；z：纵深（0 为最远）；h：高度；sx/sz：横向与纵深跨度；p：越小越尖。
+    peaks = [
+      { x: jitter(0.635, 0.02), z: 0.2, h: 1.0, sx: 0.048, sz: 0.085, p: 0.62 },
+      { x: jitter(0.565, 0.02), z: 0.27, h: 0.56, sx: 0.07, sz: 0.1, p: 0.8 },
+      { x: jitter(0.47, 0.03), z: 0.16, h: 0.52, sx: 0.04, sz: 0.07, p: 0.6 },
+      { x: jitter(0.765, 0.03), z: 0.3, h: 0.6, sx: 0.055, sz: 0.11, p: 0.7 },
+      { x: jitter(0.87, 0.03), z: 0.1, h: 0.42, sx: 0.06, sz: 0.08, p: 0.75 },
+      { x: jitter(0.36, 0.03), z: 0.36, h: 0.3, sx: 0.07, sz: 0.12, p: 0.85 },
+      { x: jitter(0.69, 0.03), z: 0.52, h: 0.26, sx: 0.09, sz: 0.14, p: 0.9 },
+      { x: jitter(0.12, 0.03), z: 0.24, h: 0.2, sx: 0.08, sz: 0.1, p: 0.9 },
+      { x: jitter(0.22, 0.03), z: 0.5, h: 0.3, sx: 0.06, sz: 0.1, p: 0.72 },
+      { x: jitter(0.05, 0.03), z: 0.62, h: 0.26, sx: 0.07, sz: 0.12, p: 0.8 },
+      { x: jitter(0.3, 0.04), z: 0.8, h: 0.14, sx: 0.1, sz: 0.14, p: 0.9 },
+      { x: jitter(0.86, 0.04), z: 0.82, h: 0.1, sx: 0.1, sz: 0.14, p: 1 }
+    ];
+  }
+
+  function massif (x, z) {
+    var total = 0;
+    for (var index = 0; index < peaks.length; index++) {
+      var peak = peaks[index];
+      var dx = (x - peak.x) / peak.sx;
+      var dz = (z - peak.z) / peak.sz;
+      var r2 = dx * dx + dz * dz;
+      if (r2 > 30) continue;
+      total += peak.h * Math.exp(-Math.pow(r2, peak.p) * 0.5);
+    }
+    return total;
+  }
+
+  function terrain (x, z) {
+    var body = massif(x, z);
+    // 山体越高，脊状细节越强；平地上只留很轻的起伏。
+    var detail = ridged(x * 7.5 + 3.1, z * 5.2 + 1.7) - 0.32;
+    var swell = fbm(x * 3.1 - 2.4, z * 2.6 + 8.2);
+    return body * (0.86 + detail * 0.5) + detail * (0.04 + z * 0.05) + swell * (0.03 + z * 0.06);
+  }
+
+  function depthToY (depth) {
+    return horizon + Math.pow(depth, 1.1) * floorSpan;
+  }
+
+  function yToDepth (y) {
+    return Math.pow(clamp((y - horizon) / floorSpan, 0, 1), 1 / 1.1);
+  }
+
+  function buildField () {
+    lineCount = clamp(Math.round(height / 30), 22, 32);
+    pointCount = clamp(Math.round(width / 4.5), 150, 340);
+    horizon = height * (width < 720 ? 0.4 : 0.37);
+    floorSpan = height * 0.6;
+    relief = height * (width < 720 ? 0.24 : 0.3);
+    baseField = new Float32Array(lineCount * (pointCount + 1));
+    for (var line = 0; line < lineCount; line++) {
+      var depth = line / Math.max(1, lineCount - 1);
+      for (var point = 0; point <= pointCount; point++) {
+        baseField[line * (pointCount + 1) + point] = terrain(point / pointCount, depth);
+      }
+    }
+    // 暖色强调线：取最接近主峰纵深的那一条。
+    accentDepth = Math.round(peaks[0].z * (lineCount - 1)) / Math.max(1, lineCount - 1);
+  }
+
+  // ------------------------------------------------------------ 动态
 
   function pulseOffset (x, depth) {
     var offset = 0;
@@ -108,35 +217,28 @@
       var pulse = pulses[index];
       var progress = (clock - pulse.start) / pulse.duration;
       if (progress <= 0 || progress >= 1) continue;
-
-      var center = pulse.x + Math.sin(progress * Math.PI + pulse.phase) * 0.006;
-      var horizontal = gaussian(x, center, pulse.radius);
+      var horizontal = gaussian(x, pulse.x, pulse.radius);
       var vertical = gaussian(depth, pulse.depth, pulse.depthRadius);
       var envelope = Math.pow(Math.sin(progress * Math.PI), 2);
-      var wave = Math.sin(
-        (x - center) / pulse.radius * Math.PI * pulse.frequency +
-        pulse.phase +
-        progress * Math.PI * 3
-      );
+      var wave = Math.sin((x - pulse.x) / pulse.radius * Math.PI * pulse.frequency + pulse.phase + progress * Math.PI * 2);
       offset += wave * horizontal * vertical * envelope * pulse.amplitude;
     }
     return offset;
   }
 
   function schedulePulse () {
-    var size = Math.min(width, height);
     pulses.push({
-      x: 0.12 + random() * 0.76,
-      depth: 0.08 + random() * 0.76,
-      radius: 0.035 + random() * 0.075,
-      depthRadius: 0.08 + random() * 0.16,
-      amplitude: clamp(size * (0.0025 + random() * 0.004), 1.5, 5.5),
-      frequency: 1.6 + random() * 1.9,
+      x: 0.1 + random() * 0.8,
+      depth: 0.1 + random() * 0.8,
+      radius: 0.04 + random() * 0.07,
+      depthRadius: 0.06 + random() * 0.12,
+      amplitude: clamp(Math.min(width, height) * (0.002 + random() * 0.003), 1.2, 4.5),
+      frequency: 1.2 + random() * 1.4,
       phase: random() * Math.PI * 2,
       start: clock,
-      duration: 1.55 + random() * 1.6
+      duration: 2.2 + random() * 2
     });
-    nextPulseAt = clock + 2.4 + random() * 3.8;
+    nextPulseAt = clock + 3 + random() * 4;
   }
 
   function updatePulses () {
@@ -146,43 +248,79 @@
     });
   }
 
+  function updatePointer (delta) {
+    var target = pointer.active ? 1 : 0;
+    var ease = 1 - Math.pow(0.02, delta || 0.016);
+    pointer.strength += (target - pointer.strength) * ease;
+    if (pointer.active) {
+      var depth = yToDepth(pointer.y * height + relief * 0.18);
+      pointer.depth += (depth - pointer.depth) * ease;
+      pointer.ex = pointer.ex === undefined ? pointer.x : pointer.ex + (pointer.x - pointer.ex) * ease;
+    }
+  }
+
+  // 鼠标推起的局部峰：横向窄、纵深宽，形状同样偏尖。
+  function pointerLift (x, depth) {
+    if (pointer.strength < 0.002 || pointer.ex === undefined) return 0;
+    var dx = (x - pointer.ex) / 0.055;
+    var dz = (depth - pointer.depth) / 0.11;
+    var r2 = dx * dx + dz * dz;
+    if (r2 > 30) return 0;
+    return Math.exp(-Math.pow(r2, 0.7) * 0.5) * 0.42 * pointer.strength;
+  }
+
+  // ------------------------------------------------------------ 绘制
+
+  var lineY = null;
+
   function draw () {
     context.setTransform(pixelRatio, 0, 0, pixelRatio, 0, 0);
-    context.fillStyle = background || '#242424';
+    context.fillStyle = background || '#222222';
     context.fillRect(0, 0, width, height);
+    if (!baseField) return;
 
-    var lineCount = clamp(Math.round(height / 12.5), 42, 72);
-    var pointCount = clamp(Math.round(width / 5), 130, 260);
-    var horizon = height * 0.405;
-
+    if (!lineY || lineY.length !== pointCount + 1) lineY = new Float32Array(pointCount + 1);
+    var step = width / pointCount;
     context.lineCap = 'round';
     context.lineJoin = 'round';
 
-    for (var lineIndex = 0; lineIndex < lineCount; lineIndex++) {
-      var depth = lineIndex / Math.max(1, lineCount - 1);
-      var depthCurve = Math.pow(depth, 1.08);
-      var base = horizon + depthCurve * height * 0.57;
-      var relief = 0.94 * Math.pow(1 - depth, 0.72) + 0.035;
+    for (var line = 0; line < lineCount; line++) {
+      var depth = line / Math.max(1, lineCount - 1);
+      var base = depthToY(depth);
+      // 每条线各自的缓慢呼吸，相位错开，避免整片同步起伏。
+      var breathe = 1 + Math.sin(clock * 0.21 + line * 1.37) * 0.035 + Math.sin(clock * 0.13 - line * 0.71) * 0.02;
+      var scale = relief * (0.62 + 0.38 * (1 - depth)) * breathe;
+      var rowOffset = line * (pointCount + 1);
 
-      context.beginPath();
-      for (var pointIndex = 0; pointIndex <= pointCount; pointIndex++) {
-        var xNormal = pointIndex / pointCount;
-        var x = xNormal * width;
-        var perspectiveTilt = (xNormal - 0.5) * height * -0.018 * (1 - depth);
-        var y =
-          base -
-          terrainProfile(xNormal) * height * relief +
-          perspectiveTilt +
-          staticRoughness(xNormal, lineIndex, depth) +
-          pulseOffset(xNormal, depth);
-
-        if (pointIndex === 0) context.moveTo(x, y);
-        else context.lineTo(x, y);
+      for (var point = 0; point <= pointCount; point++) {
+        var x = point / pointCount;
+        var heightValue = baseField[rowOffset + point] + pointerLift(x, depth);
+        lineY[point] = base - heightValue * scale + pulseOffset(x, depth);
       }
 
-      var alpha = 0.42 + depth * 0.38;
-      context.strokeStyle = 'rgba(244, 244, 244, ' + alpha.toFixed(3) + ')';
-      context.lineWidth = depth < 0.18 ? 0.72 : 0.88;
+      // 先用背景填满线下区域，遮住更远的线。
+      context.beginPath();
+      context.moveTo(0, lineY[0]);
+      for (var fillPoint = 1; fillPoint <= pointCount; fillPoint++) context.lineTo(fillPoint * step, lineY[fillPoint]);
+      context.lineTo(width, height + 2);
+      context.lineTo(0, height + 2);
+      context.closePath();
+      context.fillStyle = background;
+      context.fill();
+
+      context.beginPath();
+      context.moveTo(0, lineY[0]);
+      for (var strokePoint = 1; strokePoint <= pointCount; strokePoint++) context.lineTo(strokePoint * step, lineY[strokePoint]);
+
+      var accent = Math.abs(depth - accentDepth) < 0.5 / Math.max(1, lineCount - 1);
+      if (accent) {
+        context.strokeStyle = 'rgba(234, 158, 96, 0.95)';
+        context.lineWidth = 1.25;
+      } else {
+        var alpha = 0.3 + Math.pow(depth, 0.8) * 0.52;
+        context.strokeStyle = 'rgba(238, 236, 230, ' + alpha.toFixed(3) + ')';
+        context.lineWidth = 0.6 + depth * 0.55;
+      }
       context.stroke();
     }
 
@@ -199,9 +337,10 @@
     canvas.style.height = height + 'px';
 
     background = context.createLinearGradient(0, 0, 0, height);
-    background.addColorStop(0, '#303030');
-    background.addColorStop(0.52, '#272727');
-    background.addColorStop(1, '#151515');
+    background.addColorStop(0, '#2c2c2c');
+    background.addColorStop(0.5, '#242424');
+    background.addColorStop(1, '#141414');
+    buildField();
     needsStaticFrame = true;
     draw();
   }
@@ -215,6 +354,7 @@
         clock += delta;
         lastFrame = time;
         updatePulses();
+        updatePointer(delta);
         draw();
       }
     }
@@ -222,8 +362,16 @@
   }
 
   window.addEventListener('message', function (event) {
-    if (event.origin !== window.location.origin) return;
-    if (!event.data || event.data.type !== 'vexpaer-scene-visibility') return;
+    if (event.origin !== window.location.origin || !event.data) return;
+    if (event.data.type === 'vexpaer-scene-pointer') {
+      pointer.active = Boolean(event.data.active);
+      if (pointer.active) {
+        pointer.x = clamp(Number(event.data.x) || 0, 0, 1);
+        pointer.y = clamp(Number(event.data.y) || 0, 0, 1);
+      }
+      return;
+    }
+    if (event.data.type !== 'vexpaer-scene-visibility') return;
     running = Boolean(event.data.visible);
     if (running) {
       lastFrame = performance.now();
@@ -253,6 +401,7 @@
     });
   }
 
+  buildPeaks();
   fit();
   window.requestAnimationFrame(frame);
 })();

@@ -178,26 +178,46 @@
   outline-color: #6b543a;
 }
 
+/* 纸面上的顶栏：菜单与站名改用墨色，滚动后的固定顶栏保持原样。 */
+#page-header:not(.nav-fixed)[data-tone='light'] #nav a,
+#page-header:not(.nav-fixed)[data-tone='light'] #nav #toggle-menu,
+#page-header:not(.nav-fixed)[data-tone='light'] #nav #site-name {
+  color: #3a2f22;
+  text-shadow: none;
+}
+
 /* ------------------------------------------------------- 等高山脉 */
 
 #vexpaer-home[data-scene='contours'] {
-  --vexpaer-title-x: 22%;
-  --vexpaer-title-y: 18%;
-  background: #242424;
+  --vexpaer-title-x: 21%;
+  --vexpaer-title-y: 27%;
+  background: #222222;
 }
 
 #vexpaer-home[data-scene='contours'] #vexpaer-home-contours {
   pointer-events: none;
 }
 
+/* 山峰左侧的留白里放一行细字，下面一小段暖色短线呼应那条强调等高线。 */
 #vexpaer-home[data-scene='contours'] #vexpaer-home-title {
-  color: rgba(255, 255, 255, 0.94);
-  font-family: "Arial Narrow", "Roboto Condensed", "Segoe UI", "PingFang SC", "Microsoft YaHei", sans-serif;
-  font-size: clamp(2rem, 4.5vw, 4rem);
-  font-weight: 600;
-  letter-spacing: 0.08em;
-  line-height: 0.9;
-  text-shadow: 0 2px 16px rgba(0, 0, 0, 0.45);
+  color: rgba(240, 238, 232, 0.92);
+  font-family: "Segoe UI Light", "Helvetica Neue", "PingFang SC", "Microsoft YaHei", sans-serif;
+  font-size: clamp(1.5rem, 2.8vw, 2.5rem);
+  font-weight: 300;
+  letter-spacing: 0.42em;
+  line-height: 1;
+  text-indent: 0.42em;
+  text-transform: uppercase;
+  text-shadow: none;
+}
+
+#vexpaer-home[data-scene='contours'] #vexpaer-home-title::after {
+  content: '';
+  display: block;
+  width: 2.4rem;
+  height: 1px;
+  margin: 1.1rem auto 0;
+  background: #ea9e60;
 }
 
 @media (max-width: 768px) {
@@ -207,12 +227,12 @@
   }
 
   #vexpaer-home[data-scene='contours'] {
-    --vexpaer-title-x: 28%;
-    --vexpaer-title-y: 17%;
+    --vexpaer-title-x: 50%;
+    --vexpaer-title-y: 19%;
   }
 
   #vexpaer-home[data-scene='contours'] #vexpaer-home-title {
-    font-size: clamp(1.8rem, 9vw, 3rem);
+    font-size: clamp(1.4rem, 7vw, 2rem);
   }
 }
 

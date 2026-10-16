@@ -1,20 +1,46 @@
-section#vexpaer-blog-gateway.vexpaer-blog-gateway(aria-labelledby='vexpaer-blog-gateway-title' data-home-panel='blog')
-  .vexpaer-blog-gateway__ambient(aria-hidden='true')
-    i
-    i
-    i
-  a.vexpaer-blog-gateway__card(href=url_for('/blog/') aria-describedby='vexpaer-blog-gateway-description')
-    span.vexpaer-blog-gateway__index(aria-hidden='true') 01 / JOURNAL
-    .vexpaer-blog-gateway__visual(aria-hidden='true')
-      span.vexpaer-blog-gateway__orbit
-        i
-        i
-        i
-      span.vexpaer-blog-gateway__monogram V
-    .vexpaer-blog-gateway__content
-      span.vexpaer-blog-gateway__eyebrow= site.posts.length + ' 篇文章 · 持续更新'
-      h2#vexpaer-blog-gateway-title 博客内容
-      p#vexpaer-blog-gateway-description 从最近更新继续阅读，或沿着标签与归档探索全部笔记。
-      span.vexpaer-blog-gateway__action
-        span 进入博客
-        i(aria-hidden='true') ↗
+-
+  var journalPosts = site.posts.sort('date', -1)
+  var recentPosts = journalPosts.limit(5).toArray()
+  var firstPost = site.posts.sort('date').first()
+  var sinceYear = firstPost ? date(firstPost.date, 'YYYY') : ''
+
+section#vexpaer-blog-gateway.vexpaer-journal(aria-labelledby='vexpaer-blog-gateway-title' data-home-panel='blog' data-tone='light')
+  .vexpaer-journal__inner
+    header.vexpaer-journal__head
+      p.vexpaer-journal__label(data-reveal)
+        span 01
+        span Journal
+      h2#vexpaer-blog-gateway-title(data-reveal) 博客
+      p.vexpaer-journal__lead(data-reveal) 学习笔记、论文阅读与课程整理，按时间慢慢累积。
+
+      dl.vexpaer-journal__stats(data-reveal)
+        div
+          dt 文章
+          dd= site.posts.length
+        div
+          dt 标签
+          dd= site.tags.length
+        if sinceYear
+          div
+            dt 始于
+            dd= sinceYear
+
+      nav.vexpaer-journal__links(data-reveal aria-label='博客入口')
+        a.vexpaer-journal__cta(href=url_for('/blog/'))
+          span 全部文章
+          i(aria-hidden='true') →
+        a(href=url_for('/archives/')) 归档
+        a(href=url_for('/tags/')) 标签
+
+    section.vexpaer-journal__recent(aria-labelledby='vexpaer-journal-recent-title')
+      h3#vexpaer-journal-recent-title.vexpaer-journal__caption(data-reveal) 最近更新
+      ol.vexpaer-journal__list
+        each post in recentPosts
+          - var firstTag = post.tags && post.tags.length ? post.tags.toArray()[0].name : ''
+          li(data-reveal)
+            a(href=url_for(post.path))
+              time(datetime=date(post.date, 'YYYY-MM-DD'))= date(post.date, 'YYYY.MM.DD')
+              span.vexpaer-journal__title= post.title || '无标题'
+              if firstTag
+                span.vexpaer-journal__tag= firstTag
+              i(aria-hidden='true') →

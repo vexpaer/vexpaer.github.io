@@ -1,1025 +1,276 @@
+/* ------------------------------------------------------- 首页 · 影游陈列 */
+
 .vexpaer-explore-stack {
   position: relative;
   display: block;
-  overflow: hidden;
-  background: #05060d;
+  background: #0c0c0d;
 }
 
 .vexpaer-explore {
-  --explore-accent: #8fa6ff;
-  --explore-glow: #6653ff;
-  --explore-surface: #15182a;
+  --explore-paper: #0c0c0d;
+  --explore-ink: #ece8df;
+  --explore-muted: rgba(236, 232, 223, 0.5);
+  --explore-rule: rgba(236, 232, 223, 0.13);
+  --explore-serif: "Iowan Old Style", "Palatino Linotype", "Book Antiqua", "Source Han Serif SC", "Noto Serif SC", "Songti SC", "STSong", serif;
+  --explore-sans: system-ui, -apple-system, "Segoe UI", "PingFang SC", "Microsoft YaHei", sans-serif;
+  --explore-mono: "JetBrains Mono", "SFMono-Regular", Consolas, "Liberation Mono", monospace;
   position: relative;
   min-height: 100vh;
   min-height: 100svh;
-  overflow: hidden;
-  padding: clamp(1.25rem, 3vw, 2.5rem) clamp(1rem, 5vw, 4.5rem) clamp(4.5rem, 8vw, 7rem);
-  background:
-    radial-gradient(circle at 8% 12%, color-mix(in srgb, var(--explore-glow) 16%, transparent), transparent 28rem),
-    radial-gradient(circle at 88% 25%, color-mix(in srgb, var(--explore-accent) 12%, transparent), transparent 31rem),
-    linear-gradient(180deg, #080914 0%, #070812 48%, #05060d 100%);
+  display: grid;
+  align-items: center;
+  padding: clamp(5rem, 9vw, 8rem) clamp(1.25rem, 7vw, 7.5rem);
+  color: var(--explore-ink);
+  background: var(--explore-paper);
   scroll-margin-top: 3.75rem;
   isolation: isolate;
 }
 
-.vexpaer-explore + .vexpaer-explore {
-  border-top: 1px solid rgba(255, 255, 255, 0.055);
-}
-
-.vexpaer-explore[data-group='media'] {
-  background:
-    radial-gradient(circle at 8% 12%, rgba(255, 79, 129, 0.13), transparent 28rem),
-    radial-gradient(circle at 88% 25%, rgba(255, 138, 101, 0.11), transparent 31rem),
-    linear-gradient(180deg, #0d0810 0%, #09070d 52%, #06060c 100%);
-}
-
-.vexpaer-explore[data-group='start'] {
-  background:
-    radial-gradient(circle at 12% 18%, rgba(101, 228, 211, 0.12), transparent 28rem),
-    radial-gradient(circle at 86% 30%, rgba(20, 136, 204, 0.13), transparent 31rem),
-    linear-gradient(180deg, #071112 0%, #070d11 52%, #05080d 100%);
-}
-
-.vexpaer-explore[data-group='incremental'] {
-  background:
-    radial-gradient(circle at 8% 16%, rgba(201, 167, 255, 0.13), transparent 28rem),
-    radial-gradient(circle at 88% 28%, rgba(114, 92, 255, 0.13), transparent 31rem),
-    linear-gradient(180deg, #0c0916 0%, #090812 52%, #06060d 100%);
-}
-
-.vexpaer-explore::before {
-  content: '';
-  position: absolute;
-  inset: 0;
-  z-index: -2;
-  pointer-events: none;
-  opacity: 0.42;
-  background-image:
-    linear-gradient(rgba(255, 255, 255, 0.026) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(255, 255, 255, 0.026) 1px, transparent 1px);
-  background-size: 72px 72px;
-  -webkit-mask-image: radial-gradient(ellipse at 50% 22%, #000 8%, transparent 74%);
-  mask-image: radial-gradient(ellipse at 50% 22%, #000 8%, transparent 74%);
-}
-
-.vexpaer-explore::after {
-  content: '';
-  position: absolute;
-  top: 9rem;
-  right: -15rem;
-  z-index: -1;
-  width: 34rem;
-  aspect-ratio: 1;
-  border: 1px solid color-mix(in srgb, var(--explore-accent) 18%, transparent);
-  border-radius: 50%;
-  box-shadow:
-    0 0 0 5rem color-mix(in srgb, var(--explore-accent) 2%, transparent),
-    0 0 0 11rem color-mix(in srgb, var(--explore-glow) 1.5%, transparent);
-  pointer-events: none;
-}
-
-.vexpaer-explore__masthead,
-.vexpaer-explore-hero,
-.vexpaer-explore-projects,
-.vexpaer-explore-pager {
-  width: min(100%, 76rem);
+.vexpaer-explore__inner {
+  width: min(100%, 78rem);
   margin-inline: auto;
 }
 
-.vexpaer-explore__masthead {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 1.25rem;
-  min-height: 3rem;
-  color: rgba(235, 236, 248, 0.54);
+.vexpaer-explore__head {
+  display: grid;
+  grid-template-columns: minmax(0, 7fr) minmax(0, 5fr);
+  align-items: end;
+  gap: 1.5rem clamp(3rem, 8vw, 8rem);
+  margin-bottom: clamp(3rem, 6vw, 5rem);
 }
 
-.vexpaer-explore__context,
-.vexpaer-explore__section-name {
+.vexpaer-explore__label {
+  grid-column: 1 / -1;
+  display: flex;
+  gap: 0.9rem;
   margin: 0;
-  font: 500 0.68rem/1.3 Bahnschrift, "Segoe UI", sans-serif;
-  letter-spacing: 0.16em;
+  color: var(--explore-muted);
+  font: 400 0.72rem/1 var(--explore-mono);
+  letter-spacing: 0.18em;
   text-transform: uppercase;
 }
 
-.vexpaer-explore__context {
-  display: inline-flex;
-  align-items: center;
-  gap: 0.85rem;
+.vexpaer-explore__label span:first-child::after {
+  content: '';
+  display: inline-block;
+  width: 2.2rem;
+  height: 1px;
+  margin-left: 0.9rem;
+  vertical-align: middle;
+  background: currentColor;
+  opacity: 0.6;
 }
 
-.vexpaer-explore__context strong {
-  color: var(--explore-accent);
-  font: inherit;
-}
-
-.vexpaer-explore__section-name {
-  color: rgba(244, 244, 251, 0.72);
-  letter-spacing: 0.08em;
-}
-
-.vexpaer-explore__home {
-  display: inline-flex;
-  flex: 0 0 auto;
-  align-items: center;
-  gap: 0.65rem;
-  min-height: 2.75rem;
-  padding: 0.6rem 0.9rem;
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  border-radius: 999px;
-  color: rgba(241, 242, 251, 0.7);
-  font: 500 0.72rem/1 system-ui, -apple-system, "Segoe UI", sans-serif;
-  letter-spacing: 0.08em;
-  text-decoration: none;
-  transition: color 220ms ease, border-color 220ms ease, background-color 220ms ease;
-}
-
-.vexpaer-explore__home > span:first-child {
-  color: var(--explore-accent);
-  font-size: 0.95rem;
-}
-
-.vexpaer-explore__home:hover,
-.vexpaer-explore__home:focus-visible {
-  border-color: color-mix(in srgb, var(--explore-accent) 48%, transparent);
-  background: color-mix(in srgb, var(--explore-accent) 8%, transparent);
-  color: #fff;
-  text-decoration: none;
-}
-
-.vexpaer-explore__home:focus-visible,
-.vexpaer-explore-nav__item:focus-visible,
-.vexpaer-project-card__cta:focus-visible,
-.vexpaer-explore-pager__link:focus-visible {
-  outline: 2px solid var(--explore-accent);
-  outline-offset: 4px;
-}
-
-.vexpaer-explore-nav {
-  display: flex;
-  align-items: center;
-  gap: 0.25rem;
-  padding: 0.32rem;
-  border: 1px solid rgba(255, 255, 255, 0.08);
-  border-radius: 999px;
-  background: rgba(15, 17, 30, 0.68);
-  box-shadow: inset 0 1px rgba(255, 255, 255, 0.04);
-  backdrop-filter: blur(16px);
-  -webkit-backdrop-filter: blur(16px);
-}
-
-.vexpaer-explore-nav__item {
-  display: inline-flex;
-  align-items: center;
-  gap: 0.5rem;
-  min-height: 2.4rem;
-  padding: 0.55rem 0.85rem;
-  border-radius: 999px;
-  color: rgba(230, 232, 244, 0.53);
-  font: 500 0.72rem/1 system-ui, -apple-system, "Segoe UI", sans-serif;
-  letter-spacing: 0.045em;
-  text-decoration: none;
-  white-space: nowrap;
-  transition: color 220ms ease, background-color 220ms ease, box-shadow 220ms ease;
-}
-
-.vexpaer-explore-nav__index {
-  color: rgba(255, 255, 255, 0.32);
-  font: 500 0.62rem/1 Bahnschrift, "Segoe UI", sans-serif;
-  letter-spacing: 0.1em;
-}
-
-.vexpaer-explore-nav__item:hover,
-.vexpaer-explore-nav__item:focus-visible {
-  color: rgba(255, 255, 255, 0.86);
-  text-decoration: none;
-}
-
-.vexpaer-explore-nav__item.is-active {
-  background: color-mix(in srgb, var(--explore-accent) 13%, rgba(255, 255, 255, 0.035));
-  box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--explore-accent) 25%, transparent);
-  color: #fff;
-}
-
-.vexpaer-explore-nav__item.is-active .vexpaer-explore-nav__index {
-  color: var(--explore-accent);
-}
-
-.vexpaer-explore-hero {
-  display: grid;
-  grid-template-columns: minmax(0, 1.18fr) minmax(17rem, 0.72fr);
-  grid-template-rows: 1fr auto;
-  gap: clamp(1.5rem, 4vw, 3.5rem);
-  align-items: center;
-  min-height: clamp(35rem, 70vh, 47rem);
-  padding-block: clamp(4.5rem, 9vw, 8rem) clamp(4rem, 7vw, 6.5rem);
-}
-
-.vexpaer-explore-hero__copy {
-  grid-row: 1 / span 2;
-}
-
-.vexpaer-explore-hero__eyebrow {
-  margin: 0 0 1.35rem;
-  color: rgba(188, 193, 226, 0.62);
-  font: 500 0.7rem/1 Bahnschrift, "Segoe UI", sans-serif;
-  letter-spacing: 0.2em;
-}
-
-.vexpaer-explore-hero__eyebrow span:first-child {
-  color: var(--explore-accent);
-}
-
-.vexpaer-explore-hero h2 {
-  max-width: 13ch;
+.vexpaer-explore__head h2 {
   margin: 0;
-  color: #f8f7ff;
-  font: 400 clamp(3rem, 7vw, 6.25rem)/0.98 "Noto Serif SC", "Songti SC", serif;
-  letter-spacing: -0.065em;
-  text-wrap: balance;
-  text-shadow: 0 1rem 4rem rgba(0, 0, 0, 0.28);
-}
-
-.vexpaer-explore-hero__lead {
-  max-width: 38rem;
-  margin: clamp(1.5rem, 3vw, 2.15rem) 0 0;
-  color: rgba(242, 242, 250, 0.78);
-  font: 400 clamp(1rem, 1.65vw, 1.2rem)/1.8 system-ui, -apple-system, "Segoe UI", sans-serif;
+  color: var(--explore-ink);
+  font: 400 clamp(2.6rem, 5.4vw, 4.75rem)/1.08 var(--explore-serif);
   letter-spacing: 0.01em;
 }
 
-.vexpaer-explore-hero__description {
-  max-width: 35rem;
-  margin: 0.9rem 0 0;
-  color: rgba(221, 223, 239, 0.52);
-  font: 400 0.88rem/1.8 system-ui, -apple-system, "Segoe UI", sans-serif;
-}
-
-.vexpaer-explore-hero__art {
-  position: relative;
-  display: grid;
-  width: min(100%, 21rem);
-  aspect-ratio: 1;
-  place-items: center;
-  justify-self: center;
-  border-radius: 50%;
-  background:
-    radial-gradient(circle, color-mix(in srgb, var(--explore-accent) 17%, transparent), transparent 52%),
-    radial-gradient(circle at 35% 28%, color-mix(in srgb, var(--explore-glow) 22%, transparent), transparent 34%);
-  filter: drop-shadow(0 2rem 5rem color-mix(in srgb, var(--explore-glow) 16%, transparent));
-}
-
-.vexpaer-explore-hero__art::before,
-.vexpaer-explore-hero__art::after {
-  content: '';
-  position: absolute;
-  width: 0.42rem;
-  aspect-ratio: 1;
-  border-radius: 50%;
-  background: var(--explore-accent);
-  box-shadow: 0 0 1.2rem var(--explore-accent);
-}
-
-.vexpaer-explore-hero__art::before {
-  top: 20%;
-  left: 8%;
-}
-
-.vexpaer-explore-hero__art::after {
-  right: 13%;
-  bottom: 17%;
-  transform: scale(0.65);
-}
-
-.vexpaer-explore-hero__orbit {
-  position: absolute;
-  width: 82%;
-  aspect-ratio: 1;
-  border: 1px solid color-mix(in srgb, var(--explore-accent) 35%, transparent);
-  border-radius: 50%;
-  box-shadow: inset 0 0 3rem color-mix(in srgb, var(--explore-glow) 7%, transparent);
-}
-
-.vexpaer-explore-hero__orbit:nth-child(2) {
-  width: 58%;
-  border-color: color-mix(in srgb, var(--explore-glow) 34%, transparent);
-  transform: rotate(68deg) scaleY(0.42);
-}
-
-.vexpaer-explore-hero__core {
-  position: relative;
-  z-index: 1;
-  display: grid;
-  width: 36%;
-  aspect-ratio: 1;
-  place-items: center;
-  border: 1px solid color-mix(in srgb, var(--explore-accent) 56%, transparent);
-  border-radius: 50%;
-  background:
-    radial-gradient(circle at 35% 28%, color-mix(in srgb, var(--explore-accent) 68%, white), var(--explore-glow) 66%, rgba(8, 9, 20, 0.45) 68%);
-  box-shadow:
-    0 0 3.5rem color-mix(in srgb, var(--explore-glow) 30%, transparent),
-    inset 0 1px rgba(255, 255, 255, 0.4);
-  color: rgba(255, 255, 255, 0.88);
-  font: 500 clamp(0.75rem, 1.5vw, 1rem)/1 Bahnschrift, "Segoe UI", sans-serif;
-  letter-spacing: 0.14em;
-}
-
-.vexpaer-explore[data-art='frames'] .vexpaer-explore-hero__orbit:first-child {
-  border-radius: 22%;
-  transform: rotate(-9deg);
-}
-
-.vexpaer-explore[data-art='portal'] .vexpaer-explore-hero__orbit:nth-child(2) {
-  transform: rotate(-18deg) scaleY(0.46);
-}
-
-.vexpaer-explore[data-art='dynasty'] .vexpaer-explore-hero__core {
-  border-radius: 28%;
-  transform: rotate(45deg);
-}
-
-.vexpaer-explore[data-art='dynasty'] .vexpaer-explore-hero__core > span {
-  transform: rotate(-45deg);
-}
-
-.vexpaer-explore-hero__meta {
-  display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-  width: min(100%, 21rem);
+.vexpaer-explore__lead {
+  max-width: 24rem;
+  text-wrap: pretty;
   margin: 0;
-  padding-top: 1.1rem;
-  border-top: 1px solid rgba(255, 255, 255, 0.09);
-  justify-self: center;
+  color: var(--explore-muted);
+  font: 400 0.98rem/1.8 var(--explore-sans);
 }
 
-.vexpaer-explore-hero__meta > div + div {
-  padding-left: 1.2rem;
-  border-left: 1px solid rgba(255, 255, 255, 0.08);
-}
-
-.vexpaer-explore-hero__meta dt {
-  color: rgba(210, 213, 230, 0.42);
-  font: 500 0.62rem/1.3 system-ui, -apple-system, "Segoe UI", sans-serif;
-  letter-spacing: 0.12em;
-}
-
-.vexpaer-explore-hero__meta dd {
-  margin: 0.45rem 0 0;
-  color: rgba(248, 248, 253, 0.9);
-  font: 500 0.85rem/1.3 Bahnschrift, "Segoe UI", sans-serif;
-}
-
-.vexpaer-explore-projects {
-  position: relative;
-  padding-top: clamp(4rem, 8vw, 7rem);
-}
-
-.vexpaer-explore-projects::before {
-  content: '';
-  position: absolute;
-  top: 0;
-  right: 0;
-  left: 0;
-  height: 1px;
-  background: linear-gradient(90deg, transparent, color-mix(in srgb, var(--explore-accent) 36%, transparent), transparent);
-}
-
-.vexpaer-explore-projects__header {
-  display: grid;
-  grid-template-columns: 1fr auto;
-  align-items: end;
-  gap: 0.65rem 2rem;
-  margin-bottom: clamp(1.5rem, 3vw, 2.25rem);
-}
-
-.vexpaer-explore-projects__header p {
-  grid-column: 1 / -1;
+.vexpaer-explore__list {
   margin: 0;
-  color: color-mix(in srgb, var(--explore-accent) 68%, white);
-  font: 500 0.65rem/1 Bahnschrift, "Segoe UI", sans-serif;
-  letter-spacing: 0.2em;
-}
-
-.vexpaer-explore-projects__header h3 {
-  margin: 0;
-  color: #f7f7fd;
-  font: 400 clamp(2rem, 4vw, 3.3rem)/1.05 "Noto Serif SC", "Songti SC", serif;
-  letter-spacing: -0.045em;
-}
-
-.vexpaer-explore-projects__header > span {
-  padding-bottom: 0.35rem;
-  color: rgba(220, 222, 238, 0.48);
-  font: 500 0.72rem/1 Bahnschrift, "Segoe UI", sans-serif;
-  letter-spacing: 0.08em;
-}
-
-.vexpaer-explore-projects__grid {
-  display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: clamp(1rem, 2.3vw, 2rem);
-}
-
-.vexpaer-project-card {
-  --project-accent: var(--explore-accent);
-  --project-glow: var(--explore-glow);
-  position: relative;
-  display: grid;
-  grid-template-rows: minmax(18rem, 0.82fr) auto;
-  min-width: 0;
-  overflow: hidden;
-  border: 1px solid rgba(255, 255, 255, 0.105);
-  border-radius: clamp(1.45rem, 2.5vw, 2rem);
-  background:
-    linear-gradient(150deg, rgba(255, 255, 255, 0.072), rgba(255, 255, 255, 0.018) 52%),
-    color-mix(in srgb, var(--explore-surface) 54%, #080914);
-  box-shadow:
-    0 2rem 5rem rgba(0, 0, 0, 0.3),
-    inset 0 1px rgba(255, 255, 255, 0.075);
-  transition: border-color 280ms ease, box-shadow 360ms ease, background-color 280ms ease;
-}
-
-.vexpaer-project-card::before {
-  content: '';
-  position: absolute;
-  inset: auto -20% -28% -20%;
-  z-index: 0;
-  height: 48%;
-  background: radial-gradient(ellipse at center, var(--project-glow), transparent 68%);
-  opacity: 0.1;
-  filter: blur(28px);
-  pointer-events: none;
-  transition: opacity 300ms ease;
-}
-
-.vexpaer-project-card:hover,
-.vexpaer-project-card:focus-within {
-  border-color: color-mix(in srgb, var(--project-accent) 43%, transparent);
-  box-shadow:
-    0 2.4rem 6.5rem rgba(0, 0, 0, 0.4),
-    0 0 3rem color-mix(in srgb, var(--project-glow) 12%, transparent),
-    inset 0 1px rgba(255, 255, 255, 0.11);
-}
-
-.vexpaer-project-card:hover::before,
-.vexpaer-project-card:focus-within::before {
-  opacity: 0.24;
-}
-
-.vexpaer-project-card__visual-stage {
-  position: relative;
-  z-index: 1;
-  display: grid;
-  min-height: 18rem;
-  overflow: hidden;
-  place-items: center;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.075);
-  background:
-    radial-gradient(circle at 50% 48%, color-mix(in srgb, var(--project-glow) 20%, transparent), transparent 32%),
-    linear-gradient(145deg, color-mix(in srgb, var(--project-accent) 7%, transparent), transparent 60%);
-  transform-origin: 50% 55%;
-  will-change: transform;
-}
-
-.vexpaer-project-card__visual-stage::before {
-  content: '';
-  position: absolute;
-  inset: 0;
-  opacity: 0.3;
-  background-image:
-    linear-gradient(rgba(255, 255, 255, 0.035) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(255, 255, 255, 0.035) 1px, transparent 1px);
-  background-size: 2.5rem 2.5rem;
-  -webkit-mask-image: radial-gradient(circle at center, black, transparent 72%);
-  mask-image: radial-gradient(circle at center, black, transparent 72%);
-}
-
-.vexpaer-project-card__visual-index {
-  position: absolute;
-  top: 1.35rem;
-  left: 1.45rem;
-  color: color-mix(in srgb, var(--project-accent) 72%, white);
-  font: 500 0.65rem/1 Bahnschrift, "Segoe UI", sans-serif;
-  letter-spacing: 0.16em;
-}
-
-.vexpaer-project-card__visual-orbit {
-  position: absolute;
-  width: min(15rem, 62%);
-  aspect-ratio: 1;
-  border: 1px solid color-mix(in srgb, var(--project-accent) 28%, transparent);
-  border-radius: 50%;
-  box-shadow: inset 0 0 3rem color-mix(in srgb, var(--project-glow) 8%, transparent);
-}
-
-.vexpaer-project-card__visual-orbit:nth-of-type(2) {
-  width: min(11rem, 45%);
-  border-color: color-mix(in srgb, var(--project-glow) 34%, transparent);
-  transform: rotate(-22deg) scaleY(0.48);
-}
-
-.vexpaer-project-card__visual-mark {
-  position: relative;
-  z-index: 1;
-  display: block;
-  border: 2px solid color-mix(in srgb, var(--project-accent) 78%, white);
-  background: color-mix(in srgb, var(--project-glow) 18%, rgba(7, 8, 18, 0.88));
-  box-shadow:
-    0 0 2.5rem color-mix(in srgb, var(--project-glow) 28%, transparent),
-    inset 0 0 1.5rem color-mix(in srgb, var(--project-accent) 10%, transparent);
-}
-
-.vexpaer-project-card[data-art='film'] .vexpaer-project-card__visual-mark {
-  width: 8.8rem;
-  height: 5.8rem;
-  border-radius: 0.65rem;
-  background:
-    repeating-linear-gradient(90deg, transparent 0 0.7rem, color-mix(in srgb, var(--project-accent) 28%, transparent) 0.7rem 1rem),
-    color-mix(in srgb, var(--project-glow) 16%, rgba(7, 8, 18, 0.9));
-}
-
-.vexpaer-project-card[data-art='film'] .vexpaer-project-card__visual-mark::before {
-  content: '';
-  position: absolute;
-  inset: 0.8rem 1rem;
-  border: 1px solid color-mix(in srgb, var(--project-accent) 52%, transparent);
-  border-radius: 0.25rem;
-  background: radial-gradient(circle at 68% 35%, var(--project-accent), transparent 0.22rem), linear-gradient(145deg, transparent 44%, color-mix(in srgb, var(--project-glow) 52%, transparent) 45% 64%, transparent 65%);
-}
-
-.vexpaer-project-card[data-art='game'] .vexpaer-project-card__visual-mark {
-  width: 9rem;
-  height: 5rem;
-  border-radius: 2.8rem 2.8rem 2rem 2rem;
-  transform: perspective(12rem) rotateX(-9deg);
-}
-
-.vexpaer-project-card[data-art='game'] .vexpaer-project-card__visual-mark::before {
-  content: '';
-  position: absolute;
-  top: 1.15rem;
-  left: 1.55rem;
-  width: 1.55rem;
-  height: 0.45rem;
-  border-radius: 999px;
-  background: var(--project-accent);
-  box-shadow: 0 0 0.8rem color-mix(in srgb, var(--project-accent) 55%, transparent);
-}
-
-.vexpaer-project-card[data-art='game'] .vexpaer-project-card__visual-mark::after {
-  content: '';
-  position: absolute;
-  top: 0.92rem;
-  right: 1.7rem;
-  width: 0.58rem;
-  aspect-ratio: 1;
-  border-radius: 50%;
-  background: var(--project-accent);
-  box-shadow: 0.9rem 0.62rem 0 var(--project-glow), 0 0 0.9rem color-mix(in srgb, var(--project-accent) 50%, transparent);
-}
-
-.vexpaer-project-card[data-art='music'] .vexpaer-project-card__visual-mark {
-  width: 7.8rem;
-  height: 7.8rem;
-  border-radius: 50%;
-  background:
-    repeating-radial-gradient(circle, transparent 0 0.42rem, color-mix(in srgb, var(--project-accent) 26%, transparent) 0.42rem 0.52rem),
-    color-mix(in srgb, var(--project-glow) 15%, rgba(7, 8, 18, 0.92));
-}
-
-.vexpaer-project-card[data-art='music'] .vexpaer-project-card__visual-mark::before {
-  content: '';
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  width: 2.1rem;
-  height: 2.1rem;
-  border-radius: 50%;
-  background: radial-gradient(circle at 50% 50%, var(--project-glow) 0 0.22rem, var(--project-accent) 0.24rem);
-  box-shadow: 0 0 0.9rem color-mix(in srgb, var(--project-accent) 55%, transparent);
-  transform: translate(-50%, -50%);
-}
-
-.vexpaer-project-card[data-art='music'] .vexpaer-project-card__visual-mark::after {
-  content: '';
-  position: absolute;
-  top: -0.3rem;
-  right: -1.6rem;
-  width: 0.28rem;
-  height: 4.6rem;
-  border-radius: 999px;
-  background: linear-gradient(180deg, var(--project-accent), transparent);
-  transform: rotate(24deg);
-  transform-origin: top center;
-}
-
-.vexpaer-project-card[data-art='browser'] .vexpaer-project-card__visual-mark {
-  width: min(13rem, 58%);
-  height: 7.8rem;
-  border-radius: 0.9rem;
-}
-
-.vexpaer-project-card[data-art='browser'] .vexpaer-project-card__visual-mark::before {
-  content: '';
-  position: absolute;
-  top: 0;
-  right: 0;
-  left: 0;
-  height: 1.45rem;
-  border-bottom: 1px solid color-mix(in srgb, var(--project-accent) 40%, transparent);
-  background: radial-gradient(circle at 0.85rem 50%, var(--project-accent) 0 0.16rem, transparent 0.18rem), radial-gradient(circle at 1.45rem 50%, var(--project-glow) 0 0.16rem, transparent 0.18rem);
-}
-
-.vexpaer-project-card[data-art='browser'] .vexpaer-project-card__visual-mark::after {
-  content: '';
-  position: absolute;
-  top: 3.1rem;
-  right: 1.5rem;
-  left: 1.5rem;
-  height: 1.1rem;
-  border: 1px solid color-mix(in srgb, var(--project-accent) 48%, transparent);
-  border-radius: 999px;
-  background: linear-gradient(90deg, color-mix(in srgb, var(--project-accent) 24%, transparent), transparent 68%);
-}
-
-.vexpaer-project-card[data-art='tree'] .vexpaer-project-card__visual-mark {
-  width: 0.35rem;
-  height: 8.5rem;
-  border: 0;
-  border-radius: 999px;
-  background: linear-gradient(180deg, var(--project-accent), var(--project-glow));
-}
-
-.vexpaer-project-card[data-art='tree'] .vexpaer-project-card__visual-mark::before,
-.vexpaer-project-card[data-art='tree'] .vexpaer-project-card__visual-mark::after {
-  content: '';
-  position: absolute;
-  width: 5.2rem;
-  height: 3.4rem;
-  border-top: 2px solid var(--project-accent);
-  border-radius: 50%;
-}
-
-.vexpaer-project-card[data-art='tree'] .vexpaer-project-card__visual-mark::before {
-  top: 1.4rem;
-  right: 0;
-  transform: rotate(-26deg);
-  transform-origin: right top;
-}
-
-.vexpaer-project-card[data-art='tree'] .vexpaer-project-card__visual-mark::after {
-  top: 3.2rem;
-  left: 0;
-  transform: rotate(27deg);
-  transform-origin: left top;
-}
-
-.vexpaer-project-card[data-art='company'] .vexpaer-project-card__visual-mark {
-  width: 10rem;
-  height: 7rem;
-  border: 0;
-  background: linear-gradient(90deg, color-mix(in srgb, var(--project-accent) 42%, transparent) 0 18%, transparent 18% 24%, color-mix(in srgb, var(--project-accent) 64%, transparent) 24% 50%, transparent 50% 56%, var(--project-accent) 56% 100%);
-  clip-path: polygon(0 100%, 0 68%, 18% 68%, 18% 100%, 24% 100%, 24% 42%, 50% 42%, 50% 100%, 56% 100%, 56% 0, 100% 0, 100% 100%);
-  filter: drop-shadow(0 0 1.4rem color-mix(in srgb, var(--project-glow) 36%, transparent));
-}
-
-.vexpaer-project-card__content {
-  position: relative;
-  z-index: 1;
-  display: flex;
-  flex-direction: column;
-  padding: clamp(1.4rem, 3vw, 2.1rem);
-}
-
-.vexpaer-project-card__kicker {
-  margin: 0;
-  color: color-mix(in srgb, var(--project-accent) 72%, white);
-  font: 500 0.64rem/1 Bahnschrift, "Segoe UI", sans-serif;
-  letter-spacing: 0.18em;
-}
-
-.vexpaer-project-card h4 {
-  margin: 0.8rem 0 0;
-  color: #faf9ff;
-  font: 500 clamp(1.75rem, 3.2vw, 2.45rem)/1.05 Bahnschrift, "Avenir Next", "Segoe UI", sans-serif;
-  letter-spacing: -0.045em;
-}
-
-.vexpaer-project-card__summary {
-  margin: 1rem 0 0;
-  color: rgba(242, 242, 250, 0.76);
-  font: 450 0.98rem/1.68 system-ui, -apple-system, "Segoe UI", sans-serif;
-}
-
-.vexpaer-project-card__description {
-  margin: 0.65rem 0 0;
-  color: rgba(221, 223, 238, 0.53);
-  font: 400 0.83rem/1.72 system-ui, -apple-system, "Segoe UI", sans-serif;
-}
-
-.vexpaer-project-card__tags {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 0.45rem;
-  margin: 1.35rem 0 0;
   padding: 0;
   list-style: none;
+  border-top: 1px solid var(--explore-rule);
 }
 
-.vexpaer-project-card__tags li {
-  padding: 0.42rem 0.68rem;
-  border: 1px solid color-mix(in srgb, var(--project-accent) 18%, rgba(255, 255, 255, 0.06));
-  border-radius: 999px;
-  background: color-mix(in srgb, var(--project-accent) 6%, transparent);
-  color: rgba(232, 234, 246, 0.62);
-  font: 500 0.66rem/1 system-ui, -apple-system, "Segoe UI", sans-serif;
-  letter-spacing: 0.04em;
+.vexpaer-explore__list li {
+  margin: 0;
+  padding: 0;
+  border-bottom: 1px solid var(--explore-rule);
+  transition: opacity 320ms ease;
 }
 
-.vexpaer-project-card__cta {
+.vexpaer-explore__list li::before {
+  display: none;
+}
+
+.vexpaer-explore__item {
+  position: relative;
   display: grid;
-  grid-template-columns: auto minmax(0, 1fr) auto;
-  gap: 0.8rem;
+  grid-template-columns: 3.5rem minmax(0, 1fr) 4.5rem minmax(0, 19rem) 8.5rem;
   align-items: center;
-  min-height: 3.25rem;
-  margin-top: auto;
-  padding: 1.55rem 0 0;
-  color: #f8f8fd;
-  font: 600 0.82rem/1.25 system-ui, -apple-system, "Segoe UI", sans-serif;
+  gap: 1.5rem;
+  padding: clamp(1.5rem, 2.6vw, 2.25rem) 0;
+  color: var(--explore-ink);
   text-decoration: none;
 }
 
-.vexpaer-project-card__cta::before {
+.vexpaer-explore__item::after {
   content: '';
   position: absolute;
-  right: clamp(1.4rem, 3vw, 2.1rem);
-  bottom: 4.55rem;
-  left: clamp(1.4rem, 3vw, 2.1rem);
+  left: 0;
+  bottom: -1px;
+  width: 100%;
   height: 1px;
-  background: linear-gradient(90deg, color-mix(in srgb, var(--project-accent) 30%, transparent), rgba(255, 255, 255, 0.04));
+  background: var(--project-accent);
+  transform: scaleX(0);
+  transform-origin: 0 50%;
+  transition: transform 520ms cubic-bezier(0.2, 0.7, 0.2, 1);
 }
 
-.vexpaer-project-card__cta code {
-  overflow: hidden;
-  color: color-mix(in srgb, var(--project-accent) 68%, white);
-  font: 400 0.66rem/1.2 Consolas, monospace;
-  text-align: right;
-  text-overflow: ellipsis;
-  white-space: nowrap;
+.vexpaer-explore__index,
+.vexpaer-explore__path {
+  color: var(--explore-muted);
+  font: 400 0.75rem/1 var(--explore-mono);
+  letter-spacing: 0.08em;
+  transition: color 320ms ease;
 }
 
-.vexpaer-project-card__cta-arrow {
-  display: inline-grid;
-  width: 2rem;
-  aspect-ratio: 1;
-  place-items: center;
-  border: 1px solid color-mix(in srgb, var(--project-accent) 33%, transparent);
-  border-radius: 50%;
-  color: var(--project-accent);
-  will-change: transform;
+.vexpaer-explore__name {
+  font: 400 clamp(2.4rem, 5.6vw, 5rem)/1 var(--explore-serif);
+  letter-spacing: -0.01em;
+  transition: transform 420ms cubic-bezier(0.2, 0.7, 0.2, 1);
 }
 
-.vexpaer-project-card__cta:hover,
-.vexpaer-project-card__cta:focus-visible {
-  color: var(--project-accent);
-  text-decoration: none;
-}
-
-.vexpaer-explore[data-group='start'] .vexpaer-explore-projects__grid {
-  grid-template-columns: minmax(0, 1fr);
-}
-
-/* 影游组三面墙强制一行（窄屏仍回退到单列堆叠）。 */
-.vexpaer-explore[data-group='media'] .vexpaer-explore-projects__grid {
-  grid-template-columns: repeat(3, minmax(0, 1fr));
-}
-
-@media (max-width: 900px) {
-  .vexpaer-explore[data-group='media'] .vexpaer-explore-projects__grid {
-    grid-template-columns: 1fr;
-  }
-}
-
-.vexpaer-explore[data-group='start'] .vexpaer-project-card {
-  grid-template-columns: minmax(18rem, 0.82fr) minmax(0, 1.18fr);
-  grid-template-rows: minmax(29rem, auto);
-}
-
-.vexpaer-explore[data-group='start'] .vexpaer-project-card__visual-stage {
-  min-height: 29rem;
-  border-right: 1px solid rgba(255, 255, 255, 0.075);
-  border-bottom: 0;
-}
-
-.vexpaer-explore[data-group='start'] .vexpaer-project-card__content {
-  justify-content: center;
-}
-
-.vexpaer-explore-pager {
-  display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 1rem;
-  margin-top: clamp(3rem, 7vw, 6rem);
-}
-
-.vexpaer-explore-pager__link {
-  display: flex;
-  min-height: 7rem;
-  flex-direction: column;
-  justify-content: center;
-  gap: 0.65rem;
-  padding: 1.25rem clamp(1rem, 2.4vw, 1.7rem);
-  border: 1px solid rgba(255, 255, 255, 0.08);
-  border-radius: 1.35rem;
-  background: rgba(255, 255, 255, 0.025);
-  color: rgba(237, 238, 248, 0.55);
-  text-decoration: none;
-  transition: border-color 240ms ease, background-color 240ms ease, color 240ms ease;
-}
-
-.vexpaer-explore-pager__link--next {
-  align-items: flex-end;
-  text-align: right;
-}
-
-.vexpaer-explore-pager__direction {
-  color: color-mix(in srgb, var(--explore-accent) 68%, white);
-  font: 500 0.65rem/1 Bahnschrift, "Segoe UI", sans-serif;
+.vexpaer-explore__medium {
+  color: var(--explore-muted);
+  font: 400 0.9rem/1 var(--explore-sans);
   letter-spacing: 0.12em;
 }
 
-.vexpaer-explore-pager__link strong {
-  color: rgba(248, 248, 253, 0.88);
-  font: 500 clamp(1rem, 2vw, 1.2rem)/1.2 system-ui, -apple-system, "Segoe UI", sans-serif;
+.vexpaer-explore__summary {
+  text-wrap: pretty;
+  color: var(--explore-muted);
+  font: 400 0.9rem/1.7 var(--explore-sans);
+  transition: color 320ms ease;
 }
 
-a.vexpaer-explore-pager__link:hover,
-a.vexpaer-explore-pager__link:focus-visible {
-  border-color: color-mix(in srgb, var(--explore-accent) 38%, transparent);
-  background: color-mix(in srgb, var(--explore-accent) 7%, transparent);
-  color: #fff;
-  text-decoration: none;
+.vexpaer-explore__path {
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  gap: 0.6rem;
 }
 
-.vexpaer-explore-pager__link.is-disabled {
-  opacity: 0.32;
+.vexpaer-explore__path code {
+  padding: 0;
+  color: inherit;
+  font: inherit;
+  background: none;
 }
 
-.vexpaer-explore--missing {
-  display: grid;
-  min-height: calc(100vh - 3.75rem);
-  min-height: calc(100svh - 3.75rem);
-  place-content: center;
-  text-align: center;
+.vexpaer-explore__path i {
+  font-style: normal;
+  font-size: 1rem;
+  transition: transform 320ms ease;
 }
 
-.vexpaer-explore--missing h1 {
-  margin: 0;
-  font: 400 clamp(2.3rem, 6vw, 4.5rem)/1.05 "Noto Serif SC", "Songti SC", serif;
+.vexpaer-explore__list:hover li:not(:hover),
+.vexpaer-explore__list:focus-within li:not(:focus-within) {
+  opacity: 0.38;
 }
 
-.vexpaer-explore--missing p {
-  color: rgba(230, 231, 242, 0.58);
+.vexpaer-explore__item:hover,
+.vexpaer-explore__item:focus-visible {
+  color: var(--explore-ink);
 }
 
-.vexpaer-explore--missing .vexpaer-explore__home {
-  justify-self: center;
+.vexpaer-explore__item:hover::after,
+.vexpaer-explore__item:focus-visible::after {
+  transform: scaleX(1);
 }
 
-.vexpaer-explore:not([data-motion='gsap']) .vexpaer-project-card__visual-stage {
-  transition: transform 420ms cubic-bezier(0.22, 1, 0.36, 1);
+.vexpaer-explore__item:hover .vexpaer-explore__name,
+.vexpaer-explore__item:focus-visible .vexpaer-explore__name {
+  transform: translateX(0.6rem);
 }
 
-.vexpaer-explore:not([data-motion='gsap']) .vexpaer-project-card:hover .vexpaer-project-card__visual-stage,
-.vexpaer-explore:not([data-motion='gsap']) .vexpaer-project-card:focus-within .vexpaer-project-card__visual-stage {
-  transform: translateY(-0.35rem) scale(1.02);
+.vexpaer-explore__item:hover .vexpaer-explore__index,
+.vexpaer-explore__item:focus-visible .vexpaer-explore__index,
+.vexpaer-explore__item:hover .vexpaer-explore__path,
+.vexpaer-explore__item:focus-visible .vexpaer-explore__path {
+  color: var(--project-accent);
 }
 
-@media (max-width: 900px) {
-  .vexpaer-explore__masthead {
-    align-items: flex-start;
-    flex-direction: column;
+.vexpaer-explore__item:hover .vexpaer-explore__summary,
+.vexpaer-explore__item:focus-visible .vexpaer-explore__summary {
+  color: var(--explore-ink);
+}
+
+.vexpaer-explore__item:hover .vexpaer-explore__path i,
+.vexpaer-explore__item:focus-visible .vexpaer-explore__path i {
+  transform: translate(0.2rem, -0.2rem);
+}
+
+.vexpaer-explore__item:focus-visible {
+  outline: 1px solid var(--explore-ink);
+  outline-offset: 4px;
+}
+
+@media (max-width: 1100px) {
+  .vexpaer-explore__item {
+    grid-template-columns: 3rem minmax(0, 1fr) auto;
+    gap: 0.75rem 1.25rem;
   }
 
-  .vexpaer-explore-nav {
-    width: 100%;
-    overflow-x: auto;
-    scrollbar-width: none;
+  .vexpaer-explore__medium {
+    grid-column: 3;
+    grid-row: 1;
   }
 
-  .vexpaer-explore-nav::-webkit-scrollbar {
-    display: none;
+  .vexpaer-explore__summary {
+    grid-column: 2;
   }
 
-  .vexpaer-explore-nav__item {
-    flex: 1 0 auto;
-    justify-content: center;
-  }
-
-  .vexpaer-explore-hero {
-    grid-template-columns: minmax(0, 1fr) minmax(13rem, 0.55fr);
-  }
-
-  .vexpaer-explore-projects__grid {
-    grid-template-columns: 1fr;
+  .vexpaer-explore__path {
+    grid-column: 3;
   }
 }
 
-@media (max-width: 680px) {
+@media (max-width: 768px) {
   .vexpaer-explore {
-    padding-right: max(1rem, env(safe-area-inset-right, 0px));
-    padding-bottom: max(5rem, calc(3.5rem + env(safe-area-inset-bottom, 0px)));
-    padding-left: max(1rem, env(safe-area-inset-left, 0px));
-  }
-
-  .vexpaer-explore-hero {
-    grid-template-columns: 1fr;
-    grid-template-rows: auto;
     min-height: auto;
-    padding-block: 4.5rem 5rem;
+    padding-block: 5.5rem 7rem;
   }
 
-  .vexpaer-explore-hero__copy {
-    grid-row: auto;
-  }
-
-  .vexpaer-explore-hero h2 {
-    max-width: none;
-    font-size: clamp(2.75rem, 14vw, 4.35rem);
-  }
-
-  .vexpaer-explore-hero__art {
-    width: min(76vw, 18rem);
-    margin-top: 0.75rem;
-  }
-
-  .vexpaer-explore-hero__meta {
-    width: 100%;
-  }
-
-  .vexpaer-explore-projects__header {
+  .vexpaer-explore__head {
     grid-template-columns: 1fr;
   }
 
-  .vexpaer-explore-projects__header p {
-    grid-column: auto;
+  .vexpaer-explore__item {
+    grid-template-columns: minmax(0, 1fr) auto;
+    padding: 1.6rem 0;
   }
 
-  .vexpaer-explore-projects__header > span {
-    padding-bottom: 0;
+  .vexpaer-explore__index {
+    grid-column: 1;
+    grid-row: 1;
   }
 
-  .vexpaer-project-card {
-    grid-template-rows: minmax(16rem, auto) auto;
+  .vexpaer-explore__medium {
+    grid-column: 2;
+    grid-row: 1;
+    justify-self: end;
   }
 
-  .vexpaer-project-card__visual-stage {
-    min-height: 16rem;
+  .vexpaer-explore__name {
+    grid-column: 1 / -1;
   }
 
-  .vexpaer-explore[data-group='start'] .vexpaer-project-card {
-    grid-template-columns: 1fr;
-    grid-template-rows: minmax(18rem, auto) auto;
+  .vexpaer-explore__summary {
+    grid-column: 1;
   }
 
-  .vexpaer-explore[data-group='start'] .vexpaer-project-card__visual-stage {
-    min-height: 18rem;
-    border-right: 0;
-    border-bottom: 1px solid rgba(255, 255, 255, 0.075);
-  }
-
-  .vexpaer-project-card__cta {
-    grid-template-columns: 1fr auto;
-  }
-
-  .vexpaer-project-card__cta code {
-    display: none;
-  }
-
-  .vexpaer-explore-pager {
-    grid-template-columns: 1fr;
-  }
-
-  .vexpaer-explore-pager__link {
-    min-height: 5.8rem;
+  .vexpaer-explore__path {
+    grid-column: 2;
   }
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .vexpaer-explore *,
-  .vexpaer-explore *::before,
-  .vexpaer-explore *::after {
-    scroll-behavior: auto !important;
-    animation: none !important;
-    transition-duration: 0.001ms !important;
-  }
-
-  .vexpaer-explore .vexpaer-project-card__visual-stage,
-  .vexpaer-explore .vexpaer-project-card:hover .vexpaer-project-card__visual-stage,
-  .vexpaer-explore .vexpaer-project-card:focus-within .vexpaer-project-card__visual-stage,
-  .vexpaer-explore .vexpaer-project-card__cta-arrow {
-    transform: none !important;
+  .vexpaer-explore__list li,
+  .vexpaer-explore__item::after,
+  .vexpaer-explore__name,
+  .vexpaer-explore__path i {
+    transition: none !important;
   }
 }

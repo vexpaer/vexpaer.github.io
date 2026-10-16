@@ -3,96 +3,40 @@
   var exploreGroups = exploreData.groups || []
 
 section#vexpaer-quick-access.vexpaer-explore-stack(aria-label='继续探索')
-  each group, groupIndex in exploreGroups
+  each group in exploreGroups
     -
       var groupAnchor = group.anchor || ('vexpaer-explore-' + group.id)
       var groupTitleId = groupAnchor + '-title'
-      var projectsTitleId = groupAnchor + '-projects-title'
-      var projectCount = group.projects ? group.projects.length : 0
-      var projectCountLabel = projectCount < 10 ? '0' + projectCount : projectCount
-      var groupStyle = '--explore-accent:' + group.accent + ';--explore-glow:' + group.glow + ';--explore-surface:' + group.surface
 
     section.vexpaer-explore(
       id=groupAnchor
       data-explore-root
       data-home-panel='explore-' + group.id
       data-group=group.id
-      data-art=group.art
-      style=groupStyle
       aria-labelledby=groupTitleId
     )
-      header.vexpaer-explore__masthead(data-explore-reveal)
-        p.vexpaer-explore__context
-          span CONTINUE EXPLORING
-          strong= group.order + ' / 03'
-        p.vexpaer-explore__section-name= group.nav_label
-
-      .vexpaer-explore-hero
-        .vexpaer-explore-hero__copy
-          p.vexpaer-explore-hero__eyebrow(data-explore-reveal)
+      .vexpaer-explore__inner
+        header.vexpaer-explore__head
+          p.vexpaer-explore__label(data-reveal)
             span= group.order
-            |  /
             span= group.eyebrow
-          h2(id=groupTitleId data-explore-reveal)= group.title
-          p.vexpaer-explore-hero__lead(data-explore-reveal)= group.lead
-          p.vexpaer-explore-hero__description(data-explore-reveal)= group.description
+          h2(id=groupTitleId data-reveal)= group.title
+          p.vexpaer-explore__lead(data-reveal)= group.lead
 
-        .vexpaer-explore-hero__art(data-explore-reveal aria-hidden='true')
-          span.vexpaer-explore-hero__orbit
-          span.vexpaer-explore-hero__orbit
-          span.vexpaer-explore-hero__core
-            span= group.order
-
-        dl.vexpaer-explore-hero__meta(data-explore-reveal)
-          div
-            dt 展示项目
-            dd= projectCountLabel
-          div
-            dt 当前展区
-            dd= group.nav_label
-
-      section.vexpaer-explore-projects(aria-labelledby=projectsTitleId)
-        header.vexpaer-explore-projects__header(data-explore-reveal)
-          p CURATED PROJECTS
-          h3(id=projectsTitleId) 进入项目
-          span= projectCountLabel + ' 个站点，直接打开'
-
-        .vexpaer-explore-projects__grid
+        ol.vexpaer-explore__list
           each project, projectIndex in group.projects
-            -
-              var projectStyle = '--project-accent:' + project.accent + ';--project-glow:' + project.glow
-              var projectNumber = projectIndex + 1
-              var projectNumberLabel = projectNumber < 10 ? '0' + projectNumber : projectNumber
-              var projectTitleId = groupAnchor + '-project-' + project.id
-
-            article.vexpaer-project-card(
-              data-project-card
-              data-art=project.art
-              style=projectStyle
-              aria-labelledby=projectTitleId
-            )
-              .vexpaer-project-card__visual-stage(aria-hidden='true')
-                span.vexpaer-project-card__visual-index= projectNumberLabel
-                span.vexpaer-project-card__visual-orbit
-                span.vexpaer-project-card__visual-orbit
-                span.vexpaer-project-card__visual-mark
-
-              .vexpaer-project-card__content
-                p.vexpaer-project-card__kicker= project.kicker
-                h4(id=projectTitleId)= project.name
-                p.vexpaer-project-card__summary= project.summary
-                p.vexpaer-project-card__description= project.description
-
-                ul.vexpaer-project-card__tags(aria-label=project.name + ' 标签')
-                  each tag in project.tags
-                    li= tag
-
-                a.vexpaer-project-card__cta(
-                  href=project.href
-                  target='_blank'
-                  rel='noopener noreferrer'
-                  aria-label=project.cta + '：' + project.name + '（在新窗口打开）'
-                )
-                  span= project.cta
+            - var projectNumber = projectIndex + 1
+            li(data-reveal style='--project-accent:' + project.accent)
+              a.vexpaer-explore__item(
+                href=project.href
+                target='_blank'
+                rel='noopener noreferrer'
+                aria-label=project.name + '，' + project.medium + '：' + project.summary + '（在新窗口打开）'
+              )
+                span.vexpaer-explore__index= projectNumber < 10 ? '0' + projectNumber : projectNumber
+                span.vexpaer-explore__name= project.name
+                span.vexpaer-explore__medium= project.medium
+                span.vexpaer-explore__summary= project.summary
+                span.vexpaer-explore__path
                   code= project.path_label
-                  span.vexpaer-project-card__cta-arrow(aria-hidden='true') ↗
+                  i(aria-hidden='true') ↗

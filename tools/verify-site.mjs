@@ -58,36 +58,29 @@ assertIncludes(landingHtml, '/html/contour-mountains.html', 'Landing page');
 assertIncludes(landingHtml, 'id="vexpaer-blog-gateway"', 'Landing page');
 assertIncludes(landingHtml, 'id="vexpaer-quick-access"', 'Landing page');
 assertIncludes(landingHtml, 'id="vexpaer-explore-media"', 'Landing page');
-assertIncludes(landingHtml, 'id="vexpaer-explore-start"', 'Landing page');
-assertIncludes(landingHtml, 'id="vexpaer-explore-incremental"', 'Landing page');
+if (landingHtml.includes('id="vexpaer-explore-start"') || landingHtml.includes('id="vexpaer-explore-incremental"')) {
+  throw new Error('Landing page still renders the removed start or incremental sections.');
+}
 assertIncludes(landingHtml, '/gsap@3.13.0/dist/gsap.min.js', 'Landing page');
 assertIncludes(landingHtml, '/gsap@3.13.0/dist/ScrollTrigger.min.js', 'Landing page');
 assertIncludes(landingHtml, '/css/vexpaer-explore.css', 'Landing page');
 assertIncludes(blogHtml, 'id="recent-posts"', 'Blog index');
 
 const exploreRootCount = (landingHtml.match(/\bdata-explore-root(?:[=\s>])/g) || []).length;
-if (exploreRootCount !== 3) {
-  throw new Error(`Landing page must contain exactly 3 exploration sections, found ${exploreRootCount}.`);
+if (exploreRootCount !== 1) {
+  throw new Error(`Landing page must contain exactly 1 exploration section, found ${exploreRootCount}.`);
 }
 
 const sectionIndices = {
-  media: landingHtml.indexOf('id="vexpaer-explore-media"'),
-  start: landingHtml.indexOf('id="vexpaer-explore-start"'),
-  incremental: landingHtml.indexOf('id="vexpaer-explore-incremental"')
+  media: landingHtml.indexOf('id="vexpaer-explore-media"')
 };
-const mediaSection = landingHtml.slice(sectionIndices.media, sectionIndices.start);
-const startSection = landingHtml.slice(sectionIndices.start, sectionIndices.incremental);
-const incrementalSection = landingHtml.slice(sectionIndices.incremental);
+const mediaSection = landingHtml.slice(sectionIndices.media);
 
 assertIncludes(mediaSection, 'https://vexpaer.github.io/film_wall/', 'Media exploration section');
 assertIncludes(mediaSection, 'https://vexpaer.github.io/game_wall/', 'Media exploration section');
 assertIncludes(mediaSection, 'https://vexpaer.github.io/music_wall/', 'Media exploration section');
-assertIncludes(startSection, 'https://vexpaer.github.io/vexpaer_go', 'Start exploration section');
-assertIncludes(incrementalSection, 'https://vexpaer.github.io/ZhenHuanTree/', 'Incremental exploration section');
-assertIncludes(incrementalSection, 'https://vexpaer.github.io/ZhenHuanCompany/', 'Incremental exploration section');
-
-if (mediaSection.includes('ZhenHuanCompany') || startSection.includes('film_wall') || incrementalSection.includes('game_wall')) {
-  throw new Error('Explore projects are rendered in the wrong homepage section.');
+if (/vexpaer_go|ZhenHuanTree|ZhenHuanCompany/.test(landingHtml)) {
+  throw new Error('Landing page still links to removed start or incremental projects.');
 }
 if (/href=["'][^"']*\/explore\/(?:media|start|incremental)\//.test(landingHtml)) {
   throw new Error('Landing page still links to obsolete standalone exploration routes.');
@@ -99,12 +92,10 @@ if (landingHtml.includes('/js/vexpaer-explore.js')) {
 const landingOrder = [
   landingHtml.indexOf('id="vexpaer-home"'),
   landingHtml.indexOf('id="vexpaer-blog-gateway"'),
-  sectionIndices.media,
-  sectionIndices.start,
-  sectionIndices.incremental
+  sectionIndices.media
 ];
 if (landingOrder.some(index => index < 0) || !landingOrder.every((index, position) => position === 0 || landingOrder[position - 1] < index)) {
-  throw new Error('Landing page sections are not ordered as hero, blog, media, start and incremental.');
+  throw new Error('Landing page sections are not ordered as hero, blog and media.');
 }
 if (landingHtml.includes('id="recent-posts"')) {
   throw new Error('Landing page must not contain the article index.');

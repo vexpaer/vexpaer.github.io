@@ -3151,6 +3151,10 @@
     })
 
     function setActivePanel (name) {
+      if (journey) {
+        var activePanel = panels.filter(function (panel) { return panel.name === name })[0]
+        journey.classList.toggle('is-light', Boolean(activePanel && activePanel.element && activePanel.element.dataset.tone === 'light'))
+      }
       journeyLinks.forEach(function (link) {
         var active = link.dataset.journeyTarget === name
         link.classList.toggle('is-active', active)
@@ -3179,7 +3183,6 @@
       reduceMotion: '(prefers-reduced-motion: reduce)'
     }, function (context) {
       var conditions = context.conditions
-      var cleanups = []
 
       if (conditions.reduceMotion) {
         exploreSections.forEach(function (section) {
@@ -3203,238 +3206,28 @@
         })
       }
 
-      if (gateway) {
-        var gatewayCopy = gateway.querySelectorAll('.vexpaer-blog-gateway__index, .vexpaer-blog-gateway__eyebrow, .vexpaer-blog-gateway__content h2, .vexpaer-blog-gateway__content p, .vexpaer-blog-gateway__action')
-        var gatewayVisual = gateway.querySelector('.vexpaer-blog-gateway__visual')
-        var gatewayOrbit = gateway.querySelector('.vexpaer-blog-gateway__orbit')
-        var ambient = gateway.querySelectorAll('.vexpaer-blog-gateway__ambient i')
-
-        gsap.from(gatewayCopy, {
+      panels.forEach(function (panel) {
+        if (!panel.element || panel.name === 'hero') return
+        var reveals = panel.element.querySelectorAll('[data-reveal]')
+        if (!reveals.length) return
+        gsap.from(reveals, {
           autoAlpha: 0,
-          y: conditions.desktop ? 46 : 30,
-          duration: 0.88,
-          stagger: 0.085,
+          y: conditions.desktop ? 28 : 18,
+          duration: 0.9,
+          stagger: 0.06,
           ease: 'power3.out',
           clearProps: 'transform,opacity,visibility',
           scrollTrigger: {
-            id: 'vexpaer-blog-copy',
-            trigger: gateway,
+            id: 'vexpaer-reveal-' + panel.name,
+            trigger: panel.element,
             start: 'clamp(top 72%)',
             once: true
           }
         })
+      })
 
-        if (gatewayVisual) {
-          gsap.from(gatewayVisual, {
-            autoAlpha: 0,
-            scale: 0.82,
-            rotationY: conditions.desktop ? -12 : 0,
-            duration: 1.1,
-            ease: 'power3.out',
-            clearProps: 'transform,opacity,visibility',
-            scrollTrigger: {
-              id: 'vexpaer-blog-visual',
-              trigger: gateway,
-              start: 'clamp(top 74%)',
-              once: true
-            }
-          })
-        }
-
-        if (gatewayOrbit) {
-          gsap.to(gatewayOrbit, {
-            rotation: conditions.desktop ? 18 : 9,
-            yPercent: -6,
-            ease: 'none',
-            scrollTrigger: {
-              id: 'vexpaer-blog-orbit',
-              trigger: gateway,
-              start: 'top bottom',
-              end: 'bottom top',
-              scrub: 0.8
-            }
-          })
-        }
-
-        if (ambient.length) {
-          gsap.to(ambient, {
-            y: function (index) { return (index + 1) * (conditions.desktop ? -24 : -10) },
-            stagger: 0.05,
-            ease: 'none',
-            scrollTrigger: {
-              id: 'vexpaer-blog-ambient',
-              trigger: gateway,
-              start: 'top bottom',
-              end: 'bottom top',
-              scrub: 1
-            }
-          })
-        }
-      }
-
-      exploreSections.forEach(function (section, sectionIndex) {
+      exploreSections.forEach(function (section) {
         section.dataset.motion = 'gsap'
-
-        var sectionName = section.dataset.group || String(sectionIndex)
-        var heroCopy = section.querySelectorAll('.vexpaer-explore__masthead, .vexpaer-explore-hero__eyebrow, .vexpaer-explore-hero__copy h2, .vexpaer-explore-hero__lead, .vexpaer-explore-hero__description, .vexpaer-explore-hero__meta')
-        var heroArt = section.querySelector('.vexpaer-explore-hero__art')
-        var projects = section.querySelector('.vexpaer-explore-projects')
-        var projectsHeader = section.querySelectorAll('.vexpaer-explore-projects__header > *')
-        var cards = Array.prototype.slice.call(section.querySelectorAll('[data-project-card]'))
-        var visualStages = section.querySelectorAll('.vexpaer-project-card__visual-stage')
-
-        if (heroCopy.length) {
-          gsap.from(heroCopy, {
-            autoAlpha: 0,
-            y: conditions.desktop ? 42 : 26,
-            duration: conditions.desktop ? 0.88 : 0.72,
-            stagger: conditions.desktop ? 0.075 : 0.055,
-            ease: 'power3.out',
-            clearProps: 'transform,opacity,visibility',
-            scrollTrigger: {
-              id: 'vexpaer-explore-' + sectionName + '-hero',
-              trigger: section,
-              start: 'clamp(top 72%)',
-              once: true
-            }
-          })
-        }
-
-        if (heroArt) {
-          gsap.from(heroArt, {
-            autoAlpha: 0,
-            y: conditions.desktop ? 26 : 16,
-            scale: 0.82,
-            rotation: sectionIndex % 2 ? 7 : -7,
-            duration: 1.08,
-            ease: 'back.out(1.2)',
-            clearProps: 'transform,opacity,visibility',
-            scrollTrigger: {
-              id: 'vexpaer-explore-' + sectionName + '-art',
-              trigger: section,
-              start: 'clamp(top 70%)',
-              once: true
-            }
-          })
-        }
-
-        if (projects && projectsHeader.length) {
-          gsap.from(projectsHeader, {
-            autoAlpha: 0,
-            y: 24,
-            duration: 0.72,
-            stagger: 0.07,
-            ease: 'power3.out',
-            clearProps: 'transform,opacity,visibility',
-            scrollTrigger: {
-              id: 'vexpaer-explore-' + sectionName + '-projects-heading',
-              trigger: projects,
-              start: 'clamp(top 76%)',
-              once: true
-            }
-          })
-        }
-
-        if (projects && cards.length) {
-          gsap.from(cards, {
-            autoAlpha: 0,
-            y: conditions.desktop ? 58 : 34,
-            scale: 0.975,
-            duration: 0.92,
-            stagger: cards.length > 1 ? (conditions.desktop ? 0.12 : 0.08) : 0,
-            ease: 'power3.out',
-            clearProps: 'transform,opacity,visibility',
-            scrollTrigger: {
-              id: 'vexpaer-explore-' + sectionName + '-cards',
-              trigger: projects,
-              start: 'clamp(top 68%)',
-              once: true
-            }
-          })
-        }
-
-        if (projects && visualStages.length) {
-          gsap.from(visualStages, {
-            autoAlpha: 0,
-            scale: 0.84,
-            rotation: function (index) { return index % 2 ? 4 : -4 },
-            duration: 1.02,
-            stagger: visualStages.length > 1 ? 0.1 : 0,
-            ease: 'back.out(1.2)',
-            clearProps: 'transform,opacity,visibility',
-            scrollTrigger: {
-              id: 'vexpaer-explore-' + sectionName + '-visuals',
-              trigger: projects,
-              start: 'clamp(top 68%)',
-              once: true
-            }
-          })
-        }
-
-        cards.forEach(function (card, cardIndex) {
-          var stage = card.querySelector('.vexpaer-project-card__visual-stage')
-          var arrow = card.querySelector('.vexpaer-project-card__cta-arrow')
-          var hoverRotation = (sectionIndex + cardIndex) % 2 ? 1.5 : -1.5
-          if (!stage) return
-
-          function enter () {
-            gsap.to(stage, {
-              y: -8,
-              scale: 1.025,
-              rotation: hoverRotation,
-              duration: 0.48,
-              ease: 'power3.out',
-              overwrite: 'auto'
-            })
-            if (arrow) {
-              gsap.to(arrow, {
-                x: 3,
-                y: -3,
-                duration: 0.34,
-                ease: 'power2.out',
-                overwrite: 'auto'
-              })
-            }
-          }
-
-          function leave () {
-            gsap.to(stage, {
-              y: 0,
-              scale: 1,
-              rotation: 0,
-              duration: 0.52,
-              ease: 'power3.out',
-              overwrite: 'auto'
-            })
-            if (arrow) {
-              gsap.to(arrow, {
-                x: 0,
-                y: 0,
-                duration: 0.38,
-                ease: 'power2.out',
-                overwrite: 'auto'
-              })
-            }
-          }
-
-          function focusOut (event) {
-            if (!card.contains(event.relatedTarget)) leave()
-          }
-
-          card.addEventListener('pointerenter', enter)
-          card.addEventListener('pointerleave', leave)
-          card.addEventListener('focusin', enter)
-          card.addEventListener('focusout', focusOut)
-
-          cleanups.push(function () {
-            card.removeEventListener('pointerenter', enter)
-            card.removeEventListener('pointerleave', leave)
-            card.removeEventListener('focusin', enter)
-            card.removeEventListener('focusout', focusOut)
-            gsap.killTweensOf(stage)
-            if (arrow) gsap.killTweensOf(arrow)
-          })
-        })
       })
 
       if (progress) {
@@ -3456,7 +3249,6 @@
       }
 
       return function () {
-        cleanups.forEach(function (cleanup) { cleanup() })
         exploreSections.forEach(function (section) {
           section.dataset.motion = 'idle'
         })

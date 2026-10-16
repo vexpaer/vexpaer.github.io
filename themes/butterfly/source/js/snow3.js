@@ -154,7 +154,9 @@ function drawSnow() {
 var snow = new snowFall({
     maxFlake: 60
 });
-var snowEnabled = localStorage.getItem('snowfall-enabled') !== 'false';
+/* 首页不下雪，其余页面按用户开关决定。 */
+var isHomepage = document.body.classList.contains('vexpaer-home-page');
+var snowEnabled = !isHomepage && localStorage.getItem('snowfall-enabled') !== 'false';
 if (snowEnabled) snow.start();
 
 function updateSnowButton() {
@@ -169,28 +171,7 @@ function updateSnowButton() {
 window.toggleSnowfall = function () {
     snow.enabled ? snow.stop() : snow.start();
     localStorage.setItem('snowfall-enabled', String(!!snow.enabled));
-    if (snow.enabled && typeof syncHomepageSnow === 'function') syncHomepageSnow();
     updateSnowButton();
 };
 
 updateSnowButton();
-
-if (document.body.classList.contains('vexpaer-home-page')) {
-    var snowScrollFrame = 0;
-    var syncHomepageSnow = function () {
-        snowScrollFrame = 0;
-        if (!snow.enabled || !snow.canvas) return;
-        var hero = document.getElementById('page-header');
-        var heroHeight = hero ? hero.offsetHeight : window.innerHeight;
-        var progress = window.scrollY / Math.max(1, heroHeight);
-        var opacity = Math.max(0, Math.min(1, (progress - 0.55) / 0.45));
-        snow.canvas.style.opacity = opacity.toFixed(3);
-        snow.canvas.style.visibility = opacity > 0.01 ? 'visible' : 'hidden';
-    };
-    var requestSnowSync = function () {
-        if (!snowScrollFrame) snowScrollFrame = requestAnimationFrame(syncHomepageSnow);
-    };
-    window.addEventListener('scroll', requestSnowSync, { passive: true });
-    window.addEventListener('resize', requestSnowSync, { passive: true });
-    syncHomepageSnow();
-}

@@ -10,7 +10,6 @@ const KIND_RADIUS = { root: 7, subject: 4.6, chapter: 2.8, note: 1.3 };
 // 每个学科一种颜色，取自站点的暖色系。
 const PALETTE = ['#b5652d', '#6f8a5b', '#4f7a96', '#9a5f86', '#b08b3c', '#5d7f7a', '#a4574f', '#7b6aa0'];
 const LAYOUT_KEY = 'vexpaer-mindmap-layout';
-const BAR_HEIGHT = 56;
 
 function escapeHTML(value) {
   return String(value).replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
@@ -41,7 +40,6 @@ function init() {
   const status = hub.querySelector('[data-mh-status]');
   const outline = hub.querySelector('[data-mh-outline]');
   const countLabel = hub.querySelector('[data-mh-count]');
-  const graphPanel = hub.querySelector('[data-mh-graph-panel]');
   const graphBox = hub.querySelector('[data-mh-graph]');
   const canvas = hub.querySelector('[data-mh-canvas]');
   const tip = hub.querySelector('[data-mh-tip]');
@@ -150,7 +148,7 @@ function init() {
     crumbs.replaceChildren();
     const title = document.createElement('span');
     title.className = 'mh-crumb-title';
-    title.textContent = '思维导图';
+    title.textContent = 'Mindmap';
     crumbs.append(title);
     for (const node of ancestors(currentRoot)) {
       const separator = document.createElement('span');
@@ -169,8 +167,8 @@ function init() {
   }
   function updateStatus() {
     status.hidden = loadedCount >= chapters.length;
-    status.textContent = `载入 ${loadedCount}/${chapters.length}`;
-    countLabel.textContent = subtree(currentRoot).length + ' 点';
+    status.textContent = `Loading ${loadedCount}/${chapters.length}`;
+    countLabel.textContent = subtree(currentRoot).length.toLocaleString('en') + ' nodes';
   }
 
   // ---- 导图：左右两个 Markmap 共用一张 SVG，缩放拖动只由右边那个管。
@@ -193,6 +191,8 @@ function init() {
   const leftMap = Markmap.create(svg, { ...mapOptions, zoom: false });
   const rightMap = Markmap.create(svg, { ...mapOptions, zoom: true });
   leftMap.g.classed('mh-left', true);
+  // 左边那组放到最上层：右边根节点的下划线不再压住左侧根节点的圆点。
+  svg.append(leftMap.g.node());
   function mirrorWidth() {
     return leftMap.state.data?.state?.rect?.width || 0;
   }
@@ -291,8 +291,14 @@ function init() {
   function zoomTo(transform) {
     return rightMap.transition(rightMap.svg).call(rightMap.zoom.transform, transform).end().catch(() => {});
   }
+  // 顶栏在导图变窄时会换行，留给导图的高度按它的实际高度算。
+  function barHeight() {
+    return Math.max(40, (hub.querySelector('.mh-bar')?.offsetHeight || 56) - 8);
+  }
   function fitMap() {
     const { width, height } = svg.getBoundingClientRect();
+    if (!width || !height) return Promise.resolve();
+    const BAR_HEIGHT = barHeight();
     const { x1, y1, x2, y2 } = mapBounds();
     const w = Math.max(1, x2 - x1);
     const h = Math.max(1, y2 - y1);
@@ -305,6 +311,7 @@ function init() {
     const rect = entry.item.state.rect;
     const x = entry.mm === leftMap ? mirrorWidth() - rect.x - rect.width : rect.x;
     const { width, height } = svg.getBoundingClientRect();
+    const BAR_HEIGHT = barHeight();
     const current = zoomTransform(svg).k;
     const k = current < 0.9 ? 1 : current;
     const cx = x + rect.width / 2;
@@ -714,7 +721,6 @@ function init() {
   function openMenu(node, event) {
     event.preventDefault();
     menuNode = node;
-    (document.fullscreenElement || hub).append(menu);
     menu.querySelector('[data-mh-menu-item="root"]').disabled = node === currentRoot;
     menu.querySelector('[data-mh-menu-name]').textContent = node.kind === 'chapter' ? node.title.replace(/^.+?_/, '') : plainText(node) || '〔图片〕';
     menu.hidden = false;
@@ -738,7 +744,7 @@ function init() {
     const expand = action === 'expand';
     if (expand) {
       status.hidden = false;
-      status.textContent = '载入中…';
+      status.textContent = 'Loading…';
       await loadAround(node);
       updateStatus();
     }
@@ -799,29 +805,17 @@ function init() {
     });
     refreshMarkmap({ fit: true });
   }
-  // 连接图全屏：先铺满页面，再尽量进入浏览器全屏；浏览器不允许时停在铺满页面。
-  let realFullscreen = false;
+  // 连接图放大：右栏变宽把大纲挤掉，导图缩到四分之一宽；动画由 CSS 完成，画布和导图跟着尺寸变化重绘。
   function setGraphMax(on) {
-    graphPanel.classList.toggle('is-max', on);
-    if (on && graphPanel.requestFullscreen) {
-      graphPanel.requestFullscreen().then(() => { realFullscreen = true; }).catch(() => {});
-    }
-    if (!on && document.fullscreenElement === graphPanel) document.exitFullscreen().catch(() => {});
-    const button = hub.querySelector('[data-mh-action="graph-fullscreen"]');
-    button.textContent = on ? '退出全屏' : '全屏';
+    hub.classList.toggle('is-graph-max', on);
+    const button = hub.querySelector('[data-mh-action="graph-max"]');
     button.setAttribute('aria-pressed', String(on));
+    button.title = on ? 'Restore layout' : 'Expand graph';
+    button.setAttribute('aria-label', button.title);
     closeMenu();
   }
-  document.addEventListener('fullscreenchange', () => {
-    closeMenu();
-    if (menu.parentElement !== hub) hub.append(menu);
-    if (!document.fullscreenElement && realFullscreen) {
-      realFullscreen = false;
-      setGraphMax(false);
-    }
-  });
   document.addEventListener('keydown', event => {
-    if (event.key === 'Escape' && menu.hidden && graphPanel.classList.contains('is-max')) setGraphMax(false);
+    if (event.key === 'Escape' && menu.hidden && hub.classList.contains('is-graph-max')) setGraphMax(false);
   });
 
   hub.addEventListener('click', event => {
@@ -842,7 +836,7 @@ function init() {
     if (action === 'zoom-in') rightMap.rescale(1.25);
     if (action === 'zoom-out') rightMap.rescale(0.8);
     if (action === 'collapse-outline') resetOutline();
-    if (action === 'graph-fullscreen') setGraphMax(!graphPanel.classList.contains('is-max'));
+    if (action === 'graph-max') setGraphMax(!hub.classList.contains('is-graph-max'));
   });
 
   // 点导图里的节点文字时，大纲和连接图跟着定位。

@@ -112,7 +112,8 @@ body.vexpaer-mindmap-hub {
   z-index: 2;
   display: flex;
   align-items: center;
-  gap: 18px;
+  flex-wrap: wrap;
+  gap: 8px 18px;
   padding: 14px 18px 22px;
   background: linear-gradient(var(--mh-panel) 55%, transparent);
   pointer-events: none;
@@ -124,12 +125,13 @@ body.vexpaer-mindmap-hub {
   align-items: baseline;
   flex-wrap: wrap;
   gap: 4px 8px;
+  flex: 1 1 160px;
   min-width: 0;
   margin: 0;
   font: 400 14px/1.3 var(--mh-sans);
   color: var(--mh-mute);
 }
-.mh-crumb-title { font: 300 15px/1 var(--mh-thin); letter-spacing: .32em; color: var(--mh-ink); }
+.mh-crumb-title { font: 300 15px/1 var(--mh-thin); letter-spacing: .32em; color: var(--mh-ink); white-space: nowrap; }
 .mh-crumb-sep { color: var(--mh-line-2); font-family: var(--mh-mono); }
 .mh-crumbs .mh-crumb {
   max-width: 16em;
@@ -211,11 +213,13 @@ body.vexpaer-mindmap-hub {
 
 /* ---- 右侧两块面板 ---- */
 .mh-side {
-  display: grid;
-  grid-template-rows: minmax(0, 1fr) clamp(240px, 34vh, 340px);
+  display: flex;
+  flex-direction: column;
   gap: var(--gap);
   min-height: 0;
 }
+.mh-outline-panel { flex: 1 1 0; }
+.mh-graph-panel { flex: 0 0 auto; height: clamp(240px, 34vh, 340px); }
 .mh-panel { display: flex; flex-direction: column; }
 .mh-panel-head {
   display: flex;
@@ -338,7 +342,7 @@ body.vexpaer-mindmap-hub {
 .mh-tip-body .katex-mathml { display: none; }
 
 /* 主题的右下角按钮挪到导图区的右下角，不压住连接图。 */
-.vexpaer-mindmap-hub #rightside { right: calc(clamp(10px, 1.4vw, 18px) * 2 + clamp(280px, 24vw, 360px) + 10px); bottom: calc(clamp(10px, 1.4vw, 18px) + 10px); }
+.vexpaer-mindmap-hub #rightside { right: auto; left: calc(clamp(10px, 1.4vw, 18px) + 12px); bottom: calc(clamp(10px, 1.4vw, 18px) + 12px); }
 
 /* 双向展开时左半边整组镜像，文字和图片翻回正向；左边那份根节点与右边重合，只留连线和圆点。 */
 .mh-svg .mh-left .markmap-foreign > div > div { transform: scaleX(-1); }
@@ -347,12 +351,52 @@ body.vexpaer-mindmap-hub {
 
 .mh-head-end { display: flex; align-items: baseline; gap: 12px; }
 
-/* 连接图全屏 */
-.mh-graph-panel:fullscreen,
-.mh-graph-panel.is-max { border-radius: 0; border: 0; background: var(--mh-panel); }
-.mh-graph-panel.is-max { position: fixed; inset: 0; z-index: 300; }
-.mh-graph-panel:fullscreen .mh-tip,
-.mh-graph-panel.is-max .mh-tip { max-width: 360px; max-height: 320px; font-size: 13.5px; }
+/* 连接图放大：右栏变宽、大纲收没，导图剩四分之一宽。 */
+.mh {
+  transition: grid-template-columns .5s cubic-bezier(.4, 0, .2, 1);
+}
+.mh.is-graph-max { grid-template-columns: minmax(0, 1fr) calc(75% - var(--gap)); }
+.mh-side { transition: gap .5s cubic-bezier(.4, 0, .2, 1); }
+.mh-outline-panel { transition: opacity .3s, border-width .5s; }
+.mh-graph-panel { transition: height .5s cubic-bezier(.4, 0, .2, 1); }
+.mh.is-graph-max .mh-side { gap: 0; }
+.mh.is-graph-max .mh-outline-panel { opacity: 0; border-width: 0; box-shadow: none; pointer-events: none; }
+.mh.is-graph-max .mh-graph-panel { height: 100%; }
+.mh.is-graph-max .mh-tip { max-width: 360px; max-height: 320px; font-size: 13.5px; }
+
+.mh .mh-icon {
+  display: inline-grid;
+  place-items: center;
+  width: 24px;
+  height: 22px;
+  margin: -4px -6px -4px 0;
+  border-radius: 6px;
+  color: var(--mh-mute);
+  transition: color .2s, background .2s;
+}
+.mh .mh-icon:hover { color: var(--mh-accent); background: var(--mh-accent-soft); }
+.mh-icon .mh-icon-shrink,
+.mh-icon[aria-pressed="true"] .mh-icon-expand { display: none; }
+.mh-icon[aria-pressed="true"] .mh-icon-shrink { display: block; }
+.mh-seg-item svg { display: block; }
+.mh .mh-seg-item { display: inline-grid; place-items: center; }
+
+/* 右下角只留亮暗切换，黑白灰配色跟随主题。 */
+.vexpaer-mindmap-hub #rightside { opacity: 1 !important; transform: none !important; }
+.vexpaer-mindmap-hub #rightside #darkmode {
+  display: grid;
+  place-items: center;
+  width: 32px;
+  height: 32px;
+  margin: 0;
+  border: 1px solid var(--mh-line-2);
+  border-radius: 8px;
+  background: var(--mh-panel);
+  color: var(--mh-ink-2);
+  box-shadow: var(--mh-shadow);
+  transition: color .2s, border-color .2s;
+}
+.vexpaer-mindmap-hub #rightside #darkmode:hover { color: var(--mh-ink); border-color: var(--mh-ink-2); background: var(--mh-panel); }
 
 /* 右键菜单 */
 .mh-menu {
@@ -400,7 +444,11 @@ body.vexpaer-mindmap-hub {
 @media (max-width: 900px) {
   .mh { grid-template-columns: 1fr; height: auto; }
   .mh-map { height: 68vh; }
-  .mh-side { grid-template-rows: 380px 320px; }
+  .mh-outline-panel { flex: 0 0 380px; }
+  .mh-graph-panel { height: 320px; }
+  .mh.is-graph-max { grid-template-columns: 1fr; }
+  .mh.is-graph-max .mh-outline-panel { flex-basis: 0; }
+  .mh.is-graph-max .mh-graph-panel { height: 80vh; }
   .mh-bar { flex-wrap: wrap; gap: 8px 14px; }
-  .vexpaer-mindmap-hub #rightside { right: 20px; bottom: 20px; }
+  .vexpaer-mindmap-hub #rightside { right: auto; left: calc(clamp(10px, 1.4vw, 18px) + 12px); bottom: calc(clamp(10px, 1.4vw, 18px) + 12px); }
 }

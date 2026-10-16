@@ -21,8 +21,6 @@ const required = [
   'vendor/mindmap/mindmap.min.js',
   'files/background/bg15.jpg',
   'html/turing-theme.html',
-  'html/seaside-megastructure.html',
-  'html/cosmic-megastructure.html',
   'html/ink-sailing-ship.html',
   'html/contour-mountains.html'
 ];
@@ -47,12 +45,8 @@ assertIncludes(homeScript, 'gsap.registerPlugin(ScrollTrigger)', 'Homepage scrip
 assertIncludes(homeScript, 'gsap.matchMedia()', 'Homepage script');
 assertIncludes(homeScript, "document.querySelectorAll('[data-explore-root]')", 'Homepage script');
 assertIncludes(landingHtml, 'id="vexpaer-home"', 'Landing page');
-assertIncludes(landingHtml, 'id="vexpaer-home-seaside"', 'Landing page');
-assertIncludes(landingHtml, 'id="vexpaer-home-cosmos"', 'Landing page');
 assertIncludes(landingHtml, 'id="vexpaer-home-ink"', 'Landing page');
 assertIncludes(landingHtml, 'id="vexpaer-home-contours"', 'Landing page');
-assertIncludes(landingHtml, '/html/seaside-megastructure.html', 'Landing page');
-assertIncludes(landingHtml, '/html/cosmic-megastructure.html', 'Landing page');
 assertIncludes(landingHtml, '/html/ink-sailing-ship.html', 'Landing page');
 assertIncludes(landingHtml, '/html/contour-mountains.html', 'Landing page');
 assertIncludes(landingHtml, 'id="vexpaer-blog-gateway"', 'Landing page');

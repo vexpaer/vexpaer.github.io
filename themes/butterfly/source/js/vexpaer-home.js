@@ -11,22 +11,18 @@
   var context = canvas.getContext('2d', { alpha: false })
   if (!context) return
 
-  var themes = ['dusk', 'space', 'life', 'turing', 'seaside', 'cosmos', 'ink', 'contours']
+  var themes = ['dusk', 'space', 'life', 'turing', 'ink', 'contours']
   var themeMeta = {
     dusk: { label: '暮野', icon: '◒', browserColor: '#17182d' },
     space: { label: '深空', icon: '✦', browserColor: '#000002' },
     life: { label: '生命游戏', icon: '▦', browserColor: '#000000' },
     turing: { label: '图灵斑纹', icon: '◉', browserColor: '#05070b' },
-    seaside: { label: '海畔巨构', icon: '≋', browserColor: '#060f18' },
-    cosmos: { label: '寰宇巨构', icon: '❍', browserColor: '#01020a' },
     ink: { label: '钢笔帆船', icon: '✎', browserColor: '#efe7d7' },
     contours: { label: '等高山脉', icon: '⌁', browserColor: '#242424' }
   }
   // 以独立 iframe 承载的场景：懒加载，用 postMessage 控制启停。
   var sceneFrames = {
     turing: { element: turingFrame, message: 'vexpaer-turing-visibility' },
-    seaside: { element: document.getElementById('vexpaer-home-seaside'), message: 'vexpaer-scene-visibility' },
-    cosmos: { element: document.getElementById('vexpaer-home-cosmos'), message: 'vexpaer-scene-visibility' },
     ink: { element: document.getElementById('vexpaer-home-ink'), message: 'vexpaer-scene-visibility' },
     contours: { element: document.getElementById('vexpaer-home-contours'), message: 'vexpaer-scene-visibility' }
   }
@@ -87,10 +83,8 @@
   }
 
   function applyDuskTitleLayout () {
-    // Keep the composition art-directed: the sun lives on the left, while the
-    // wordmark balances it on the right. A deterministic mobile layout also
-    // prevents resize/orientation changes from leaving the title off-screen.
-    var layout = width < 768 ? [50, 29] : [72, 30]
+    // 没有 WebGL 时的静态位置：夕阳上方的天空。有 WebGL 时每帧按夕阳投影重新定位。
+    var layout = width < 768 ? [50, 22] : [42, 20]
     root.style.setProperty('--vexpaer-title-x', layout[0] + '%')
     root.style.setProperty('--vexpaer-title-y', layout[1] + '%')
     root.dataset.duskTitleLayout = layout[0] + '-' + layout[1]
@@ -877,12 +871,22 @@
         uHorizon: { value: new THREE.Color('#c25f63') },
         uGlow: { value: new THREE.Color('#ffb469') },
         uSunDir: { value: new THREE.Vector3(-0.2, 0.075, -0.98).normalize() },
-        uTime: { value: 0 }
+        uTime: { value: 0 },
+        uNight: { value: 0 },
+        uSceneReferred: { value: 0 },
+        uExposure: { value: 1.08 }
       },
       vertexShader: ['varying vec3 vLocal;', 'void main(){vLocal=position;gl_Position=projectionMatrix*modelViewMatrix*vec4(position,1.0);}'].join('\n'),
       fragmentShader: [
-        'uniform vec3 uZenith;uniform vec3 uUpper;uniform vec3 uBand;uniform vec3 uHorizon;uniform vec3 uGlow;uniform vec3 uSunDir;uniform float uTime;varying vec3 vLocal;',
+        'uniform vec3 uZenith;uniform vec3 uUpper;uniform vec3 uBand;uniform vec3 uHorizon;uniform vec3 uGlow;uniform vec3 uSunDir;uniform float uTime;uniform float uNight;uniform float uSceneReferred;uniform float uExposure;varying vec3 vLocal;',
         'float hash(vec3 p){p=fract(p*.3183099+.1);p*=17.0;return fract(p.x*p.y*p.z*(p.x+p.y+p.z));}',
+        'const mat3 acesIn=mat3(vec3(.59719,.07600,.02840),vec3(.35458,.90834,.13383),vec3(.04823,.01566,.83777));',
+        'const mat3 acesOut=mat3(vec3(1.60475,-.10208,-.00327),vec3(-.53108,1.10813,-.07276),vec3(-.07367,-.00605,1.07602));',
+        'vec3 displayToScene(vec3 display){vec3 linear=pow(max(display,0.0),vec3(2.2));',
+        'vec3 y=clamp(inverse(acesOut)*linear,0.0,.95);',
+        'vec3 a=1.0-.983729*y;vec3 b=.0245786-.432951*y;vec3 c=-(.000090537+.238081*y);',
+        'vec3 v=(-b+sqrt(b*b-4.0*a*c))/(2.0*a);',
+        'return max(inverse(acesIn)*v,0.0)*.6/uExposure;}',
         'void main(){vec3 dir=normalize(vLocal);float h=dir.y;',
         'vec3 low=mix(uGlow,uHorizon,smoothstep(-.16,.05,h));',
         // 玫瑰色霞带：夹在地平线橙红与高空紫罗兰之间的一条软带。
@@ -893,11 +897,12 @@
         // 天顶星星：格点内的圆形亮斑，只在高处淡入，带轻微闪烁。
         'vec3 cell=floor(dir*90.0);float star=hash(cell);',
         'vec3 cellCenter=fract(dir*90.0)-.5;',
-        'float sparkle=smoothstep(.2,.03,length(cellCenter))*step(.992,star);',
-        'float starVisibility=smoothstep(.26,.55,h);',
+        'float sparkle=smoothstep(.2,.03,length(cellCenter))*step(mix(.992,.972,uNight),star);',
+        // 入夜后星星向地平线方向铺开，也更亮。
+        'float starVisibility=smoothstep(mix(.26,.03,uNight),mix(.55,.22,uNight),h)*(1.0+uNight*1.4);',
         'float twinkle=.7+.3*sin(uTime*(1.2+star*2.6)+star*41.0);',
         'color+=vec3(1.0,.95,.88)*sparkle*starVisibility*twinkle*.8;',
-        'gl_FragColor=vec4(color,1.0);}'
+        'gl_FragColor=vec4(uSceneReferred>.5?displayToScene(color):color,1.0);}'
       ].join('\n')
     }))
     duskScene.add(duskSky)
@@ -922,6 +927,7 @@
 
     var duskGlowTexture = createDuskGlowTexture()
     var duskSun = new THREE.Mesh(new THREE.SphereGeometry(9.6, 32, 20), new THREE.MeshBasicMaterial({ color: '#ffddab', fog: false }))
+    duskSun.material.color.multiplyScalar(2.4)
     duskScene.add(duskSun)
     var duskSunHalo = new THREE.Sprite(new THREE.SpriteMaterial({
       map: duskGlowTexture,
@@ -1557,6 +1563,7 @@
       createCarWheel(wheelSide, 3.2, false)
     }
 
+    var duskTailGlows = []
     var tailLightMaterial = new THREE.MeshBasicMaterial({ color: '#ff4a3c' })
     for (var lampSide = -1; lampSide <= 1; lampSide += 2) {
       var tailLight = new THREE.Mesh(new THREE.BoxGeometry(0.18, 0.3, 0.06), tailLightMaterial)
@@ -1566,6 +1573,7 @@
       tailGlow.position.set(lampSide * 1.04, 0.78, 3.84)
       tailGlow.scale.set(0.8, 0.8, 1)
       carBodyRig.add(tailGlow)
+      duskTailGlows.push(tailGlow)
     }
     var rearGlow = new THREE.PointLight('#ff493a', 0.9, 6.5, 2)
     rearGlow.position.set(0, 0.9, 3.9)
@@ -1844,13 +1852,369 @@
     var duskFlockDepth = -95 - duskRandom() * 60
     duskScene.add(duskBirdGroup)
 
+    // 按本地真实时间推进的昼夜相位：0 为黄昏，1 为深夜。
+    // 17:00–20:00 由黄昏过渡到夜晚，04:30–06:00 再回到黄昏，白天保持黄昏。
+    // 地址栏带 ?dusk-phase=0~1 时固定相位，便于预览。
+    var duskPhaseOverride = (function () {
+      var value = parseFloat(new URLSearchParams(window.location.search).get('dusk-phase'))
+      return isFinite(value) ? clampDusk(value, 0, 1) : null
+    })()
+
+    function smoothDusk (value) {
+      value = clampDusk(value, 0, 1)
+      return value * value * (3 - 2 * value)
+    }
+
+    function duskNightTarget () {
+      if (duskPhaseOverride !== null) return duskPhaseOverride
+      var now = new Date()
+      var hours = now.getHours() + now.getMinutes() / 60 + now.getSeconds() / 3600
+      if (hours >= 6 && hours < 17) return 0
+      if (hours >= 17 && hours < 20) return smoothDusk((hours - 17) / 3)
+      if (hours >= 4.5 && hours < 6) return 1 - smoothDusk((hours - 4.5) / 1.5)
+      return 1
+    }
+
+    var duskNight = duskNightTarget()
+    var duskNightGoal = duskNight
+    var duskNightCheckedAt = 0
+    var duskAppliedNight = -1
+
+    var duskPalette = {
+      zenith: ['#191a3c', '#04050e'],
+      upper: ['#4b3f74', '#0d1230'],
+      band: ['#d1608a', '#2a2246'],
+      horizon: ['#c25f63', '#2c2142'],
+      glow: ['#ffb469', '#6a3448'],
+      fog: ['#b07176', '#1a1829'],
+      hemiSky: ['#9a8fc4', '#3a4675'],
+      hemiGround: ['#5a352f', '#110d16'],
+      sunLight: ['#ffc898', '#ff8a5c'],
+      rim: ['#8798c9', '#90a8e6'],
+      cloudNight: ['#4b4868', '#4b4868']
+    }
+    var duskPaletteColors = {}
+    Object.keys(duskPalette).forEach(function (key) {
+      duskPaletteColors[key] = [new THREE.Color(duskPalette[key][0]), new THREE.Color(duskPalette[key][1])]
+    })
+
+    function mixDuskColor (target, key, amount) {
+      return target.copy(duskPaletteColors[key][0]).lerp(duskPaletteColors[key][1], amount)
+    }
+
+    var duskSunHaloOpacity = duskSunHalo.material.opacity
+    var duskSunHaloWideOpacity = duskSunHaloWide.material.opacity
+    var duskCloudBases = cloudMaterials.map(function (cloudMaterial) {
+      return { color: cloudMaterial.color.clone(), opacity: cloudMaterial.opacity }
+    })
+
+    // 车头大灯：入夜后点亮，聚光灯照亮前方路面，再叠一片贴地的暖色光斑。
+    var headLightOff = new THREE.Color('#5d564a')
+    var headLightOn = new THREE.Color('#fff4d6')
+
+    function createDuskBeamTexture () {
+      // 梯形光斑：靠近车头最亮，向前逐渐变宽、变淡，两侧柔边。
+      var beamCanvas = document.createElement('canvas')
+      beamCanvas.width = 128
+      beamCanvas.height = 256
+      var beamContext = beamCanvas.getContext('2d')
+      var beamImage = beamContext.createImageData(128, 256)
+      for (var beamY = 0; beamY < 256; beamY++) {
+        var along = 1 - beamY / 255
+        var halfWidth = 0.18 + along * 0.82
+        var fade = Math.pow(1 - along, 1.8) * Math.pow(Math.min(1, along / 0.22), 1.5)
+        for (var beamX = 0; beamX < 128; beamX++) {
+          var across = Math.abs(beamX / 127 - 0.5) * 2 / halfWidth
+          var edge = across >= 1 ? 0 : Math.pow(1 - across * across, 1.5)
+          var beamIndex = (beamY * 128 + beamX) * 4
+          beamImage.data[beamIndex] = 255
+          beamImage.data[beamIndex + 1] = 255
+          beamImage.data[beamIndex + 2] = 255
+          beamImage.data[beamIndex + 3] = Math.round(255 * edge * fade)
+        }
+      }
+      beamContext.putImageData(beamImage, 0, 0)
+      return new THREE.CanvasTexture(beamCanvas)
+    }
+
+    var duskBeamLength = 17
+    var duskBeamMaterial = new THREE.MeshBasicMaterial({
+      color: '#ffd9a0',
+      alphaMap: createDuskBeamTexture(),
+      transparent: true,
+      opacity: 0,
+      blending: THREE.AdditiveBlending,
+      depthWrite: false,
+      fog: true,
+      polygonOffset: true,
+      polygonOffsetFactor: -3
+    })
+    var duskBeamPool = new THREE.Mesh(new THREE.PlaneGeometry(6.2, duskBeamLength), duskBeamMaterial)
+    duskBeamPool.rotation.x = -Math.PI / 2
+    duskBeamPool.position.set(0, 0.06, -3.7 - duskBeamLength / 2)
+    duskBeamPool.renderOrder = 3
+    car.add(duskBeamPool)
+    var duskHeadlights = []
+    for (var beamSide = -1; beamSide <= 1; beamSide += 2) {
+      var headSpot = new THREE.SpotLight('#ffe6bd', 0, 75, 0.46, 0.7, 1.35)
+      headSpot.position.set(beamSide * 0.72, 1.5, -3.7)
+      headSpot.target.position.set(beamSide * 1.4, 0, -26)
+      carBodyRig.add(headSpot)
+      carBodyRig.add(headSpot.target)
+      duskHeadlights.push(headSpot)
+    }
+
+    function applyDuskNight (night) {
+      var skyUniforms = duskSky.material.uniforms
+      mixDuskColor(skyUniforms.uZenith.value, 'zenith', night)
+      mixDuskColor(skyUniforms.uUpper.value, 'upper', night)
+      mixDuskColor(skyUniforms.uBand.value, 'band', night)
+      mixDuskColor(skyUniforms.uHorizon.value, 'horizon', night)
+      mixDuskColor(skyUniforms.uGlow.value, 'glow', night)
+      skyUniforms.uSunDir.value.set(-0.2, 0.075 - night * 0.14, -0.98).normalize()
+      skyUniforms.uNight.value = night
+
+      mixDuskColor(duskScene.fog.color, 'fog', night)
+      duskScene.fog.near = 76 - night * 22
+      duskScene.fog.far = 292 - night * 70
+      mixDuskColor(duskHemisphereLight.color, 'hemiSky', night)
+      mixDuskColor(duskHemisphereLight.groundColor, 'hemiGround', night)
+      duskHemisphereLight.intensity = 0.98 - night * 0.5
+      mixDuskColor(duskSunLight.color, 'sunLight', night)
+      duskSunLight.intensity = 2.2 * (1 - smoothDusk(night * 1.3))
+      mixDuskColor(duskRimLight.color, 'rim', night)
+      duskRimLight.intensity = 0.56 + night * 0.42
+      duskCameraFill.intensity = 0.88 - night * 0.62
+      duskSunHalo.material.opacity = duskSunHaloOpacity * (1 - smoothDusk(night * 1.4))
+      duskSunHaloWide.material.opacity = duskSunHaloWideOpacity * (1 - night * 0.75)
+
+      for (var cloudMaterialIndex = 0; cloudMaterialIndex < cloudMaterials.length; cloudMaterialIndex++) {
+        var cloudBase = duskCloudBases[cloudMaterialIndex]
+        cloudMaterials[cloudMaterialIndex].color.copy(cloudBase.color).lerp(duskPaletteColors.cloudNight[0], night * 0.9)
+        cloudMaterials[cloudMaterialIndex].opacity = cloudBase.opacity * (1 - night * 0.45)
+      }
+      duskBirdGroup.visible = night < 0.72
+
+      var lights = smoothDusk((night - 0.22) / 0.22)
+      headLightMaterial.color.copy(headLightOff).lerp(headLightOn, lights)
+      for (var headlightIndex = 0; headlightIndex < duskHeadlights.length; headlightIndex++) {
+        duskHeadlights[headlightIndex].intensity = lights * 38
+      }
+      duskBeamMaterial.opacity = lights * 0.34
+      for (var tailGlowIndex = 0; tailGlowIndex < duskTailGlows.length; tailGlowIndex++) {
+        var nightTailGlow = duskTailGlows[tailGlowIndex]
+        nightTailGlow.material.opacity = 0.38 + lights * 0.42
+        nightTailGlow.scale.setScalar(0.8 + lights * 0.55)
+      }
+      rearGlow.intensity = 0.9 + lights * 1.8
+      root.dataset.duskNight = night.toFixed(2)
+      root.dataset.duskHeadlights = lights > 0.5 ? 'on' : 'off'
+    }
+
+    function updateDuskNight (time, delta) {
+      if (!duskNightCheckedAt || time - duskNightCheckedAt > 4000) {
+        duskNightGoal = duskNightTarget()
+        duskNightCheckedAt = time
+      }
+      duskNight += (duskNightGoal - duskNight) * (delta > 0 ? 1 - Math.exp(-0.8 * delta) : 1)
+      if (Math.abs(duskNight - duskAppliedNight) > 0.002) {
+        duskSky.material.uniforms.uSceneReferred.value = duskPost ? 1 : 0
+    applyDuskNight(duskNight)
+        duskAppliedNight = duskNight
+      }
+    }
+
+    // 标题锚定在夕阳正上方的天空：按夕阳的黄昏高度投影到屏幕，夜里太阳落山后标题也不跟着下沉。
+    var duskTitleAnchor = new THREE.Vector3()
+    var duskTitleX = -1
+    var duskTitleY = -1
+
+    function resetDuskTitleAnchor () {
+      duskTitleX = -1
+      duskTitleY = -1
+    }
+
+    function updateDuskTitleAnchor (carX, carZ) {
+      duskCamera.updateMatrixWorld()
+      duskTitleAnchor.set(carX - 45, 16.5, carZ - 224).project(duskCamera)
+      var titleX = (duskTitleAnchor.x * 0.5 + 0.5) * 100
+      var titleY = (0.5 - duskTitleAnchor.y * 0.5) * 100 - (width < 768 ? 15 : 19)
+      if (Math.abs(titleX - duskTitleX) < 0.25 && Math.abs(titleY - duskTitleY) < 0.25) return
+      duskTitleX = titleX
+      duskTitleY = titleY
+      root.style.setProperty('--vexpaer-title-x', titleX.toFixed(2) + '%')
+      root.style.setProperty('--vexpaer-title-y', titleY.toFixed(2) + '%')
+      root.dataset.duskTitleLayout = 'sky'
+    }
+
+    // 电影感后期：场景先渲染到离屏 HDR 目标，再做泛光、色差、分离调色、暗角与胶片颗粒。
+    var duskPostQuadVertex = 'varying vec2 vUv;void main(){vUv=uv;gl_Position=vec4(position.xy,0.0,1.0);}'
+    var duskPost = null
+
+    function createDuskPost () {
+      var postSize = new THREE.Vector2(1, 1)
+      var sceneTarget = new THREE.WebGLRenderTarget(1, 1, { type: THREE.HalfFloatType, samples: width > 720 ? 4 : 0 })
+      var brightTarget = new THREE.WebGLRenderTarget(1, 1, { type: THREE.HalfFloatType, depthBuffer: false })
+      var blurTargetA = new THREE.WebGLRenderTarget(1, 1, { type: THREE.HalfFloatType, depthBuffer: false })
+      var blurTargetB = new THREE.WebGLRenderTarget(1, 1, { type: THREE.HalfFloatType, depthBuffer: false })
+
+      var brightMaterial = new THREE.ShaderMaterial({
+        toneMapped: false,
+        depthTest: false,
+        depthWrite: false,
+        uniforms: { tScene: { value: null }, uThreshold: { value: 1.25 } },
+        vertexShader: duskPostQuadVertex,
+        fragmentShader: [
+          'uniform sampler2D tScene;uniform float uThreshold;varying vec2 vUv;',
+          'void main(){vec3 c=texture2D(tScene,vUv).rgb;float l=max(c.r,max(c.g,c.b));',
+          'float k=smoothstep(uThreshold,uThreshold+1.0,l);gl_FragColor=vec4(c*k,1.0);}'
+        ].join('\n')
+      })
+
+      var blurMaterial = new THREE.ShaderMaterial({
+        toneMapped: false,
+        depthTest: false,
+        depthWrite: false,
+        uniforms: { tInput: { value: null }, uDirection: { value: new THREE.Vector2() } },
+        vertexShader: duskPostQuadVertex,
+        fragmentShader: [
+          'uniform sampler2D tInput;uniform vec2 uDirection;varying vec2 vUv;',
+          'void main(){vec3 c=texture2D(tInput,vUv).rgb*.2270270270;',
+          'c+=texture2D(tInput,vUv+uDirection*1.3846153846).rgb*.3162162162;',
+          'c+=texture2D(tInput,vUv-uDirection*1.3846153846).rgb*.3162162162;',
+          'c+=texture2D(tInput,vUv+uDirection*3.2307692308).rgb*.0702702703;',
+          'c+=texture2D(tInput,vUv-uDirection*3.2307692308).rgb*.0702702703;',
+          'gl_FragColor=vec4(c,1.0);}'
+        ].join('\n')
+      })
+
+      var compositeMaterial = new THREE.ShaderMaterial({
+        depthTest: false,
+        depthWrite: false,
+        uniforms: {
+          tScene: { value: sceneTarget.texture },
+          tBloom: { value: blurTargetB.texture },
+          uResolution: { value: new THREE.Vector2(1, 1) },
+          uTime: { value: 0 },
+          uBloom: { value: 0.55 },
+          uNight: { value: 0 }
+        },
+        vertexShader: duskPostQuadVertex,
+        fragmentShader: [
+          'uniform sampler2D tScene;uniform sampler2D tBloom;uniform vec2 uResolution;uniform float uTime;uniform float uBloom;uniform float uNight;varying vec2 vUv;',
+          'float grainHash(vec2 p){vec3 q=fract(vec3(p.xyx)*.1031);q+=dot(q,q.yzx+33.33);return fract((q.x+q.y)*q.z);}',
+          'void main(){',
+          'vec2 offset=vUv-.5;float edge=dot(offset,offset);',
+          'vec4 base=texture2D(tScene,vUv);',
+          // 轻微色差，只在画面边缘出现。
+          'vec2 shift=offset*edge*.012;',
+          'vec3 sceneColor=vec3(texture2D(tScene,vUv+shift).r,base.g,texture2D(tScene,vUv-shift).b);',
+          'vec3 bloom=texture2D(tBloom,vUv).rgb*uBloom;',
+          'vec3 color=sceneColor+bloom;',
+          '#ifdef TONE_MAPPING',
+          'color=toneMapping(color);',
+          '#endif',
+          'color=linearToOutputTexel(vec4(color,1.0)).rgb;',
+          // 分离调色：暗部偏青蓝，亮部偏暖，并略微压低整体饱和。
+          'float luma=dot(color,vec3(.2126,.7152,.0722));',
+          'color=mix(vec3(luma),color,.96);',
+          'color=mix(color,color*color*(3.0-2.0*color),.22);',
+          'color+=vec3(-.012,.004,.024)*(1.0-smoothstep(0.0,.45,luma));',
+          'color*=mix(vec3(1.0),vec3(1.05,1.0,.93),smoothstep(.35,1.0,luma));',
+          // 暗角：夜里更深。
+          'float vignette=smoothstep(.62+uNight*.04,.12,edge*1.9);',
+          'color*=mix(.58-uNight*.08,1.0,vignette);',
+          // 胶片颗粒：按像素随机，每帧刷新；暗部稍强。
+          'float grain=grainHash(gl_FragCoord.xy+fract(uTime*7.0)*vec2(173.0,91.0))-.5;',
+          'color+=grain*mix(.05,.032,smoothstep(0.0,.6,luma));',
+          'gl_FragColor=vec4(clamp(color,0.0,1.0),1.0);}'
+        ].join('\n')
+      })
+
+      var postCamera = new THREE.OrthographicCamera(-1, 1, 1, -1, 0, 1)
+      var postQuad = new THREE.Mesh(new THREE.PlaneGeometry(2, 2), compositeMaterial)
+      postQuad.frustumCulled = false
+      var postScene = new THREE.Scene()
+      postScene.add(postQuad)
+
+      function runPass (passMaterial, target) {
+        postQuad.material = passMaterial
+        renderer.setRenderTarget(target)
+        renderer.render(postScene, postCamera)
+      }
+
+      function blur (source, target, x, y) {
+        blurMaterial.uniforms.tInput.value = source.texture
+        blurMaterial.uniforms.uDirection.value.set(x, y)
+        runPass(blurMaterial, target)
+      }
+
+      return {
+        resize: function () {
+          renderer.getDrawingBufferSize(postSize)
+          var fullWidth = Math.max(1, Math.floor(postSize.x))
+          var fullHeight = Math.max(1, Math.floor(postSize.y))
+          var bloomWidth = Math.max(1, Math.floor(fullWidth / 4))
+          var bloomHeight = Math.max(1, Math.floor(fullHeight / 4))
+          sceneTarget.setSize(fullWidth, fullHeight)
+          brightTarget.setSize(Math.max(1, Math.floor(fullWidth / 2)), Math.max(1, Math.floor(fullHeight / 2)))
+          blurTargetA.setSize(bloomWidth, bloomHeight)
+          blurTargetB.setSize(bloomWidth, bloomHeight)
+          compositeMaterial.uniforms.uResolution.value.set(fullWidth, fullHeight)
+        },
+        render: function (time) {
+          renderer.setRenderTarget(sceneTarget)
+          renderer.render(duskScene, duskCamera)
+
+          brightMaterial.uniforms.tScene.value = sceneTarget.texture
+          runPass(brightMaterial, brightTarget)
+          var texelX = 1 / blurTargetA.width
+          var texelY = 1 / blurTargetA.height
+          blur(brightTarget, blurTargetA, texelX, 0)
+          blur(blurTargetA, blurTargetB, 0, texelY)
+          blur(blurTargetB, blurTargetA, texelX * 2, 0)
+          blur(blurTargetA, blurTargetB, 0, texelY * 2)
+
+          compositeMaterial.uniforms.uTime.value = reducedMotion.matches ? 0 : time * 0.001
+          compositeMaterial.uniforms.uBloom.value = 0.55 + duskNight * 0.45
+          compositeMaterial.uniforms.uNight.value = duskNight
+          runPass(compositeMaterial, null)
+        }
+      }
+    }
+
+    try {
+      duskPost = createDuskPost()
+      root.dataset.duskPost = 'cinematic'
+    } catch (error) {
+      duskPost = null
+      root.dataset.duskPost = 'off'
+    }
+
+    function renderDuskFrame (time) {
+      if (duskPost) duskPost.render(time)
+      else renderer.render(duskScene, duskCamera)
+    }
+
+    applyDuskNight(duskNight)
+    duskAppliedNight = duskNight
+
+    // 镜头推进：开场从更远更高处缓缓推近，之后以约 80 秒为周期轻微呼吸。
+    var duskPushDistance = 6
+    var duskPushHeight = 1.6
+
+    function duskLookHeight () {
+      return width < 768 ? 1.1 : 1.45
+    }
+
     function configureDuskCamera () {
+      resetDuskTitleAnchor()
       duskCamera.aspect = aspect
       duskCamera.fov = width < 768 ? 53 : 46
       duskCamera.updateProjectionMatrix()
       if (!duskLastTime) {
-        duskCamera.position.set(duskRoadCenter(0), width < 768 ? 7.55 : 7.2, width < 768 ? 16.2 : 15.2)
-        duskCameraTarget.set(duskRoadCenter(width < 768 ? -17 : -18), width < 768 ? 0.35 : 0.2, width < 768 ? -17 : -18)
+        duskCamera.position.set(duskRoadCenter(0), (width < 768 ? 7.55 : 7.2) + duskPushHeight, (width < 768 ? 16.2 : 15.2) + duskPushDistance)
+        duskCameraTarget.set(duskRoadCenter(width < 768 ? -17 : -18), duskLookHeight(), width < 768 ? -17 : -18)
         duskCamera.lookAt(duskCameraTarget)
       }
     }
@@ -1860,6 +2224,7 @@
       var motionTime = reducedMotion.matches ? 0 : time
       duskLastTime = time
       duskElapsed += delta
+      updateDuskNight(time, delta)
       var travelSpeed = width < 768 ? 5.2 : 6.6
       duskTravel += delta * travelSpeed
       if (Math.floor(duskTravel) !== Number(root.dataset.duskDistance)) root.dataset.duskDistance = Math.floor(duskTravel).toString()
@@ -1955,7 +2320,7 @@
 
       duskSky.position.set(carX, 4, carZ)
       duskSky.material.uniforms.uTime.value = motionTime * 0.001
-      duskSun.position.set(carX - 45, 16.5, carZ - 224)
+      duskSun.position.set(carX - 45, 16.5 - smoothDusk(duskNight) * 26, carZ - 224)
       duskSunHalo.position.copy(duskSun.position)
       duskSunHaloWide.position.copy(duskSun.position)
       duskMountainGroup.position.set(carX, 0, carZ)
@@ -1981,18 +2346,21 @@
       duskRimLight.target.position.set(carX, 0.8, carZ)
       var pointerShiftX = pointerActive ? (pointerX / Math.max(1, width) - 0.5) * 1.35 : 0
       var pointerShiftY = pointerActive ? (pointerY / Math.max(1, height) - 0.5) * 0.52 : 0
-      var cameraDistance = width < 768 ? 16.2 : 15.2
-      var cameraHeight = width < 768 ? 7.55 : 7.2
+      var duskPush = reducedMotion.matches ? 1 : smoothDusk(duskElapsed / 26)
+      var duskBreath = reducedMotion.matches ? 0 : (1 - Math.cos(Math.max(0, duskElapsed - 26) * Math.PI * 2 / 80)) * 0.5
+      var cameraDistance = (width < 768 ? 16.2 : 15.2) + (1 - duskPush) * duskPushDistance - duskBreath * 1.8
+      var cameraHeight = (width < 768 ? 7.55 : 7.2) + (1 - duskPush) * duskPushHeight - duskBreath * 0.45
       var cameraLookAhead = width < 768 ? 17 : 18
       var cameraX = carX + Math.sin(heading) * cameraDistance + pointerShiftX
       var cameraZ = carZ + Math.cos(heading) * cameraDistance
       var cameraDamping = delta > 0 ? 1 - Math.exp(-6.8 * delta) : 1
       duskCameraDesired.set(cameraX, cameraHeight - pointerShiftY, cameraZ)
-      duskLookDesired.set(carX - Math.sin(heading) * cameraLookAhead, width < 768 ? 0.35 : 0.2, carZ - Math.cos(heading) * cameraLookAhead)
+      duskLookDesired.set(carX - Math.sin(heading) * cameraLookAhead, duskLookHeight(), carZ - Math.cos(heading) * cameraLookAhead)
       duskCameraFill.position.set(cameraX, cameraHeight + 1.5, cameraZ - 1)
       duskCamera.position.lerp(duskCameraDesired, cameraDamping)
       duskCameraTarget.lerp(duskLookDesired, cameraDamping)
       duskCamera.lookAt(duskCameraTarget)
+      updateDuskTitleAnchor(carX, carZ)
     }
 
     var particleCount = width < 720 ? 360 : ((navigator.hardwareConcurrency || 8) <= 4 ? 480 : 760)
@@ -2913,6 +3281,7 @@
         camera.updateProjectionMatrix()
         renderer.setPixelRatio(Math.min(nextPixelRatio || 1, 1.65))
         renderer.setSize(nextWidth, nextHeight, false)
+        if (duskPost) duskPost.resize()
         material.uniforms.uAspect.value = aspect
         material.uniforms.uPixelRatio.value = Math.min(nextPixelRatio || 1, 1.65)
         galaxyStarMaterial.uniforms.uPixelRatio.value = Math.min(nextPixelRatio || 1, 1.65)
@@ -2932,6 +3301,7 @@
         spacePointerNdc.set(normalizedX, normalizedY)
       },
       setTheme: function (theme, previousTheme) {
+        if (theme === 'dusk') resetDuskTitleAnchor()
         if (isFrameScene(theme)) {
           points.visible = false
           galaxyGroup.visible = false
@@ -2995,7 +3365,7 @@
         updateLifeCubes(time)
         if (activeTheme === 'dusk') {
           updateDusk(time)
-          renderer.render(duskScene, duskCamera)
+          renderDuskFrame(time)
         } else if (activeTheme === 'space') {
           updateGalaxy(time)
           updateMeteors(time)

@@ -67,6 +67,8 @@ if page.mindmap_hub === true
   link(rel='stylesheet', href=url_for('/css/mindmap-hub.css'))
 if isBlogIndex
   link(rel='stylesheet', href=url_for('/css/vexpaer-blog.css'))
+if is_post() && page.bilingual === true
+  link(rel='stylesheet', href=url_for('/css/blog-language.css'))
 if isLanding
   link(rel='stylesheet', href=url_for('/css/vexpaer-home.css'))
   link(rel='stylesheet', href=url_for('/css/vexpaer-explore.css'))

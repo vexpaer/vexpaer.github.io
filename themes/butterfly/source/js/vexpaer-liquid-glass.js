@@ -35,7 +35,7 @@
     '  width: 18px; height: 18px; fill: none;',
     '  stroke: currentColor; stroke-width: 1.7; stroke-linecap: round;',
     '}'
-  ].join('\\n')
+  ].join('')
   document.head.appendChild(style)
 
   var gearButton = document.createElement('button')

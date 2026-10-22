@@ -31,7 +31,8 @@ English article starts here. Markdown, images and equations work normally.
 - The `<!-- BLOG_ZH -->` divider must be written **on its own line**. Put the complete English article before it and the complete Chinese article after it.
 - Front matter `title` should be the English title; `title_zh` supplies the Chinese reading-page title after switching. Existing posts without `bilingual: true` are unaffected.
 - Butterfly generates its default table of contents from both language sections. To prevent incorrect/duplicate headings, the sidebar TOC is hidden on bilingual articles; normal articles retain their TOC.
-- Keep figures, citations, key claims, and source acknowledgments equivalent across languages. Check rights/attribution for imported figures.
+- Keep figures, citations, key claims, and source acknowledgments equivalent across languages.
+- **All text inside figures must be English-only**, including headings, axes, legends, annotations, and callouts, even for the Chinese version. Use language-specific captions below shared figures. Prefer original experimental panels for measured results and custom SVG diagrams for conceptual mechanisms; select figures according to the explanation, not by a fixed diagram style. Check rights/attribution for imported figures.
 - Workflow: discuss the topic first; draft both languages; revise with the author; create a PR **only after author approval**. Do not merge automatically.
 
 The editorial requirements and approval process are maintained in Notion: [School → 提示词 → blog](https://app.notion.com/p/401632b58d1e814fa2c6f9fadfdc9a1c).

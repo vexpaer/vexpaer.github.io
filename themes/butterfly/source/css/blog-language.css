@@ -34,3 +34,7 @@
   user-select: none;
 }
 #post .blog-language-panel[hidden] { display: none !important; }
+
+/* Butterfly builds its TOC from both language sections; hide it until a language-aware TOC exists. */
+#aside-content #card-toc,
+#rightside #mobile-toc-button { display: none !important; }

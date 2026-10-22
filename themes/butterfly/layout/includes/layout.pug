@@ -7,7 +7,7 @@
 - var bodyClass = isLanding ? 'vexpaer-home-page' : (isBlogIndex ? 'vexpaer-blog-index' : (isMindmapHub ? 'vexpaer-mindmap-hub' : ''))
 
 doctype html
-html(lang=isLanding ? 'en' : config.language data-theme=theme.display_mode class=htmlClassHideAside)
+html(lang=(isLanding || (is_post() && page.bilingual === true)) ? 'en' : config.language data-theme=theme.display_mode class=htmlClassHideAside)
   head
     include ./head.pug
   body(class=bodyClass)

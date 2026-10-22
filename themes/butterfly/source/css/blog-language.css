@@ -1,0 +1,40 @@
+/* Only loaded by opt-in bilingual posts. English is the default. */
+#post .blog-language-switch {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin: 0 0 1.25rem;
+  font-size: 0.92rem;
+  line-height: 1.5;
+}
+#post .blog-language-button {
+  appearance: none;
+  background: transparent;
+  border: 0;
+  border-bottom: 2px solid transparent;
+  border-radius: 0;
+  padding: 0.2rem 0.35rem;
+  color: var(--font-color);
+  opacity: 0.63;
+  cursor: pointer;
+  font: inherit;
+}
+#post .blog-language-button.is-active {
+  opacity: 1;
+  font-weight: 700;
+  border-bottom-color: var(--theme-color, #6683e3);
+}
+#post .blog-language-button:hover { opacity: 1; }
+#post .blog-language-button:focus-visible {
+  outline: 2px solid var(--theme-color, #6683e3);
+  outline-offset: 2px;
+}
+#post .blog-language-divider {
+  opacity: 0.45;
+  user-select: none;
+}
+#post .blog-language-panel[hidden] { display: none !important; }
+
+/* Butterfly builds its TOC from both language sections; hide it until a language-aware TOC exists. */
+#aside-content #card-toc,
+#rightside #mobile-toc-button { display: none !important; }

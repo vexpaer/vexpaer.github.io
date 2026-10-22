@@ -17,81 +17,33 @@
   var cssInjected = false
   var saveTimer = 0
 
-  // ---------------------------------------------------------- 控件簇
+  // ---------------------------------------------------------- 阅读页设置菜单控件
+  // 使用 Butterfly 原有的 #rightside-config-hide (齿轮展开菜单)，
+  // 不再另外创建占用阅读区域的固定浮动按钮簇。
+  var settingsMenu = document.getElementById('rightside-config-hide')
+  if (!settingsMenu) return
 
   var style = document.createElement('style')
   style.textContent = [
-    '#vexpaer-glass-controls {',
-    '  position: fixed;',
-    // 右移一列,给 Butterfly 自带的右下角按钮组(right:10px)让位。
-    '  right: 64px;',
-    '  bottom: 24px;',
-    '  z-index: 2147482998;',
-    '  display: flex;',
-    '  flex-direction: column;',
-    '  gap: 10px;',
+    '#rightside #vexpaer-glass-toggle.is-on {',
+    '  background-color: rgba(52, 84, 160, 0.85);',
     '}',
-    '#vexpaer-glass-controls button {',
-    '  width: 44px;',
-    '  height: 44px;',
-    '  display: grid;',
-    '  place-items: center;',
-    '  padding: 0;',
-    '  border: 1px solid rgba(255, 255, 255, 0.22);',
-    '  border-radius: 50%;',
-    '  background: rgba(28, 30, 38, 0.72);',
-    '  color: #e8ecf6;',
-    '  cursor: pointer;',
-    '  backdrop-filter: blur(10px);',
-    '  -webkit-backdrop-filter: blur(10px);',
-    '  box-shadow: 0 8px 28px rgba(0, 0, 0, 0.28);',
-    '  transition: transform 160ms ease, border-color 160ms ease, background-color 160ms ease, opacity 200ms ease;',
-    '}',
-    '#vexpaer-glass-controls button:hover {',
-    '  transform: translateY(-2px);',
-    '  border-color: rgba(255, 255, 255, 0.42);',
-    '}',
-    '#vexpaer-glass-controls button:focus-visible {',
-    '  outline: 2px solid #8fb8ff;',
-    '  outline-offset: 3px;',
-    '}',
-    '#vexpaer-glass-controls button svg {',
-    '  width: 21px;',
-    '  height: 21px;',
-    '  fill: none;',
-    '  stroke: currentColor;',
-    '  stroke-width: 1.7;',
-    '  stroke-linecap: round;',
-    '}',
-    '#vexpaer-glass-toggle.is-on {',
-    '  border-color: rgba(126, 168, 255, 0.85);',
-    '  background: rgba(52, 84, 160, 0.6);',
-    '}',
-    '#vexpaer-glass-gear {',
-    '  opacity: 0;',
-    '  visibility: hidden;',
-    '  transform: translateY(6px);',
-    '}',
-    '#vexpaer-glass-gear.is-visible {',
-    '  opacity: 1;',
-    '  visibility: visible;',
-    '  transform: none;',
-    '}',
-    '@media (max-width: 768px) {',
-    '  #vexpaer-glass-controls { right: 58px; bottom: 20px; }',
+    '#rightside #vexpaer-glass-gear { display: none; }',
+    '#rightside #vexpaer-glass-gear.is-visible { display: block; }',
+    '#rightside #vexpaer-glass-toggle svg,',
+    '#rightside #vexpaer-glass-gear svg {',
+    '  width: 18px; height: 18px; fill: none;',
+    '  stroke: currentColor; stroke-width: 1.7; stroke-linecap: round;',
     '}'
-  ].join('\n')
+  ].join('')
   document.head.appendChild(style)
-
-  var cluster = document.createElement('div')
-  cluster.id = 'vexpaer-glass-controls'
-  cluster.setAttribute('data-liquid-glass-exclude', '')
 
   var gearButton = document.createElement('button')
   gearButton.id = 'vexpaer-glass-gear'
   gearButton.type = 'button'
   gearButton.title = '液态玻璃参数设置'
   gearButton.setAttribute('aria-label', '打开液态玻璃参数设置面板')
+  gearButton.setAttribute('data-liquid-glass-exclude', '')
   gearButton.innerHTML = '<svg viewBox="0 0 24 24" aria-hidden="true">'
     + '<circle cx="12" cy="12" r="3.2"/>'
     + '<path d="M12 2.8v2.6M12 18.6v2.6M2.8 12h2.6M18.6 12h2.6'
@@ -101,14 +53,14 @@
   var toggleButton = document.createElement('button')
   toggleButton.id = 'vexpaer-glass-toggle'
   toggleButton.type = 'button'
+  toggleButton.setAttribute('data-liquid-glass-exclude', '')
   toggleButton.innerHTML = '<svg viewBox="0 0 24 24" aria-hidden="true">'
     + '<circle cx="12" cy="12" r="8.2"/>'
     + '<path d="M7.6 9.4a5.4 5.4 0 0 1 3.2-2.5"/>'
     + '</svg>'
 
-  cluster.appendChild(gearButton)
-  cluster.appendChild(toggleButton)
-  document.body.appendChild(cluster)
+  settingsMenu.appendChild(toggleButton)
+  settingsMenu.appendChild(gearButton)
 
   function syncButtons () {
     var on = Boolean(glass)

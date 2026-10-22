@@ -8,7 +8,22 @@ block content
     if page.mindmap === true
       include includes/post/mindmap-switch.pug
 
-    article#article-container.post-content!=page.content
+    //- Opt-in bilingual posts: English and Chinese share a single article URL.
+    //- Render Markdown as usual, then split at the standalone HTML comment marker.
+    if page.bilingual === true
+      - var bilingualParts = (page.content || '').split(/<!--\s*BLOG_ZH\s*-->/i)
+      if bilingualParts.length > 1
+        nav.blog-language-switch(aria-label="Article language" data-title-en=page.title data-title-zh=(page.title_zh || page.title))
+          button.blog-language-button.is-active(type="button" data-blog-lang="en" aria-pressed="true") eng
+          span.blog-language-divider(aria-hidden="true") |
+          button.blog-language-button(type="button" data-blog-lang="zh" aria-pressed="false") 中文
+        article#article-container.post-content.blog-bilingual
+          section.blog-language-panel(data-blog-lang="en")!= bilingualParts[0]
+          section.blog-language-panel(data-blog-lang="zh" hidden)!= bilingualParts.slice(1).join('<!-- BLOG_ZH -->')
+      else
+        article#article-container.post-content!=page.content
+    else
+      article#article-container.post-content!=page.content
     include includes/post/post-copyright.pug
     .tag_share
       if (theme.post_meta.post.tags)

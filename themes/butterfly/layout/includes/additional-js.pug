@@ -11,6 +11,9 @@ div
     script(src=url_for('/js/vexpaer-blog-render.js'))
     script(src=url_for('/js/vexpaer-blog.js'))
 
+  if is_post() && page.bilingual === true
+    script(src=url_for('/js/blog-language.js'))
+
   if is_post() && !page.mindmap_page && theme.poker_pet && theme.poker_pet.enable
     script(src=url_for('/js/poker-pet.js'))
 

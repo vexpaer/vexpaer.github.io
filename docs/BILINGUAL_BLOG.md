@@ -30,7 +30,7 @@ English article starts here. Markdown, images and equations work normally.
 - Both versions share **one post URL**, one blog-list entry, and the existing Hexo post naming and metadata. Switching hides/shows already-rendered HTML, avoiding a second page and external translation services.
 - The `<!-- BLOG_ZH -->` divider must be written **on its own line**. Put the complete English article before it and the complete Chinese article after it.
 - Front matter `title` should be the English title; `title_zh` supplies the Chinese reading-page title after switching. Existing posts without `bilingual: true` are unaffected.
-- The table of contents in Butterfly may include headings from both languages if enabled, because it is generated from the full Markdown source. For short five-minute posts, consider disabling the sidebar TOC in theme settings or keeping headings minimal. This does not affect the language switch itself.
+- Butterfly generates its default table of contents from both language sections. To prevent incorrect/duplicate headings, the sidebar TOC is hidden on bilingual articles; normal articles retain their TOC.
 - Keep figures, citations, key claims, and source acknowledgments equivalent across languages. Check rights/attribution for imported figures.
 - Workflow: discuss the topic first; draft both languages; revise with the author; create a PR **only after author approval**. Do not merge automatically.
 

@@ -50,7 +50,8 @@ else
         button#rightside_config(type="button" title=_p("rightside.setting"))
           i.fas.fa-cog.fa-spin
 
-      if theme.chat_btn
+      //- Hide the floating chat button on article-reading pages.
+      if theme.chat_btn && !is_post()
         button#chat_btn(type="button" title=_p("rightside.chat_btn"))
           i.fas.fa-sms
       if commentsJsLoad

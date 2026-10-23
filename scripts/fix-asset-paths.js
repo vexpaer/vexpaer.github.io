@@ -8,7 +8,11 @@ hexo.extend.filter.register('after_post_render', data => {
     if (typeof data[key] !== 'string') continue;
 
     data[key] = data[key].replace(/(<img\b[^>]*?\bsrc=["'])([^"']+)(["'])/gi, (match, before, src, quote) => {
-      if (/^(?:[a-z][a-z\d+.-]*:|\/\/|\/|#)/i.test(src)) return match;
+      if (/^(?:[a-z][a-z\d+.-]*:|\/\/|#)/i.test(src)) return match;
+      // Protect site-root assets from hexo-asset-image's relative-path rewrite.
+      if (src.startsWith('/')) {
+        return `${before}${new URL(src, hexo.config.url).href}${quote}`;
+      }
 
       // Post assets are conventionally referenced as "post-folder/file".
       // The public asset folder is already represented by the post permalink,

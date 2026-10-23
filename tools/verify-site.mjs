@@ -251,7 +251,7 @@ if (hubChapterCount !== mindmapReaders) {
 }
 
 if (brokenAssetPaths.length) {
-  throw new Error(`Broken /.io// asset paths found in ${brokenAssetPaths.length} HTML files.`);
+  throw new Error(`Broken /.io// asset paths found in ${brokenAssetPaths.length} HTML files: ${brokenAssetPaths.join(", ")}.`);
 }
 
 console.log(

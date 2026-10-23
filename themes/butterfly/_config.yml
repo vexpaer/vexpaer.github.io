@@ -577,7 +577,7 @@ ClickShowText:
 
 # Default display mode (網站默認的顯示模式)
 # light (default) / dark
-display_mode: light
+display_mode: dark
 
 # Beautify (美化頁面顯示)
 beautify:
@@ -852,14 +852,13 @@ inject:
     - <link rel="stylesheet" href="/css/vexpaer-mobile.css">
     - <link rel="stylesheet" href="/css/loading_wizard.css"/>
   bottom:
-    - <script src="/js/snow3.js"></script>
     - <script src="/js/vexpaer-liquid-glass.js"></script>
 
-snow3: true
+snow3: false
 
 # Interactive pokerFace pet shown only on post pages
 poker_pet:
-  enable: true
+  enable: false
   default_enabled: true
   spritesheet: /img/poker-pet/pokerface.webp
 

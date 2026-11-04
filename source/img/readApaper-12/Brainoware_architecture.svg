@@ -1,0 +1,36 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="660" viewBox="0 0 1200 660">
+<rect width="1200" height="660" rx="28" fill="#F7F9FC"/>
+<text x="64" y="66" font-family="Arial,sans-serif" font-size="34" font-weight="700" fill="#16233A">Brainoware: a living neural reservoir</text>
+<text x="64" y="103" font-family="Arial,sans-serif" font-size="18" fill="#58677E">An external readout learns to interpret the organoid's evolving activity</text>
+<g font-family="Arial,sans-serif">
+<rect x="55" y="180" width="190" height="180" rx="18" fill="#E8F0FE" stroke="#8BA9E8" stroke-width="2"/>
+<text x="150" y="220" text-anchor="middle" font-size="20" font-weight="700" fill="#24477F">Input data</text>
+<text x="150" y="258" text-anchor="middle" font-size="16" fill="#365477">Speech / time</text>
+<text x="150" y="282" text-anchor="middle" font-size="16" fill="#365477">series</text>
+<path d="M150 305 L150 330" stroke="#5479B8" stroke-width="3" stroke-linecap="round"/>
+<path d="M140 320 L150 332 L160 320" fill="none" stroke="#5479B8" stroke-width="3"/>
+<rect x="280" y="180" width="190" height="180" rx="18" fill="#EAF7F1" stroke="#7DB99A" stroke-width="2"/>
+<text x="375" y="220" text-anchor="middle" font-size="20" font-weight="700" fill="#286347">Encoding</text>
+<text x="375" y="258" text-anchor="middle" font-size="16" fill="#3E6F57">Spatiotemporal</text>
+<text x="375" y="282" text-anchor="middle" font-size="16" fill="#3E6F57">biphasic pulses</text>
+<rect x="505" y="150" width="245" height="240" rx="22" fill="#FCEEDC" stroke="#D69B4A" stroke-width="2.5"/>
+<text x="627" y="190" text-anchor="middle" font-size="22" font-weight="700" fill="#80501A">Organoid + HD-MEA</text>
+<ellipse cx="627" cy="270" rx="78" ry="48" fill="#E8B7A6" stroke="#B66F5D" stroke-width="2"/>
+<g fill="#A64E5B"><circle cx="575" cy="265" r="6"/><circle cx="596" cy="242" r="5"/><circle cx="619" cy="276" r="6"/><circle cx="644" cy="249" r="5"/><circle cx="665" cy="278" r="6"/><circle cx="686" cy="258" r="5"/><circle cx="606" cy="297" r="5"/><circle cx="650" cy="300" r="5"/></g>
+<g stroke="#A64E5B" stroke-width="2" opacity=".75"><path d="M575 265 L596 242 L619 276 L644 249 L665 278 L686 258"/><path d="M596 242 L650 300 L665 278"/></g>
+<text x="627" y="345" text-anchor="middle" font-size="16" fill="#80501A">Nonlinearity + fading memory</text>
+<rect x="785" y="180" width="175" height="180" rx="18" fill="#F0EAFE" stroke="#A18BD9" stroke-width="2"/>
+<text x="872" y="220" text-anchor="middle" font-size="20" font-weight="700" fill="#5B468F">Readout</text>
+<text x="872" y="258" text-anchor="middle" font-size="16" fill="#67558E">Recorded spikes</text>
+<text x="872" y="282" text-anchor="middle" font-size="16" fill="#67558E">+ regression</text>
+<rect x="995" y="180" width="155" height="180" rx="18" fill="#E9F3F7" stroke="#82B2C6" stroke-width="2"/>
+<text x="1072" y="220" text-anchor="middle" font-size="20" font-weight="700" fill="#2D647A">Output</text>
+<text x="1072" y="258" text-anchor="middle" font-size="16" fill="#3E6E7F">Speaker ID</text>
+<text x="1072" y="282" text-anchor="middle" font-size="16" fill="#3E6E7F">or next value</text>
+<g stroke="#61738A" stroke-width="3" fill="none" stroke-linecap="round"><path d="M245 270 H275"/><path d="M470 270 H500"/><path d="M750 270 H780"/><path d="M960 270 H990"/></g>
+<g fill="#61738A"><path d="M267 261 L278 270 L267 279 Z"/><path d="M492 261 L503 270 L492 279 Z"/><path d="M772 261 L783 270 L772 279 Z"/><path d="M982 261 L993 270 L982 279 Z"/></g>
+<rect x="280" y="440" width="680" height="125" rx="18" fill="#FFFFFF" stroke="#D8DFEA" stroke-width="2"/>
+<text x="620" y="478" text-anchor="middle" font-size="20" font-weight="700" fill="#263750">Where does learning occur?</text>
+<text x="620" y="514" text-anchor="middle" font-size="17" fill="#4D5D72">The organoid's functional dynamics can adapt with stimulation;</text>
+<text x="620" y="540" text-anchor="middle" font-size="17" fill="#4D5D72">the external readout is separately trained using task labels.</text>
+</g></svg>
